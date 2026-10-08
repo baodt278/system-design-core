@@ -1,0 +1,657 @@
+<article class="prose-ui"><h1 id="monitoring-observability--performance-debugging---measure-to-scale">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<ul>
+<li>§§SEG3§§</li>
+<li>§§SEG4§§</li>
+<li>§§SEG5§§</li>
+</ul>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<ul>
+<li>§§SEG9§§</li>
+<li>§§SEG10§§</li>
+<li>§§SEG11§§</li>
+</ul>
+<p>§§SEG12§§</p>
+<p>§§SEG13§§</p>
+<p>§§SEG14§§</p>
+<ul>
+<li>§§SEG15§§</li>
+<li>§§SEG16§§</li>
+<li>§§SEG17§§</li>
+<li>§§SEG18§§</li>
+<li>§§SEG19§§</li>
+<li>§§SEG20§§</li>
+</ul>
+<h2 id="tại-sao-monitoring-là-critical">§§SEG21§§</h2>
+<h3 id="1-detect-problems-before-users">§§SEG22§§</h3>
+<p>§§SEG23§§</p>
+<pre><code>§§SEG24§§</code></pre>
+<p>§§SEG25§§</p>
+<h3 id="2-understand-system-behavior">§§SEG26§§</h3>
+<p>§§SEG27§§</p>
+<pre><code>§§SEG28§§</code></pre>
+<p>§§SEG29§§</p>
+<h3 id="3-debug-performance-issues">§§SEG30§§</h3>
+<p>§§SEG31§§</p>
+<p>§§SEG32§§</p>
+<p>§§SEG33§§</p>
+<pre><code>§§SEG34§§</code></pre>
+<h3 id="4-validate-optimizations">§§SEG35§§</h3>
+<p>§§SEG36§§</p>
+<p>§§SEG37§§</p>
+<pre><code>§§SEG38§§</code></pre>
+<p>§§SEG39§§</p>
+<h3 id="5-meet-slas">§§SEG40§§</h3>
+<p>§§SEG41§§</p>
+<p>§§SEG42§§</p>
+<h2 id="the-three-pillars-of-observability">§§SEG43§§</h2>
+<p>§§SEG44§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG45§§</code></pre>
+<p>§§SEG46§§</p>
+<p>§§SEG47§§</p>
+<h2 id="metrics---what-to-measure">§§SEG48§§</h2>
+<h3 id="golden-signals-google-sre">§§SEG49§§</h3>
+<p>§§SEG50§§</p>
+<h4 id="1-latency">§§SEG51§§</h4>
+<p>§§SEG52§§</p>
+<pre><code class="language-python">import time
+
+def track_latency(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        duration = time.time() - start
+        
+        metrics.histogram('api.latency', duration, tags=['endpoint:users'])
+        return result
+    return wrapper
+
+@track_latency
+def get_users():
+    return db.query("SELECT * FROM users")
+</code></pre>
+<p>§§SEG53§§</p>
+<ul>
+<li>§§SEG54§§</li>
+<li>§§SEG55§§</li>
+<li>§§SEG56§§</li>
+<li>§§SEG57§§</li>
+</ul>
+<p>§§SEG58§§</p>
+<h4 id="2-traffic">§§SEG59§§</h4>
+<p>§§SEG60§§</p>
+<pre><code class="language-python">@app.before_request
+def track_request():
+    metrics.increment('api.requests', tags=[
+        f'endpoint:{request.endpoint}',
+        f'method:{request.method}'
+    ])
+</code></pre>
+<p>§§SEG61§§</p>
+<ul>
+<li>§§SEG62§§</li>
+<li>§§SEG63§§</li>
+<li>§§SEG64§§</li>
+</ul>
+<p>§§SEG65§§</p>
+<h4 id="3-errors">§§SEG66§§</h4>
+<p>§§SEG67§§</p>
+<pre><code class="language-python">@app.after_request
+def track_response(response):
+    if response.status_code &gt;= 500:
+        metrics.increment('api.errors.5xx')
+    elif response.status_code &gt;= 400:
+        metrics.increment('api.errors.4xx')
+    
+    return response
+</code></pre>
+<p>§§SEG68§§</p>
+<ul>
+<li>§§SEG69§§</li>
+<li>§§SEG70§§</li>
+<li>§§SEG71§§</li>
+</ul>
+<p>§§SEG72§§</p>
+<h4 id="4-saturation">§§SEG73§§</h4>
+<p>§§SEG74§§</p>
+<pre><code class="language-python"># System metrics
+metrics.gauge('system.cpu_percent', psutil.cpu_percent())
+metrics.gauge('system.memory_percent', psutil.virtual_memory().percent)
+metrics.gauge('system.disk_percent', psutil.disk_usage('/').percent)
+
+# Application metrics
+metrics.gauge('db.connection_pool.used', db.pool.size())
+metrics.gauge('queue.depth', redis.llen('task_queue'))
+</code></pre>
+<p>§§SEG75§§</p>
+<ul>
+<li>§§SEG76§§</li>
+<li>§§SEG77§§</li>
+<li>§§SEG78§§</li>
+<li>§§SEG79§§</li>
+<li>§§SEG80§§</li>
+</ul>
+<p>§§SEG81§§</p>
+<h3 id="red-method-for-services">§§SEG82§§</h3>
+<p>§§SEG83§§</p>
+<pre><code class="language-python">class ServiceMetrics:
+    def record_request(self, duration, success):
+        # Rate
+        self.metrics.increment('service.requests')
+        
+        # Errors
+        if not success:
+            self.metrics.increment('service.errors')
+        
+        # Duration
+        self.metrics.histogram('service.duration', duration)
+</code></pre>
+<p>§§SEG84§§</p>
+<h3 id="use-method-for-resources">§§SEG85§§</h3>
+<p>§§SEG86§§</p>
+<pre><code class="language-python"># Utilization: % time resource busy
+cpu_utilization = psutil.cpu_percent()
+
+# Saturation: work queued
+load_average = os.getloadavg()[0]  # 1-minute load
+
+# Errors: error count
+disk_errors = read_disk_error_count()
+</code></pre>
+<p>§§SEG87§§</p>
+<h2 id="percentiles---why-they-matter-more-than-averages">§§SEG88§§</h2>
+<h3 id="the-problem-with-averages">§§SEG89§§</h3>
+<p>§§SEG90§§</p>
+<pre><code>§§SEG91§§</code></pre>
+<p>§§SEG92§§</p>
+<p>§§SEG93§§</p>
+<p>§§SEG94§§</p>
+<h3 id="percentiles-reveal-true-story">§§SEG95§§</h3>
+<p>§§SEG96§§</p>
+<pre><code>§§SEG97§§</code></pre>
+<p>§§SEG98§§</p>
+<h3 id="why-p99-matters">§§SEG99§§</h3>
+<p>§§SEG100§§</p>
+<pre><code>§§SEG101§§</code></pre>
+<p>§§SEG102§§</p>
+<h3 id="tracking-percentiles">§§SEG103§§</h3>
+<pre><code class="language-python">from prometheus_client import Histogram
+
+# Histogram automatically calculates percentiles
+latency_histogram = Histogram(
+    'api_latency_seconds',
+    'API request latency',
+    buckets=[0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
+)
+
+@app.route('/api/data')
+def get_data():
+    with latency_histogram.time():
+        return process_request()
+</code></pre>
+<p>§§SEG104§§</p>
+<pre><code class="language-promql"># p95 latency over 5 minutes
+histogram_quantile(0.95, 
+  rate(api_latency_seconds_bucket[5m])
+)
+</code></pre>
+<h3 id="service-level-indicators-sli">§§SEG105§§</h3>
+<p>§§SEG106§§</p>
+<pre><code>§§SEG107§§</code></pre>
+<p>§§SEG108§§</p>
+<h2 id="alert-strategy---signal-vs-noise">§§SEG109§§</h2>
+<h3 id="the-alert-fatigue-problem">§§SEG110§§</h3>
+<p>§§SEG111§§</p>
+<pre><code>§§SEG112§§</code></pre>
+<p>§§SEG113§§</p>
+<h3 id="good-alert-principles">§§SEG114§§</h3>
+<p>§§SEG115§§</p>
+<p>§§SEG116§§</p>
+<pre><code>§§SEG117§§</code></pre>
+<p>§§SEG118§§</p>
+<pre><code>§§SEG119§§</code></pre>
+<p>§§SEG120§§</p>
+<p>§§SEG121§§</p>
+<p>§§SEG122§§</p>
+<pre><code>§§SEG123§§</code></pre>
+<p>§§SEG124§§</p>
+<pre><code>§§SEG125§§</code></pre>
+<p>§§SEG126§§</p>
+<p>§§SEG127§§</p>
+<pre><code>§§SEG128§§</code></pre>
+<p>§§SEG129§§</p>
+<p>§§SEG130§§</p>
+<p>§§SEG131§§</p>
+<pre><code class="language-yaml">alert: CPU &gt; 90%
+</code></pre>
+<p>§§SEG132§§</p>
+<p>§§SEG133§§</p>
+<pre><code class="language-yaml">alert: CPU &gt; (baseline + 2 * stddev)
+</code></pre>
+<p>§§SEG134§§</p>
+<p>§§SEG135§§</p>
+<p>§§SEG136§§</p>
+<p>§§SEG137§§</p>
+<p>§§SEG138§§</p>
+<p>§§SEG139§§</p>
+<h3 id="alert-runbooks">§§SEG140§§</h3>
+<p>§§SEG141§§</p>
+<pre><code class="language-markdown">§§SEG142§§</code></pre>
+<p>§§SEG143§§</p>
+<h2 id="distributed-tracing---debug-across-services">§§SEG144§§</h2>
+<h3 id="the-microservices-problem">§§SEG145§§</h3>
+<p>§§SEG146§§</p>
+<pre><code>§§SEG147§§</code></pre>
+<p>§§SEG148§§</p>
+<pre><code>§§SEG149§§</code></pre>
+<p>§§SEG150§§</p>
+<h3 id="distributed-tracing-solution">§§SEG151§§</h3>
+<p>§§SEG152§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG153§§</code></pre>
+<p>§§SEG154§§</p>
+<h3 id="implementing-tracing">§§SEG155§§</h3>
+<p>§§SEG156§§</p>
+<pre><code class="language-python">from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+
+# Initialize tracer
+tracer = trace.get_tracer(__name__)
+
+# Instrument Flask automatically
+FlaskInstrumentor().instrument_app(app)
+
+# Manual spans for custom operations
+@app.route('/api/user/&lt;user_id&gt;')
+def get_user(user_id):
+    with tracer.start_as_current_span("get_user") as span:
+        span.set_attribute("user.id", user_id)
+        
+        # Database query
+        with tracer.start_as_current_span("db.query.user"):
+            user = db.query_user(user_id)
+        
+        # Cache operation
+        with tracer.start_as_current_span("cache.set"):
+            cache.set(f"user:{user_id}", user)
+        
+        return jsonify(user)
+</code></pre>
+<p>§§SEG157§§</p>
+<pre><code class="language-python">import requests
+from opentelemetry.propagate import inject
+
+def call_downstream_service(url):
+    headers = {}
+    # Inject trace context into headers
+    inject(headers)
+    
+    response = requests.get(url, headers=headers)
+    return response.json()
+</code></pre>
+<p>§§SEG158§§</p>
+<pre><code class="language-python">from opentelemetry.propagate import extract
+
+@app.before_request
+def extract_trace_context():
+    # Extract trace context from headers
+    ctx = extract(request.headers)
+    # Automatic - OpenTelemetry uses context
+</code></pre>
+<h3 id="tracing-tools">§§SEG159§§</h3>
+<p>§§SEG160§§</p>
+<ul>
+<li>§§SEG161§§</li>
+<li>§§SEG162§§</li>
+<li>§§SEG163§§</li>
+<li>§§SEG164§§</li>
+</ul>
+<p>§§SEG165§§</p>
+<ul>
+<li>§§SEG166§§</li>
+<li>§§SEG167§§</li>
+<li>§§SEG168§§</li>
+<li>§§SEG169§§</li>
+</ul>
+<p>§§SEG170§§</p>
+<ul>
+<li>§§SEG171§§</li>
+<li>§§SEG172§§</li>
+<li>§§SEG173§§</li>
+<li>§§SEG174§§</li>
+</ul>
+<p>§§SEG175§§</p>
+<ul>
+<li>§§SEG176§§</li>
+<li>§§SEG177§§</li>
+<li>§§SEG178§§</li>
+</ul>
+<h3 id="what-tracing-reveals">§§SEG179§§</h3>
+<p>§§SEG180§§</p>
+<pre><code>§§SEG181§§</code></pre>
+<p>§§SEG182§§</p>
+<pre><code>§§SEG183§§</code></pre>
+<p>§§SEG184§§</p>
+<pre><code>§§SEG185§§</code></pre>
+<p>§§SEG186§§</p>
+<pre><code>§§SEG187§§</code></pre>
+<h2 id="logging-strategy---debug-the-details">§§SEG188§§</h2>
+<h3 id="log-levels">§§SEG189§§</h3>
+<p>§§SEG190§§</p>
+<pre><code class="language-python">import logging
+
+logging.fatal("Database connection lost!")
+logging.error("Payment processing failed", extra={
+    'user_id': user.id,
+    'amount': payment.amount
+})
+logging.warning("Cache miss rate high: 40%")
+logging.info("User logged in", extra={'user_id': user.id})
+logging.debug("Query executed", extra={'query': sql, 'duration': 0.5})
+</code></pre>
+<p>§§SEG191§§</p>
+<h3 id="structured-logging">§§SEG192§§</h3>
+<p>§§SEG193§§</p>
+<pre><code class="language-python">logging.info(f"User {user_id} purchased {item_name} for ${price}")
+</code></pre>
+<p>§§SEG194§§</p>
+<p>§§SEG195§§</p>
+<pre><code class="language-python">logging.info("purchase_completed", extra={
+    'event': 'purchase',
+    'user_id': user_id,
+    'item_name': item_name,
+    'price': price,
+    'currency': 'USD'
+})
+</code></pre>
+<p>§§SEG196§§</p>
+<pre><code class="language-json">{
+  "timestamp": "2025-02-15T10:00:00Z",
+  "level": "INFO",
+  "message": "purchase_completed",
+  "user_id": 12345,
+  "item_name": "iPhone",
+  "price": 999,
+  "currency": "USD"
+}
+</code></pre>
+<p>§§SEG197§§</p>
+<pre><code>§§SEG198§§</code></pre>
+<h3 id="what-to-log">§§SEG199§§</h3>
+<p>§§SEG200§§</p>
+<ul>
+<li>§§SEG201§§</li>
+<li>§§SEG202§§</li>
+<li>§§SEG203§§</li>
+<li>§§SEG204§§</li>
+<li>§§SEG205§§</li>
+</ul>
+<p>§§SEG206§§</p>
+<ul>
+<li>§§SEG207§§</li>
+<li>§§SEG208§§</li>
+<li>§§SEG209§§</li>
+</ul>
+<h3 id="correlation-ids">§§SEG210§§</h3>
+<p>§§SEG211§§</p>
+<pre><code class="language-python">import uuid
+
+@app.before_request
+def inject_request_id():
+    request_id = request.headers.get('X-Request-ID') or str(uuid.uuid4())
+    g.request_id = request_id
+
+@app.after_request
+def add_request_id(response):
+    response.headers['X-Request-ID'] = g.request_id
+    return response
+
+# Log with request ID
+logging.info("Processing request", extra={
+    'request_id': g.request_id,
+    'endpoint': request.endpoint
+})
+</code></pre>
+<p>§§SEG212§§</p>
+<h3 id="log-aggregation">§§SEG213§§</h3>
+<p>§§SEG214§§</p>
+<p>§§SEG215§§</p>
+<ul>
+<li>§§SEG216§§</li>
+<li>§§SEG217§§</li>
+<li>§§SEG218§§</li>
+</ul>
+<p>§§SEG219§§</p>
+<ul>
+<li>§§SEG220§§</li>
+<li>§§SEG221§§</li>
+<li>§§SEG222§§</li>
+</ul>
+<p>§§SEG223§§</p>
+<ul>
+<li>§§SEG224§§</li>
+<li>§§SEG225§§</li>
+<li>§§SEG226§§</li>
+</ul>
+<p>§§SEG227§§</p>
+<ul>
+<li>§§SEG228§§</li>
+<li>§§SEG229§§</li>
+<li>§§SEG230§§</li>
+</ul>
+<p>§§SEG231§§</p>
+<pre><code class="language-python"># Filebeat config
+filebeat.inputs:
+  - type: log
+    paths:
+      - /var/log/app/*.log
+    fields:
+      app: myapp
+      env: production
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+</code></pre>
+<h2 id="slo-sla-error-budgets---reliability-framework">§§SEG232§§</h2>
+<h3 id="definitions">§§SEG233§§</h3>
+<p>§§SEG234§§</p>
+<pre><code>§§SEG235§§</code></pre>
+<p>§§SEG236§§</p>
+<pre><code>§§SEG237§§</code></pre>
+<p>§§SEG238§§</p>
+<pre><code>§§SEG239§§</code></pre>
+<p>§§SEG240§§</p>
+<pre><code>§§SEG241§§</code></pre>
+<h3 id="setting-good-slos">§§SEG242§§</h3>
+<p>§§SEG243§§</p>
+<p>§§SEG244§§</p>
+<p>§§SEG245§§</p>
+<p>§§SEG246§§</p>
+<p>§§SEG247§§</p>
+<p>§§SEG248§§</p>
+<p>§§SEG249§§</p>
+<pre><code class="language-yaml"># Availability SLO
+availability:
+  sli: successful_requests / total_requests
+  target: 99.9%
+  window: 30 days
+
+# Latency SLO
+latency:
+  sli: p99_latency
+  target: 500ms
+  window: 5 minutes
+
+# Throughput SLO
+throughput:
+  sli: requests_per_second
+  target: "&gt; 1000 req/s"
+  window: 1 minute
+</code></pre>
+<h3 id="error-budgets-in-practice">§§SEG250§§</h3>
+<p>§§SEG251§§</p>
+<pre><code>§§SEG252§§</code></pre>
+<p>§§SEG253§§</p>
+<ul>
+<li>§§SEG254§§</li>
+<li>§§SEG255§§</li>
+<li>§§SEG256§§</li>
+</ul>
+<p>§§SEG257§§</p>
+<pre><code class="language-python">def calculate_error_budget():
+    total_requests = get_total_requests(window='30d')
+    failed_requests = get_failed_requests(window='30d')
+    
+    error_rate = failed_requests / total_requests
+    error_budget = 0.001  # 99.9% SLO
+    
+    budget_remaining = error_budget - error_rate
+    budget_consumed_percent = (error_rate / error_budget) * 100
+    
+    return {
+        'remaining': budget_remaining,
+        'consumed_percent': budget_consumed_percent
+    }
+</code></pre>
+<p>§§SEG258§§</p>
+<pre><code class="language-yaml">alert: ErrorBudgetBurnRateHigh
+expr: |
+  error_rate &gt; (error_budget * 0.1)  # Burning 10% of budget/hour
+for: 1h
+annotations:
+  summary: Burning error budget too fast
+  action: Stop deployments, investigate issues
+</code></pre>
+<p>§§SEG259§§</p>
+<pre><code>§§SEG260§§</code></pre>
+<h3 id="benefits">§§SEG261§§</h3>
+<p>§§SEG262§§</p>
+<p>§§SEG263§§</p>
+<p>§§SEG264§§</p>
+<p>§§SEG265§§</p>
+<p>§§SEG266§§</p>
+<p>§§SEG267§§</p>
+<p>§§SEG268§§</p>
+<p>§§SEG269§§</p>
+<h2 id="monitoring-stack-example">§§SEG270§§</h2>
+<p>§§SEG271§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG272§§</code></pre>
+<p>§§SEG273§§</p>
+<ul>
+<li>§§SEG274§§</li>
+<li>§§SEG275§§</li>
+<li>§§SEG276§§</li>
+<li>§§SEG277§§</li>
+</ul>
+<h2 id="practical-recommendations">§§SEG278§§</h2>
+<h3 id="1-start-with-golden-signals">§§SEG279§§</h3>
+<p>§§SEG280§§</p>
+<pre><code class="language-python"># Minimum viable monitoring
+from prometheus_client import Counter, Histogram
+
+requests_total = Counter('api_requests_total', 'Total requests')
+request_duration = Histogram('api_request_duration_seconds', 'Request duration')
+errors_total = Counter('api_errors_total', 'Total errors')
+
+@app.route('/api/endpoint')
+def endpoint():
+    requests_total.inc()
+    
+    with request_duration.time():
+        try:
+            result = process()
+            return result
+        except Exception as e:
+            errors_total.inc()
+            raise
+</code></pre>
+<p>§§SEG281§§</p>
+<h3 id="2-build-dashboards">§§SEG282§§</h3>
+<p>§§SEG283§§</p>
+<pre><code>§§SEG284§§</code></pre>
+<p>§§SEG285§§</p>
+<h3 id="3-instrument-libraries">§§SEG286§§</h3>
+<p>§§SEG287§§</p>
+<pre><code class="language-python"># Auto-instrument Flask
+from prometheus_flask_exporter import PrometheusMetrics
+metrics = PrometheusMetrics(app)
+
+# Auto-instrument SQLAlchemy
+from prometheus_sqlalchemy import PrometheusMetrics
+PrometheusMetrics(engine)
+
+# Auto-instrument Redis
+from prometheus_redis import RedisMetrics
+RedisMetrics(redis_client)
+</code></pre>
+<p>§§SEG288§§</p>
+<h3 id="4-set-up-synthetic-monitoring">§§SEG289§§</h3>
+<p>§§SEG290§§</p>
+<pre><code class="language-python"># Cron job - check critical paths
+def health_check():
+    checks = [
+        ('api', check_api_health),
+        ('database', check_db_connection),
+        ('cache', check_redis_connection),
+        ('payments', check_payment_gateway),
+    ]
+    
+    for name, check_func in checks:
+        try:
+            check_func()
+            metrics.gauge(f'health.{name}', 1)
+        except Exception:
+            metrics.gauge(f'health.{name}', 0)
+            alert(f'{name} health check failed')
+</code></pre>
+<p>§§SEG291§§</p>
+<h3 id="5-practice-debugging">§§SEG292§§</h3>
+<p>§§SEG293§§</p>
+<pre><code class="language-python"># Deliberately inject latency
+@app.route('/api/slow')
+def slow_endpoint():
+    if random.random() &lt; 0.05:  # 5% requests
+        time.sleep(5)  # 5 second delay
+    return process_request()
+</code></pre>
+<p>§§SEG294§§</p>
+<ol>
+<li>§§SEG295§§</li>
+<li>§§SEG296§§</li>
+<li>§§SEG297§§</li>
+<li>§§SEG298§§</li>
+<li>§§SEG299§§</li>
+</ol>
+<p>§§SEG300§§</p>
+<h2 id="mental-model-if-you-cannot-measure-you-cannot-scale">§§SEG301§§</h2>
+<p>§§SEG302§§</p>
+<p>§§SEG303§§</p>
+<pre><code>§§SEG304§§</code></pre>
+<p>§§SEG305§§</p>
+<p>§§SEG306§§</p>
+<pre><code>§§SEG307§§</code></pre>
+<p>§§SEG308§§</p>
+<h2 id="key-takeaways">§§SEG309§§</h2>
+<p>§§SEG310§§</p>
+<p>§§SEG311§§</p>
+<p>§§SEG312§§</p>
+<p>§§SEG313§§</p>
+<p>§§SEG314§§</p>
+<p>§§SEG315§§</p>
+<p>§§SEG316§§</p>
+<p>§§SEG317§§</p>
+<p>§§SEG318§§</p>
+<p>§§SEG319§§</p>
+<p>§§SEG320§§</p>
+<p>§§SEG321§§</p>
+<p>§§SEG322§§</p>
+<p>§§SEG323§§</p>
+<p>§§SEG324§§</p>
+<p>§§SEG325§§</p>
+<p>§§SEG326§§</p>
+<p>§§SEG327§§</p>
+<p>§§SEG328§§</p>
+<p>§§SEG329§§</p>
+<p>§§SEG330§§</p></article>

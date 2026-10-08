@@ -1,0 +1,364 @@
+@280
+Bước 3: ⟦Điểm Nghẽn|Bottlenecks⟧
+@281
+**Dựa trên các ⟦ước lượng|estimations⟧:**
+@282
+7000 req/s → Cần cân bằng tải
+2TB/ngày tải lên → Cần lưu trữ đối tượng (S3)
+Lưu lượng đọc cao → Cần CDN + lưu đệm
+
+@283
+**Lường trước vấn đề từ sớm.**
+@284
+Bước 4: ⟦Đánh Đổi|Trade-offs⟧
+@285
+**Mọi quyết định = một ⟦sự đánh đổi|trade-off⟧.**
+@286
+Lưu đệm ảnh?
+  Ưu điểm: Truy cập nhanh, giảm tải
+  Nhược điểm: Chi phí lưu trữ, vô hiệu hoá bộ nhớ đệm
+  Quyết định: Có, lưu đệm ảnh "nóng" (20% ảnh = 80% lưu lượng)
+
+Nhất quán mạnh?
+  Ưu điểm: Dữ liệu luôn chính xác
+  Nhược điểm: Độ trễ cao hơn, phức tạp
+  Quyết định: Nhất quán cuối cùng là đủ (bảng tin mạng xã hội)
+
+Vi dịch vụ?
+  Ưu điểm: Mở rộng độc lập
+  Nhược điểm: Phức tạp, tốn kém
+  Quyết định: Bắt đầu với nguyên khối, tách ra sau nếu cần
+
+@287
+**Tư duy đánh đổi một cách tường minh.**
+@288
+Bước 5: Thiết Kế
+@289
+**Bắt đầu đơn giản:**
+@290
+MVP (0-100 nghìn người dùng):
+  - Nguyên khối (Rails/Django)
+  - PostgreSQL
+  - Bộ nhớ đệm Redis
+  - S3 để lưu ảnh
+  - CDN
+
+Tín hiệu cần tiến hoá:
+  - >1 triệu người dùng → Thêm bản sao chỉ đọc
+  - >5 triệu người dùng → Cân nhắc nguyên khối mô-đun hoá
+  - >10 triệu người dùng → Đánh giá vi dịch vụ
+
+@291
+**Lên kế hoạch tiến hoá, đừng xây cho 10 triệu người dùng ngay từ ngày đầu.**
+@292
+Bước 6: Kiểm Chứng
+@293
+**Những câu hỏi cần đặt ra:**
+@294
+Có đáp ứng yêu cầu không?
+  - Chức năng: ✅
+  - Phi chức năng: (ở quy mô hiện tại)
+
+Có mở rộng được không?
+  - Lên gấp 10 lần lưu lượng: Có (thêm máy chủ)
+  - Lên gấp 100 lần lưu lượng: Cần thiết kế lại kiến trúc
+
+Có quá phức tạp không?
+  - Nhóm có thể xây dựng: ✅
+  - Nhóm có thể vận hành: ✅
+
+Chi phí có hợp lý không?
+  - MVP: $200/tháng ✅
+  - Khi đã mở rộng: $5k/tháng ✅
+
+@295
+Tư Duy ⟦Đánh Đổi|Trade-off⟧
+@296
+**Mọi quyết định ⟦kiến trúc|architecture⟧ = một sự đánh đổi. Không có giải pháp hoàn hảo.**
+@297
+Đánh Đổi 1: ⟦Hiệu Năng|Performance⟧ và ⟦Độ Phức Tạp|Complexity⟧
+@298
+**Ví dụ: ⟦Lưu đệm|Caching⟧**
+@299
+Không có bộ nhớ đệm:
+  - Mã đơn giản
+  - Đọc chậm (mọi yêu cầu → cơ sở dữ liệu)
+  - Tải cơ sở dữ liệu cao
+
+Có bộ nhớ đệm:
+  - Phức tạp (vô hiệu hoá bộ nhớ đệm)
+  - Đọc nhanh (truy cập bộ nhớ)
+  - Tải cơ sở dữ liệu thấp hơn
+
+@300
+**⟦Khung ra quyết định|Decision framework⟧:**
+@301
+⟦Thiên về đọc|Read-heavy⟧? → ⟦Bộ nhớ đệm|Cache⟧ rất đáng giá
+@302
+⟦Thiên về ghi|Write-heavy⟧? → Bộ nhớ đệm ít giá trị hơn
+@303
+Có ngân sách cho độ phức tạp? → Dùng bộ nhớ đệm được
+@304
+Chuyên môn của nhóm? → Ưu tiên đơn giản trước
+@305
+Đánh Đổi 2: ⟦Tính Nhất Quán|Consistency⟧ và ⟦Tính Sẵn Sàng|Availability⟧
+@306
+**Nhắc lại định lý CAP:**
+@307
+Nhất quán mạnh:
+  - Dữ liệu luôn chính xác
+  - Có thể không sẵn sàng (phải chờ đồng bộ)
+  - Thông lượng thấp hơn
+
+Nhất quán cuối cùng:
+  - Tính sẵn sàng cao
+  - Dữ liệu tạm thời bị cũ
+  - Thông lượng cao hơn
+
+@308
+**Quyết định:**
+@309
+Tài khoản ngân hàng: ⟦Nhất quán mạnh|Strong consistency⟧
+@310
+Bảng tin mạng xã hội: ⟦Nhất quán cuối cùng|Eventual consistency⟧
+@311
+Giỏ hàng: Dựa trên ⟦phiên|session⟧ (giải pháp dung hoà)
+@312
+Đánh Đổi 3: ⟦Chi Phí|Cost⟧ và ⟦Quy Mô|Scale⟧
+@313
+**Ví dụ: ⟦Cơ sở dữ liệu|Database⟧**
+@314
+Một PostgreSQL duy nhất:
+  - Chi phí: $50/tháng
+  - Quy mô: ~1000 req/s
+  - Đơn giản
+
+PostgreSQL phân mảnh:
+  - Chi phí: $500/tháng
+  - Quy mô: ~10,000 req/s
+  - Phức tạp
+
+Dịch vụ được quản lý (Aurora):
+  - Chi phí: $2000/tháng
+  - Quy mô: ~50,000 req/s
+  - Dễ hơn tự phân mảnh
+
+@315
+**Lựa chọn dựa trên nhu cầu hiện tại + ngân sách.**
+@316
+Đánh Đổi 4: Tốc Độ Phát Triển và Tính Linh Hoạt
+@317
+**Lựa chọn framework:**
+@318
+Rails/Django:
+  - Phát triển nhanh
+  - Có quy ước sẵn (ít phải quyết định)
+  - Thân thiện với nguyên khối
+
+Vi dịch vụ Go/Node:
+  - Phát triển ban đầu chậm hơn
+  - Linh hoạt hơn
+  - Thân thiện với vi dịch vụ
+
+@319
+**Giai đoạn đầu: Tốc độ chiến thắng.**\n
+**Sản phẩm đã trưởng thành: Tính linh hoạt mới quan trọng.**
+@320
+Ma Trận Đánh Đổi
+@321
+**Những quyết định thường gặp:**
+@322
+Quyết định
+@323
+Đơn giản
+@324
+Phức tạp
+@325
+Khi Nào Phức Tạp Mới Đáng
+@326
+⟦Nguyên khối|Monolith⟧ hay ⟦Vi dịch vụ|Microservices⟧
+@327
+Nguyên khối
+@328
+Vi dịch vụ
+@329
+Nhóm trên 50 người, ⟦miền nghiệp vụ|domains⟧ rõ ràng
+@330
+SQL hay NoSQL
+@333
+Quy mô khổng lồ, ⟦lược đồ|schema⟧ linh hoạt
+@334
+⟦Đồng bộ|Sync⟧ hay ⟦Bất đồng bộ|Async⟧
+@335
+Đồng bộ
+@336
+Bất đồng bộ
+@337
+Các thao tác có ⟦độ trễ|latency⟧ cao
+@338
+Một CSDL hay ⟦Phân mảnh|Sharding⟧
+@339
+Một CSDL
+@340
+Phân mảnh
+@341
+>10 nghìn lượt ghi/giây
+@342
+Tự vận hành hay Dịch vụ được quản lý
+@343
+Tự vận hành
+@344
+Được quản lý
+@345
+Nhóm dưới 10 người, tập trung vào sản phẩm
+@346
+⟦Mô Hình Tư Duy|Mental Model⟧: Bắt Đầu Đơn Giản, Tiến Hoá Dần Dần
+@347
+**Nguyên tắc cốt lõi của một kiến trúc tốt.**
+@348
+Nguyên Tắc
+@349
+**"Tối ưu quá sớm là cội nguồn của mọi tội lỗi." - Donald Knuth**
+@350
+**Áp dụng vào kiến trúc:**
+@351
+Đừng xây cho quy mô mà bạn chưa có
+Đừng giải quyết những vấn đề bạn chưa gặp
+Đừng thêm độ phức tạp cho đến khi nỗi đau là thật
+
+@352
+**Tại sao?**
+@353
+**1. ⟦Yêu cầu|Requirements⟧ thay đổi**
+@354
+Tuần 1: Xây bản sao Instagram
+Tuần 10: Chuyển hướng sang phân tích dữ liệu B2B
+Tuần 20: Chuyển hướng sang chatbot AI
+
+Kiến trúc phức tạp → công sức đổ sông đổ biển
+
+@355
+**2. Giả định về quy mô bị sai**
+@356
+Kế hoạch: 1 triệu người dùng trong năm đầu
+Thực tế: 10 nghìn người dùng
+
+Thiết kế thừa cho một thị trấn ma
+
+@357
+**3. Nhóm cần học hỏi**
+@358
+Nguyên khối:
+  - Ra mắt tính năng nhanh
+  - Hiểu nhu cầu người dùng
+  - Cải tiến nhanh
+
+Vi dịch vụ:
+  - Vật lộn với hạ tầng
+  - Phát triển tính năng chậm
+  - Lỡ mất thời cơ thị trường
+
+@359
+Lộ Trình Tiến Hoá
+@360
+**Tiến trình lành mạnh:**
+@361
+Tháng 1-3: MVP nguyên khối
+  → Kiểm chứng ý tưởng
+  → Có người dùng
+
+Tháng 3-12: Nguyên khối đã mở rộng
+  → Tối ưu hiệu năng
+  → Bổ sung hạ tầng (CDN, bộ nhớ đệm, bản sao)
+
+Năm 1-2: Nguyên khối mô-đun hoá
+  → Dọn dẹp kiến trúc
+  → Chuẩn bị cho việc mở rộng nhóm
+
+Năm 2 trở đi: Vi dịch vụ có chọn lọc
+  → Tách các điểm nghẽn ra
+  → Mở rộng độc lập ở những chỗ cần
+
+@362
+**Tiến trình không lành mạnh:**
+@363
+Tháng 1: 15 vi dịch vụ, Kubernetes
+Tháng 2: Vật lộn với hạ tầng
+Tháng 3: Hết tiền
+
+@364
+⟦Khung Ra Quyết Định|Decision Framework⟧
+@365
+**Khi đứng trước một lựa chọn kiến trúc:**
+@366
+Câu hỏi: Có nên dùng [giải pháp phức tạp] không?
+
+Hãy hỏi:
+1. Chúng ta có gặp vấn đề mà nó giải quyết không? (CÓ/KHÔNG)
+2. Đã thử các giải pháp đơn giản hơn chưa? (CÓ/KHÔNG)
+3. Chúng ta có chuyên môn không? (CÓ/KHÔNG)
+4. Chúng ta có ngân sách không? (CÓ/KHÔNG)
+
+Nếu BẤT KỲ câu trả lời nào là KHÔNG → Đừng làm vội
+
+@367
+**Ví dụ:**
+@368
+"Có nên dùng Kubernetes không?"
+- Có vấn đề về mở rộng? KHÔNG → Chờ đã
+- Đã thử các nền tảng được quản lý? KHÔNG → Thử Heroku trước
+- Có chuyên môn DevOps? KHÔNG → Học trên nền tảng đơn giản hơn
+- Có ngân sách ($500+/tháng)? KHÔNG → Dùng phương án rẻ hơn
+
+"Có nên tách thành vi dịch vụ không?"
+- Có vấn đề khi mở rộng nhóm? KHÔNG → Chờ đã
+- Đã thử nguyên khối mô-đun hoá? KHÔNG → Tái cấu trúc nguyên khối trước
+- Ranh giới dịch vụ đã rõ ràng? KHÔNG → Chưa sẵn sàng
+- Có ngân sách cho độ phức tạp? KHÔNG → Giữ nguyên khối
+
+@369
+Những Điểm Cốt Lõi
+@370
+**1. Kiến trúc tiến hoá: ⟦Nguyên khối|Monolith⟧ → Đã mở rộng → Mô-đun hoá → ⟦Vi dịch vụ|Microservices⟧**
+@371
+Mỗi giai đoạn phù hợp với một ⟦quy mô|scale⟧ và quy mô nhóm khác nhau.
+@372
+**2. ⟦Nguyên khối|Monolith⟧ không phải là từ xấu**
+@373
+Shopify, GitHub, Basecamp đã mở rộng ở quy mô khổng lồ với hệ thống nguyên khối. Hãy bắt đầu đơn giản.
+@374
+**3. Tín hiệu ⟦chuyển đổi|migration⟧ phải là nỗi đau thật, không phải phỏng đoán**
+@375
+⟦Điểm nghẽn hiệu năng|Performance bottleneck⟧, mở rộng nhóm, nhu cầu tài nguyên khác nhau.
+@376
+**4. Strangler fig pattern > viết lại toàn bộ một lần (big bang rewrite)**
+@377
+Chuyển đổi dần dần, từng phần một. Rủi ro thấp, dễ ⟦hoàn tác|rollback⟧.
+@378
+**5. Các ⟦phản mẫu|anti-patterns⟧: Vi dịch vụ quá sớm, Kubernetes quá mức cần thiết, dùng chung cơ sở dữ liệu**
+@379
+Tránh độ phức tạp không cần thiết. Đo lường vấn đề trước khi giải quyết.
+@380
+**6. Luồng ⟦thiết kế hệ thống|system design⟧: Yêu cầu → Ước lượng → Điểm nghẽn → Đánh đổi → Thiết kế**
+@381
+Quy trình tư duy có cấu trúc cho các quyết định kiến trúc.
+@382
+**7. Mọi quyết định = một ⟦sự đánh đổi|trade-off⟧**
+@383
+⟦Hiệu năng|Performance⟧ và độ phức tạp, ⟦tính nhất quán|consistency⟧ và ⟦tính sẵn sàng|availability⟧, chi phí và quy mô.
+@384
+**8. Bắt đầu đơn giản, tiến hoá dần dần**
+@385
+Đừng xây cho quy mô mà bạn chưa có. Nguyên tắc YAGNI.
+@386
+**9. Kiểm chứng giả định bằng dữ liệu**
+@387
+Đo lưu lượng, ⟦phân tích hiệu năng|profile performance⟧, hiểu rõ những điểm nghẽn thực sự.
+@388
+**10. Chuyên môn của nhóm quan trọng hơn công nghệ**
+@389
+Một bộ công nghệ đơn giản mà nhóm thành thạo > một bộ công nghệ phức tạp mà nhóm phải vật lộn.
+@390
+Nhưng luôn nhớ: **các ⟦mẫu thiết kế|patterns⟧ là công cụ, không phải yêu cầu bắt buộc. Dùng khi cần, không chạy theo xu hướng.**
+@391
+**Hãy nhớ: Instagram được mua lại với giá 1 tỷ đô la khi vẫn là một hệ thống nguyên khối. Độ phức tạp không tạo ra giá trị - giải quyết vấn đề của người dùng mới tạo ra giá trị. Hãy bắt đầu đơn giản, tiến hoá khi nỗi đau là thật, và luôn tự hỏi liệu độ phức tạp thêm vào có đáng hay không.**

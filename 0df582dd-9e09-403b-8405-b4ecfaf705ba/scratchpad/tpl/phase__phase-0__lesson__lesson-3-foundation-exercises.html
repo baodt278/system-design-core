@@ -1,0 +1,380 @@
+<article class="prose-ui"><h1 id="components-và-communication-hiểu-bản-chất-của-một-hệ-thống">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<pre><code>§§SEG4§§</code></pre>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<h2 id="tại-sao-phải-hiểu-components">§§SEG7§§</h2>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<p>§§SEG10§§</p>
+<p>§§SEG11§§</p>
+<pre><code class="language-python">def get_user(user_id):
+    return db.query("SELECT * FROM users WHERE id = ?", user_id)
+</code></pre>
+<p>§§SEG12§§</p>
+<pre><code>§§SEG13§§</code></pre>
+<p>§§SEG14§§</p>
+<ul>
+<li>§§SEG15§§</li>
+<li>§§SEG16§§</li>
+<li>§§SEG17§§</li>
+<li>§§SEG18§§</li>
+</ul>
+<p>§§SEG19§§</p>
+<h2 id="anatomy-của-một-hệ-thống-web">§§SEG20§§</h2>
+<p>§§SEG21§§</p>
+<h3 id="component-1-client-browsermobile-app">§§SEG22§§</h3>
+<p>§§SEG23§§</p>
+<p>§§SEG24§§</p>
+<ul>
+<li>§§SEG25§§</li>
+<li>§§SEG26§§</li>
+<li>§§SEG27§§</li>
+</ul>
+<p>§§SEG28§§</p>
+<pre><code>§§SEG29§§</code></pre>
+<p>§§SEG30§§</p>
+<p>§§SEG31§§</p>
+<p>§§SEG32§§</p>
+<p>§§SEG33§§</p>
+<h3 id="component-2-load-balancer">§§SEG34§§</h3>
+<p>§§SEG35§§</p>
+<p>§§SEG36§§</p>
+<ul>
+<li>§§SEG37§§</li>
+<li>§§SEG38§§</li>
+</ul>
+<p>§§SEG39§§</p>
+<ul>
+<li>§§SEG40§§</li>
+<li>§§SEG41§§</li>
+<li>§§SEG42§§</li>
+</ul>
+<p>§§SEG43§§</p>
+<pre><code>§§SEG44§§</code></pre>
+<p>§§SEG45§§</p>
+<p>§§SEG46§§</p>
+<pre><code>§§SEG47§§</code></pre>
+<p>§§SEG48§§</p>
+<p>§§SEG49§§</p>
+<pre><code>§§SEG50§§</code></pre>
+<p>§§SEG51§§</p>
+<p>§§SEG52§§</p>
+<pre><code>§§SEG53§§</code></pre>
+<p>§§SEG54§§</p>
+<p>§§SEG55§§</p>
+<h3 id="component-3-application-server">§§SEG56§§</h3>
+<p>§§SEG57§§</p>
+<p>§§SEG58§§</p>
+<p>§§SEG59§§</p>
+<pre><code class="language-python"># Không lưu user session trong memory
+def handle_request(request):
+    user_id = jwt.decode(request.token)  # Get from token
+    user = db.get_user(user_id)          # Get from DB
+    return process(user)
+    
+# Benefit: Any server can handle any request
+# Can scale horizontally easily
+</code></pre>
+<p>§§SEG60§§</p>
+<pre><code class="language-python"># Lưu user session trong memory
+sessions = {}  # In-memory storage
+
+def handle_login(user_id):
+    sessions[user_id] = UserSession(user_id)
+    
+def handle_request(user_id):
+    session = sessions[user_id]  # Retrieve from memory
+    return process(session)
+    
+# Problem: User phải hit same server
+# Scaling is hard (need sticky sessions)
+</code></pre>
+<p>§§SEG61§§</p>
+<pre><code>§§SEG62§§</code></pre>
+<p>§§SEG63§§</p>
+<h3 id="component-4-cache-layer">§§SEG64§§</h3>
+<p>§§SEG65§§</p>
+<p>§§SEG66§§</p>
+<pre><code>§§SEG67§§</code></pre>
+<p>§§SEG68§§</p>
+<pre><code class="language-python"># Product info: Perfect for cache
+product = cache.get(f"product:{id}")
+if not product:
+    product = db.query("SELECT * FROM products WHERE id = ?", id)
+    cache.set(f"product:{id}", product, ttl=3600)  # 1 hour
+
+# Inventory count: DON'T cache (changes frequently)
+stock = db.query("SELECT stock FROM inventory WHERE product_id = ?", id)
+
+# User's cart: DON'T cache (personalized)
+cart = db.query("SELECT * FROM carts WHERE user_id = ?", user_id)
+</code></pre>
+<p>§§SEG69§§</p>
+<p>§§SEG70§§</p>
+<p>§§SEG71§§</p>
+<p>§§SEG72§§</p>
+<pre><code>§§SEG73§§</code></pre>
+<p>§§SEG74§§</p>
+<p>§§SEG75§§</p>
+<pre><code class="language-python">cache.set("user:123", user, ttl=300)  # Expire after 5 minutes
+
+Simple
+Data stale for up to 5 minutes
+</code></pre>
+<p>§§SEG76§§</p>
+<pre><code class="language-python">def update_user(user_id, data):
+    db.update("users", user_id, data)
+    cache.delete(f"user:{user_id}")  # Delete immediately
+    
+Always fresh
+Must remember to invalidate everywhere
+</code></pre>
+<p>§§SEG77§§</p>
+<pre><code class="language-python">def get_user(user_id):
+    user = cache.get(f"user:{user_id}")
+    if user:
+        return user
+    
+    user = db.query("SELECT * FROM users WHERE id = ?", user_id)
+    cache.set(f"user:{user_id}", user, ttl=3600)
+    return user
+
+def update_user(user_id, data):
+    db.update("users", user_id, data)
+    cache.delete(f"user:{user_id}")  # Invalidate
+    # Next read will miss cache → Fetch fresh from DB → Cache again
+</code></pre>
+<p>§§SEG78§§</p>
+<h3 id="component-5-database">§§SEG79§§</h3>
+<p>§§SEG80§§</p>
+<p>§§SEG81§§</p>
+<p>§§SEG82§§</p>
+<pre><code>§§SEG83§§</code></pre>
+<p>§§SEG84§§</p>
+<ol>
+<li>
+<p>§§SEG85§§</p>
+<ul>
+<li>§§SEG86§§</li>
+<li>§§SEG87§§</li>
+<li>§§SEG88§§</li>
+</ul>
+</li>
+<li>
+<p>§§SEG89§§</p>
+<ul>
+<li>§§SEG90§§</li>
+<li>§§SEG91§§</li>
+<li>§§SEG92§§</li>
+</ul>
+</li>
+<li>
+<p>§§SEG93§§</p>
+<ul>
+<li>§§SEG94§§</li>
+<li>§§SEG95§§</li>
+<li>§§SEG96§§</li>
+</ul>
+</li>
+</ol>
+<p>§§SEG97§§</p>
+<p>§§SEG98§§</p>
+<p>§§SEG99§§</p>
+<pre><code class="language-sql">-- Running 1000 times per second
+SELECT * FROM users WHERE email = 'john@example.com';
+-- Execution time: 500ms
+</code></pre>
+<p>§§SEG100§§</p>
+<p>§§SEG101§§</p>
+<pre><code class="language-sql">CREATE INDEX idx_users_email ON users(email);
+-- Execution time: 5ms (100x faster!)
+</code></pre>
+<p>§§SEG102§§</p>
+<p>§§SEG103§§</p>
+<h2 id="communication-patterns-sync-vs-async">§§SEG104§§</h2>
+<p>§§SEG105§§</p>
+<h3 id="synchronous-request-response">§§SEG106§§</h3>
+<p>§§SEG107§§</p>
+<pre><code>§§SEG108§§</code></pre>
+<p>§§SEG109§§</p>
+<ul>
+<li>§§SEG110§§</li>
+<li>§§SEG111§§</li>
+<li>§§SEG112§§</li>
+</ul>
+<p>§§SEG113§§</p>
+<ul>
+<li>§§SEG114§§</li>
+<li>§§SEG115§§</li>
+<li>§§SEG116§§</li>
+</ul>
+<p>§§SEG117§§</p>
+<pre><code class="language-python"># User login
+def login(email, password):
+    user = authenticate(email, password)  # Must know now
+    if user:
+        token = generate_token(user)
+        return {"token": token}           # Return immediately
+    return {"error": "Invalid credentials"}
+</code></pre>
+<h3 id="asynchronous-message-queue">§§SEG118§§</h3>
+<p>§§SEG119§§</p>
+<pre><code>§§SEG120§§</code></pre>
+<p>§§SEG121§§</p>
+<ul>
+<li>§§SEG122§§</li>
+<li>§§SEG123§§</li>
+<li>§§SEG124§§</li>
+</ul>
+<p>§§SEG125§§</p>
+<ul>
+<li>§§SEG126§§</li>
+<li>§§SEG127§§</li>
+<li>§§SEG128§§</li>
+</ul>
+<p>§§SEG129§§</p>
+<pre><code class="language-python"># User uploads video
+def upload_video(video_file):
+    video_id = save_to_s3(video_file)              # Quick (2s)
+    queue.add({
+        "job": "process_video",
+        "video_id": video_id,
+        "tasks": ["thumbnail", "transcode", "notify"]
+    })
+    return {"status": "processing", "id": video_id}  # Return immediately
+    
+# Background worker (runs separately)
+def process_video(video_id):
+    generate_thumbnail(video_id)    # 5s
+    transcode_720p(video_id)        # 30s
+    transcode_1080p(video_id)       # 60s
+    send_notification(video_id)     # 1s
+</code></pre>
+<p>§§SEG130§§</p>
+<ul>
+<li>§§SEG131§§</li>
+<li>§§SEG132§§</li>
+</ul>
+<p>§§SEG133§§</p>
+<h3 id="trade-off-matrix">§§SEG134§§</h3>
+<pre><code>§§SEG135§§</code></pre>
+<p>§§SEG136§§</p>
+<pre><code class="language-python">if user_needs_result_immediately:
+    use_synchronous()
+elif process_time &gt; 5_seconds:
+    use_asynchronous()
+elif traffic_spiky:  # Black Friday, viral post
+    use_asynchronous()
+else:
+    use_synchronous()  # Simpler
+</code></pre>
+<h2 id="data-flow--bottleneck-detection">§§SEG137§§</h2>
+<p>§§SEG138§§</p>
+<h3 id="measuring-data-flow">§§SEG139§§</h3>
+<p>§§SEG140§§</p>
+<pre><code>§§SEG141§§</code></pre>
+<p>§§SEG142§§</p>
+<ol>
+<li>§§SEG143§§</li>
+<li>§§SEG144§§</li>
+<li>§§SEG145§§</li>
+</ol>
+<p>§§SEG146§§</p>
+<pre><code>§§SEG147§§</code></pre>
+<p>§§SEG148§§</p>
+<h3 id="common-bottlenecks--solutions">§§SEG149§§</h3>
+<p>§§SEG150§§</p>
+<pre><code>§§SEG151§§</code></pre>
+<p>§§SEG152§§</p>
+<pre><code>§§SEG153§§</code></pre>
+<p>§§SEG154§§</p>
+<pre><code>§§SEG155§§</code></pre>
+<h2 id="practical-exercise-analyze-real-system">§§SEG156§§</h2>
+<p>§§SEG157§§</p>
+<p>§§SEG158§§</p>
+<p>§§SEG159§§</p>
+<pre><code>§§SEG160§§</code></pre>
+<p>§§SEG161§§</p>
+<p>§§SEG162§§</p>
+<ul>
+<li>§§SEG163§§</li>
+<li>§§SEG164§§</li>
+<li>§§SEG165§§</li>
+<li>§§SEG166§§</li>
+<li>§§SEG167§§</li>
+<li>§§SEG168§§</li>
+<li>§§SEG169§§</li>
+</ul>
+<p>§§SEG170§§</p>
+<ul>
+<li>§§SEG171§§</li>
+<li>§§SEG172§§</li>
+</ul>
+<p>§§SEG173§§</p>
+<ul>
+<li>§§SEG174§§</li>
+<li>§§SEG175§§</li>
+</ul>
+<p>§§SEG176§§</p>
+<ul>
+<li>§§SEG177§§</li>
+<li>§§SEG178§§</li>
+</ul>
+<h2 id="mental-model-everything-is-a-system">§§SEG179§§</h2>
+<p>§§SEG180§§</p>
+<p>§§SEG181§§</p>
+<ul>
+<li>§§SEG182§§</li>
+<li>§§SEG183§§</li>
+<li>§§SEG184§§</li>
+</ul>
+<p>§§SEG185§§</p>
+<ul>
+<li>§§SEG186§§</li>
+<li>§§SEG187§§</li>
+<li>§§SEG188§§</li>
+</ul>
+<p>§§SEG189§§</p>
+<ul>
+<li>§§SEG190§§</li>
+<li>§§SEG191§§</li>
+<li>§§SEG192§§</li>
+</ul>
+<p>§§SEG193§§</p>
+<ul>
+<li>§§SEG194§§</li>
+<li>§§SEG195§§</li>
+</ul>
+<p>§§SEG196§§</p>
+<h2 id="key-takeaways">§§SEG197§§</h2>
+<p>§§SEG198§§</p>
+<ol>
+<li>§§SEG199§§</li>
+<li>§§SEG200§§</li>
+<li>§§SEG201§§</li>
+</ol>
+<p>§§SEG202§§</p>
+<ol>
+<li>§§SEG203§§</li>
+<li>§§SEG204§§</li>
+<li>§§SEG205§§</li>
+<li>§§SEG206§§</li>
+<li>§§SEG207§§</li>
+</ol>
+<p>§§SEG208§§</p>
+<ul>
+<li>§§SEG209§§</li>
+<li>§§SEG210§§</li>
+</ul>
+<p>§§SEG211§§</p>
+<ul>
+<li>§§SEG212§§</li>
+<li>§§SEG213§§</li>
+</ul>
+<p>§§SEG214§§</p>
+<p>§§SEG215§§</p>
+<p>§§SEG216§§</p>
+<p>§§SEG217§§</p></article>

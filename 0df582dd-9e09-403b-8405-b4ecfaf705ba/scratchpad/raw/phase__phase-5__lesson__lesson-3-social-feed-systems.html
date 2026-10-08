@@ -1,0 +1,996 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps | Phase 5 — Real-World Architecture Patterns | System Design Core</title><meta name="description" content="Master feed generation architecture: fanout strategies, timeline cache, event driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-5/lesson/lesson-3-social-feed-systems"/><meta property="og:title" content="Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps | Phase 5 — Real-World Architecture Patterns"/><meta property="og:description" content="Master feed generation architecture: fanout strategies, timeline cache, event driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-5/lesson/lesson-3-social-feed-systems"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps | Phase 5 — Real-World Architecture Patterns"/><meta name="twitter:description" content="Master feed generation architecture: fanout strategies, timeline cache, event driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 5 — Real-World Architecture Patterns</p><p class="mt-3 text-xl font-semibold text-ink">Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps</p><p class="mt-3 text-sm leading-7 text-ink-dim">Master feed generation architecture: fanout strategies, timeline cache, event-driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết kế news feed cho millions users với hybrid fanout pattern.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Architecture Evolution Mindset - Start Simple, Scale Gradually</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-5/lesson/lesson-2-head-heavy-systems"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Read-Heavy Systems - Design Cho 99% Reads</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-5/lesson/lesson-3-social-feed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-5">Phase 5 — Real-World Architecture Patterns</a></li><li>/</li><li aria-current="page" class="text-ink">Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Master feed generation architecture: fanout strategies, timeline cache, event-driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết kế news feed cho millions users với hybrid fanout pattern.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps"><article class="prose-ui"><h1 id="social-feed-systems-kiến-trúc-phức-tạp-nhất">Social Feed Systems: Kiến Trúc Phức Tạp Nhất</h1>
+<p>Tôi còn nhớ lần đầu được assign task: &quot;Thiết kế news feed cho social network&quot;.</p>
+<p>Tôi nghĩ đơn giản: <em>&quot;Query posts của người user follow, sort by time, done.&quot;</em></p>
+<p>Senior architect nhìn tôi: <em>&quot;Với 1 triệu users, mỗi người follow 500 người, mỗi người post 10 lần/ngày. Em tính sao?&quot;</em></p>
+<p>Tôi tính nhanh:</p>
+<ul>
+<li>Load feed = Query 500 users × 10 posts = 5,000 posts</li>
+<li>Sort 5,000 posts</li>
+<li>1 triệu users làm việc này → 1 triệu × 5,000 queries = 5 tỷ queries</li>
+<li>Database chết ngay</li>
+</ul>
+<p>Senior cười: <em>&quot;Welcome to fanout problem. Đây là lý do Facebook phải build infrastructure riêng.&quot;</em></p>
+<p>Đó là lúc tôi học: <strong>Feed systems là kiến trúc phức tạp nhất trong consumer apps.</strong></p>
+<h2 id="tại-sao-feed-systems-khó">Tại Sao Feed Systems Khó?</h2>
+<h3 id="the-core-challenge">The Core Challenge</h3>
+<p><strong>Problem statement:</strong></p>
+<pre><code>User opens app → See personalized feed
+- Posts từ người họ follow
+- Sorted by relevance/time
+- Load &lt; 500ms
+- Million concurrent users
+
+Sounds simple. Reality: Nightmare.
+</code></pre>
+<p><strong>Scale calculation:</strong></p>
+<pre><code>Platform: 100M users
+Average follows: 200 people
+Average posts: 2 posts/day per user
+
+Naive approach (Query on read):
+User load feed:
+→ Query 200 followees
+→ Get latest posts from each
+→ Merge 400 posts
+→ Sort by time
+→ Apply ranking
+
+With 100M users:
+→ 100M users × 200 queries = 20 billion database queries/day
+→ Database melts
+</code></pre>
+<p><strong>Why it&#x27;s hard:</strong></p>
+<pre><code>1. Read amplification
+   - Mỗi feed load = hundreds of reads
+   - Cannot cache (personalized per user)
+
+2. Write amplification  
+   - 1 post → thousands of followers see it
+   - How to propagate efficiently?
+
+3. Personalization
+   - Each user sees different feed
+   - Ranking depends on user history
+   - Cannot simple cache
+
+4. Consistency trade-offs
+   - User posts → How fast followers see?
+   - Eventual consistency acceptable?
+
+5. Celebrities problem
+   - User với 100M followers
+   - 1 post = 100M feed updates?
+</code></pre>
+<p><strong>Key insight:</strong> Feed systems force bạn confront mọi distributed systems challenges cùng lúc.</p>
+<h2 id="fanout-strategies-core-architecture-decision">Fanout Strategies: Core Architecture Decision</h2>
+<p><strong>Fanout = Cách distribute 1 post đến feeds của followers</strong></p>
+<p>Có 3 approaches fundamentally khác nhau. Mỗi approach có trade-offs sâu sắc.</p>
+<h3 id="approach-1-fanout-on-write-push-model">Approach 1: Fanout on Write (Push Model)</h3>
+<p><strong>Concept: Pre-compute feeds khi user posts</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant PostService
+    participant FanoutService
+    participant TimelineCache
+    participant Followers
+    
+    User-&gt;&gt;PostService: Create post
+    PostService-&gt;&gt;PostService: Save to database
+    PostService-&gt;&gt;FanoutService: Trigger fanout
+    FanoutService-&gt;&gt;Followers: Get follower list
+    
+    loop For each follower
+        FanoutService-&gt;&gt;TimelineCache: Insert post into follower&#x27;s feed
+    end
+    
+    FanoutService-&gt;&gt;User: Post created (async)</code></pre>
+<p><em>Fanout on write: Khi user post, immediately push vào feed của tất cả followers</em></p>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-python">class FanoutOnWriteService:
+    def create_post(self, user_id, content):
+        # 1. Save post to database
+        post = self.db.create_post({
+            &#x27;user_id&#x27;: user_id,
+            &#x27;content&#x27;: content,
+            &#x27;created_at&#x27;: datetime.now()
+        })
+        
+        # 2. Get followers
+        follower_ids = self.db.get_followers(user_id)
+        
+        # 3. Fanout to all followers (async via queue)
+        for follower_id in follower_ids:
+            self.queue.publish({
+                &#x27;task&#x27;: &#x27;insert_into_timeline&#x27;,
+                &#x27;follower_id&#x27;: follower_id,
+                &#x27;post_id&#x27;: post.id
+            })
+        
+        return {&#x27;status&#x27;: &#x27;success&#x27;, &#x27;post_id&#x27;: post.id}
+
+class FanoutWorker:
+    def process_fanout(self, message):
+        follower_id = message[&#x27;follower_id&#x27;]
+        post_id = message[&#x27;post_id&#x27;]
+        
+        # Insert into follower&#x27;s timeline cache (Redis sorted set)
+        self.redis.zadd(
+            f&quot;timeline:{follower_id}&quot;,
+            {post_id: timestamp}
+        )
+        
+        # Keep only recent 1000 posts
+        self.redis.zremrangebyrank(f&quot;timeline:{follower_id}&quot;, 0, -1001)
+
+# Read feed (extremely fast!)
+class FeedService:
+    def get_feed(self, user_id, page=1, size=20):
+        # Read from pre-computed cache
+        post_ids = self.redis.zrevrange(
+            f&quot;timeline:{user_id}&quot;,
+            (page-1)*size,
+            page*size-1
+        )
+        
+        # Fetch post details
+        posts = self.db.get_posts(post_ids)
+        
+        return posts
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code>Advantages:
+- Read cực nhanh (&lt; 10ms)
+- Feed đã pre-computed
+- Simple read logic
+- Scalable reads
+
+Disadvantages:
+- Write amplification (1 post → N fanout jobs)
+- Celebrity problem (1 post → 100M updates)
+- Wasted work (inactive users still get updates)
+- Storage cost (N × average_posts per user)
+- Fanout lag (eventual consistency)
+</code></pre>
+<p><strong>Capacity calculation:</strong></p>
+<pre><code>User posts:
+- Has 1,000 followers
+- 1 post → 1,000 fanout writes
+
+Celebrity posts:
+- Has 10M followers  
+- 1 post → 10M fanout writes
+- Takes minutes to complete
+
+Total platform:
+- 100M users post 2 times/day = 200M posts/day
+- Average 200 followers
+- Total fanout: 200M × 200 = 40 billion writes/day
+- 40B / 86400s ≈ 460K writes/second
+
+Need massive write capacity!
+</code></pre>
+<p><strong>Khi nào dùng:</strong></p>
+<pre><code>✓ Most users có &lt; 5,000 followers
+✓ Read performance critical (&lt; 100ms)
+✓ Can afford write amplification
+✓ Storage not constraint
+✓ Eventual consistency acceptable
+</code></pre>
+<h3 id="approach-2-fanout-on-read-pull-model">Approach 2: Fanout on Read (Pull Model)</h3>
+<p><strong>Concept: Generate feed khi user requests</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant FeedService
+    participant FollowGraph
+    participant PostDB
+    
+    User-&gt;&gt;FeedService: Get feed
+    FeedService-&gt;&gt;FollowGraph: Get followees
+    FollowGraph--&gt;&gt;FeedService: [user1, user2, ..., userN]
+    
+    loop For each followee
+        FeedService-&gt;&gt;PostDB: Get recent posts
+    end
+    
+    FeedService-&gt;&gt;FeedService: Merge &amp; sort posts
+    FeedService-&gt;&gt;FeedService: Apply ranking
+    FeedService--&gt;&gt;User: Return feed</code></pre>
+<p><em>Fanout on read: Khi user mở feed, query posts từ tất cả followees real-time</em></p>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-python">class FanoutOnReadService:
+    def create_post(self, user_id, content):
+        # Simply save post, no fanout
+        post = self.db.create_post({
+            &#x27;user_id&#x27;: user_id,
+            &#x27;content&#x27;: content,
+            &#x27;created_at&#x27;: datetime.now()
+        })
+        
+        return {&#x27;status&#x27;: &#x27;success&#x27;, &#x27;post_id&#x27;: post.id}
+    
+    def get_feed(self, user_id, page=1, size=20):
+        # 1. Get followees
+        followee_ids = self.db.get_followees(user_id)
+        
+        # 2. Get recent posts from each followee
+        all_posts = []
+        for followee_id in followee_ids:
+            posts = self.cache.get(f&quot;user_posts:{followee_id}&quot;)
+            if not posts:
+                # Cache miss, query DB
+                posts = self.db.get_user_posts(
+                    followee_id,
+                    limit=100  # Recent 100 posts
+                )
+                self.cache.set(f&quot;user_posts:{followee_id}&quot;, posts, ttl=300)
+            
+            all_posts.extend(posts)
+        
+        # 3. Merge and sort
+        all_posts.sort(key=lambda p: p[&#x27;created_at&#x27;], reverse=True)
+        
+        # 4. Paginate
+        start = (page-1) * size
+        end = start + size
+        
+        return all_posts[start:end]
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code>Advantages:
+- No write amplification (just save post)
+- Fast writes
+- No fanout lag (always fresh)
+- No wasted work
+- No celebrity problem
+- Low storage cost
+
+Disadvantages:
+- Read amplification (query many users)
+- Slow reads (100-500ms)
+- Hard to scale reads
+- Complex caching strategy
+- Database load high
+</code></pre>
+<p><strong>Performance calculation:</strong></p>
+<pre><code>User loads feed:
+- Follows 200 people
+- Query each person&#x27;s recent posts
+- 200 queries (even with batching: 10-20 queries)
+- Merge 4,000 posts
+- Sort
+- Total: 200-500ms
+
+1M concurrent users:
+→ 1M × 200 queries = 200M queries
+→ Database cannot handle
+</code></pre>
+<p><strong>Khi nào dùng:</strong></p>
+<pre><code>✓ Small scale (&lt; 100K users)
+✓ Users follow ít người (&lt; 50)
+✓ Write performance critical
+✓ Strong consistency required
+✓ Limited infrastructure
+</code></pre>
+<h3 id="approach-3-hybrid-fanout-best-of-both-worlds">Approach 3: Hybrid Fanout (Best of Both Worlds)</h3>
+<p><strong>Concept: Fanout on write cho normal users, fanout on read cho celebrities</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    POST[User Creates Post]
+    
+    POST --&gt; CHECK{User has &gt; 10K followers?}
+    
+    CHECK --&gt;|No - Normal User| FANOUT_WRITE[Fanout on Write]
+    FANOUT_WRITE --&gt; CACHE1[Push to all followers&#x27; timelines]
+    
+    CHECK --&gt;|Yes - Celebrity| FANOUT_READ[Fanout on Read]
+    FANOUT_READ --&gt; MARK[Mark as celebrity post]
+    
+    USER[User Loads Feed]
+    USER --&gt; TIMELINE[Get pre-computed timeline]
+    USER --&gt; CELEB[Query celebrity posts]
+    USER --&gt; MERGE[Merge both sources]
+    MERGE --&gt; RANK[Apply ranking]
+    RANK --&gt; DISPLAY[Display feed]
+    
+    style FANOUT_WRITE fill:#51cf66
+    style FANOUT_READ fill:#ff6b6b
+    style MERGE fill:#ffd43b</code></pre>
+<p><em>Hybrid fanout: Combine cả hai strategies dựa trên follower count</em></p>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-python">class HybridFanoutService:
+    CELEBRITY_THRESHOLD = 10_000  # 10K followers
+    
+    def create_post(self, user_id, content):
+        # Save post
+        post = self.db.create_post({
+            &#x27;user_id&#x27;: user_id,
+            &#x27;content&#x27;: content,
+            &#x27;created_at&#x27;: datetime.now()
+        })
+        
+        # Check if celebrity
+        follower_count = self.db.get_follower_count(user_id)
+        
+        if follower_count &lt; self.CELEBRITY_THRESHOLD:
+            # Normal user: Fanout on write
+            self._fanout_to_followers(user_id, post.id)
+        else:
+            # Celebrity: Mark for fanout on read
+            self.redis.sadd(&#x27;celebrity_users&#x27;, user_id)
+            # Store in celebrity posts cache
+            self.redis.zadd(
+                f&quot;celebrity_posts:{user_id}&quot;,
+                {post.id: post.created_at.timestamp()}
+            )
+        
+        return {&#x27;status&#x27;: &#x27;success&#x27;, &#x27;post_id&#x27;: post.id}
+    
+    def get_feed(self, user_id, page=1, size=20):
+        # 1. Get pre-computed timeline (normal users)
+        timeline_posts = self.redis.zrevrange(
+            f&quot;timeline:{user_id}&quot;,
+            0,
+            100  # Get more than needed
+        )
+        
+        # 2. Get celebrity posts (users this user follows)
+        celebrity_followees = self._get_celebrity_followees(user_id)
+        celebrity_posts = []
+        
+        for celebrity_id in celebrity_followees:
+            posts = self.redis.zrevrange(
+                f&quot;celebrity_posts:{celebrity_id}&quot;,
+                0,
+                20  # Recent 20 posts
+            )
+            celebrity_posts.extend(posts)
+        
+        # 3. Merge both sources
+        all_post_ids = timeline_posts + celebrity_posts
+        
+        # 4. Fetch post details
+        posts = self.db.get_posts(all_post_ids)
+        
+        # 5. Sort by timestamp
+        posts.sort(key=lambda p: p[&#x27;created_at&#x27;], reverse=True)
+        
+        # 6. Apply ranking algorithm
+        ranked_posts = self.ranking_service.rank(posts, user_id)
+        
+        # 7. Paginate
+        start = (page-1) * size
+        end = start + size
+        
+        return ranked_posts[start:end]
+    
+    def _get_celebrity_followees(self, user_id):
+        &quot;&quot;&quot;Get list of celebrities this user follows&quot;&quot;&quot;
+        followees = self.db.get_followees(user_id)
+        celebrities = self.redis.smembers(&#x27;celebrity_users&#x27;)
+        return [f for f in followees if f in celebrities]
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code>Advantages:
+- Fast reads (pre-computed for most)
+- No celebrity fanout explosion
+- Balanced write load
+- Flexible (tune threshold)
+- Best of both worlds
+
+Disadvantages:
+- Most complex implementation
+- Need maintain celebrity list
+- Celebrity posts slight delay
+- More moving parts
+- Harder to debug
+</code></pre>
+<p><strong>Real-world thresholds:</strong></p>
+<pre><code>Twitter (2015):
+- Fanout threshold: 2,000 followers
+- Above → Fanout on read
+
+Facebook (estimated):
+- Fanout threshold: 5,000 followers
+- Above → Hybrid approach
+
+Instagram (estimated):
+- Fanout threshold: 10,000 followers
+- Verified accounts → Always fanout on read
+</code></pre>
+<p><strong>Khi nào dùng:</strong></p>
+<pre><code>✓ Large scale (&gt; 1M users)
+✓ Mix of normal users và celebrities
+✓ Need optimize both reads và writes
+✓ Can handle complexity
+✓ Have engineering resources
+
+This is what Facebook, Twitter, Instagram use!
+</code></pre>
+<h2 id="timeline-cache-design">Timeline Cache Design</h2>
+<p><strong>Timeline cache là heart của feed system.</strong></p>
+<h3 id="cache-structure">Cache Structure</h3>
+<p><strong>Redis Sorted Set = Perfect fit</strong></p>
+<pre><code class="language-python"># Structure
+Key: &quot;timeline:{user_id}&quot;
+Score: post_timestamp (for sorting)
+Member: post_id
+
+# Example
+timeline:user123 = {
+    post_456: 1709567890000,  # Score = timestamp in ms
+    post_457: 1709567891000,
+    post_458: 1709567892000,
+    ...
+}
+</code></pre>
+<p><strong>Why Sorted Set?</strong></p>
+<pre><code>Automatic sorting by timestamp
+O(log N) insertion
+Range queries (pagination)
+Trim old posts easily
+Efficient memory
+</code></pre>
+<p><strong>Operations:</strong></p>
+<pre><code class="language-python"># Insert post into timeline
+redis.zadd(
+    &quot;timeline:user123&quot;,
+    {post_id: timestamp}
+)
+
+# Get paginated feed (20 posts per page)
+post_ids = redis.zrevrange(
+    &quot;timeline:user123&quot;,
+    start=0,
+    end=19,
+    withscores=True
+)
+
+# Trim to keep only recent 1000 posts
+redis.zremrangebyrank(
+    &quot;timeline:user123&quot;,
+    0,
+    -1001  # Keep rank 1000 to end
+)
+
+# Get posts after certain timestamp (pull to refresh)
+post_ids = redis.zrevrangebyscore(
+    &quot;timeline:user123&quot;,
+    max=&quot;+inf&quot;,
+    min=last_seen_timestamp
+)
+</code></pre>
+<h3 id="cache-sizing">Cache Sizing</h3>
+<p><strong>Memory calculation:</strong></p>
+<pre><code>Per user:
+- Store 1,000 recent posts in timeline
+- Each entry: 8 bytes (post_id) + 8 bytes (timestamp) = 16 bytes
+- Per user: 1,000 × 16 = 16 KB
+
+100M users:
+- 100M × 16 KB = 1.6 TB RAM
+
+With Redis cluster (sharded):
+- 100 nodes × 16 GB RAM each = 1.6 TB
+- Cost: ~$10,000/month (AWS ElastiCache)
+
+Expensive but necessary!
+</code></pre>
+<h3 id="cache-invalidation">Cache Invalidation</h3>
+<p><strong>Problem:</strong></p>
+<pre><code>User posts
+→ Fanout to 1,000 followers
+→ Takes 5 seconds
+→ Some followers see post immediately
+→ Some wait 5 seconds
+
+Eventual consistency!
+</code></pre>
+<p><strong>Strategy:</strong></p>
+<pre><code class="language-python">class TimelineCacheManager:
+    def invalidate_after_post(self, user_id, post_id):
+        # Don&#x27;t invalidate, just ensure freshness
+        # Timeline cache is append-only
+        pass
+    
+    def invalidate_after_delete(self, user_id, post_id):
+        # Post deleted → Remove from all followers&#x27; timelines
+        followers = self.db.get_followers(user_id)
+        
+        for follower_id in followers:
+            self.redis.zrem(
+                f&quot;timeline:{follower_id}&quot;,
+                post_id
+            )
+    
+    def invalidate_after_unfollow(self, user_id, unfollowed_id):
+        # User unfollows someone → Remove their posts from timeline
+        posts = self.redis.zrange(f&quot;celebrity_posts:{unfollowed_id}&quot;, 0, -1)
+        
+        for post_id in posts:
+            self.redis.zrem(
+                f&quot;timeline:{user_id}&quot;,
+                post_id
+            )
+</code></pre>
+<h2 id="ranking-algorithms">Ranking Algorithms</h2>
+<p><strong>Chronological sorting là insufficient. Need ranking.</strong></p>
+<h3 id="why-ranking">Why Ranking?</h3>
+<pre><code>Problem with pure chronological:
+- User follows 500 people
+- Some post 50 times/day
+- Some post 1 time/week
+- Feed dominated by spammers
+- Miss important posts from close friends
+
+Need: Show most relevant posts first
+</code></pre>
+<h3 id="simple-ranking-engagement-based">Simple Ranking: Engagement-Based</h3>
+<pre><code class="language-python">def calculate_engagement_score(post):
+    &quot;&quot;&quot;Simple engagement-based ranking&quot;&quot;&quot;
+    
+    # Age decay
+    age_hours = (datetime.now() - post.created_at).total_seconds() / 3600
+    age_factor = 1 / (age_hours + 2) ** 1.5  # Exponential decay
+    
+    # Engagement signals
+    engagement = (
+        post.likes * 1.0 +
+        post.comments * 2.0 +  # Comments more valuable
+        post.shares * 3.0      # Shares most valuable
+    )
+    
+    # Combine
+    score = engagement * age_factor
+    
+    return score
+
+# Apply ranking
+def rank_posts(posts):
+    for post in posts:
+        post.score = calculate_engagement_score(post)
+    
+    # Sort by score descending
+    posts.sort(key=lambda p: p.score, reverse=True)
+    
+    return posts
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code>Simple to implement
+Rewards engaging content
+Time decay prevents old posts
+
+Rich get richer (popular posts stay on top)
+Doesn&#x27;t consider user preferences
+Gaming possible (fake engagement)
+</code></pre>
+<h3 id="advanced-ranking-personalized">Advanced Ranking: Personalized</h3>
+<pre><code class="language-python">class PersonalizedRanking:
+    def rank(self, posts, user_id):
+        &quot;&quot;&quot;ML-based personalized ranking&quot;&quot;&quot;
+        
+        # Get user features
+        user_profile = self.get_user_profile(user_id)
+        
+        scored_posts = []
+        for post in posts:
+            # Extract post features
+            features = self._extract_features(post, user_profile)
+            
+            # ML model prediction
+            score = self.model.predict(features)
+            
+            scored_posts.append((post, score))
+        
+        # Sort by predicted score
+        scored_posts.sort(key=lambda x: x[1], reverse=True)
+        
+        return [post for post, score in scored_posts]
+    
+    def _extract_features(self, post, user_profile):
+        &quot;&quot;&quot;Extract features for ML model&quot;&quot;&quot;
+        return {
+            # Time features
+            &#x27;age_hours&#x27;: (datetime.now() - post.created_at).hours,
+            &#x27;hour_of_day&#x27;: post.created_at.hour,
+            
+            # Engagement features
+            &#x27;like_count&#x27;: post.likes,
+            &#x27;comment_count&#x27;: post.comments,
+            &#x27;share_count&#x27;: post.shares,
+            &#x27;engagement_rate&#x27;: post.likes / max(post.impressions, 1),
+            
+            # Author features
+            &#x27;author_follower_count&#x27;: post.author.followers,
+            &#x27;user_follows_author&#x27;: user_profile.follows(post.author_id),
+            &#x27;past_engagement_with_author&#x27;: user_profile.engagement_with(post.author_id),
+            
+            # Content features
+            &#x27;has_image&#x27;: post.has_image,
+            &#x27;has_video&#x27;: post.has_video,
+            &#x27;text_length&#x27;: len(post.content),
+            &#x27;contains_hashtags&#x27;: &#x27;#&#x27; in post.content,
+            
+            # User preference features
+            &#x27;topic_match&#x27;: self._topic_similarity(post.topics, user_profile.interests),
+            &#x27;language_match&#x27;: post.language == user_profile.language
+        }
+</code></pre>
+<p><strong>ML Pipeline (high-level):</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    A[User Interactions] --&gt; B[Feature Engineering]
+    B --&gt; C[Training Data]
+    C --&gt; D[Model Training]
+    D --&gt; E[Model Serving]
+    E --&gt; F[Real-time Ranking]
+    F --&gt; G[User Feedback]
+    G --&gt; A
+    
+    style D fill:#ffd43b
+    style E fill:#51cf66</code></pre>
+<p><em>ML ranking pipeline: Continuous learning từ user interactions</em></p>
+<p><strong>Real-world complexity:</strong></p>
+<pre><code>Facebook News Feed uses:
+- 100,000+ features
+- Ensemble of models
+- Real-time personalization
+- A/B testing framework
+- Constant iteration
+
+Not simple!
+</code></pre>
+<h2 id="event-driven-architecture">Event-Driven Architecture</h2>
+<p><strong>Feed systems thực chất là event-driven systems.</strong></p>
+<h3 id="event-flow">Event Flow</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant PostService
+    participant EventBus
+    participant FanoutWorker
+    participant TimelineCache
+    participant NotificationService
+    participant AnalyticsService
+    
+    User-&gt;&gt;PostService: Create post
+    PostService-&gt;&gt;PostService: Save to DB
+    PostService-&gt;&gt;EventBus: Publish &quot;post.created&quot; event
+    
+    EventBus-&gt;&gt;FanoutWorker: Consume event
+    FanoutWorker-&gt;&gt;TimelineCache: Update followers&#x27; timelines
+    
+    EventBus-&gt;&gt;NotificationService: Consume event
+    NotificationService-&gt;&gt;NotificationService: Send notifications
+    
+    EventBus-&gt;&gt;AnalyticsService: Consume event
+    AnalyticsService-&gt;&gt;AnalyticsService: Track metrics
+    
+    PostService--&gt;&gt;User: Success response</code></pre>
+<p><em>Event-driven: Một action trigger multiple async processes</em></p>
+<h3 id="event-structure">Event Structure</h3>
+<pre><code class="language-python"># Post created event
+{
+    &quot;event_type&quot;: &quot;post.created&quot;,
+    &quot;event_id&quot;: &quot;evt_123456&quot;,
+    &quot;timestamp&quot;: 1709567890000,
+    &quot;data&quot;: {
+        &quot;post_id&quot;: &quot;post_456&quot;,
+        &quot;author_id&quot;: &quot;user_123&quot;,
+        &quot;content&quot;: &quot;Hello world!&quot;,
+        &quot;media_urls&quot;: [&quot;https://...&quot;],
+        &quot;created_at&quot;: 1709567890000
+    },
+    &quot;metadata&quot;: {
+        &quot;source&quot;: &quot;mobile_app&quot;,
+        &quot;version&quot;: &quot;v2.1&quot;
+    }
+}
+
+# Like event
+{
+    &quot;event_type&quot;: &quot;post.liked&quot;,
+    &quot;event_id&quot;: &quot;evt_123457&quot;,
+    &quot;timestamp&quot;: 1709567891000,
+    &quot;data&quot;: {
+        &quot;post_id&quot;: &quot;post_456&quot;,
+        &quot;user_id&quot;: &quot;user_789&quot;,
+        &quot;liked_at&quot;: 1709567891000
+    }
+}
+
+# Comment event
+{
+    &quot;event_type&quot;: &quot;post.commented&quot;,
+    &quot;event_id&quot;: &quot;evt_123458&quot;,
+    &quot;timestamp&quot;: 1709567892000,
+    &quot;data&quot;: {
+        &quot;post_id&quot;: &quot;post_456&quot;,
+        &quot;comment_id&quot;: &quot;cmt_789&quot;,
+        &quot;author_id&quot;: &quot;user_999&quot;,
+        &quot;content&quot;: &quot;Nice post!&quot;,
+        &quot;created_at&quot;: 1709567892000
+    }
+}
+</code></pre>
+<h3 id="event-consumers">Event Consumers</h3>
+<pre><code class="language-python"># Fanout consumer
+class FanoutEventConsumer:
+    def handle_post_created(self, event):
+        post_id = event[&#x27;data&#x27;][&#x27;post_id&#x27;]
+        author_id = event[&#x27;data&#x27;][&#x27;author_id&#x27;]
+        timestamp = event[&#x27;data&#x27;][&#x27;created_at&#x27;]
+        
+        # Get followers
+        followers = self.db.get_followers(author_id)
+        
+        # Fanout
+        for follower_id in followers:
+            self.redis.zadd(
+                f&quot;timeline:{follower_id}&quot;,
+                {post_id: timestamp}
+            )
+
+# Notification consumer
+class NotificationEventConsumer:
+    def handle_post_liked(self, event):
+        post_id = event[&#x27;data&#x27;][&#x27;post_id&#x27;]
+        liker_id = event[&#x27;data&#x27;][&#x27;user_id&#x27;]
+        
+        # Get post author
+        post = self.db.get_post(post_id)
+        author_id = post.author_id
+        
+        # Send notification
+        if author_id != liker_id:  # Don&#x27;t notify self
+            self.notification_service.send({
+                &#x27;user_id&#x27;: author_id,
+                &#x27;type&#x27;: &#x27;like&#x27;,
+                &#x27;actor_id&#x27;: liker_id,
+                &#x27;post_id&#x27;: post_id
+            })
+
+# Analytics consumer
+class AnalyticsEventConsumer:
+    def handle_all_events(self, event):
+        # Stream to analytics pipeline
+        self.kinesis.put_record(event)
+        
+        # Update real-time counters
+        if event[&#x27;event_type&#x27;] == &#x27;post.created&#x27;:
+            self.redis.incr(&#x27;metrics:posts_created:today&#x27;)
+        elif event[&#x27;event_type&#x27;] == &#x27;post.liked&#x27;:
+            self.redis.incr(&#x27;metrics:likes:today&#x27;)
+</code></pre>
+<h3 id="benefits-of-event-driven">Benefits of Event-Driven</h3>
+<pre><code>Decoupling
+   - Services don&#x27;t know about each other
+   - Easy to add new consumers
+   - Independent deployment
+
+Scalability
+   - Async processing
+   - Can scale each consumer independently
+   - Queue buffers traffic spikes
+
+Flexibility
+   - Add features without touching core
+   - A/B testing easier
+   - Rollback simpler
+
+Reliability
+   - Retry failed events
+   - Dead letter queue
+   - At-least-once delivery
+
+Complexity
+   - More moving parts
+   - Eventual consistency
+   - Debugging harder
+   - Ordering challenges
+</code></pre>
+<h2 id="pagination-strategy">Pagination Strategy</h2>
+<p><strong>Infinite scroll = tricky pagination.</strong></p>
+<h3 id="offset-based-pagination-dont-use">Offset-Based Pagination (Don&#x27;t Use!)</h3>
+<pre><code class="language-python"># BAD: Offset-based
+def get_feed_offset(user_id, page, size=20):
+    offset = (page - 1) * size
+    
+    post_ids = redis.zrevrange(
+        f&quot;timeline:{user_id}&quot;,
+        offset,
+        offset + size - 1
+    )
+    
+    return post_ids
+
+# Problems:
+# 1. Duplicates if new posts added while paginating
+# 2. Missing posts if posts deleted
+# 3. Inefficient for large offsets (O(N))
+</code></pre>
+<h3 id="cursor-based-pagination-use-this">Cursor-Based Pagination (Use This!)</h3>
+<pre><code class="language-python"># GOOD: Cursor-based
+def get_feed_cursor(user_id, cursor=None, size=20):
+    if cursor is None:
+        # First page: Start from highest score
+        cursor = &quot;+inf&quot;
+    
+    # Get posts with score &lt; cursor
+    post_ids = redis.zrevrangebyscore(
+        f&quot;timeline:{user_id}&quot;,
+        max=cursor,
+        min=&quot;-inf&quot;,
+        start=0,
+        num=size + 1,  # Fetch one extra to check if more
+        withscores=True
+    )
+    
+    has_more = len(post_ids) &gt; size
+    if has_more:
+        post_ids = post_ids[:size]
+    
+    # Next cursor = smallest score in this page
+    next_cursor = post_ids[-1][1] if post_ids else None
+    
+    return {
+        &#x27;posts&#x27;: [pid for pid, score in post_ids],
+        &#x27;next_cursor&#x27;: next_cursor,
+        &#x27;has_more&#x27;: has_more
+    }
+
+# Client usage:
+# Page 1: GET /feed?size=20
+# Response: {posts: [...], next_cursor: 1709567890000}
+#
+# Page 2: GET /feed?cursor=1709567890000&amp;size=20
+# Response: {posts: [...], next_cursor: 1709567850000}
+</code></pre>
+<p><strong>Why cursor-based wins:</strong></p>
+<pre><code>No duplicates
+No missing posts
+Efficient (always O(log N))
+Works with real-time updates
+Stateless (cursor contains all info)
+</code></pre>
+<h2 id="integration-putting-it-all-together">Integration: Putting It All Together</h2>
+<p><strong>Real-world architecture cho 100M users:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    subgraph Client Layer
+        APP[Mobile/Web App]
+    end
+    
+    subgraph API Layer
+        LB[Load Balancer]
+        API1[API Server 1]
+        API2[API Server 2]
+        API3[API Server N]
+    end
+    
+    subgraph Service Layer
+        POST[Post Service]
+        FEED[Feed Service]
+        RANK[Ranking Service]
+        NOTIF[Notification Service]
+    end
+    
+    subgraph Event Layer
+        KAFKA[Kafka Event Bus]
+        FANOUT[Fanout Workers]
+        ANALYTICS[Analytics Workers]
+    end
+    
+    subgraph Data Layer
+        REDIS[Timeline Cache&lt;br/&gt;Redis Cluster]
+        DB[(PostgreSQL&lt;br/&gt;Sharded)]
+        S3[S3&lt;br/&gt;Media Storage]
+    end
+    
+    APP --&gt; LB
+    LB --&gt; API1 &amp; API2 &amp; API3
+    API1 &amp; API2 &amp; API3 --&gt; POST &amp; FEED &amp; RANK
+    
+    POST --&gt; KAFKA
+    POST --&gt; DB
+    POST --&gt; S3
+    
+    KAFKA --&gt; FANOUT
+    KAFKA --&gt; ANALYTICS
+    
+    FANOUT --&gt; REDIS
+    FEED --&gt; REDIS
+    FEED --&gt; DB
+    RANK --&gt; DB
+    
+    style KAFKA fill:#ffd43b
+    style REDIS fill:#51cf66
+    style FANOUT fill:#ff6b6b</code></pre>
+<p><em>Complete feed system architecture với event-driven design</em></p>
+<h3 id="capacity-planning">Capacity Planning</h3>
+<pre><code>Platform: 100M monthly active users
+Daily active: 30M users
+Posts/day: 60M posts (2 posts/user average)
+Average followers: 200
+
+Write load:
+- 60M posts/day
+- Fanout: 60M × 200 = 12B timeline writes/day
+- 12B / 86400s ≈ 140K writes/second
+
+Read load:
+- 30M users open feed 10 times/day = 300M feed loads/day
+- 300M / 86400s ≈ 3,500 reads/second
+
+Infrastructure:
+- API servers: 200 instances
+- Fanout workers: 500 instances
+- Redis cluster: 100 nodes (1.6TB total RAM)
+- PostgreSQL: 50 shards
+- Kafka: 20 brokers
+- S3: Unlimited (media storage)
+
+Cost (monthly, AWS):
+- Compute (EC2): $50,000
+- Redis (ElastiCache): $10,000
+- RDS (PostgreSQL): $30,000
+- S3: $5,000
+- Kafka (MSK): $8,000
+- Data transfer: $15,000
+Total: ~$120,000/month
+
+Not cheap, but necessary at scale!
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Feed systems complexity:</strong></p>
+<pre><code>Most complex architecture trong consumer apps vì:
+- Read và write amplification
+- Personalization at scale
+- Real-time requirements
+- Celebrity problem
+- Eventual consistency
+</code></pre>
+<p><strong>Fanout strategies:</strong></p>
+<pre><code>Fanout on Write:
+- Pre-compute feeds
+- Fast reads
+- Write amplification
+- Good cho normal users
+
+Fanout on Read:
+- Query on demand
+- Fast writes
+- Read amplification
+- Good cho celebrities
+
+Hybrid (Best):
+- Combine both
+- Optimize based on follower count
+- Facebook, Twitter, Instagram use this
+</code></pre>
+<p><strong>Architecture patterns:</strong></p>
+<pre><code>✓ Event-driven (decouple services)
+✓ Timeline cache (Redis sorted sets)
+✓ Cursor-based pagination (avoid offsets)
+✓ Async fanout (queue-based)
+✓ Personalized ranking (ML pipeline)
+</code></pre>
+<p><strong>Trade-offs always:</strong></p>
+<pre><code>Consistency vs Latency:
+- Eventual consistency acceptable
+- Fanout lag OK (few seconds)
+
+Storage vs Compute:
+- Cache timelines (storage cost)
+- Or query on demand (compute cost)
+
+Simplicity vs Optimization:
+- Start simple (fanout on write)
+- Add complexity when proven needed (hybrid)
+</code></pre>
+<p><strong>Lesson learned từ kinh nghiệm:</strong></p>
+<ol>
+<li><strong>Start simple:</strong> Fanout on write, iterate later</li>
+<li><strong>Measure everything:</strong> Know where bottleneck is</li>
+<li><strong>Eventual consistency OK:</strong> Users don&#x27;t notice 2-second delay</li>
+<li><strong>Cache is king:</strong> Pre-compute as much as possible</li>
+<li><strong>Event-driven scales:</strong> Decouple services early</li>
+</ol>
+<p>Feed systems force bạn confront mọi distributed systems challenges. Master feed = Master distributed systems thinking.</p>
+<p><strong>This is why Feed Engineer là specialized role at FAANG companies.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-5/lesson/lesson-2-head-heavy-systems"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Read-Heavy Systems - Design Cho 99% Reads</a></div><a class="inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-between bg-gradient-to-r from-brand to-[#5f7dff] px-6 shadow-[0_16px_34px_rgba(47,107,255,0.35)] hover:from-[#2659d6] hover:to-[#4f69dc]" href="/phase/phase-6"><span class="inline-flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-5 w-5"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Đi tới <!-- -->Phase 6 — System Design Mastery</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-5 w-5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-5\",\"lesson\",\"lesson-3-social-feed-systems\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-5\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-3-social-feed-systems\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 5 — Real-World Architecture Patterns\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Master feed generation architecture: fanout strategies, timeline cache, event-driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết kế news feed cho millions users với hybrid fanout pattern.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-architecture-evolution-mindset\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually\"}]]}]}],[\"$\",\"li\",\"lesson-2-head-heavy-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-2-head-heavy-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Read-Heavy Systems - Design Cho 99% Reads\"}]]}]}],[\"$\",\"li\",\"lesson-3-social-feed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-3-social-feed-systems\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5\",\"className\":\"hover:text-ink\",\"children\":\"Phase 5 — Real-World Architecture Patterns\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],\"$L24\"]}]}],\"$L25\",\"$L26\",\"$L27\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps\"}]\n25:[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Master feed generation architecture: fanout strategies, timeline cache, event-driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết kế news feed cho millions users với hybrid fanout pattern.\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-5/lesson/lesson-3-social-feed-systems\",\"title\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps\",\"description\":\"Master feed generation architecture: fanout strategies, timeline cache, event-driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết kế news feed cho millions users với hybrid fanout pattern.\",\"className\":\"sm:shrink-0\"}]]}]}]\n26:[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps\",\"children\":\"$L29\"}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-2-head-heavy-systems\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Read-Heavy Systems - Design Cho 99% Reads\"]}],null]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-between bg-gradient-to-r from-brand to-[#5f7dff] px-6 shadow-[0_16px_34px_rgba(47,107,255,0.35)] hover:from-[#2659d6] hover:to-[#4f69dc]\",\"children\":[[\"$\",\"span\",null,{\"className\":\"inline-flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-sparkles h-5 w-5\",\"children\":[[\"$\",\"path\",\"4pj2yx\",{\"d\":\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"}],[\"$\",\"path\",\"1olli1\",{\"d\":\"M20 3v4\"}],[\"$\",\"path\",\"1gvqau\",{\"d\":\"M22 5h-4\"}],[\"$\",\"path\",\"vumght\",{\"d\":\"M4 17v2\"}],[\"$\",\"path\",\"zchphs\",{\"d\":\"M5 18H3\"}],\"$undefined\"]}],\"Đi tới \",\"Phase 6 — System Design Mastery\"]}],[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-5 w-5\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}],null]}]\n"])</script><script>self.__next_f.push([1,"2a:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"social-feed-systems-kiến-trúc-phức-tạp-nhất\",\"children\":\"Social Feed Systems: Kiến Trúc Phức Tạp Nhất\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ lần đầu được assign task: \\\"Thiết kế news feed cho social network\\\".\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi nghĩ đơn giản: \",[\"$\",\"em\",null,{\"children\":\"\\\"Query posts của người user follow, sort by time, done.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior architect nhìn tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Với 1 triệu users, mỗi người follow 500 người, mỗi người post 10 lần/ngày. Em tính sao?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi tính nhanh:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Load feed = Query 500 users × 10 posts = 5,000 posts\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Sort 5,000 posts\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"1 triệu users làm việc này → 1 triệu × 5,000 queries = 5 tỷ queries\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database chết ngay\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior cười: \",[\"$\",\"em\",null,{\"children\":\"\\\"Welcome to fanout problem. Đây là lý do Facebook phải build infrastructure riêng.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Đó là lúc tôi học: \",[\"$\",\"strong\",null,{\"children\":\"Feed systems là kiến trúc phức tạp nhất trong consumer apps.\"}]]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-feed-systems-khó\",\"children\":\"Tại Sao Feed Systems Khó?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-core-challenge\",\"children\":\"The Core Challenge\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem statement:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User opens app → See personalized feed\\n- Posts từ người họ follow\\n- Sorted by relevance/time\\n- Load \u003c 500ms\\n- Million concurrent users\\n\\nSounds simple. Reality: Nightmare.\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scale calculation:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Platform: 100M users\\nAverage follows: 200 people\\nAverage posts: 2 posts/day per user\\n\\nNaive approach (Query on read):\\nUser load feed:\\n→ Query 200 followees\\n→ Get latest posts from each\\n→ Merge 400 posts\\n→ Sort by time\\n→ Apply ranking\\n\\nWith 100M users:\\n→ 100M users × 200 queries = 20 billion database queries/day\\n→ Database melts\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why it's hard:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Read amplification\\n   - Mỗi feed load = hundreds of reads\\n   - Cannot cache (personalized per user)\\n\\n2. Write amplification  \\n   - 1 post → thousands of followers see it\\n   - How to propagate efficiently?\\n\\n3. Personalization\\n   - Each user sees different feed\\n   - Ranking depends on user history\\n   - Cannot simple cache\\n\\n4. Consistency trade-offs\\n   - User posts → How fast followers see?\\n   - Eventual consistency acceptable?\\n\\n5. Celebrities problem\\n   - User với 100M followers\\n   - 1 post = 100M feed updates?\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key insight:\"}],\" Feed systems force bạn confront mọi distributed systems challenges cùng lúc.\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"fanout-strategies-core-architecture-decision\",\"children\":\"Fanout Strategies: Core Architecture Decision\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Fanout = Cách distribute 1 post đến feeds của followers\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Có 3 approaches fundamentally khác nhau. Mỗi approach có trade-offs sâu sắc.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"approach-1-fanout-on-write-push-model\",\"children\":\"Approach 1: Fanout on Write (Push Model)\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Concept: Pre-compute feeds khi user posts\"}]}],\"\\n\",[\"$\",\"$L2a\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant PostService\\n    participant FanoutService\\n    participant TimelineCache\\n    participant Followers\\n    \\n    User-\u003e\u003ePostService: Create post\\n    PostService-\u003e\u003ePostService: Save to database\\n    PostService-\u003e\u003eFanoutService: Trigger fanout\\n    FanoutService-\u003e\u003eFollowers: Get follower list\\n    \\n    loop For each follower\\n        FanoutService-\u003e\u003eTimelineCache: Insert post into follower's feed\\n    end\\n    \\n    FanoutService-\u003e\u003eUser: Post created (async)\"}],\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\"]}]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Fanout on write: Khi user post, immediately push vào feed của tất cả followers\"}]}]\n2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation:\"}]}]\n92:T5f9,"])</script><script>self.__next_f.push([1,"class FanoutOnWriteService:\n    def create_post(self, user_id, content):\n        # 1. Save post to database\n        post = self.db.create_post({\n            'user_id': user_id,\n            'content': content,\n            'created_at': datetime.now()\n        })\n        \n        # 2. Get followers\n        follower_ids = self.db.get_followers(user_id)\n        \n        # 3. Fanout to all followers (async via queue)\n        for follower_id in follower_ids:\n            self.queue.publish({\n                'task': 'insert_into_timeline',\n                'follower_id': follower_id,\n                'post_id': post.id\n            })\n        \n        return {'status': 'success', 'post_id': post.id}\n\nclass FanoutWorker:\n    def process_fanout(self, message):\n        follower_id = message['follower_id']\n        post_id = message['post_id']\n        \n        # Insert into follower's timeline cache (Redis sorted set)\n        self.redis.zadd(\n            f\"timeline:{follower_id}\",\n            {post_id: timestamp}\n        )\n        \n        # Keep only recent 1000 posts\n        self.redis.zremrangebyrank(f\"timeline:{follower_id}\", 0, -1001)\n\n# Read feed (extremely fast!)\nclass FeedService:\n    def get_feed(self, user_id, page=1, size=20):\n        # Read from pre-computed cache\n        post_ids = self.redis.zrevrange(\n            f\"timeline:{user_id}\",\n            (page-1)*size,\n            page*size-1\n        )\n        \n        # Fetch post details\n        posts = self.db.get_posts(post_ids)\n        \n        return posts\n"])</script><script>self.__next_f.push([1,"2d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$92\"}]}]\n2e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n2f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Advantages:\\n- Read cực nhanh (\u003c 10ms)\\n- Feed đã pre-computed\\n- Simple read logic\\n- Scalable reads\\n\\nDisadvantages:\\n- Write amplification (1 post → N fanout jobs)\\n- Celebrity problem (1 post → 100M updates)\\n- Wasted work (inactive users still get updates)\\n- Storage cost (N × average_posts per user)\\n- Fanout lag (eventual consistency)\\n\"}]}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Capacity calculation:\"}]}]\n31:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User posts:\\n- Has 1,000 followers\\n- 1 post → 1,000 fanout writes\\n\\nCelebrity posts:\\n- Has 10M followers  \\n- 1 post → 10M fanout writes\\n- Takes minutes to complete\\n\\nTotal platform:\\n- 100M users post 2 times/day = 200M posts/day\\n- Average 200 followers\\n- Total fanout: 200M × 200 = 40 billion writes/day\\n- 40B / 86400s ≈ 460K writes/second\\n\\nNeed massive write capacity!\\n\"}]}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n33:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Most users có \u003c 5,000 followers\\n✓ Read performance critical (\u003c 100ms)\\n✓ Can afford write amplification\\n✓ Storage not constraint\\n✓ Eventual consistency acceptable\\n\"}]}]\n34:[\"$\",\"h3\",null,{\"id\":\"approach-2-fanout-on-read-pull-model\",\"children\":\"Approach 2: Fanout on Read (Pull Model)\"}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Concept: Generate feed khi user requests\"}]}]\n36:[\"$\",\"$L2a\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant FeedService\\n    participant FollowGraph\\n    participant PostDB\\n    \\n    User-\u003e\u003eFeedService: Get feed\\n    FeedService-\u003e\u003eFollowGraph: Get followees\\n    FollowGraph--\u003e\u003eFeedService: [user1, user2, ..., userN]\\n    \\n    loop For each followee\\n        FeedService-\u003e\u003ePostDB: Get recent posts\\n    end\\n    \\n    FeedService-\u003e\u003eFeedService: Merge \u0026 sort posts\\n    FeedService-\u003e\u003eFeedService: Apply ranking\\n    FeedService--\u003e\u003eUser: Return feed\"}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Fanout on read: Khi user mở feed, query posts từ tất cả followees real-time\"}]}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation:\"}]}]\n93:T4ce,class FanoutOnReadService:\n    def create_post(self, user_id, content):\n        # Simply save post, no fanout\n        post = self.db.create_post({\n            'user_id': user_id,\n            'content': content,\n            'created_at': datetime.now()\n        })\n        \n        return {'status': 'success', 'post_id': post.id}\n    \n    def get_feed(self, user_id, page=1, size=20):\n        # 1. Get followees\n        followee_ids = self.db.get_followees(user_id)\n        \n        # 2. Get recent posts from each followee\n        all_posts = []\n        for followee_id in followee_ids:\n            posts = self.cache.get(f\"user_posts:{followee_id}\")\n            if not posts:\n                # Cache miss, query DB\n                posts = self.db.get_user_posts(\n                    followee_id,\n                    limit=100  # Recent 100 posts\n                )\n                self.cache.set(f\"user_posts:{followee_id}\", posts, ttl=300)\n            \n            all_posts.extend(posts)\n        \n        # 3. Merge and sort\n        all_posts.sort(key=lambda p: p['created_at'], reverse=True)\n        \n        # 4. Paginate\n        start = (page-1) * size\n        end = start + size\n        \n        return all_posts[start:end]\n39:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$93\"}]}]\n3a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n3b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Advantages:\\n- No write amplification (just save post)\\n- Fast writes\\n- No fanout lag (always fresh)\\n- No wasted work\\n- No celebrity problem\\n- Low storage co"])</script><script>self.__next_f.push([1,"st\\n\\nDisadvantages:\\n- Read amplification (query many users)\\n- Slow reads (100-500ms)\\n- Hard to scale reads\\n- Complex caching strategy\\n- Database load high\\n\"}]}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Performance calculation:\"}]}]\n3d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User loads feed:\\n- Follows 200 people\\n- Query each person's recent posts\\n- 200 queries (even with batching: 10-20 queries)\\n- Merge 4,000 posts\\n- Sort\\n- Total: 200-500ms\\n\\n1M concurrent users:\\n→ 1M × 200 queries = 200M queries\\n→ Database cannot handle\\n\"}]}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n3f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Small scale (\u003c 100K users)\\n✓ Users follow ít người (\u003c 50)\\n✓ Write performance critical\\n✓ Strong consistency required\\n✓ Limited infrastructure\\n\"}]}]\n40:[\"$\",\"h3\",null,{\"id\":\"approach-3-hybrid-fanout-best-of-both-worlds\",\"children\":\"Approach 3: Hybrid Fanout (Best of Both Worlds)\"}]\n41:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Concept: Fanout on write cho normal users, fanout on read cho celebrities\"}]}]\n42:[\"$\",\"$L2a\",null,{\"chart\":\"graph TB\\n    POST[User Creates Post]\\n    \\n    POST --\u003e CHECK{User has \u003e 10K followers?}\\n    \\n    CHECK --\u003e|No - Normal User| FANOUT_WRITE[Fanout on Write]\\n    FANOUT_WRITE --\u003e CACHE1[Push to all followers' timelines]\\n    \\n    CHECK --\u003e|Yes - Celebrity| FANOUT_READ[Fanout on Read]\\n    FANOUT_READ --\u003e MARK[Mark as celebrity post]\\n    \\n    USER[User Loads Feed]\\n    USER --\u003e TIMELINE[Get pre-computed timeline]\\n    USER --\u003e CELEB[Query celebrity posts]\\n    USER --\u003e MERGE[Merge both sources]\\n    MERGE --\u003e RANK[Apply ranking]\\n    RANK --\u003e DISPLAY[Display feed]\\n    \\n    style FANOUT_WRITE fill:#51cf66\\n    style FANOUT_READ fill:#ff6b6b\\n    style MERGE fill:#ffd43b\"}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Hybrid fanout: Combine cả hai strategies dựa trên follower count\"}]}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation:\"}]}]\n94:T988,"])</script><script>self.__next_f.push([1,"class HybridFanoutService:\n    CELEBRITY_THRESHOLD = 10_000  # 10K followers\n    \n    def create_post(self, user_id, content):\n        # Save post\n        post = self.db.create_post({\n            'user_id': user_id,\n            'content': content,\n            'created_at': datetime.now()\n        })\n        \n        # Check if celebrity\n        follower_count = self.db.get_follower_count(user_id)\n        \n        if follower_count \u003c self.CELEBRITY_THRESHOLD:\n            # Normal user: Fanout on write\n            self._fanout_to_followers(user_id, post.id)\n        else:\n            # Celebrity: Mark for fanout on read\n            self.redis.sadd('celebrity_users', user_id)\n            # Store in celebrity posts cache\n            self.redis.zadd(\n                f\"celebrity_posts:{user_id}\",\n                {post.id: post.created_at.timestamp()}\n            )\n        \n        return {'status': 'success', 'post_id': post.id}\n    \n    def get_feed(self, user_id, page=1, size=20):\n        # 1. Get pre-computed timeline (normal users)\n        timeline_posts = self.redis.zrevrange(\n            f\"timeline:{user_id}\",\n            0,\n            100  # Get more than needed\n        )\n        \n        # 2. Get celebrity posts (users this user follows)\n        celebrity_followees = self._get_celebrity_followees(user_id)\n        celebrity_posts = []\n        \n        for celebrity_id in celebrity_followees:\n            posts = self.redis.zrevrange(\n                f\"celebrity_posts:{celebrity_id}\",\n                0,\n                20  # Recent 20 posts\n            )\n            celebrity_posts.extend(posts)\n        \n        # 3. Merge both sources\n        all_post_ids = timeline_posts + celebrity_posts\n        \n        # 4. Fetch post details\n        posts = self.db.get_posts(all_post_ids)\n        \n        # 5. Sort by timestamp\n        posts.sort(key=lambda p: p['created_at'], reverse=True)\n        \n        # 6. Apply ranking algorithm\n        ranked_posts = self.ranking_service.rank(posts, user_id)\n        \n        # 7. Paginate\n        start = (page-1) * size\n        end = start + size\n        \n        return ranked_posts[start:end]\n    \n    def _get_celebrity_followees(self, user_id):\n        \"\"\"Get list of celebrities this user follows\"\"\"\n        followees = self.db.get_followees(user_id)\n        celebrities = self.redis.smembers('celebrity_users')\n        return [f for f in followees if f in celebrities]\n"])</script><script>self.__next_f.push([1,"45:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$94\"}]}]\n46:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n47:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Advantages:\\n- Fast reads (pre-computed for most)\\n- No celebrity fanout explosion\\n- Balanced write load\\n- Flexible (tune threshold)\\n- Best of both worlds\\n\\nDisadvantages:\\n- Most complex implementation\\n- Need maintain celebrity list\\n- Celebrity posts slight delay\\n- More moving parts\\n- Harder to debug\\n\"}]}]\n48:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real-world thresholds:\"}]}]\n49:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Twitter (2015):\\n- Fanout threshold: 2,000 followers\\n- Above → Fanout on read\\n\\nFacebook (estimated):\\n- Fanout threshold: 5,000 followers\\n- Above → Hybrid approach\\n\\nInstagram (estimated):\\n- Fanout threshold: 10,000 followers\\n- Verified accounts → Always fanout on read\\n\"}]}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Large scale (\u003e 1M users)\\n✓ Mix of normal users và celebrities\\n✓ Need optimize both reads và writes\\n✓ Can handle complexity\\n✓ Have engineering resources\\n\\nThis is what Facebook, Twitter, Instagram use!\\n\"}]}]\n4c:[\"$\",\"h2\",null,{\"id\":\"timeline-cache-design\",\"children\":\"Timeline Cache Design\"}]\n4d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Timeline cache là heart của feed system.\"}]}]\n4e:[\"$\",\"h3\",null,{\"id\":\"cache-structure\",\"children\":\"Cache Structure\"}]\n4f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Redis Sorted Set = Perfect fit\"}]}]\n50:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Structure\\nKey: \\\"timeline:{user_id}\\\"\\nScore: post_timestamp (for sorting)\\nMember: post_id\\n\\n# Example\\ntimeline:user123 = {\\n    post_456: 1709567890000,  # Score = timestamp in ms\\n    post_457: 1709567891000,\\n    post_458: 1709567892000,\\n    ...\\n}\\n\"}]}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why Sorted Set?\"}]}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Automatic sorting by timestamp\\nO(log N) insertion\\nRange queries (pagination)\\nTrim old posts easily\\nEfficient memory\\n\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Operations:\"}]}]\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Insert post into timeline\\nredis.zadd(\\n    \\\"timeline:user123\\\",\\n    {post_id: timestamp}\\n)\\n\\n# Get paginated feed (20 posts per page)\\npost_ids = redis.zrevrange(\\n    \\\"timeline:user123\\\",\\n    start=0,\\n    end=19,\\n    withscores=True\\n)\\n\\n# Trim to keep only recent 1000 posts\\nredis.zremrangebyrank(\\n    \\\"timeline:user123\\\",\\n    0,\\n    -1001  # Keep rank 1000 to end\\n)\\n\\n# Get posts after certain timestamp (pull to refresh)\\npost_ids = redis.zrevrangebyscore(\\n    \\\"timeline:user123\\\",\\n    max=\\\"+inf\\\",\\n    min=last_seen_timestamp\\n)\\n\"}]}]\n55:[\"$\",\"h3\",null,{\"id\":\"cache-sizing\",\"children\":\"Cache Sizing\"}]\n56:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Memory calculation:\"}]}]\n57:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Per user:\\n- Store 1,000 recent posts in timeline\\n- Each entry: 8 bytes (post_id) + 8 bytes (timestamp) = 16 bytes\\n- Per user: 1,000 × 16 = 16 KB\\n\\n100M users:\\n- 100M × 16 KB = 1.6 TB RAM\\n\\nWith Redis cluster (sharded):\\n- 100 nodes × 16 GB RAM each = 1.6 TB\\n- Cost: ~$10,000/month (AWS ElastiCache)\\n\\nExpensive but necessary!\\n\"}]}]\n58:[\"$\",\"h3\",null,{\"id\":\"cache-invalidation\",\"children\":\"Cache Invalidation\"}]\n59:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\n5a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User posts\\n→ Fanout to 1,000 followers\\n→ Takes 5 seconds\\n→ Some followers see post immediately\\n→ Some wait 5 seconds\\n\\nEventual consistency!\\n\"}]}]\n5b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy"])</script><script>self.__next_f.push([1,":\"}]}]\n5c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class TimelineCacheManager:\\n    def invalidate_after_post(self, user_id, post_id):\\n        # Don't invalidate, just ensure freshness\\n        # Timeline cache is append-only\\n        pass\\n    \\n    def invalidate_after_delete(self, user_id, post_id):\\n        # Post deleted → Remove from all followers' timelines\\n        followers = self.db.get_followers(user_id)\\n        \\n        for follower_id in followers:\\n            self.redis.zrem(\\n                f\\\"timeline:{follower_id}\\\",\\n                post_id\\n            )\\n    \\n    def invalidate_after_unfollow(self, user_id, unfollowed_id):\\n        # User unfollows someone → Remove their posts from timeline\\n        posts = self.redis.zrange(f\\\"celebrity_posts:{unfollowed_id}\\\", 0, -1)\\n        \\n        for post_id in posts:\\n            self.redis.zrem(\\n                f\\\"timeline:{user_id}\\\",\\n                post_id\\n            )\\n\"}]}]\n5d:[\"$\",\"h2\",null,{\"id\":\"ranking-algorithms\",\"children\":\"Ranking Algorithms\"}]\n5e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Chronological sorting là insufficient. Need ranking.\"}]}]\n5f:[\"$\",\"h3\",null,{\"id\":\"why-ranking\",\"children\":\"Why Ranking?\"}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem with pure chronological:\\n- User follows 500 people\\n- Some post 50 times/day\\n- Some post 1 time/week\\n- Feed dominated by spammers\\n- Miss important posts from close friends\\n\\nNeed: Show most relevant posts first\\n\"}]}]\n61:[\"$\",\"h3\",null,{\"id\":\"simple-ranking-engagement-based\",\"children\":\"Simple Ranking: Engagement-Based\"}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def calculate_engagement_score(post):\\n    \\\"\\\"\\\"Simple engagement-based ranking\\\"\\\"\\\"\\n    \\n    # Age decay\\n    age_hours = (datetime.now() - post.created_at).total_seconds() / 3600\\n    age_factor = 1 / (age_hours + 2) ** 1.5  # Exponential decay\\n    \\n    # Engagement signals\\n    engagement = (\\n        post.likes * 1.0 +\\n        post.comments * 2.0 +  # Comments more valuable\\n        post.shares * 3.0      # Shares most valuable\\n    )\\n    \\n    # Combine\\n    score = engagement * age_factor\\n    \\n    return score\\n\\n# Apply ranking\\ndef rank_posts(posts):\\n    for post in posts:\\n        post.score = calculate_engagement_score(post)\\n    \\n    # Sort by score descending\\n    posts.sort(key=lambda p: p.score, reverse=True)\\n    \\n    return posts\\n\"}]}]\n63:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n64:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Simple to implement\\nRewards engaging content\\nTime decay prevents old posts\\n\\nRich get richer (popular posts stay on top)\\nDoesn't consider user preferences\\nGaming possible (fake engagement)\\n\"}]}]\n65:[\"$\",\"h3\",null,{\"id\":\"advanced-ranking-personalized\",\"children\":\"Advanced Ranking: Personalized\"}]\n95:T768,"])</script><script>self.__next_f.push([1,"class PersonalizedRanking:\n    def rank(self, posts, user_id):\n        \"\"\"ML-based personalized ranking\"\"\"\n        \n        # Get user features\n        user_profile = self.get_user_profile(user_id)\n        \n        scored_posts = []\n        for post in posts:\n            # Extract post features\n            features = self._extract_features(post, user_profile)\n            \n            # ML model prediction\n            score = self.model.predict(features)\n            \n            scored_posts.append((post, score))\n        \n        # Sort by predicted score\n        scored_posts.sort(key=lambda x: x[1], reverse=True)\n        \n        return [post for post, score in scored_posts]\n    \n    def _extract_features(self, post, user_profile):\n        \"\"\"Extract features for ML model\"\"\"\n        return {\n            # Time features\n            'age_hours': (datetime.now() - post.created_at).hours,\n            'hour_of_day': post.created_at.hour,\n            \n            # Engagement features\n            'like_count': post.likes,\n            'comment_count': post.comments,\n            'share_count': post.shares,\n            'engagement_rate': post.likes / max(post.impressions, 1),\n            \n            # Author features\n            'author_follower_count': post.author.followers,\n            'user_follows_author': user_profile.follows(post.author_id),\n            'past_engagement_with_author': user_profile.engagement_with(post.author_id),\n            \n            # Content features\n            'has_image': post.has_image,\n            'has_video': post.has_video,\n            'text_length': len(post.content),\n            'contains_hashtags': '#' in post.content,\n            \n            # User preference features\n            'topic_match': self._topic_similarity(post.topics, user_profile.interests),\n            'language_match': post.language == user_profile.language\n        }\n"])</script><script>self.__next_f.push([1,"66:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$95\"}]}]\n67:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"ML Pipeline (high-level):\"}]}]\n68:[\"$\",\"$L2a\",null,{\"chart\":\"graph LR\\n    A[User Interactions] --\u003e B[Feature Engineering]\\n    B --\u003e C[Training Data]\\n    C --\u003e D[Model Training]\\n    D --\u003e E[Model Serving]\\n    E --\u003e F[Real-time Ranking]\\n    F --\u003e G[User Feedback]\\n    G --\u003e A\\n    \\n    style D fill:#ffd43b\\n    style E fill:#51cf66\"}]\n69:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"ML ranking pipeline: Continuous learning từ user interactions\"}]}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real-world complexity:\"}]}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Facebook News Feed uses:\\n- 100,000+ features\\n- Ensemble of models\\n- Real-time personalization\\n- A/B testing framework\\n- Constant iteration\\n\\nNot simple!\\n\"}]}]\n6c:[\"$\",\"h2\",null,{\"id\":\"event-driven-architecture\",\"children\":\"Event-Driven Architecture\"}]\n6d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Feed systems thực chất là event-driven systems.\"}]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"event-flow\",\"children\":\"Event Flow\"}]\n6f:[\"$\",\"$L2a\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant PostService\\n    participant EventBus\\n    participant FanoutWorker\\n    participant TimelineCache\\n    participant NotificationService\\n    participant AnalyticsService\\n    \\n    User-\u003e\u003ePostService: Create post\\n    PostService-\u003e\u003ePostService: Save to DB\\n    PostService-\u003e\u003eEventBus: Publish \\\"post.created\\\" event\\n    \\n    EventBus-\u003e\u003eFanoutWorker: Consume event\\n    FanoutWorker-\u003e\u003eTimelineCache: Update followers' timelines\\n    \\n    EventBus-\u003e\u003eNotificationService: Consume event\\n    NotificationService-\u003e\u003eNotificationService: Send notifications\\n    \\n    EventBus-\u003e\u003eAnalyticsService: Consume event\\n    AnalyticsService-\u003e\u003eAnalyticsService: Track metrics\\n    \\n    PostService--\u003e\u003eUser: Success response\"}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Event-driven: Một action trigger multiple async processes\"}]}]\n71:[\"$\",\"h3\",null,{\"id\":\"event-structure\",\"children\":\"Event Structure\"}]\n72:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Post created event\\n{\\n    \\\"event_type\\\": \\\"post.created\\\",\\n    \\\"event_id\\\": \\\"evt_123456\\\",\\n    \\\"timestamp\\\": 1709567890000,\\n    \\\"data\\\": {\\n        \\\"post_id\\\": \\\"post_456\\\",\\n        \\\"author_id\\\": \\\"user_123\\\",\\n        \\\"content\\\": \\\"Hello world!\\\",\\n        \\\"media_urls\\\": [\\\"https://...\\\"],\\n        \\\"created_at\\\": 1709567890000\\n    },\\n    \\\"metadata\\\": {\\n        \\\"source\\\": \\\"mobile_app\\\",\\n        \\\"version\\\": \\\"v2.1\\\"\\n    }\\n}\\n\\n# Like event\\n{\\n    \\\"event_type\\\": \\\"post.liked\\\",\\n    \\\"event_id\\\": \\\"evt_123457\\\",\\n    \\\"timestamp\\\": 1709567891000,\\n    \\\"data\\\": {\\n        \\\"post_id\\\": \\\"post_456\\\",\\n        \\\"user_id\\\": \\\"user_789\\\",\\n        \\\"liked_at\\\": 1709567891000\\n    }\\n}\\n\\n# Comment event\\n{\\n    \\\"event_type\\\": \\\"post.commented\\\",\\n    \\\"event_id\\\": \\\"evt_123458\\\",\\n    \\\"timestamp\\\": 1709567892000,\\n    \\\"data\\\": {\\n        \\\"post_id\\\": \\\"post_456\\\",\\n        \\\"comment_id\\\": \\\"cmt_789\\\",\\n        \\\"author_id\\\": \\\"user_999\\\",\\n        \\\"content\\\": \\\"Nice post!\\\",\\n        \\\"created_at\\\": 1709567892000\\n    }\\n}\\n\"}]}]\n73:[\"$\",\"h3\",null,{\"id\":\"event-consumers\",\"children\":\"Event Consumers\"}]\n96:T5ea,"])</script><script>self.__next_f.push([1,"# Fanout consumer\nclass FanoutEventConsumer:\n    def handle_post_created(self, event):\n        post_id = event['data']['post_id']\n        author_id = event['data']['author_id']\n        timestamp = event['data']['created_at']\n        \n        # Get followers\n        followers = self.db.get_followers(author_id)\n        \n        # Fanout\n        for follower_id in followers:\n            self.redis.zadd(\n                f\"timeline:{follower_id}\",\n                {post_id: timestamp}\n            )\n\n# Notification consumer\nclass NotificationEventConsumer:\n    def handle_post_liked(self, event):\n        post_id = event['data']['post_id']\n        liker_id = event['data']['user_id']\n        \n        # Get post author\n        post = self.db.get_post(post_id)\n        author_id = post.author_id\n        \n        # Send notification\n        if author_id != liker_id:  # Don't notify self\n            self.notification_service.send({\n                'user_id': author_id,\n                'type': 'like',\n                'actor_id': liker_id,\n                'post_id': post_id\n            })\n\n# Analytics consumer\nclass AnalyticsEventConsumer:\n    def handle_all_events(self, event):\n        # Stream to analytics pipeline\n        self.kinesis.put_record(event)\n        \n        # Update real-time counters\n        if event['event_type'] == 'post.created':\n            self.redis.incr('metrics:posts_created:today')\n        elif event['event_type'] == 'post.liked':\n            self.redis.incr('metrics:likes:today')\n"])</script><script>self.__next_f.push([1,"74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$96\"}]}]\n75:[\"$\",\"h3\",null,{\"id\":\"benefits-of-event-driven\",\"children\":\"Benefits of Event-Driven\"}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Decoupling\\n   - Services don't know about each other\\n   - Easy to add new consumers\\n   - Independent deployment\\n\\nScalability\\n   - Async processing\\n   - Can scale each consumer independently\\n   - Queue buffers traffic spikes\\n\\nFlexibility\\n   - Add features without touching core\\n   - A/B testing easier\\n   - Rollback simpler\\n\\nReliability\\n   - Retry failed events\\n   - Dead letter queue\\n   - At-least-once delivery\\n\\nComplexity\\n   - More moving parts\\n   - Eventual consistency\\n   - Debugging harder\\n   - Ordering challenges\\n\"}]}]\n77:[\"$\",\"h2\",null,{\"id\":\"pagination-strategy\",\"children\":\"Pagination Strategy\"}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Infinite scroll = tricky pagination.\"}]}]\n79:[\"$\",\"h3\",null,{\"id\":\"offset-based-pagination-dont-use\",\"children\":\"Offset-Based Pagination (Don't Use!)\"}]\n7a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# BAD: Offset-based\\ndef get_feed_offset(user_id, page, size=20):\\n    offset = (page - 1) * size\\n    \\n    post_ids = redis.zrevrange(\\n        f\\\"timeline:{user_id}\\\",\\n        offset,\\n        offset + size - 1\\n    )\\n    \\n    return post_ids\\n\\n# Problems:\\n# 1. Duplicates if new posts added while paginating\\n# 2. Missing posts if posts deleted\\n# 3. Inefficient for large offsets (O(N))\\n\"}]}]\n7b:[\"$\",\"h3\",null,{\"id\":\"cursor-based-pagination-use-this\",\"children\":\"Cursor-Based Pagination (Use This!)\"}]\n7c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# GOOD: Cursor-based\\ndef get_feed_cursor(user_id, cursor=None, size=20):\\n    if cursor is None:\\n        # First page: Start from highest score\\n        cursor = \\\"+inf\\\"\\n    \\n    # Get posts with score \u003c cursor\\n    post_ids = redis.zrevrangebyscore(\\n        f\\\"timeline:{user_id}\\\",\\n        max=cursor,\\n        min=\\\"-inf\\\",\\n        start=0,\\n        num=size + 1,  # Fetch one extra to check if more\\n        withscores=True\\n    )\\n    \\n    has_more = len(post_ids) \u003e size\\n    if has_more:\\n        post_ids = post_ids[:size]\\n    \\n    # Next cursor = smallest score in this page\\n    next_cursor = post_ids[-1][1] if post_ids else None\\n    \\n    return {\\n        'posts': [pid for pid, score in post_ids],\\n        'next_cursor': next_cursor,\\n        'has_more': has_more\\n    }\\n\\n# Client usage:\\n# Page 1: GET /feed?size=20\\n# Response: {posts: [...], next_cursor: 1709567890000}\\n#\\n# Page 2: GET /feed?cursor=1709567890000\u0026size=20\\n# Response: {posts: [...], next_cursor: 1709567850000}\\n\"}]}]\n7d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why cursor-based wins:\"}]}]\n7e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"No duplicates\\nNo missing posts\\nEfficient (always O(log N))\\nWorks with real-time updates\\nStateless (cursor contains all info)\\n\"}]}]\n7f:[\"$\",\"h2\",null,{\"id\":\"integration-putting-it-all-together\",\"children\":\"Integration: Putting It All Together\"}]\n80:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real-world architecture cho 100M users:\"}]}]\n97:T40d,graph TB\n    subgraph Client Layer\n        APP[Mobile/Web App]\n    end\n    \n    subgraph API Layer\n        LB[Load Balancer]\n        API1[API Server 1]\n        API2[API Server 2]\n        API3[API Server N]\n    end\n    \n    subgraph Service Layer\n        POST[Post Service]\n        FEED[Feed Service]\n        RANK[Ranking Service]\n        NOTIF[Notification Service]\n    end\n    \n    subgraph Event Layer\n        KAFKA[Kafka Event Bus]\n        FANOUT[Fanout Workers]\n        ANALYTICS[Analytics Workers]\n    end\n    \n    subgraph Data Layer\n        REDIS[Timeline Cache\u003cbr/\u003eRedis Cluster]\n        DB[(PostgreSQL\u003cbr/\u003eSharded)]\n        S3[S3\u003cbr/\u003eMedia Storage]\n    end\n    \n    APP --\u003e LB\n    LB --\u003e API1 \u0026 API2 \u0026 API3\n    API1 \u0026 API2 \u0026 API3 --\u003e POST \u0026 FEED \u0026 RANK\n    \n   "])</script><script>self.__next_f.push([1," POST --\u003e KAFKA\n    POST --\u003e DB\n    POST --\u003e S3\n    \n    KAFKA --\u003e FANOUT\n    KAFKA --\u003e ANALYTICS\n    \n    FANOUT --\u003e REDIS\n    FEED --\u003e REDIS\n    FEED --\u003e DB\n    RANK --\u003e DB\n    \n    style KAFKA fill:#ffd43b\n    style REDIS fill:#51cf66\n    style FANOUT fill:#ff6b6b81:[\"$\",\"$L2a\",null,{\"chart\":\"$97\"}]\n82:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Complete feed system architecture với event-driven design\"}]}]\n83:[\"$\",\"h3\",null,{\"id\":\"capacity-planning\",\"children\":\"Capacity Planning\"}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Platform: 100M monthly active users\\nDaily active: 30M users\\nPosts/day: 60M posts (2 posts/user average)\\nAverage followers: 200\\n\\nWrite load:\\n- 60M posts/day\\n- Fanout: 60M × 200 = 12B timeline writes/day\\n- 12B / 86400s ≈ 140K writes/second\\n\\nRead load:\\n- 30M users open feed 10 times/day = 300M feed loads/day\\n- 300M / 86400s ≈ 3,500 reads/second\\n\\nInfrastructure:\\n- API servers: 200 instances\\n- Fanout workers: 500 instances\\n- Redis cluster: 100 nodes (1.6TB total RAM)\\n- PostgreSQL: 50 shards\\n- Kafka: 20 brokers\\n- S3: Unlimited (media storage)\\n\\nCost (monthly, AWS):\\n- Compute (EC2): $50,000\\n- Redis (ElastiCache): $10,000\\n- RDS (PostgreSQL): $30,000\\n- S3: $5,000\\n- Kafka (MSK): $8,000\\n- Data transfer: $15,000\\nTotal: ~$120,000/month\\n\\nNot cheap, but necessary at scale!\\n\"}]}]\n85:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Feed systems complexity:\"}]}]\n87:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Most complex architecture trong consumer apps vì:\\n- Read và write amplification\\n- Personalization at scale\\n- Real-time requirements\\n- Celebrity problem\\n- Eventual consistency\\n\"}]}]\n88:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Fanout strategies:\"}]}]\n89:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Fanout on Write:\\n- Pre-compute feeds\\n- Fast reads\\n- Write amplification\\n- Good cho normal users\\n\\nFanout on Read:\\n- Query on demand\\n- Fast writes\\n- Read amplification\\n- Good cho celebrities\\n\\nHybrid (Best):\\n- Combine both\\n- Optimize based on follower count\\n- Facebook, Twitter, Instagram use this\\n\"}]}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architecture patterns:\"}]}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Event-driven (decouple services)\\n✓ Timeline cache (Redis sorted sets)\\n✓ Cursor-based pagination (avoid offsets)\\n✓ Async fanout (queue-based)\\n✓ Personalized ranking (ML pipeline)\\n\"}]}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs always:\"}]}]\n8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Consistency vs Latency:\\n- Eventual consistency acceptable\\n- Fanout lag OK (few seconds)\\n\\nStorage vs Compute:\\n- Cache timelines (storage cost)\\n- Or query on demand (compute cost)\\n\\nSimplicity vs Optimization:\\n- Start simple (fanout on write)\\n- Add complexity when proven needed (hybrid)\\n\"}]}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Lesson learned từ kinh nghiệm:\"}]}]\n8f:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Start simple:\"}],\" Fanout on write, iterate later\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Measure everything:\"}],\" Know where bottleneck is\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Eventual consistency OK:\"}],\" Users don't notice 2-second delay\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Cache is king:\"}],\" Pre-compute as much as possible\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Event-driven scales:\"}],\" Decouple services early\"]}],\"\\n\"]}]\n90:[\"$\",\"p\",null,{\"children\":\"Feed systems force bạn confront mọi distributed systems challenges. Master feed = Master distributed systems thinking.\"}]\n91:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"This is why Feed Engineer là specialized role at FAANG companies.\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"98:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps | Phase 5 — Real-World Architecture Patterns | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Master feed generation architecture: fanout strategies, timeline cache, event driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-5/lesson/lesson-3-social-feed-systems\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps | Phase 5 — Real-World Architecture Patterns\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Master feed generation architecture: fanout strategies, timeline cache, event driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-5/lesson/lesson-3-social-feed-systems\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps | Phase 5 — Real-World Architecture Patterns\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Master feed generation architecture: fanout strategies, timeline cache, event driven systems, và ranking algorithms. Học cách Facebook, Twitter, Instagram thiết\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L98\",\"14\",{}]]\n"])</script></body></html>

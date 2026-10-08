@@ -1,0 +1,692 @@
+<article class="prose-ui"><h1 id="database-scaling--optimization---từ-query-tuning-đến-sharding">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<ul>
+<li>§§SEG9§§</li>
+<li>§§SEG10§§</li>
+<li>§§SEG11§§</li>
+<li>§§SEG12§§</li>
+<li>§§SEG13§§</li>
+</ul>
+<h2 id="tại-sao-database-là-bottleneck">§§SEG14§§</h2>
+<p>§§SEG15§§</p>
+<h3 id="1-disk-io-bottleneck">§§SEG16§§</h3>
+<p>§§SEG17§§</p>
+<pre><code>§§SEG18§§</code></pre>
+<p>§§SEG19§§</p>
+<p>§§SEG20§§</p>
+<h3 id="2-acid-guarantees">§§SEG21§§</h3>
+<p>§§SEG22§§</p>
+<ul>
+<li>§§SEG23§§</li>
+<li>§§SEG24§§</li>
+<li>§§SEG25§§</li>
+<li>§§SEG26§§</li>
+</ul>
+<p>§§SEG27§§</p>
+<ul>
+<li>§§SEG28§§</li>
+<li>§§SEG29§§</li>
+<li>§§SEG30§§</li>
+</ul>
+<p>§§SEG31§§</p>
+<h3 id="3-single-writer-problem">§§SEG32§§</h3>
+<p>§§SEG33§§</p>
+<p>§§SEG34§§</p>
+<p>§§SEG35§§</p>
+<h3 id="4-data-growth">§§SEG36§§</h3>
+<p>§§SEG37§§</p>
+<pre><code>§§SEG38§§</code></pre>
+<p>§§SEG39§§</p>
+<p>§§SEG40§§</p>
+<h2 id="index-strategy---first-line-of-defense">§§SEG41§§</h2>
+<p>§§SEG42§§</p>
+<p>§§SEG43§§</p>
+<h3 id="b-tree-index-default">§§SEG44§§</h3>
+<p>§§SEG45§§</p>
+<pre><code class="language-sql">CREATE INDEX idx_users_email ON users(email);
+</code></pre>
+<p>§§SEG46§§</p>
+<pre><code>§§SEG47§§</code></pre>
+<p>§§SEG48§§</p>
+<p>§§SEG49§§</p>
+<ul>
+<li>§§SEG50§§</li>
+<li>§§SEG51§§</li>
+<li>§§SEG52§§</li>
+<li>§§SEG53§§</li>
+</ul>
+<h3 id="composite-index">§§SEG54§§</h3>
+<p>§§SEG55§§</p>
+<pre><code class="language-sql">CREATE INDEX idx_orders_user_date 
+ON orders(user_id, created_at);
+</code></pre>
+<p>§§SEG56§§</p>
+<pre><code class="language-sql">-- Uses index (leftmost column)
+WHERE user_id = 123
+
+-- Uses full index
+WHERE user_id = 123 AND created_at &gt; '2025-01-01'
+
+-- Không dùng index (missing leftmost column)
+WHERE created_at &gt; '2025-01-01'
+</code></pre>
+<p>§§SEG57§§</p>
+<h3 id="covering-index">§§SEG58§§</h3>
+<p>§§SEG59§§</p>
+<pre><code class="language-sql">-- Query này
+SELECT user_id, created_at, total 
+FROM orders 
+WHERE user_id = 123;
+
+-- Covering index
+CREATE INDEX idx_orders_covering 
+ON orders(user_id, created_at, total);
+</code></pre>
+<p>§§SEG60§§</p>
+<h3 id="partial-index">§§SEG61§§</h3>
+<p>§§SEG62§§</p>
+<pre><code class="language-sql">-- Chỉ index active users
+CREATE INDEX idx_active_users 
+ON users(email) 
+WHERE status = 'active';
+</code></pre>
+<p>§§SEG63§§</p>
+<h3 id="index-trade-offs">§§SEG64§§</h3>
+<p>§§SEG65§§</p>
+<ul>
+<li>§§SEG66§§</li>
+<li>§§SEG67§§</li>
+<li>§§SEG68§§</li>
+</ul>
+<p>§§SEG69§§</p>
+<ul>
+<li>§§SEG70§§</li>
+</ul>
+<p>§§SEG71§§</p>
+<pre><code class="language-sql">-- PostgreSQL: Find unused indexes
+SELECT schemaname, tablename, indexname
+FROM pg_stat_user_indexes
+WHERE idx_scan = 0;
+</code></pre>
+<h2 id="query-optimization---make-queries-faster">§§SEG72§§</h2>
+<p>§§SEG73§§</p>
+<h3 id="explain-analyze---your-best-friend">§§SEG74§§</h3>
+<p>§§SEG75§§</p>
+<pre><code class="language-sql">EXPLAIN ANALYZE
+SELECT * FROM orders 
+WHERE user_id = 123 
+ORDER BY created_at DESC 
+LIMIT 10;
+</code></pre>
+<p>§§SEG76§§</p>
+<pre><code>§§SEG77§§</code></pre>
+<p>§§SEG78§§</p>
+<ul>
+<li>§§SEG79§§</li>
+<li>§§SEG80§§</li>
+<li>§§SEG81§§</li>
+</ul>
+<h3 id="select--is-evil">§§SEG82§§</h3>
+<p>§§SEG83§§</p>
+<pre><code class="language-sql">SELECT * FROM users WHERE id = 123;
+</code></pre>
+<p>§§SEG84§§</p>
+<p>§§SEG85§§</p>
+<pre><code class="language-sql">SELECT id, name, email FROM users WHERE id = 123;
+</code></pre>
+<p>§§SEG86§§</p>
+<p>§§SEG87§§</p>
+<ul>
+<li>§§SEG88§§</li>
+<li>§§SEG89§§</li>
+<li>§§SEG90§§</li>
+</ul>
+<h3 id="avoid-or-in-where-clause">§§SEG91§§</h3>
+<p>§§SEG92§§</p>
+<pre><code class="language-sql">SELECT * FROM users 
+WHERE email = 'test@example.com' 
+   OR username = 'testuser';
+</code></pre>
+<p>§§SEG93§§</p>
+<p>§§SEG94§§</p>
+<pre><code class="language-sql">SELECT * FROM users WHERE email = 'test@example.com'
+UNION
+SELECT * FROM users WHERE username = 'testuser';
+</code></pre>
+<p>§§SEG95§§</p>
+<h3 id="use-limit">§§SEG96§§</h3>
+<p>§§SEG97§§</p>
+<pre><code class="language-sql">SELECT * FROM orders ORDER BY created_at DESC;
+</code></pre>
+<p>§§SEG98§§</p>
+<p>§§SEG99§§</p>
+<pre><code class="language-sql">SELECT * FROM orders 
+ORDER BY created_at DESC 
+LIMIT 20;
+</code></pre>
+<p>§§SEG100§§</p>
+<h3 id="avoid-functions-in-where">§§SEG101§§</h3>
+<p>§§SEG102§§</p>
+<pre><code class="language-sql">WHERE YEAR(created_at) = 2025
+</code></pre>
+<p>§§SEG103§§</p>
+<p>§§SEG104§§</p>
+<pre><code class="language-sql">WHERE created_at &gt;= '2025-01-01' 
+  AND created_at &lt; '2026-01-01'
+</code></pre>
+<p>§§SEG105§§</p>
+<h2 id="n1-problem---silent-performance-killer">§§SEG106§§</h2>
+<p>§§SEG107§§</p>
+<h3 id="problem">§§SEG108§§</h3>
+<pre><code class="language-python"># Fetch 10 users (1 query)
+users = db.query("SELECT * FROM users LIMIT 10")
+
+# For each user, fetch orders (10 queries)
+for user in users:
+    orders = db.query("SELECT * FROM orders WHERE user_id = ?", user.id)
+    print(f"{user.name}: {len(orders)} orders")
+</code></pre>
+<p>§§SEG109§§</p>
+<p>§§SEG110§§</p>
+<p>§§SEG111§§</p>
+<h3 id="solution-1-eager-loading">§§SEG112§§</h3>
+<pre><code class="language-python"># Single query with JOIN
+query = """
+SELECT u.*, o.id as order_id, o.total
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+LIMIT 10
+"""
+
+results = db.query(query)
+</code></pre>
+<p>§§SEG113§§</p>
+<h3 id="solution-2-batch-loading">§§SEG114§§</h3>
+<pre><code class="language-python"># Fetch users
+users = db.query("SELECT * FROM users LIMIT 10")
+user_ids = [u.id for u in users]
+
+# Batch fetch all orders
+orders = db.query(
+    "SELECT * FROM orders WHERE user_id IN (?)",
+    user_ids
+)
+
+# Group orders by user
+orders_by_user = defaultdict(list)
+for order in orders:
+    orders_by_user[order.user_id].append(order)
+</code></pre>
+<p>§§SEG115§§</p>
+<h3 id="framework-solutions">§§SEG116§§</h3>
+<p>§§SEG117§§</p>
+<pre><code class="language-ruby">User.includes(:orders).limit(10)
+</code></pre>
+<p>§§SEG118§§</p>
+<pre><code class="language-python">User.objects.prefetch_related('orders')[:10]
+</code></pre>
+<p>§§SEG119§§</p>
+<pre><code class="language-typescript">userRepository.find({ relations: ['orders'], take: 10 })
+</code></pre>
+<p>§§SEG120§§</p>
+<h2 id="denormalization---trading-consistency-for-performance">§§SEG121§§</h2>
+<p>§§SEG122§§</p>
+<h3 id="example-order-totals">§§SEG123§§</h3>
+<p>§§SEG124§§</p>
+<pre><code class="language-sql">-- Calculate total mỗi lần query
+SELECT o.id, SUM(oi.price * oi.quantity) as total
+FROM orders o
+JOIN order_items oi ON o.id = oi.order_id
+GROUP BY o.id;
+</code></pre>
+<p>§§SEG125§§</p>
+<p>§§SEG126§§</p>
+<pre><code class="language-sql">-- Store pre-computed total
+ALTER TABLE orders ADD COLUMN total DECIMAL(10,2);
+
+-- Update when order items change
+UPDATE orders SET total = ? WHERE id = ?;
+
+-- Query simple
+SELECT id, total FROM orders;
+</code></pre>
+<p>§§SEG127§§</p>
+<h3 id="when-to-denormalize">§§SEG128§§</h3>
+<p>§§SEG129§§</p>
+<ul>
+<li>§§SEG130§§</li>
+<li>§§SEG131§§</li>
+<li>§§SEG132§§</li>
+</ul>
+<p>§§SEG133§§</p>
+<ul>
+<li>§§SEG134§§</li>
+<li>§§SEG135§§</li>
+<li>§§SEG136§§</li>
+</ul>
+<h3 id="materialized-views">§§SEG137§§</h3>
+<p>§§SEG138§§</p>
+<pre><code class="language-sql">-- PostgreSQL
+CREATE MATERIALIZED VIEW user_stats AS
+SELECT 
+    user_id,
+    COUNT(*) as order_count,
+    SUM(total) as total_spent
+FROM orders
+GROUP BY user_id;
+
+-- Refresh periodically
+REFRESH MATERIALIZED VIEW user_stats;
+</code></pre>
+<p>§§SEG139§§</p>
+<h2 id="read-replicas---scale-reads-horizontally">§§SEG140§§</h2>
+<p>§§SEG141§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG142§§</code></pre>
+<h3 id="how-it-works">§§SEG143§§</h3>
+<p>§§SEG144§§</p>
+<ul>
+<li>§§SEG145§§</li>
+</ul>
+<p>§§SEG146§§</p>
+<ul>
+<li>§§SEG147§§</li>
+<li>§§SEG148§§</li>
+</ul>
+<p>§§SEG149§§</p>
+<ul>
+<li>§§SEG150§§</li>
+<li>§§SEG151§§</li>
+</ul>
+<h3 id="benefits">§§SEG152§§</h3>
+<p>§§SEG153§§</p>
+<ul>
+<li>§§SEG154§§</li>
+<li>§§SEG155§§</li>
+</ul>
+<p>§§SEG156§§</p>
+<ul>
+<li>§§SEG157§§</li>
+<li>§§SEG158§§</li>
+<li>§§SEG159§§</li>
+</ul>
+<p>§§SEG160§§</p>
+<ul>
+<li>§§SEG161§§</li>
+<li>§§SEG162§§</li>
+</ul>
+<h3 id="replication-lag">§§SEG163§§</h3>
+<p>§§SEG164§§</p>
+<pre><code>§§SEG165§§</code></pre>
+<p>§§SEG166§§</p>
+<h3 id="handling-replication-lag">§§SEG167§§</h3>
+<p>§§SEG168§§</p>
+<pre><code class="language-python">def update_profile(user_id, data):
+    # Write to primary
+    db_primary.execute("UPDATE users SET ... WHERE id = ?", user_id)
+    
+    # Read from primary (not replica)
+    return db_primary.query("SELECT * FROM users WHERE id = ?", user_id)
+</code></pre>
+<p>§§SEG169§§</p>
+<ul>
+<li>§§SEG170§§</li>
+<li>§§SEG171§§</li>
+</ul>
+<p>§§SEG172§§</p>
+<pre><code class="language-python"># Payment - critical
+balance = db_primary.query("SELECT balance FROM accounts")
+
+# Profile view - không critical
+profile = db_replica.query("SELECT * FROM users")
+</code></pre>
+<h3 id="replication-types">§§SEG173§§</h3>
+<p>§§SEG174§§</p>
+<ul>
+<li>§§SEG175§§</li>
+<li>§§SEG176§§</li>
+<li>§§SEG177§§</li>
+</ul>
+<p>§§SEG178§§</p>
+<ul>
+<li>§§SEG179§§</li>
+<li>§§SEG180§§</li>
+<li>§§SEG181§§</li>
+</ul>
+<p>§§SEG182§§</p>
+<ul>
+<li>§§SEG183§§</li>
+<li>§§SEG184§§</li>
+</ul>
+<h2 id="sharding---scale-writes--storage">§§SEG185§§</h2>
+<p>§§SEG186§§</p>
+<p>§§SEG187§§</p>
+<h3 id="why-sharding">§§SEG188§§</h3>
+<p>§§SEG189§§</p>
+<p>§§SEG190§§</p>
+<ul>
+<li>§§SEG191§§</li>
+<li>§§SEG192§§</li>
+<li>§§SEG193§§</li>
+</ul>
+<h3 id="sharding-strategies">§§SEG194§§</h3>
+<h4 id="1-range-based-sharding">§§SEG195§§</h4>
+<p>§§SEG196§§</p>
+<pre><code>§§SEG197§§</code></pre>
+<pre><code class="language-python">def get_shard(user_id):
+    if user_id &lt;= 1000000:
+        return shard_1
+    elif user_id &lt;= 2000000:
+        return shard_2
+    else:
+        return shard_3
+</code></pre>
+<p>§§SEG198§§</p>
+<ul>
+<li>§§SEG199§§</li>
+<li>§§SEG200§§</li>
+</ul>
+<p>§§SEG201§§</p>
+<ul>
+<li>§§SEG202§§</li>
+<li>§§SEG203§§</li>
+</ul>
+<h4 id="2-hash-based-sharding">§§SEG204§§</h4>
+<p>§§SEG205§§</p>
+<pre><code class="language-python">def get_shard(user_id):
+    shard_num = hash(user_id) % num_shards
+    return shards[shard_num]
+</code></pre>
+<p>§§SEG206§§</p>
+<ul>
+<li>§§SEG207§§</li>
+<li>§§SEG208§§</li>
+</ul>
+<p>§§SEG209§§</p>
+<ul>
+<li>§§SEG210§§</li>
+<li>§§SEG211§§</li>
+</ul>
+<h4 id="3-geographic-sharding">§§SEG212§§</h4>
+<p>§§SEG213§§</p>
+<pre><code>§§SEG214§§</code></pre>
+<p>§§SEG215§§</p>
+<ul>
+<li>§§SEG216§§</li>
+<li>§§SEG217§§</li>
+</ul>
+<p>§§SEG218§§</p>
+<ul>
+<li>§§SEG219§§</li>
+<li>§§SEG220§§</li>
+</ul>
+<h4 id="4-entity-based-sharding-practical">§§SEG221§§</h4>
+<p>§§SEG222§§</p>
+<pre><code>§§SEG223§§</code></pre>
+<p>§§SEG224§§</p>
+<h3 id="sharding-challenges">§§SEG225§§</h3>
+<p>§§SEG226§§</p>
+<pre><code class="language-sql">-- Query users across all shards
+SELECT * FROM users WHERE created_at &gt; '2025-01-01'
+</code></pre>
+<p>§§SEG227§§</p>
+<p>§§SEG228§§</p>
+<p>§§SEG229§§</p>
+<pre><code class="language-sql">-- Transfer between users on different shards
+BEGIN TRANSACTION;
+  UPDATE accounts SET balance = balance - 100 WHERE user_id = 123; -- Shard 1
+  UPDATE accounts SET balance = balance + 100 WHERE user_id = 456; -- Shard 2
+COMMIT;
+</code></pre>
+<p>§§SEG230§§</p>
+<ul>
+<li>§§SEG231§§</li>
+<li>§§SEG232§§</li>
+<li>§§SEG233§§</li>
+</ul>
+<p>§§SEG234§§</p>
+<p>§§SEG235§§</p>
+<p>§§SEG236§§</p>
+<p>§§SEG237§§</p>
+<p>§§SEG238§§</p>
+<pre><code class="language-sql">-- Join users + orders across shards
+SELECT u.name, o.total
+FROM users u
+JOIN orders o ON u.id = o.user_id
+</code></pre>
+<p>§§SEG239§§</p>
+<p>§§SEG240§§</p>
+<ul>
+<li>§§SEG241§§</li>
+<li>§§SEG242§§</li>
+<li>§§SEG243§§</li>
+</ul>
+<h3 id="sharding-architecture-example">§§SEG244§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG245§§</code></pre>
+<p>§§SEG246§§</p>
+<h3 id="when-to-shard">§§SEG247§§</h3>
+<p>§§SEG248§§</p>
+<ul>
+<li>§§SEG249§§</li>
+<li>§§SEG250§§</li>
+<li>§§SEG251§§</li>
+<li>§§SEG252§§</li>
+</ul>
+<p>§§SEG253§§</p>
+<ul>
+<li>§§SEG254§§</li>
+<li>§§SEG255§§</li>
+<li>§§SEG256§§</li>
+<li>§§SEG257§§</li>
+</ul>
+<p>§§SEG258§§</p>
+<h2 id="partitioning---logical-sharding-within-single-database">§§SEG259§§</h2>
+<p>§§SEG260§§</p>
+<p>§§SEG261§§</p>
+<h3 id="types-of-partitioning">§§SEG262§§</h3>
+<h4 id="range-partitioning">§§SEG263§§</h4>
+<pre><code class="language-sql">-- PostgreSQL
+CREATE TABLE orders (
+    id BIGINT,
+    user_id BIGINT,
+    created_at TIMESTAMP
+) PARTITION BY RANGE (created_at);
+
+CREATE TABLE orders_2024 
+PARTITION OF orders 
+FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
+
+CREATE TABLE orders_2025 
+PARTITION OF orders 
+FOR VALUES FROM ('2025-01-01') TO ('2026-01-01');
+</code></pre>
+<p>§§SEG264§§</p>
+<pre><code class="language-sql">-- Chỉ scan orders_2025 partition
+SELECT * FROM orders 
+WHERE created_at &gt;= '2025-02-01';
+</code></pre>
+<h4 id="hash-partitioning">§§SEG265§§</h4>
+<pre><code class="language-sql">CREATE TABLE users (
+    id BIGINT,
+    name VARCHAR(100)
+) PARTITION BY HASH (id);
+
+CREATE TABLE users_p0 PARTITION OF users 
+FOR VALUES WITH (MODULUS 4, REMAINDER 0);
+
+CREATE TABLE users_p1 PARTITION OF users 
+FOR VALUES WITH (MODULUS 4, REMAINDER 1);
+-- ... p2, p3
+</code></pre>
+<p>§§SEG266§§</p>
+<h4 id="list-partitioning">§§SEG267§§</h4>
+<pre><code class="language-sql">CREATE TABLE orders (
+    country VARCHAR(2)
+) PARTITION BY LIST (country);
+
+CREATE TABLE orders_us PARTITION OF orders 
+FOR VALUES IN ('US');
+
+CREATE TABLE orders_eu PARTITION OF orders 
+FOR VALUES IN ('DE', 'FR', 'UK');
+</code></pre>
+<h3 id="benefits-of-partitioning">§§SEG268§§</h3>
+<p>§§SEG269§§</p>
+<ul>
+<li>§§SEG270§§</li>
+<li>§§SEG271§§</li>
+</ul>
+<p>§§SEG272§§</p>
+<ul>
+<li>§§SEG273§§</li>
+<li>§§SEG274§§</li>
+</ul>
+<p>§§SEG275§§</p>
+<ul>
+<li>§§SEG276§§</li>
+</ul>
+<h3 id="partitioning-vs-sharding">§§SEG277§§</h3>
+<table><thead><tr><th>§§SEG278§§</th><th>§§SEG279§§</th><th>§§SEG280§§</th></tr></thead><tbody><tr><td>§§SEG281§§</td><td>§§SEG282§§</td><td>§§SEG283§§</td></tr><tr><td>§§SEG284§§</td><td>§§SEG285§§</td><td>§§SEG286§§</td></tr><tr><td>§§SEG287§§</td><td>§§SEG288§§</td><td>§§SEG289§§</td></tr><tr><td>§§SEG290§§</td><td>§§SEG291§§</td><td>§§SEG292§§</td></tr><tr><td>§§SEG293§§</td><td>§§SEG294§§</td><td>§§SEG295§§</td></tr></tbody></table>
+<p>§§SEG296§§</p>
+<h2 id="database-scaling-progression">§§SEG297§§</h2>
+<p>§§SEG298§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG299§§</code></pre>
+<p>§§SEG300§§</p>
+<h2 id="practical-recommendations">§§SEG301§§</h2>
+<h3 id="1-measure-first">§§SEG302§§</h3>
+<p>§§SEG303§§</p>
+<pre><code class="language-sql">-- Slow query log
+SET global slow_query_log = 'ON';
+SET global long_query_time = 1; -- queries &gt; 1s
+
+-- Monitor metrics
+- Query latency (p50, p95, p99)
+- Queries per second
+- Connection pool usage
+- Disk I/O
+- CPU usage
+</code></pre>
+<h3 id="2-low-hanging-fruit-first">§§SEG304§§</h3>
+<p>§§SEG305§§</p>
+<ol>
+<li>§§SEG306§§</li>
+<li>§§SEG307§§</li>
+<li>§§SEG308§§</li>
+<li>§§SEG309§§</li>
+<li>§§SEG310§§</li>
+</ol>
+<p>§§SEG311§§</p>
+<h3 id="3-design-for-your-readwrite-ratio">§§SEG312§§</h3>
+<p>§§SEG313§§</p>
+<ul>
+<li>§§SEG314§§</li>
+<li>§§SEG315§§</li>
+</ul>
+<p>§§SEG316§§</p>
+<ul>
+<li>§§SEG317§§</li>
+<li>§§SEG318§§</li>
+<li>§§SEG319§§</li>
+</ul>
+<h3 id="4-connection-pooling">§§SEG320§§</h3>
+<p>§§SEG321§§</p>
+<pre><code class="language-python"># Bad: New connection mỗi query
+def get_user(id):
+    conn = create_connection()
+    user = conn.query(...)
+    conn.close()
+
+# Good: Connection pool
+pool = ConnectionPool(max_connections=20)
+
+def get_user(id):
+    with pool.get_connection() as conn:
+        user = conn.query(...)
+</code></pre>
+<p>§§SEG322§§</p>
+<h3 id="5-database-specific-tuning">§§SEG323§§</h3>
+<p>§§SEG324§§</p>
+<pre><code class="language-sql">-- Increase shared buffers
+shared_buffers = 4GB
+
+-- Work mem for sorting
+work_mem = 256MB
+
+-- Effective cache size
+effective_cache_size = 12GB
+</code></pre>
+<p>§§SEG325§§</p>
+<pre><code class="language-sql">-- InnoDB buffer pool
+innodb_buffer_pool_size = 8GB
+
+-- Query cache
+query_cache_size = 256MB
+</code></pre>
+<p>§§SEG326§§</p>
+<h2 id="mental-model-database-thường-là-bottleneck-lớn-nhất">§§SEG327§§</h2>
+<p>§§SEG328§§</p>
+<p>§§SEG329§§</p>
+<pre><code>§§SEG330§§</code></pre>
+<p>§§SEG331§§</p>
+<ol>
+<li>
+<p>§§SEG332§§</p>
+<ul>
+<li>§§SEG333§§</li>
+<li>§§SEG334§§</li>
+<li>§§SEG335§§</li>
+</ul>
+</li>
+<li>
+<p>§§SEG336§§</p>
+<ul>
+<li>§§SEG337§§</li>
+<li>§§SEG338§§</li>
+<li>§§SEG339§§</li>
+</ul>
+</li>
+<li>
+<p>§§SEG340§§</p>
+<ul>
+<li>§§SEG341§§</li>
+<li>§§SEG342§§</li>
+</ul>
+</li>
+<li>
+<p>§§SEG343§§</p>
+<ul>
+<li>§§SEG344§§</li>
+<li>§§SEG345§§</li>
+</ul>
+</li>
+</ol>
+<p>§§SEG346§§</p>
+<h2 id="key-takeaways">§§SEG347§§</h2>
+<p>§§SEG348§§</p>
+<p>§§SEG349§§</p>
+<p>§§SEG350§§</p>
+<p>§§SEG351§§</p>
+<p>§§SEG352§§</p>
+<p>§§SEG353§§</p>
+<p>§§SEG354§§</p>
+<p>§§SEG355§§</p>
+<p>§§SEG356§§</p>
+<p>§§SEG357§§</p>
+<p>§§SEG358§§</p>
+<p>§§SEG359§§</p>
+<p>§§SEG360§§</p>
+<p>§§SEG361§§</p>
+<p>§§SEG362§§</p>
+<p>§§SEG363§§</p>
+<p>§§SEG364§§</p>
+<p>§§SEG365§§</p>
+<p>§§SEG366§§</p>
+<p>§§SEG367§§</p>
+<hr>
+<p>§§SEG368§§</p></article>

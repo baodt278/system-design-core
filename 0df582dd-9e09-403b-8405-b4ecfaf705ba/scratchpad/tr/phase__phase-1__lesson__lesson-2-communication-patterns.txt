@@ -1,0 +1,504 @@
+@0
+⟦Các Mẫu Giao Tiếp|Communication Patterns⟧: ⟦Đồng Bộ|Sync⟧ và ⟦Bất Đồng Bộ|Async⟧
+@1
+Sau khi hiểu các ⟦thành phần|components⟧ trong hệ thống, câu hỏi tiếp theo là: **Chúng giao tiếp với nhau như thế nào?**
+@2
+Tôi còn nhớ lần đầu thiết kế tính năng "tải video lên". Cách tiếp cận của tôi:
+@3
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ nhìn code rồi hỏi: *"Người dùng có cần đợi tất cả những thứ này không?"*
+@4
+Tôi nhận ra: **Không.** ⟦Người dùng|User⟧ chỉ cần biết video đã được tải lên. Phần xử lý có thể làm sau.
+@5
+Đó là lúc tôi học về **⟦giao tiếp đồng bộ|synchronous communication⟧ và ⟦giao tiếp bất đồng bộ|asynchronous communication⟧** - một trong những quyết định quan trọng nhất trong ⟦thiết kế hệ thống|system design⟧.
+@6
+Tại Sao ⟦Mẫu Giao Tiếp|Communication Pattern⟧ Lại Quan Trọng?
+@7
+⟦Mẫu|Pattern⟧ bạn chọn ảnh hưởng đến:
+@8
+**⟦Hiệu năng|Performance⟧:**
+@9
+⟦Đồng bộ|Sync⟧: ⟦Người dùng|User⟧ phải đợi cho đến khi xong
+@10
+⟦Bất đồng bộ|Async⟧: ⟦Người dùng|User⟧ nhận ⟦phản hồi|response⟧ ngay, xử lý sau
+@11
+**⟦Khả năng mở rộng|Scalability⟧:**
+@12
+⟦Đồng bộ|Sync⟧: Khó xử lý các đợt ⟦lưu lượng tăng đột biến|traffic spikes⟧
+@13
+⟦Bất đồng bộ|Async⟧: ⟦Hàng đợi|Queue⟧ đệm các ⟦yêu cầu|requests⟧ một cách tự nhiên
+@14
+**⟦Độ tin cậy|Reliability⟧:**
+@15
+⟦Đồng bộ|Sync⟧: ⟦Sự cố|Failure⟧ = lỗi ngay lập tức
+@16
+⟦Bất đồng bộ|Async⟧: Có sẵn cơ chế ⟦thử lại|retry⟧
+@17
+**⟦Độ phức tạp|Complexity⟧:**
+@18
+⟦Đồng bộ|Sync⟧: Đơn giản, dễ hiểu
+@19
+⟦Bất đồng bộ|Async⟧: Phức tạp, ⟦nhất quán cuối cùng|eventual consistency⟧
+@20
+**Không có ⟦mẫu|pattern⟧ "tốt hơn". Chỉ có ⟦mẫu|pattern⟧ "phù hợp".**
+@21
+⟦Giao Tiếp Đồng Bộ|Synchronous Communication⟧ (⟦Yêu Cầu-Phản Hồi|Request-Response⟧)
+@22
+Cách Hoạt Động
+@23
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Database
+
+    Client->>Server: Yêu cầu HTTP
+    activate Server
+    Server->>Database: Truy vấn
+    activate Database
+    Database-->>Server: Kết quả
+    deactivate Database
+    Server-->>Client: Phản hồi HTTP
+    deactivate Server
+    Note over Client: Client đợi suốt quá trình
+@24
+⟦Máy khách|Client⟧ gửi ⟦yêu cầu|request⟧ → đợi → nhận ⟦phản hồi|response⟧. Đây là thao tác ⟦chặn|blocking⟧.
+@25
+Ví Dụ Code
+@26
+**Luồng xử lý:**
+@27
+⟦Máy khách|Client⟧ gửi ⟦yêu cầu|request⟧
+@28
+⟦Máy khách|Client⟧ **chờ đợi** (bị ⟦chặn|blocks⟧)
+@29
+⟦Máy chủ|Server⟧ xử lý
+@30
+⟦Máy chủ|Server⟧ trả về ⟦phản hồi|response⟧
+@31
+⟦Máy khách|Client⟧ nhận kết quả
+@32
+Tổng thời gian = Tổng của tất cả các bước.
+@33
+Khi Nào Dùng ⟦Đồng Bộ|Synchronous⟧
+@34
+**Dùng ⟦đồng bộ|sync⟧ khi:**
+@35
+**⟦Người dùng|User⟧ cần kết quả ngay lập tức**
+@36
+Ví dụ:
+- Đăng nhập (cần biết thành công/thất bại ngay)
+- Tìm kiếm (người dùng đang đợi kết quả)
+- Gửi biểu mẫu (cần phản hồi kiểm tra hợp lệ)
+- Gọi API (máy khách cần dữ liệu để tiếp tục)
+
+@37
+**Thao tác nhanh (< 5 giây)**
+@38
+- Tra cứu cơ sở dữ liệu
+- Tính toán đơn giản
+- Đọc tệp (tệp nhỏ)
+
+@39
+**Quy trình đơn giản**
+@40
+Yêu cầu → Xử lý → Phản hồi
+Không có logic rẽ nhánh phức tạp
+
+@41
+Khi Nào KHÔNG Nên Dùng ⟦Đồng Bộ|Synchronous⟧
+@42
+**Xử lý lâu (> 5 giây)**
+@43
+- Mã hoá video
+- Xử lý tệp lớn
+- Báo cáo phức tạp
+- Các thao tác theo lô
+→ Người dùng bị hết thời gian chờ, trải nghiệm tệ
+
+@44
+**Các ⟦phụ thuộc bên ngoài|external dependencies⟧ không đáng tin cậy**
+@45
+- API của bên thứ ba (có thể chậm/sập)
+- Cổng thanh toán
+- Gửi email
+→ API của bạn chậm vì phụ thuộc bị chậm
+
+@46
+**Các đợt ⟦lưu lượng tăng đột biến|traffic spikes⟧ không dự đoán được**
+@47
+Đợt giảm giá Black Friday, bài đăng lan truyền
+→ Mọi yêu cầu xếp hàng chờ
+→ Hệ thống quá tải
+
+@48
+Các ⟦Đánh Đổi|Trade-offs⟧
+@49
+ Ưu điểm:
+- Logic đơn giản (dễ hiểu)
+- Phản hồi tức thì
+- Dễ gỡ lỗi (luồng tuyến tính)
+- Hỗ trợ giao dịch (ACID)
+
+ Nhược điểm:
+- Trải nghiệm tệ với các thao tác chậm
+- Liên kết chặt (máy khách phụ thuộc vào tính sẵn sàng của máy chủ)
+- Khó mở rộng (chặn đồng bộ)
+- Rủi ro hết thời gian chờ
+
+@50
+Ví Dụ Thực Tế: Luồng Đăng Nhập
+@51
+**Tại sao ⟦đồng bộ|sync⟧ là phù hợp:**
+@52
+⟦Người dùng|User⟧ cần kết quả ngay (không thể tiếp tục nếu chưa có token)
+@53
+Thao tác nhanh (< 100ms)
+@54
+Quy trình đơn giản
+@55
+⟦Giao Tiếp Bất Đồng Bộ|Asynchronous Communication⟧ (⟦Hàng Đợi Thông Điệp|Message Queue⟧)
+@56
+Cách Hoạt Động
+@57
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Queue
+    participant Worker
+    participant Database
+
+    Client->>Server: Yêu cầu HTTP
+    activate Server
+    Server->>Queue: Thêm tác vụ
+    Server-->>Client: Đã chấp nhận (202)
+    deactivate Server
+    Note over Client: Client tiếp tục ngay lập tức
+
+    Queue->>Worker: Lấy tác vụ
+    activate Worker
+    Worker->>Database: Xử lý
+    Database-->>Worker: Kết quả
+    Worker->>Queue: Xác nhận
+    deactivate Worker
+@58
+⟦Máy khách|Client⟧ gửi ⟦yêu cầu|request⟧ → ⟦máy chủ|server⟧ đưa vào ⟦hàng đợi|queue⟧ → trả về ngay. ⟦Tiến trình xử lý|Worker⟧ sẽ xử lý sau.
+@59
+Ví Dụ Code
+@60
+**Luồng xử lý:**
+@61
+⟦Máy khách|Client⟧ gửi ⟦yêu cầu|request⟧
+@62
+⟦Máy chủ|Server⟧ lưu lại và đưa tác vụ vào ⟦hàng đợi|queue⟧
+@63
+⟦Máy chủ|Server⟧ trả về ngay lập tức (202 Accepted)
+@64
+⟦Máy khách|Client⟧ tiếp tục (không đợi)
+@65
+⟦Tiến trình xử lý nền|Background worker⟧ nhận tác vụ
+@66
+⟦Tiến trình xử lý|Worker⟧ xử lý (có thể mất nhiều thời gian)
+@67
+(Tuỳ chọn) Thông báo cho ⟦máy khách|client⟧ khi xong
+@68
+Khi Nào Dùng ⟦Bất Đồng Bộ|Asynchronous⟧
+@69
+**Dùng ⟦bất đồng bộ|async⟧ khi:**
+@70
+**Xử lý lâu (> 5 giây)**
+@71
+Ví dụ:
+- Xử lý video/hình ảnh
+- Tạo báo cáo
+- Nhập dữ liệu theo lô
+- Đồng bộ hoá dữ liệu
+
+@72
+**⟦Người dùng|User⟧ không cần kết quả ngay**
+@73
+- Gửi email
+- Tạo hoá đơn
+- Cập nhật số liệu phân tích
+- Đồng bộ chạy nền
+
+@74
+**Cần xử lý các đợt ⟦lưu lượng tăng đột biến|traffic spikes⟧**
+@75
+Hàng đợi làm vùng đệm cho các yêu cầu:
+1000 yêu cầu/giây → Hàng đợi giữ lại
+Worker xử lý với tốc độ ổn định (100/giây)
+Máy chủ không bị quá tải
+
+@76
+**Các ⟦phụ thuộc bên ngoài|external dependencies⟧ không đáng tin cậy**
+@77
+- Gọi API của bên thứ ba
+- Gửi webhook
+- Xử lý thanh toán
+→ Cơ chế thử lại có sẵn trong hàng đợi
+
+@78
+Các Thành Phần Của ⟦Hàng Đợi Thông Điệp|Message Queue⟧
+@79
+flowchart LR
+    Producer[Bên phát<br/>Máy chủ web] --> Queue[Hàng đợi thông điệp<br/>RabbitMQ/Redis]
+    Queue --> Worker1[Worker 1]
+    Queue --> Worker2[Worker 2]
+    Queue --> Worker3[Worker 3]
+    Worker1 --> Database[(CSDL)]
+    Worker2 --> Database
+    Worker3 --> Database
+@80
+**⟦Bên phát|Producer⟧:** ⟦Dịch vụ|Service⟧ tạo ra các tác vụ (⟦máy chủ web|web server⟧)
+**⟦Hàng đợi|Queue⟧:** Lưu các tác vụ đang chờ được xử lý
+**⟦Bên tiêu thụ|Consumer⟧/⟦Tiến trình xử lý|Worker⟧:** Các ⟦dịch vụ|services⟧ xử lý tác vụ
+@81
+Các Đảm Bảo Của ⟦Hàng Đợi|Queue⟧
+@82
+**⟦Tối đa một lần|At-Most-Once⟧:**
+@83
+Thông điệp có thể bị mất
+Không thử lại
+Tình huống sử dụng: Số liệu đo, log (mất một ít cũng không sao)
+
+@84
+**⟦Ít nhất một lần|At-Least-Once⟧ (Phổ biến):**
+@85
+Thông điệp không bị mất
+Có thể bị xử lý nhiều lần
+Tình huống sử dụng: Phần lớn logic nghiệp vụ (kèm tính lũy đẳng)
+
+@86
+**⟦Đúng một lần|Exactly-Once⟧ (Hiếm):**
+@87
+Thông điệp được xử lý đúng 1 lần
+Rất khó triển khai
+Tình huống sử dụng: Giao dịch tài chính
+
+@88
+⟦Tính Lũy Đẳng|Idempotency⟧ - Khái Niệm Then Chốt
+@89
+**Vấn đề:** ⟦Tiến trình xử lý|Worker⟧ bị sập sau khi xử lý nhưng trước khi ⟦xác nhận|acknowledge⟧.
+@90
+Tác vụ: "Trừ $100 của người dùng"
+Worker 1: Xử lý → Trừ $100 → Sập (chưa ACK)
+Hàng đợi: Gửi lại tác vụ
+Worker 2: Xử lý → Lại trừ $100 nữa!
+Người dùng bị trừ $200 (sai!)
+
+@91
+**Giải pháp: Các thao tác ⟦lũy đẳng|idempotent⟧**
+@92
+**Khi thiết kế các thao tác ⟦bất đồng bộ|async⟧, hãy luôn làm cho chúng ⟦lũy đẳng|idempotent⟧.**
+@93
+Các ⟦Đánh Đổi|Trade-offs⟧
+@94
+ Ưu điểm:
+- Trải nghiệm tốt hơn (phản hồi nhanh)
+- Chịu được lưu lượng tăng đột biến (hàng đợi làm vùng đệm)
+- Cơ chế thử lại (độ tin cậy)
+- Tách rời các dịch vụ
+
+ Nhược điểm:
+- Kiến trúc phức tạp
+- Nhất quán cuối cùng
+- Khó gỡ lỗi hơn (phân tán)
+- Cần giám sát (độ dài hàng đợi, sức khoẻ worker)
+
+@95
+Ví Dụ Thực Tế: Đơn Hàng Thương Mại Điện Tử
+@96
+**Tại sao lại thiết kế như vậy?**
+@97
+Tạo đơn hàng: ⟦Đồng bộ|Sync⟧ (người dùng cần `order_id`)
+@98
+Tồn kho: ⟦Đồng bộ|Sync⟧ (phải ngăn bán vượt số lượng tồn)
+@99
+Email: ⟦Bất đồng bộ|Async⟧ (người dùng không đợi email)
+@100
+Phân tích: ⟦Bất đồng bộ|Async⟧ (không nằm trên ⟦đường găng|critical path⟧)
+@101
+⟦Kiến Trúc Hướng Sự Kiện|Event-Driven Architecture⟧ (Bất Đồng Bộ Nâng Cao)
+@102
+Cách Hoạt Động
+@103
+flowchart TD
+    Service1[Dịch vụ người dùng] -->|user.created| EventBus[Bus sự kiện<br/>Kafka/RabbitMQ]
+    EventBus -->|Đăng ký| EmailService[Dịch vụ email]
+    EventBus -->|Đăng ký| AnalyticsService[Dịch vụ phân tích]
+    EventBus -->|Đăng ký| RecommendationService[Dịch vụ gợi ý]
+
+    style EventBus fill:#f9f,stroke:#333
+@104
+Thay vì User Service gọi trực tiếp tới Email/Analytics, nó ⟦phát hành|publish⟧ một ⟦sự kiện|event⟧. Các ⟦dịch vụ|services⟧ khác ⟦đăng ký|subscribe⟧ để nhận.
+@105
+Ví Dụ Code
+@106
+**Lợi ích:**
+@107
+User Service không cần biết ai ⟦tiêu thụ|consume⟧ các ⟦sự kiện|events⟧
+@108
+Dễ dàng thêm ⟦bên đăng ký|subscribers⟧ mới (không phải sửa User Service)
+@109
+Mỗi ⟦dịch vụ|service⟧ đều độc lập
+@110
+Khi Nào Dùng ⟦Hướng Sự Kiện|Event-Driven⟧
+@111
+**Kiến trúc ⟦vi dịch vụ|microservices⟧**
+**Nhiều ⟦dịch vụ|services⟧ cần phản ứng với cùng một ⟦sự kiện|event⟧**
+**Cần ⟦liên kết lỏng|loose coupling⟧**
+@112
+**⟦Hệ thống nguyên khối|monolith⟧ đơn giản** (⟦thiết kế thừa|over-engineering⟧)
+**Nhóm nhỏ** (⟦chi phí phụ|overhead⟧ bảo trì)
+@113
+So Sánh Các ⟦Mẫu|Pattern⟧
+@114
+⟦Kịch Bản|Scenario⟧: Người Dùng Tải Lên Ảnh Đại Diện
+@115
+**Cách tiếp cận 1: ⟦Đồng bộ|Synchronous⟧**
+@116
+**Cách tiếp cận 2: ⟦Bất đồng bộ|Asynchronous⟧**
+@117
+**Cách tiếp cận 3: ⟦Hướng sự kiện|Event-Driven⟧**
+@118
+⟦Khung Ra Quyết Định|Decision Framework⟧
+@119
+Chọn Đồng bộ khi:
+✓ Người dùng cần kết quả ngay
+✓ Thao tác nhanh (< 5 giây)
+✓ Quy trình đơn giản
+✓ Yêu cầu nhất quán mạnh
+
+Chọn Bất đồng bộ (Hàng đợi) khi:
+✓ Xử lý lâu (> 5 giây)
+✓ Người dùng không cần kết quả ngay
+✓ Cần cơ chế thử lại
+✓ Phải chịu được lưu lượng tăng đột biến
+
+Chọn Hướng sự kiện khi:
+✓ Nhiều dịch vụ phản ứng với cùng một sự kiện
+✓ Kiến trúc vi dịch vụ
+✓ Cần liên kết lỏng
+✓ Quy trình phức tạp
+
+@120
+Các ⟦Mẫu|Patterns⟧ & ⟦Phản Mẫu|Anti-Patterns⟧ Thường Gặp
+@121
+Mẫu 1: ⟦Đồng Bộ|Sync⟧ Cho Đọc, ⟦Bất Đồng Bộ|Async⟧ Cho Ghi
+@122
+Mẫu 2: Saga Pattern (⟦Giao Dịch Phân Tán|Distributed Transactions⟧)
+@123
+Khi cần điều phối nhiều ⟦dịch vụ|services⟧:
+@124
+sequenceDiagram
+    participant Order
+    participant Payment
+    participant Inventory
+    participant Shipping
+
+    Order->>Payment: Trừ tiền thẻ
+    Payment-->>Order: Thành công
+    Order->>Inventory: Giữ hàng
+    Inventory-->>Order: Thành công
+    Order->>Shipping: Tạo đơn vận chuyển
+    Shipping-->>Order: Thất bại!
+    Order->>Inventory: Hoàn tác (trả lại hàng)
+    Order->>Payment: Hoàn tác (hoàn tiền)
+@125
+**Triển khai:**
+@126
+Phản Mẫu 1: Gọi ⟦Đồng Bộ|Sync⟧ Nối Chuỗi
+@127
+Phản Mẫu 2: Không Đặt ⟦Thời Gian Chờ|Timeout⟧ Cho Lời Gọi ⟦Đồng Bộ|Sync⟧
+@128
+Phản Mẫu 3: Không Xử Lý Sự Cố Của ⟦Hàng Đợi|Queue⟧
+@129
+⟦Giám Sát|Monitoring⟧ & ⟦Khả Năng Quan Sát|Observability⟧
+@130
+Các ⟦Chỉ Số|Metrics⟧ Chính
+@131
+**Cho các API ⟦đồng bộ|sync⟧:**
+@132
+- Thời gian phản hồi (p50, p95, p99)
+- Tỷ lệ lỗi
+- Tần suất yêu cầu
+- Tỷ lệ hết thời gian chờ
+
+@133
+**Cho các ⟦hàng đợi|queues⟧ ⟦bất đồng bộ|async⟧:**
+@134
+- Độ dài hàng đợi (tồn đọng)
+- Thời gian xử lý mỗi tác vụ
+- Tỷ lệ thất bại
+- Tỷ lệ thử lại
+- Sức khoẻ của worker
+
+@135
+⟦Cảnh Báo|Alerting⟧
+@136
+Những Điểm Cốt Lõi
+@137
+**⟦Mẫu giao tiếp|Communication patterns⟧ định hình hành vi của hệ thống:**
+@138
+**⟦Đồng bộ|Synchronous⟧ (⟦Yêu cầu-Phản hồi|Request-Response⟧):**
+@139
+Đơn giản, phản hồi tức thì
+@140
+Kém với các thao tác chậm, ⟦liên kết chặt|tight coupling⟧
+@141
+**Dùng cho:** Đọc dữ liệu, thao tác nhanh, các API phục vụ trực tiếp người dùng
+@142
+**⟦Bất đồng bộ|Asynchronous⟧ (⟦Hàng đợi thông điệp|Message Queue⟧):**
+@143
+Trải nghiệm tốt hơn, chịu được ⟦tăng đột biến|spikes⟧, có cơ chế ⟦thử lại|retry⟧
+@144
+Phức tạp, ⟦nhất quán cuối cùng|eventual consistency⟧
+@145
+**Dùng cho:** Xử lý chậm, ⟦tác vụ nền|background jobs⟧, ⟦tách rời|decoupling⟧
+@146
+**⟦Hướng sự kiện|Event-Driven⟧:**
+@147
+⟦Liên kết lỏng|Loose coupling⟧, dễ ⟦mở rộng|scalable⟧, linh hoạt
+@148
+Phức tạp nhất, khó ⟦gỡ lỗi|debug⟧
+@149
+**Dùng cho:** ⟦Vi dịch vụ|Microservices⟧, nhiều phản ứng với cùng các ⟦sự kiện|events⟧
+@150
+**Những quy tắc vàng:**
+@151
+**Mặc định dùng ⟦đồng bộ|sync⟧** cho đơn giản
+@152
+**Chuyển sang ⟦bất đồng bộ|async⟧** khi trải nghiệm người dùng đòi hỏi
+@153
+**Làm cho các thao tác ⟦bất đồng bộ|async⟧ trở nên ⟦lũy đẳng|idempotent⟧**
+@154
+**Luôn đặt ⟦thời gian chờ|timeouts⟧** cho các lời gọi ⟦đồng bộ|sync⟧
+@155
+**Giám sát sức khoẻ ⟦hàng đợi|queue⟧** thật nghiêm ngặt
+@156
+**Danh sách kiểm tra khi ra quyết định:**
+@157
+Trước khi chọn ⟦mẫu|pattern⟧, hãy tự hỏi:
+@158
+⟦Người dùng|User⟧ có cần kết quả ngay không?
+@159
+Thao tác mất bao lâu?
+@160
+Các ⟦phụ thuộc bên ngoài|external dependencies⟧ có đáng tin cậy không?
+@161
+⟦Nhóm|Team⟧ có kinh nghiệm với các ⟦mẫu bất đồng bộ|async patterns⟧ không?
+@162
+**Bài tập thực hành:**
+@163
+Thiết kế ⟦mẫu giao tiếp|communication pattern⟧ cho các ⟦kịch bản|scenarios⟧ sau:
+@164
+⟦Người dùng|User⟧ đổi mật khẩu
+@165
+Tạo báo cáo hằng tháng
+@166
+Xử lý thanh toán
+@167
+Gửi ⟦thông báo đẩy|push notification⟧ tới 1 triệu ⟦người dùng|users⟧
+@168
+Tin nhắn chat ⟦thời gian thực|real-time⟧
+@169
+Với mỗi ⟦kịch bản|scenario⟧, hãy bảo vệ lựa chọn của bạn bằng các ⟦sự đánh đổi|trade-offs⟧.

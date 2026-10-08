@@ -1,0 +1,458 @@
+@0
+⟦Lưu Đệm|Caching⟧: Tầng ⟦Hiệu Năng|Performance⟧ Quan Trọng Nhất
+@1
+Có một câu hỏi mà các ⟦kỹ sư mới vào nghề|junior engineers⟧ thường hỏi tôi: *"API chậm, em nên làm gì?"*
+@2
+10 năm trước, tôi sẽ nói: *"Tối ưu các ⟦truy vấn|queries⟧ ⟦cơ sở dữ liệu|database⟧."*
+@3
+Giờ tôi nói: *"Dùng ⟦bộ nhớ đệm|cache⟧ trước. Tối ưu sau."*
+@5
+Năm 2015, hệ thống tôi quản lý bị chậm. Tôi mất 2 tuần tối ưu ⟦truy vấn|queries⟧, viết lại ⟦chỉ mục|indexes⟧, tinh chỉnh tham số ⟦cơ sở dữ liệu|database⟧. Cải thiện được bao nhiêu? 20%.
+@6
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ ghé qua, thêm ⟦tầng bộ nhớ đệm|cache layer⟧ Redis trong 2 giờ. Cải thiện được bao nhiêu? **Nhanh hơn 10 lần**.
+@7
+Đó là lúc tôi hiểu: **⟦Bộ nhớ đệm|Cache⟧ không phải là một kỹ thuật tối ưu. Nó là một quyết định kiến trúc.**
+@8
+Tại Sao ⟦Bộ Nhớ Đệm|Cache⟧ Tồn Tại?
+@9
+Khoảng Cách Tốc Độ Cơ Bản
+@10
+Bộ đệm CPU:    1 nano giây
+RAM:           100 nano giây    (chậm hơn 100 lần)
+SSD:           150 micro giây   (chậm hơn 150.000 lần)
+Mạng:          50 mili giây     (chậm hơn 50.000.000 lần)
+HDD:           10 mili giây     (chậm hơn 10.000.000 lần)
+
+@11
+**Hệ quả:** Mỗi lần bạn ⟦truy vấn|query⟧ ⟦cơ sở dữ liệu|database⟧ qua mạng, bạn mất 50 triệu chu kỳ CPU.
+@12
+**Giải pháp:** Lưu kết quả ở gần người dùng hơn. Đó chính là ⟦bộ nhớ đệm|cache⟧.
+@13
+Kịch Bản Thực Tế
+@14
+**Không có ⟦bộ nhớ đệm|Cache⟧:**
+@15
+sequenceDiagram
+    participant U as Người dùng
+    participant A as Máy chủ API
+    participant D as CSDL
+
+    U->>A: GET /product/123
+    A->>D: SELECT * FROM products WHERE id=123
+    Note over D: Truy vấn: 300ms
+    D-->>A: Dữ liệu sản phẩm
+    A-->>U: Phản hồi
+    Note over U: Tổng: 350ms
+@16
+**Có ⟦bộ nhớ đệm|Cache⟧:**
+@17
+sequenceDiagram
+    participant U as Người dùng
+    participant A as Máy chủ API
+    participant C as Bộ nhớ đệm (Redis)
+    participant D as CSDL
+
+    U->>A: GET /product/123
+    A->>C: GET product:123
+    Note over C: Trúng bộ nhớ đệm: 5ms
+    C-->>A: Dữ liệu sản phẩm
+    A-->>U: Phản hồi
+    Note over U: Tổng: 15ms (nhanh hơn 23 lần!)
+@18
+Khi Nào ⟦Bộ Nhớ Đệm|Cache⟧ Hợp Lý
+@19
+Không phải mọi thứ đều nên lưu đệm. Hãy dùng ⟦khung tư duy|framework⟧ này:
+@20
+**Ma Trận Quyết Định Lưu Đệm:**
+@21
+Câu hỏi 1: Thiên về đọc? (tỷ lệ đọc:ghi > 10:1)
+  ↓ CÓ
+Câu hỏi 2: Dữ liệu ít thay đổi?
+  ↓ CÓ
+Câu hỏi 3: Cùng một dữ liệu được yêu cầu nhiều lần?
+  ↓ CÓ
+Câu hỏi 4: Truy vấn tốn kém? (> 100ms)
+  ↓ CÓ
+
+→ DÙNG BỘ NHỚ ĐỆM
+
+Có câu nào KHÔNG? → Cân nhắc kỹ
+
+@22
+**Ví dụ:**
+@23
+ NÊN lưu đệm:
+- Danh mục sản phẩm (đọc 1000 lần, ghi 1 lần)
+- Hồ sơ người dùng (đọc nhiều, hiếm khi cập nhật)
+- Trang tĩnh
+- Phản hồi API cho dữ liệu công khai
+
+ KHÔNG NÊN lưu đệm:
+- Giá cổ phiếu thời gian thực (thay đổi liên tục)
+- Gợi ý cá nhân hoá (mỗi người dùng một khác)
+- Bộ đếm thiên về ghi (lượt thích, lượt xem tăng liên tục)
+- Tập dữ liệu nhỏ (< 1000 bản ghi, CSDL đã đủ nhanh)
+
+@24
+Các Tầng ⟦Bộ Nhớ Đệm|Cache⟧: Từ ⟦Máy Khách|Client⟧ Đến ⟦Cơ Sở Dữ Liệu|Database⟧
+@25
+⟦Bộ nhớ đệm|Cache⟧ không chỉ là Redis. Nó là một **chiến lược nhiều tầng**.
+@26
+Tầng 1: ⟦Bộ Nhớ Đệm Trình Duyệt|Browser Cache⟧
+@27
+flowchart LR
+    B[Trình duyệt] --> BC[Bộ nhớ đệm trình duyệt]
+    BC --> S[Máy chủ]
+@28
+**Cách hoạt động:**
+@29
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@30
+ Nhanh nhất (không qua mạng)
+ Giảm tải cho máy chủ
+ Khó vô hiệu hoá (người dùng không làm mới trang)
+ Mỗi người dùng một bộ nhớ đệm riêng
+
+@31
+**Khi nào nên dùng:**
+@32
+Tài nguyên tĩnh:
+- Tệp hình ảnh, CSS, JS
+- Phông chữ, biểu tượng
+- URL có phiên bản (/app.v2.js)
+
+KHÔNG dùng cho:
+- Trang HTML (cần luôn mới)
+- Phản hồi API
+- Nội dung cá nhân hoá
+
+@33
+Tầng 2: ⟦Bộ Nhớ Đệm|Cache⟧ CDN
+@34
+flowchart TD
+    U[Người dùng toàn cầu] --> CDN[Máy chủ biên CDN]
+    CDN --> O[Máy chủ gốc]
+
+    style CDN fill:#90EE90
+@35
+**Phân bố theo địa lý:**
+@36
+Người dùng ở Brazil → máy chủ biên Brazil (20ms)
+Người dùng ở Tokyo → máy chủ biên Tokyo (15ms)
+Người dùng ở London → máy chủ biên London (10ms
+
+Tất cả đều phục vụ từ bộ nhớ đệm, không gọi tới máy chủ gốc
+
+@37
+**Cấu hình:**
+@38
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@39
+ Độ trễ thấp trên toàn cầu
+ Giảm tải cho máy chủ gốc
+ Chống DDoS
+ Chi phí (băng thông đắt)
+ Độ phức tạp (nhiều tầng bộ nhớ đệm)
+
+@40
+Tầng 3: ⟦Bộ Nhớ Đệm Ứng Dụng|Application Cache⟧ (Redis/Memcached)
+@41
+**Đây là trọng tâm chính.** Đây là tầng mà bạn toàn quyền kiểm soát.
+@42
+flowchart LR
+    A[Máy chủ API] --> R[Bộ nhớ đệm Redis]
+    A --> D[CSDL]
+
+    style R fill:#FFB6C1
+@43
+**Tại sao lại là Redis?**
+@44
+⟦Lưu trong bộ nhớ|In-memory⟧ → Cực kỳ nhanh (< 1ms)
+@45
+Cấu trúc dữ liệu phong phú (strings, hashes, lists, sets)
+@46
+Hỗ trợ TTL
+@47
+⟦Mô hình xuất bản – đăng ký|Pub/sub⟧ để ⟦vô hiệu hoá bộ nhớ đệm|cache invalidation⟧
+@48
+Các tuỳ chọn ⟦lưu bền|persistence⟧
+@49
+**⟦Mẫu|Pattern⟧ cơ bản:**
+@50
+Tầng 4: ⟦Bộ Nhớ Đệm Truy Vấn|Query Cache⟧ Của ⟦Cơ Sở Dữ Liệu|Database⟧
+@51
+Hầu hết ⟦cơ sở dữ liệu|databases⟧ đều có sẵn ⟦bộ nhớ đệm truy vấn|query cache⟧.
+@52
+**⟦Bộ nhớ đệm truy vấn|Query Cache⟧ của MySQL:**
+@53
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@54
+ Tự động (không cần sửa mã)
+ Dùng chung giữa các kết nối
+ Bị vô hiệu hoá mỗi khi có BẤT KỲ thao tác ghi nào vào bảng
+ Không mở rộng được (chỉ một máy chủ)
+
+@55
+**Cách làm hiện đại:** Tắt ⟦bộ nhớ đệm truy vấn|query cache⟧ của CSDL, thay vào đó dùng ⟦bộ nhớ đệm ứng dụng|application cache⟧ (Redis). Kiểm soát tốt hơn.
+@56
+Các ⟦Chiến Lược Lưu Đệm|Cache Strategies⟧: Khi Nào Đọc? Khi Nào Ghi?
+@57
+Chiến Lược 1: Cache-Aside (⟦Tải Lười|Lazy Loading⟧)
+@58
+**⟦Mẫu|Pattern⟧ phổ biến nhất.**
+@59
+**Sơ đồ luồng:**
+@60
+flowchart TD
+    R[Yêu cầu đọc] --> C{Bộ nhớ đệm?}
+    C -->|Trúng| RH[Trả về từ bộ nhớ đệm]
+    C -->|Trượt| DB[Truy vấn CSDL]
+    DB --> SC[Lưu vào bộ nhớ đệm]
+    SC --> RD[Trả về dữ liệu]
+@61
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@62
+ Chỉ lưu đệm những gì cần thiết
+ Trượt bộ nhớ đệm không gây hậu quả nghiêm trọng
+ Bền bỉ (bộ nhớ đệm sập → hệ thống vẫn chạy)
+ Yêu cầu đầu tiên luôn chậm (bộ nhớ đệm còn nguội)
+ Trượt bộ nhớ đệm làm tăng độ trễ
+
+@63
+**Phù hợp nhất cho:** Khối lượng công việc ⟦thiên về đọc|read-heavy⟧, ít cập nhật.
+@64
+Chiến Lược 2: Write-Through (Ghi Xuyên)
+@65
+**Sơ đồ luồng:**
+@66
+flowchart LR
+    W[Ghi] --> DB[CSDL]
+    W --> C[Bộ nhớ đệm]
+    DB --> S[Thành công]
+    C --> S
+@67
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@68
+ Bộ nhớ đệm luôn mới
+ Độ trễ đọc dễ dự đoán
+ Độ trễ ghi cao hơn (2 thao tác)
+ Lãng phí thao tác ghi (dữ liệu có thể không được đọc)
+
+@69
+**Phù hợp nhất cho:** Hệ thống ⟦thiên về đọc|read-heavy⟧ với yêu cầu ⟦tính nhất quán|consistency⟧ nghiêm ngặt.
+@70
+Chiến Lược 3: Write-Behind (Write-Back, Ghi Sau)
+@71
+**Sơ đồ luồng:**
+@72
+sequenceDiagram
+    participant C as Máy khách
+    participant A as API
+    participant Cache
+    participant Q as Hàng đợi
+    participant DB as CSDL
+
+    C->>A: Yêu cầu cập nhật
+    A->>Cache: Ghi dữ liệu
+    A->>Q: Xếp lệnh ghi CSDL vào hàng đợi
+    A-->>C: Thành công (nhanh!)
+    Q->>DB: Ghi bất đồng bộ sau
+@73
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@74
+ Ghi cực kỳ nhanh
+ Hấp thụ được các đợt ghi tăng đột biến
+ Rủi ro mất dữ liệu (bộ nhớ đệm sập trước khi ghi vào CSDL)
+ Xử lý lỗi phức tạp
+ Nhất quán cuối cùng
+
+@75
+**Phù hợp nhất cho:** Khối lượng công việc ⟦thiên về ghi|write-heavy⟧, phân tích dữ liệu, ⟦ghi log|logging⟧.
+@76
+Chiến Lược 4: Refresh-Ahead (Làm Mới Trước)
+@77
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@78
+ Bộ nhớ đệm hiếm khi trượt
+ Độ trễ ổn định
+ Độ phức tạp
+ Lãng phí lần làm mới (nếu dữ liệu không được truy cập)
+
+@79
+**Phù hợp nhất cho:** ⟦Mẫu truy cập|Access patterns⟧ dễ dự đoán, yêu cầu ⟦tính sẵn sàng cao|high availability⟧.
+@80
+⟦Vô Hiệu Hoá Bộ Nhớ Đệm|Cache Invalidation⟧: Bài Toán Khó
+@81
+Phil Karlton: *"Trong Khoa học Máy tính chỉ có hai việc khó: vô hiệu hoá bộ nhớ đệm và đặt tên cho mọi thứ."*
+@82
+Tại Sao Nó Khó
+@83
+Dòng thời gian:
+10:00:00 - Người dùng cập nhật hồ sơ (CSDL đã cập nhật)
+10:00:01 - Người dùng làm mới trang
+          → Bộ nhớ đệm vẫn giữ dữ liệu cũ
+          → Người dùng thấy hồ sơ cũ
+10:00:02 - Người dùng bối rối, gửi báo cáo lỗi
+
+@84
+Giải Pháp 1: Dựa Trên Thời Gian (TTL)
+@85
+**Quy tắc kinh nghiệm cho TTL:**
+@86
+Dữ liệu biến động rất mạnh (giá cổ phiếu): 1-10 giây
+Dữ liệu động (bảng tin): 1-5 phút
+Bán tĩnh (hồ sơ người dùng): 10-30 phút
+Tĩnh (danh mục sản phẩm): 1-24 giờ
+Bất biến (hình ảnh, bài đăng cũ): Nhiều ngày/tuần
+
+@87
+Giải Pháp 2: ⟦Vô Hiệu Hoá|Invalidation⟧ Tường Minh
+@88
+**Vấn đề ⟦vô hiệu hoá|invalidation⟧ N+1:**
+@89
+**⟦Mẫu|Pattern⟧: ⟦Vô hiệu hoá|invalidation⟧ tập trung**
+@90
+Giải Pháp 3: ⟦Vô Hiệu Hoá|Invalidation⟧ ⟦Hướng Sự Kiện|Event-Driven⟧
+@91
+**Phù hợp nhất cho ⟦vi dịch vụ|microservices⟧.**
+@92
+flowchart LR
+    US[Dịch vụ người dùng] -->|user.updated| EB[Bus sự kiện]
+    EB --> CS[Dịch vụ bộ nhớ đệm]
+    EB --> NS[Dịch vụ thông báo]
+    EB --> AS[Dịch vụ phân tích]
+
+    CS --> R[Vô hiệu hoá bộ nhớ đệm]
+@93
+**Triển khai:**
+@94
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@95
+ Các dịch vụ được tách rời
+ Dễ thêm bên đăng ký mới
+ Đáng tin cậy (log sự kiện được lưu bền)
+ Độ phức tạp hạ tầng (Kafka, RabbitMQ)
+ Nhất quán cuối cùng (trễ 10-100ms)
+
+@96
+Giải Pháp 4: ⟦Đánh Phiên Bản Bộ Nhớ Đệm|Cache Versioning⟧
+@97
+**Dành cho dữ liệu bất biến.**
+@98
+Vấn Đề Thundering Herd (⟦Giẫm Đạp Bộ Nhớ Đệm|Cache Stampede⟧)
+@99
+Vấn Đề
+@100
+Kịch bản:
+1. Một khoá bộ nhớ đệm phổ biến hết hạn lúc 10:00:00
+2. Lúc 10:00:01, 1000 yêu cầu đồng thời ập đến
+3. Tất cả yêu cầu: trượt bộ nhớ đệm
+4. Cả 1000 yêu cầu cùng lúc truy vấn CSDL
+5. CSDL quá tải → sập
+
+Kết quả: Bộ nhớ đệm làm hệ thống TỆ HƠN thay vì TỐT HƠN
+
+@101
+**Tác động thực tế:**
+@102
+Tôi từng thấy một trang Facebook có 10 triệu người theo dõi. Mỗi khi có bài đăng mới, hàng triệu ⟦người dùng|users⟧ làm mới trang cùng lúc. ⟦Bộ nhớ đệm|Cache⟧ hết hạn → ⟦Cơ sở dữ liệu|Database⟧ chết → 5 phút ⟦ngừng hoạt động|downtime⟧.
+@103
+Giải Pháp 1: Dựa Trên ⟦Khoá|Lock⟧
+@104
+**Luồng:**
+@105
+flowchart TD
+    R1[Yêu cầu 1] --> L{Lấy được khoá?}
+    R2[Yêu cầu 2] --> L
+    R3[Yêu cầu 3] --> L
+
+    L -->|Có| Q[Truy vấn CSDL]
+    L -->|Không| W[Chờ & Thử lại]
+
+    Q --> C[Cập nhật bộ nhớ đệm]
+    W --> C
+    C --> RET[Trả về dữ liệu]
+@106
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@107
+ Chỉ 1 truy vấn CSDL
+ Bảo vệ cơ sở dữ liệu
+ Các yêu cầu khác phải chờ (độ trễ tăng đột biến)
+ Khoá có thể bị kẹt (nếu bên giữ khoá bị sập)
+
+@108
+Giải Pháp 2: Hết Hạn Sớm Theo Xác Suất
+@109
+Giải Pháp 3: Stale-While-Revalidate (Dùng Bản Cũ Trong Khi Làm Mới)
+@110
+**Đây là cách tiếp cận tôi thích nhất** cho hầu hết ⟦tình huống sử dụng|use cases⟧. ⟦Trải nghiệm người dùng|User experience⟧ > độ mới hoàn hảo.
+@111
+Các ⟦Đánh Đổi|Trade-offs⟧: Khi Nào Không Nên Lưu Đệm
+@112
+⟦Phản Mẫu|Anti-Pattern⟧ 1: Lưu Đệm Dữ Liệu ⟦Thiên Về Ghi|Write-Heavy⟧
+@113
+⟦Phản Mẫu|Anti-Pattern⟧ 2: Lưu Đệm Dữ Liệu ⟦Cá Nhân Hoá|Personalized⟧
+@114
+⟦Phản Mẫu|Anti-Pattern⟧ 3: Lưu Đệm Quá Đà
+@115
+⟦Thực Hành Tốt Nhất|Best Practices⟧ Từ 10 Năm Kinh Nghiệm
+@116
+1. Bắt Đầu Từ ⟦Số Liệu Đo|Metrics⟧
+@117
+2. Thiết Kế ⟦Khoá Bộ Nhớ Đệm|Cache Keys⟧
+@118
+3. TTL Phù Hợp
+@119
+4. ⟦Suy Giảm Có Kiểm Soát|Graceful Degradation⟧
+@120
+5. ⟦Giám Sát|Monitor⟧ Các ⟦Chỉ Số|Metrics⟧ Bộ Nhớ Đệm
+@121
+Những Điểm Cốt Lõi
+@122
+**⟦Bộ nhớ đệm|Cache⟧ là cách tối ưu ⟦hiệu năng|performance⟧ đầu tiên bạn nên nghĩ đến:**
+@123
+Nhanh hơn ⟦cơ sở dữ liệu|database⟧ 10-100 lần
+@124
+Dễ triển khai (Redis = 2 giờ cài đặt)
+@125
+ROI cao
+@126
+**Các ⟦chiến lược lưu đệm|Cache strategies⟧:**
+@127
+**Cache-Aside:** Phổ biến nhất, ⟦thiên về đọc|read-heavy⟧
+@128
+**Write-Through:** Khi ⟦tính nhất quán|consistency⟧ là tối quan trọng
+@129
+**Write-Behind:** ⟦Thiên về ghi|Write-heavy⟧, chấp nhận được việc mất dữ liệu
+@130
+**Refresh-Ahead:** ⟦Mẫu truy cập|Patterns⟧ dễ dự đoán
+@131
+**Những bài toán khó của ⟦vô hiệu hoá bộ nhớ đệm|cache invalidation⟧:**
+@132
+TTL: Đơn giản, dữ liệu cuối cùng cũng mới
+@133
+Tường minh: Tức thì, dễ sai sót
+@134
+⟦Hướng sự kiện|Event-driven⟧: ⟦Có khả năng mở rộng|Scalable⟧, phức tạp
+@135
+⟦Đánh phiên bản|Versioning⟧: Thanh lịch, tốn thêm ⟦lưu trữ|storage⟧
+@136
+**Các giải pháp cho thundering herd:**
+@137
+Dựa trên ⟦khoá|lock⟧: An toàn, ⟦độ trễ|latency⟧ tăng đột biến
+@138
+Theo xác suất: Dàn trải ⟦tải|load⟧
+@139
+Stale-while-revalidate: ⟦Trải nghiệm người dùng|UX⟧ tốt nhất (tôi thích nhất)
+@140
+**Khi nào KHÔNG nên lưu đệm:**
+@141
+Dữ liệu ⟦thiên về ghi|write-heavy⟧
+@142
+Nội dung ⟦cá nhân hoá|personalized⟧ (tỷ lệ ⟦trúng bộ nhớ đệm|hit rate⟧ thấp)
+@143
+Dữ liệu vốn đã nhanh (< 10ms)
+@144
+Yêu cầu ⟦thời gian thực|real-time⟧
+@145
+**Hãy nhớ:** ⟦Bộ nhớ đệm|Cache⟧ làm tăng ⟦độ phức tạp|complexity⟧. Chỉ thêm khi lợi ích > ⟦chi phí|cost⟧. Đo lường trước, lưu đệm sau.

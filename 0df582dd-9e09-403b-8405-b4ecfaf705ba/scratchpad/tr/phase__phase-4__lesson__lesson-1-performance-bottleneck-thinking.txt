@@ -1,0 +1,556 @@
+@0
+⟦Hiệu Năng|Performance⟧ & ⟦Tư Duy Điểm Nghẽn|Bottleneck Thinking⟧ - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn
+@1
+Khi hệ thống bắt đầu chậm, nhiều ⟦lập trình viên|developer⟧ nghĩ ngay: "Thêm ⟦máy chủ|server⟧!". Nhưng đây là sai lầm phổ biến nhất trong ⟦thiết kế hệ thống|system design⟧.
+@2
+**⟦Mở rộng|Scaling⟧ không phải là thêm tài nguyên. Mở rộng là tìm và loại bỏ ⟦điểm nghẽn|bottleneck⟧.**
+@3
+Nếu bạn không biết đâu là điểm nghẽn, việc thêm máy chủ chỉ là lãng phí tiền. Đôi khi thêm 10 máy chủ vẫn không giải quyết được vấn đề vì ⟦điểm nghẽn|bottleneck⟧ nằm ở ⟦cơ sở dữ liệu|database⟧, không phải ở ⟦máy chủ ứng dụng|application server⟧.
+@4
+Bài này dạy bạn **tư duy về ⟦hiệu năng|performance⟧ từ góc nhìn của ⟦kiến trúc sư|architect⟧** - cách nhìn hệ thống như một ⟦đường ống|pipeline⟧, tìm điểm nghẽn, và quyết định đúng cách mở rộng.
+@5
+Tại Sao Phải Học ⟦Tư Duy Điểm Nghẽn|Bottleneck Thinking⟧ Trước?
+@6
+Trước khi học CDN, ⟦lưu đệm|caching⟧, ⟦phân mảnh dữ liệu|sharding⟧ cơ sở dữ liệu... bạn cần hiểu:
+@7
+**Mỗi kỹ thuật mở rộng đều giải quyết một loại ⟦điểm nghẽn|bottleneck⟧ cụ thể.**
+@8
+CDN giải quyết điểm nghẽn về **⟦độ trễ|latency⟧ và ⟦băng thông|bandwidth⟧ mạng**
+@9
+⟦Lưu đệm|Caching⟧ giải quyết điểm nghẽn về **⟦tải|load⟧ đọc của cơ sở dữ liệu**
+@10
+⟦Phân mảnh dữ liệu|Sharding⟧ giải quyết điểm nghẽn về **⟦thông lượng|throughput⟧ ghi của cơ sở dữ liệu**
+@11
+⟦Hàng đợi thông điệp|Message queue⟧ giải quyết điểm nghẽn về **thời gian xử lý ⟦đồng bộ|sync⟧**
+@12
+Nếu không biết cách tìm điểm nghẽn, bạn sẽ áp dụng sai giải pháp → lãng phí công sức + tiền bạc.
+@13
+**⟦Mô hình tư duy|Mental model⟧ đúng:**
+@14
+Đo lường → tìm điểm nghẽn
+@15
+Hiểu ⟦nguyên nhân gốc|root cause⟧
+@16
+Chọn giải pháp phù hợp
+@17
+Đo lường lại
+@18
+Không phải: nghe người ta dùng Redis → mình cũng dùng Redis.
+@19
+Các Chiều ⟦Khả Năng Mở Rộng|Scalability⟧ - 3 Chiều Của ⟦Hiệu Năng|Performance⟧
+@20
+Khi nói về hiệu năng, hệ thống có 3 chiều bạn phải quan tâm:
+@21
+1. ⟦Tính Toán|Compute⟧ (CPU/Năng Lực Xử Lý)
+@22
+Đây là khả năng xử lý của máy chủ - tính toán, logic, thuật toán.
+@23
+**Điểm nghẽn ở tính toán khi:**
+@24
+Mức sử dụng CPU cao (>80%)
+@25
+Máy chủ ứng dụng chậm vì ⟦logic nghiệp vụ|business logic⟧ phức tạp
+@26
+Xử lý ảnh, mã hoá video, ⟦suy luận ML|ML inference⟧ chạy lâu
+@27
+**Giải pháp:**
+@28
+⟦Mở rộng theo chiều dọc|Vertical scaling⟧: nâng cấp CPU mạnh hơn
+@29
+⟦Mở rộng theo chiều ngang|Horizontal scaling⟧: thêm máy chủ ứng dụng + ⟦bộ cân bằng tải|load balancer⟧
+@30
+⟦Xử lý bất đồng bộ|Async processing⟧: đẩy tác vụ nặng sang ⟦hàng đợi|queue⟧
+@31
+2. ⟦Lưu Trữ|Storage⟧ (Disk I/O & Khối Lượng Dữ Liệu)
+@32
+Khả năng đọc/ghi dữ liệu và lượng dữ liệu bạn cần lưu.
+@33
+**Điểm nghẽn ở lưu trữ khi:**
+@34
+Disk I/O chậm (HDD và SSD khác biệt rất lớn)
+@35
+⟦Truy vấn|Query⟧ cơ sở dữ liệu chậm vì kích thước dữ liệu lớn
+@36
+⟦Quét toàn bộ bảng|Full table scan⟧ trên bảng có hàng triệu bản ghi
+@37
+**Giải pháp:**
+@38
+Nâng cấp lưu trữ: HDD → SSD → NVMe
+@39
+Đánh ⟦chỉ mục|index⟧ cho cơ sở dữ liệu
+@40
+⟦Phân mảnh dữ liệu|Sharding⟧ cơ sở dữ liệu (chia dữ liệu ra nhiều máy chủ)
+@41
+⟦Lưu trữ lâu dài|Archiving⟧ dữ liệu cũ
+@42
+3. Mạng (⟦Băng Thông|Bandwidth⟧ & ⟦Độ Trễ|Latency⟧)
+@43
+Tốc độ truyền tải dữ liệu giữa các ⟦thành phần|components⟧.
+@44
+**Điểm nghẽn ở mạng khi:**
+@45
+Truyền tải file lớn (video, hình ảnh)
+@46
+Người dùng ở xa máy chủ (⟦độ trễ địa lý|geographic latency⟧)
+@47
+Băng thông bị giới hạn (nhiều ⟦yêu cầu|requests⟧ cùng lúc)
+@48
+**Giải pháp:**
+@49
+CDN: lưu đệm nội dung tĩnh ở gần người dùng
+@50
+Nén: giảm kích thước dữ liệu
+@51
+Giảm ⟦dữ liệu gửi kèm|payload⟧: chỉ trả về dữ liệu cần thiết
+@52
+Nhiều ⟦vùng|regions⟧: ⟦triển khai|deploy⟧ máy chủ gần người dùng
+@53
+flowchart TB
+    subgraph Compute
+        CPU[Mức sử dụng CPU]
+        Logic[Logic nghiệp vụ]
+    end
+
+    subgraph Storage
+        Disk[Disk I/O]
+        Data[Khối lượng dữ liệu]
+    end
+
+    subgraph Network
+        BW[Băng thông]
+        Latency[Độ trễ địa lý]
+    end
+
+    System[Hiệu năng hệ thống] --> Compute
+    System --> Storage
+    System --> Network
+@54
+**Điểm nghẽn có thể nằm ở bất kỳ chiều nào. Nhiệm vụ của kiến trúc sư là tìm ra chiều nào đang giới hạn hệ thống.**
+@55
+⟦Thông Lượng|Throughput⟧ Và ⟦Độ Trễ|Latency⟧ - Hai ⟦Chỉ Số|Metrics⟧ Quan Trọng Nhất
+@56
+Khi đo lường hiệu năng, có 2 ⟦chỉ số|metrics⟧ bạn phải hiểu rõ:
+@57
+⟦Thông Lượng|Throughput⟧ (Số Yêu Cầu Mỗi Giây)
+@58
+**⟦Thông lượng|Throughput⟧ = số lượng yêu cầu mà hệ thống xử lý được trong 1 giây.**
+@59
+Ví dụ:
+@60
+API xử lý 1000 req/s
+@61
+Cơ sở dữ liệu xử lý 500 lượt ghi/s
+@62
+⟦Hàng đợi|Queue⟧ tiêu thụ 10.000 thông điệp/s
+@63
+**Thông lượng cao = hệ thống xử lý được nhiều ⟦lưu lượng|traffic⟧.**
+@64
+⟦Độ Trễ|Latency⟧ (Thời Gian Phản Hồi)
+@65
+**⟦Độ trễ|Latency⟧ = thời gian để hoàn thành 1 yêu cầu.**
+@66
+Ví dụ:
+@67
+Thời gian ⟦phản hồi|response⟧ của API: 100ms
+@68
+Thời gian truy vấn cơ sở dữ liệu: 50ms
+@69
+Thời gian ⟦khứ hồi|round trip⟧ mạng: 200ms
+@70
+**Độ trễ thấp = trải nghiệm người dùng tốt.**
+@71
+⟦Sự Đánh Đổi|Trade-off⟧ Giữa Thông Lượng Và Độ Trễ
+@72
+Đây là điểm khó: **không phải lúc nào cũng ⟦tối ưu|optimize⟧ được cả hai.**
+@73
+**Trường hợp 1: Tăng thông lượng → có thể làm tăng độ trễ**
+@74
+Khi bạn cho phép API xử lý nhiều yêu cầu cùng lúc (tăng ⟦mức độ đồng thời|concurrency⟧), mỗi yêu cầu có thể phải chờ lâu hơn vì tài nguyên bị chia sẻ.
+@75
+Trước: 100 req/s, độ trễ 50ms
+Sau: 500 req/s, độ trễ 200ms
+
+@76
+Thông lượng tăng gấp 5 lần, nhưng độ trễ tăng gấp 4 lần.
+@77
+**Trường hợp 2: Giảm độ trễ → có thể làm giảm thông lượng**
+@78
+Khi bạn tối ưu để từng yêu cầu chạy nhanh hơn (giảm độ trễ), có thể phải giảm số yêu cầu xử lý đồng thời.
+@79
+**Quyết định của kiến trúc sư:**
+@80
+Thương mại điện tử: độ trễ quan trọng (trải nghiệm người dùng)
+@81
+Hệ thống phân tích: thông lượng quan trọng (xử lý dữ liệu khối lớn)
+@82
+Hệ thống thanh toán: cả hai đều quan trọng
+@83
+Bạn phải biết nghiệp vụ cần gì để quyết định hướng tối ưu.
+@84
+⟦Mở Rộng Theo Chiều Dọc|Vertical Scaling⟧ Và ⟦Theo Chiều Ngang|Horizontal Scaling⟧ - Hai Cách Mở Rộng Cơ Bản
+@85
+⟦Mở Rộng Theo Chiều Dọc|Vertical Scaling⟧ (Scale Up)
+@86
+**Nâng cấp máy chủ hiện tại: CPU mạnh hơn, RAM nhiều hơn, ổ đĩa nhanh hơn.**
+@87
+**Ưu điểm:**
+@88
+Đơn giản: không cần thay đổi mã
+@89
+Không có ⟦độ phức tạp|complexity⟧ của ⟦hệ thống phân tán|distributed system⟧
+@90
+Phù hợp với ứng dụng ⟦nguyên khối|monolithic⟧
+@91
+**Nhược điểm:**
+@92
+Có giới hạn vật lý (không thể mua CPU vô hạn)
+@93
+Đắt đỏ: máy chủ càng mạnh thì giá càng tăng theo cấp số nhân
+@94
+⟦Điểm lỗi duy nhất|Single point of failure⟧: máy chủ chết → toàn bộ hệ thống sập
+@95
+**Khi nào dùng mở rộng theo chiều dọc:**
+@96
+Hệ thống nhỏ, lưu lượng chưa cao
+@97
+Cơ sở dữ liệu cần ⟦tính nhất quán|consistency⟧ cao (khó mở rộng theo chiều ngang)
+@98
+Giải pháp sửa nhanh tạm thời
+@99
+⟦Mở Rộng Theo Chiều Ngang|Horizontal Scaling⟧ (Scale Out)
+@100
+**Thêm nhiều máy chủ cùng xử lý: 1 máy chủ → 5 máy chủ → 50 máy chủ.**
+@101
+**Ưu điểm:**
+@102
+Không có giới hạn về lý thuyết (có thể thêm máy chủ liên tục)
+@103
+Hiệu quả về ⟦chi phí|cost⟧: nhiều máy chủ nhỏ rẻ hơn 1 máy chủ lớn
+@104
+⟦Tính sẵn sàng cao|High availability⟧: 1 máy chủ chết, các máy còn lại vẫn hoạt động
+@105
+**Nhược điểm:**
+@106
+Phức tạp: cần bộ cân bằng tải, quản lý ⟦phiên|session⟧, ⟦tính nhất quán dữ liệu|data consistency⟧
+@107
+Không phải ⟦thành phần|component⟧ nào cũng mở rộng theo chiều ngang được (cơ sở dữ liệu thì khó)
+@108
+Công sức phát triển cao
+@109
+**Khi nào dùng mở rộng theo chiều ngang:**
+@110
+Hệ thống lớn, lưu lượng cao
+@111
+Cần ⟦tính sẵn sàng cao|high availability⟧
+@112
+Ứng dụng ⟦phi trạng thái|stateless⟧ (API, ⟦vi dịch vụ|microservices⟧)
+@113
+flowchart LR
+    subgraph Vertical["Mở rộng theo chiều dọc"]
+        V1[Máy chủ nhỏ] -->|Nâng cấp| V2[Máy chủ lớn hơn]
+    end
+
+    subgraph Horizontal["Mở rộng theo chiều ngang"]
+        H1[Máy chủ 1]
+        H2[Máy chủ 2]
+        H3[Máy chủ 3]
+        LB[Bộ cân bằng tải] --> H1
+        LB --> H2
+        LB --> H3
+    end
+@114
+**Thực tế:** Hầu hết hệ thống lớn dùng **cả hai** - chiều dọc cho cơ sở dữ liệu, chiều ngang cho ⟦tầng ứng dụng|application layer⟧.
+@115
+⟦Định Luật Amdahl|Amdahl's Law⟧ - Tại Sao Không Thể Mở Rộng Vô Hạn
+@116
+**⟦Định luật Amdahl|Amdahl's Law⟧ nói rằng: Mức ⟦tăng tốc|speedup⟧ của hệ thống bị giới hạn bởi phần không thể ⟦song song hoá|parallelize⟧.**
+@117
+Giả sử một yêu cầu có luồng xử lý:
+@118
+Phân tích cú pháp yêu cầu: 10ms (có thể song song)
+@119
+Truy vấn cơ sở dữ liệu: 80ms (có thể song song)
+@120
+⟦Tuần tự hoá|Serialize⟧ phản hồi: 10ms (**KHÔNG thể song song - điểm nghẽn**)
+@121
+**Tổng thời gian: 100ms**
+@122
+Khi bạn mở rộng theo chiều ngang:
+@123
+Phân tích cú pháp: 10ms → 5ms (nhanh gấp 2 lần)
+@124
+Cơ sở dữ liệu: 80ms → 40ms (nhanh gấp 2 lần)
+@125
+Tuần tự hoá: 10ms → **vẫn 10ms** (không thể song song)
+@126
+**Tổng thời gian: 55ms (chỉ cải thiện 1,8 lần, không phải 2 lần)**
+@127
+**Bước tuần tự hoá phản hồi chính là ⟦điểm nghẽn|bottleneck⟧.** Dù bạn thêm bao nhiêu máy chủ, bước này vẫn giữ nguyên.
+@128
+**Nhận định thực tế:**
+@129
+Khi bạn mở rộng mà không thấy cải thiện tuyến tính → hãy tìm phần không song song hoá được (⟦tuần tự hoá|serialization⟧, ⟦vùng găng|critical section⟧, logic ⟦đơn luồng|single-threaded⟧).
+@130
+**Tư duy kiến trúc sư:** Không phải cứ thêm máy chủ là hệ thống nhanh hơn. Bạn phải tìm ra phần nào đang chặn việc thực thi song song.
+@131
+Quy Trình ⟦Xác Định Điểm Nghẽn|Bottleneck Identification⟧ - Quy Trình Tìm Điểm Nghẽn
+@132
+Đây là quy trình thực tế mà kiến trúc sư dùng để tìm điểm nghẽn:
+@133
+Bước 1: Xác Định Mục Tiêu Hiệu Năng
+@134
+Trước khi tìm điểm nghẽn, phải biết ⟦mục tiêu|target⟧ là gì.
+@135
+**Không rõ ràng:**
+@136
+"Hệ thống phải nhanh"
+@137
+**Rõ ràng:**
+@138
+Thời gian phản hồi của API < 200ms ở ⟦bách phân vị|percentile⟧ thứ 95
+@139
+Duy trì ổn định 10.000 req/s
+@140
+Truy vấn cơ sở dữ liệu trung bình < 50ms
+@141
+**Không có mục tiêu = không biết đâu là điểm nghẽn.**
+@142
+Bước 2: Đo Lường Trạng Thái Hiện Tại
+@143
+Đo tất cả các ⟦chỉ số|metrics⟧ quan trọng:
+@144
+**⟦Tầng ứng dụng|Application layer⟧:**
+@145
+Tần suất yêu cầu (req/s)
+@146
+Thời gian phản hồi (p50, p95, p99)
+@147
+⟦Tỷ lệ lỗi|Error rate⟧
+@148
+Mức sử dụng CPU & bộ nhớ
+@149
+**Tầng cơ sở dữ liệu:**
+@150
+Thời gian truy vấn
+@151
+Mức sử dụng ⟦nhóm kết nối|connection pool⟧
+@152
+Log ⟦truy vấn chậm|slow query⟧
+@153
+Disk I/O
+@154
+**Mạng:**
+@155
+Mức sử dụng băng thông
+@156
+Độ trễ giữa các ⟦dịch vụ|services⟧
+@157
+⟦Mất gói tin|Packet loss⟧
+@158
+**Công cụ:** Prometheus, Grafana, DataDog, New Relic, CloudWatch.
+@159
+Bước 3: Xác Định ⟦Ràng Buộc|Constraint⟧
+@160
+Nhìn vào các chỉ số → tìm thành phần nào đang bị dùng kịch trần.
+@161
+**Ví dụ thực tế:**
+@162
+Máy chủ API: CPU 40%, Bộ nhớ 50% → OK
+Bộ cân bằng tải: CPU 10% → OK
+CSDL: CPU 95%, thời gian truy vấn 500ms → ĐIỂM NGHẼN!
+
+@163
+→ Điểm nghẽn nằm ở cơ sở dữ liệu, không phải ở máy chủ API.
+@164
+**Thêm máy chủ API sẽ không giải quyết được vấn đề.**
+@165
+Bước 4: Hiểu ⟦Nguyên Nhân Gốc|Root Cause⟧
+@166
+Tìm được điểm nghẽn là chưa đủ. Phải hiểu **tại sao** nó trở thành điểm nghẽn.
+@167
+CPU của cơ sở dữ liệu cao có thể vì:
+@168
+Thiếu ⟦chỉ mục|index⟧ → ⟦quét toàn bộ bảng|full table scan⟧
+@169
+Truy vấn tồi (⟦vấn đề N+1|N+1 problem⟧)
+@170
+Khối lượng dữ liệu quá lớn
+@171
+Quá nhiều kết nối
+@172
+**Phải đào sâu hơn để biết giải pháp đúng.**
+@173
+Bước 5: Chọn Đúng Giải Pháp
+@174
+Mỗi ⟦nguyên nhân gốc|root cause⟧ có giải pháp khác nhau:
+@175
+⟦Nguyên Nhân Gốc|Root Cause⟧
+@176
+Giải Pháp
+@177
+Thiếu ⟦chỉ mục|index⟧
+@178
+Thêm ⟦chỉ mục|index⟧
+@179
+⟦Truy vấn N+1|N+1 query⟧
+@180
+⟦Tối ưu truy vấn|Query optimization⟧, ⟦nạp sớm|eager loading⟧
+@181
+⟦Tải|Load⟧ đọc cao
+@182
+⟦Bản sao chỉ đọc|Read replica⟧, ⟦lưu đệm|caching⟧
+@183
+⟦Tải|Load⟧ ghi cao
+@184
+⟦Phân mảnh dữ liệu|Sharding⟧, ghi ⟦bất đồng bộ|async⟧ qua ⟦hàng đợi|queue⟧
+@185
+Tập dữ liệu lớn
+@186
+⟦Lưu trữ lâu dài|Archiving⟧, ⟦phân vùng|partitioning⟧
+@187
+**Không có giải pháp ⟦một cỡ vừa cho tất cả|one-size-fits-all⟧.**
+@188
+Bước 6: Kiểm Thử & Đo Lường Lại
+@189
+Sau khi áp dụng giải pháp:
+@190
+⟦Kiểm thử tải|Load test⟧ lại
+@191
+Đo lường các chỉ số
+@192
+Xác minh sự cải thiện
+@193
+Tìm điểm nghẽn mới (thường sẽ có điểm nghẽn tiếp theo)
+@194
+**⟦Tối ưu hiệu năng|Performance optimization⟧ là một quá trình lặp đi lặp lại.**
+@195
+flowchart TD
+    A[Xác định mục tiêu] --> B[Đo trạng thái hiện tại]
+    B --> C[Xác định ràng buộc]
+    C --> D[Hiểu nguyên nhân gốc]
+    D --> E[Chọn giải pháp]
+    E --> F[Kiểm thử & Đo lường]
+    F -->|Điểm nghẽn mới| C
+    F -->|Đạt mục tiêu| G[Xong]
+@196
+⟦Tư Duy Kiểm Thử Tải|Load Testing Thinking⟧ - Tìm Điểm Nghẽn Trước Khi Lên ⟦Môi Trường Thực Tế|Production⟧
+@197
+Đừng đợi đến khi ⟦môi trường thực tế|production⟧ sập mới đi tìm điểm nghẽn.
+@198
+**⟦Kiểm thử tải|Load testing⟧ = mô phỏng lưu lượng để phơi bày điểm nghẽn từ sớm.**
+@199
+Các Loại ⟦Kiểm Thử Tải|Load Test⟧
+@200
+**1. ⟦Kiểm thử cơ sở|Baseline test⟧**
+@201
+Chạy với lưu lượng bình thường
+@202
+Đo các chỉ số cơ sở
+@203
+Hiểu hành vi bình thường của hệ thống
+@204
+**2. ⟦Kiểm thử áp lực|Stress test⟧**
+@205
+Tăng lưu lượng từ từ
+@206
+Tìm ⟦điểm gãy|breaking point⟧
+@207
+Xem thành phần nào gặp sự cố trước
+@208
+**3. ⟦Kiểm thử đột biến|Spike test⟧**
+@209
+Lưu lượng ⟦tăng đột biến|spike⟧ (flash sale, bài đăng lan truyền)
+@210
+Kiểm thử ⟦tự động mở rộng|auto-scaling⟧
+@211
+Xác minh khả năng phục hồi
+@212
+**4. ⟦Kiểm thử ngâm|Soak test⟧ (⟦kiểm thử độ bền|Endurance test⟧)**
+@213
+Chạy ⟦tải|load⟧ ổn định liên tục trong nhiều giờ
+@214
+Tìm ⟦rò rỉ bộ nhớ|memory leak⟧, tình trạng cạn kiệt tài nguyên
+@215
+Xác minh độ ổn định trong dài hạn
+@216
+Công Cụ: k6, JMeter, Gatling, Locust
+@217
+**Ví dụ script k6:**
+@218
+**Quan sát các chỉ số khi tải tăng:**
+@219
+Thời gian phản hồi có tăng không?
+@220
+Tỷ lệ lỗi có tăng đột biến không?
+@221
+Thành phần nào có CPU/bộ nhớ tăng nhanh?
+@222
+**Đó chính là điểm nghẽn.**
+@223
+⟦Mô Hình Tư Duy|Mental Model⟧: Mở Rộng = Loại Bỏ Điểm Nghẽn
+@224
+Hãy ghi nhớ ⟦mô hình tư duy|mental model⟧ này:
+@225
+**⟦Mở rộng|Scaling⟧ không phải là thêm tài nguyên một cách ngẫu nhiên.**
+@226
+**⟦Mở rộng|Scaling⟧ = xác định điểm nghẽn → loại bỏ điểm nghẽn → lặp lại.**
+@227
+Hệ thống giống như một ⟦đường ống|pipeline⟧. Dòng nước chảy bị giới hạn bởi **đoạn ống nhỏ nhất**.
+@228
+[Ống rộng] → [ỐNG HẸP] → [Ống rộng]
+                 ↑
+            Điểm nghẽn
+
+@229
+Dù bạn có nới rộng 2 đoạn ống hai bên, dòng nước vẫn bị giới hạn bởi đoạn ở giữa.
+@230
+**Áp dụng vào hệ thống:**
+@231
+[API: 10k req/s] → [DB: 1k req/s] → [Phản hồi]
+                         ↑
+                    Điểm nghẽn
+
+@232
+Thêm máy chủ API chẳng giúp được gì. Phải mở rộng cơ sở dữ liệu hoặc thêm ⟦bộ nhớ đệm|cache⟧.
+@233
+**⟦Tư duy|Mindset⟧ của kiến trúc sư:**
+@234
+Hệ thống luôn có điểm nghẽn
+@235
+Sửa điểm nghẽn hiện tại → điểm nghẽn mới xuất hiện
+@236
+Tối ưu là một quá trình liên tục
+@237
+Đo lường → Sửa → Đo lường lại
+@238
+Những Điểm Cốt Lõi
+@239
+**1. ⟦Khả năng mở rộng|Scalability⟧ có 3 chiều: ⟦Tính toán|Compute⟧, ⟦Lưu trữ|Storage⟧, Mạng**
+@240
+⟦Điểm nghẽn|Bottleneck⟧ có thể nằm ở bất kỳ chiều nào. Phải xác định cho đúng.
+@241
+**2. ⟦Thông lượng|Throughput⟧ ≠ ⟦Độ trễ|Latency⟧**
+@242
+Hai chỉ số khác nhau, có thể xung đột nhau. Phải biết nghiệp vụ cần gì để tối ưu đúng hướng.
+@243
+**3. ⟦Mở rộng theo chiều dọc|Vertical scaling⟧: đơn giản nhưng có giới hạn. ⟦Mở rộng theo chiều ngang|Horizontal scaling⟧: không giới hạn nhưng phức tạp**
+@244
+Hầu hết hệ thống lớn dùng cách tiếp cận kết hợp.
+@245
+**4. ⟦Định luật Amdahl|Amdahl's Law⟧: Mức tăng tốc bị giới hạn bởi phần không song song hoá được**
+@246
+Tìm ra ⟦vùng găng|critical section⟧, điểm ⟦tuần tự hoá|serialization⟧ là then chốt.
+@247
+**5. Quy trình xác định điểm nghẽn:**
+@248
+Xác định mục tiêu → Đo lường → Xác định ⟦ràng buộc|constraint⟧ → ⟦Nguyên nhân gốc|Root cause⟧ → Giải pháp → Kiểm thử lại.
+@249
+**6. ⟦Kiểm thử tải|Load testing⟧ giúp tìm điểm nghẽn trước khi lên môi trường thực tế**
+@250
+⟦Kiểm thử áp lực|Stress test⟧, ⟦kiểm thử đột biến|spike test⟧, ⟦kiểm thử ngâm|soak test⟧ đều quan trọng.
+@251
+**7. ⟦Mô hình tư duy|Mental model⟧: Mở rộng = Loại bỏ điểm nghẽn**
+@252
+Không phải thêm tài nguyên. Mà là tìm và loại bỏ ràng buộc.
+@253
+Hãy nhớ: **Kiến trúc sư giỏi không phải người biết nhiều công nghệ. Mà là người biết tìm đúng điểm nghẽn và chọn đúng giải pháp.**

@@ -1,0 +1,310 @@
+<article class="prose-ui"><h1 id="khái-niệm-quan-trọng-trong-system-design">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<h2 id="tại-sao-các-concepts-này-quan-trọng">§§SEG7§§</h2>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<p>§§SEG10§§</p>
+<p>§§SEG11§§</p>
+<ul>
+<li>§§SEG12§§</li>
+<li>§§SEG13§§</li>
+<li>§§SEG14§§</li>
+<li>§§SEG15§§</li>
+</ul>
+<p>§§SEG16§§</p>
+<h2 id="latency-vs-throughput-hai-metrics-khác-nhau">§§SEG17§§</h2>
+<h3 id="định-nghĩa">§§SEG18§§</h3>
+<p>§§SEG19§§</p>
+<ul>
+<li>§§SEG20§§</li>
+<li>§§SEG21§§</li>
+<li>§§SEG22§§</li>
+</ul>
+<p>§§SEG23§§</p>
+<ul>
+<li>§§SEG24§§</li>
+<li>§§SEG25§§</li>
+<li>§§SEG26§§</li>
+</ul>
+<h3 id="tại-sao-phải-phân-biệt">§§SEG27§§</h3>
+<p>§§SEG28§§</p>
+<p>§§SEG29§§</p>
+<h3 id="real-world-analogy">§§SEG30§§</h3>
+<p>§§SEG31§§</p>
+<pre><code>§§SEG32§§</code></pre>
+<p>§§SEG33§§</p>
+<pre><code>§§SEG34§§</code></pre>
+<h3 id="system-design-example">§§SEG35§§</h3>
+<p>§§SEG36§§</p>
+<pre><code class="language-python"># Process 1000 images
+for image in images:
+    process(image)  # Takes 10 seconds each
+
+Latency per image: 10 seconds (HIGH)
+Total time: 1000 * 10s = 10,000s ≈ 2.8 hours
+Throughput: 1000 / 10,000s = 0.1 images/second (LOW)
+</code></pre>
+<p>§§SEG37§§</p>
+<pre><code class="language-python"># Process 1000 images in parallel (100 workers)
+workers = create_workers(100)
+for worker in workers:
+    worker.process(batch_of_10_images)
+
+Latency per image: still 10 seconds
+Total time: 1000 / 100 * 10s = 100s
+Throughput: 1000 / 100s = 10 images/second (HIGH!)
+</code></pre>
+<p>§§SEG38§§</p>
+<h3 id="diagram-latency-vs-throughput">§§SEG39§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG40§§</code></pre>
+<p>§§SEG41§§</p>
+<h3 id="trade-offs">§§SEG42§§</h3>
+<p>§§SEG43§§</p>
+<pre><code>§§SEG44§§</code></pre>
+<p>§§SEG45§§</p>
+<pre><code>§§SEG46§§</code></pre>
+<h3 id="khi-nào-ưu-tiên-cái-nào">§§SEG47§§</h3>
+<p>§§SEG48§§</p>
+<ul>
+<li>§§SEG49§§</li>
+<li>§§SEG50§§</li>
+<li>§§SEG51§§</li>
+</ul>
+<p>§§SEG52§§</p>
+<ul>
+<li>§§SEG53§§</li>
+<li>§§SEG54§§</li>
+<li>§§SEG55§§</li>
+</ul>
+<p>§§SEG56§§</p>
+<h3 id="personal-insight">§§SEG57§§</h3>
+<p>§§SEG58§§</p>
+<p>§§SEG59§§</p>
+<p>§§SEG60§§</p>
+<p>§§SEG61§§</p>
+<h2 id="availability-bao-nhiêu-nines-bạn-cần">§§SEG62§§</h2>
+<h3 id="định-nghĩa-1">§§SEG63§§</h3>
+<p>§§SEG64§§</p>
+<pre><code>§§SEG65§§</code></pre>
+<h3 id="availability-levels">§§SEG66§§</h3>
+<table><thead><tr><th>§§SEG67§§</th><th>§§SEG68§§</th><th>§§SEG69§§</th><th>§§SEG70§§</th><th>§§SEG71§§</th></tr></thead><tbody><tr><td>§§SEG72§§</td><td>§§SEG73§§</td><td>§§SEG74§§</td><td>§§SEG75§§</td><td>§§SEG76§§</td></tr><tr><td>§§SEG77§§</td><td>§§SEG78§§</td><td>§§SEG79§§</td><td>§§SEG80§§</td><td>§§SEG81§§</td></tr><tr><td>§§SEG82§§</td><td>§§SEG83§§</td><td>§§SEG84§§</td><td>§§SEG85§§</td><td>§§SEG86§§</td></tr><tr><td>§§SEG87§§</td><td>§§SEG88§§</td><td>§§SEG89§§</td><td>§§SEG90§§</td><td>§§SEG91§§</td></tr><tr><td>§§SEG92§§</td><td>§§SEG93§§</td><td>§§SEG94§§</td><td>§§SEG95§§</td><td>§§SEG96§§</td></tr></tbody></table>
+<h3 id="tại-sao-mỗi-9-lại-quan-trọng">§§SEG97§§</h3>
+<p>§§SEG98§§</p>
+<pre><code>§§SEG99§§</code></pre>
+<p>§§SEG100§§</p>
+<pre><code>§§SEG101§§</code></pre>
+<h3 id="cost-of-each-9">§§SEG102§§</h3>
+<p>§§SEG103§§</p>
+<pre><code>§§SEG104§§</code></pre>
+<h3 id="câu-hỏi-tư-duy-quan-trọng">§§SEG105§§</h3>
+<p>§§SEG106§§</p>
+<pre><code>§§SEG107§§</code></pre>
+<h3 id="real-world-examples">§§SEG108§§</h3>
+<p>§§SEG109§§</p>
+<ul>
+<li>§§SEG110§§</li>
+<li>§§SEG111§§</li>
+<li>§§SEG112§§</li>
+</ul>
+<p>§§SEG113§§</p>
+<ul>
+<li>§§SEG114§§</li>
+<li>§§SEG115§§</li>
+<li>§§SEG116§§</li>
+</ul>
+<p>§§SEG117§§</p>
+<ul>
+<li>§§SEG118§§</li>
+<li>§§SEG119§§</li>
+<li>§§SEG120§§</li>
+</ul>
+<h3 id="how-to-achieve-high-availability">§§SEG121§§</h3>
+<p>§§SEG122§§</p>
+<ol>
+<li>§§SEG123§§</li>
+</ol>
+<pre><code>§§SEG124§§</code></pre>
+<ol start="2">
+<li>§§SEG125§§</li>
+</ol>
+<pre><code>§§SEG126§§</code></pre>
+<ol start="3">
+<li>§§SEG127§§</li>
+</ol>
+<pre><code>§§SEG128§§</code></pre>
+<ol start="4">
+<li>§§SEG129§§</li>
+</ol>
+<pre><code>§§SEG130§§</code></pre>
+<ol start="5">
+<li>§§SEG131§§</li>
+</ol>
+<pre><code>§§SEG132§§</code></pre>
+<ol start="6">
+<li>§§SEG133§§</li>
+</ol>
+<pre><code>§§SEG134§§</code></pre>
+<h3 id="diagram-availability-architecture">§§SEG135§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG136§§</code></pre>
+<p>§§SEG137§§</p>
+<h3 id="my-strong-opinion">§§SEG138§§</h3>
+<p>§§SEG139§§</p>
+<p>§§SEG140§§</p>
+<p>§§SEG141§§</p>
+<ul>
+<li>§§SEG142§§</li>
+<li>§§SEG143§§</li>
+<li>§§SEG144§§</li>
+</ul>
+<p>§§SEG145§§</p>
+<h2 id="cap-theorem-chọn-2-trong-3">§§SEG146§§</h2>
+<h3 id="định-nghĩa-2">§§SEG147§§</h3>
+<p>§§SEG148§§</p>
+<ul>
+<li>§§SEG149§§</li>
+<li>§§SEG150§§</li>
+<li>§§SEG151§§</li>
+</ul>
+<h3 id="tại-sao-chỉ-chọn-được-2">§§SEG152§§</h3>
+<p>§§SEG153§§</p>
+<pre><code>§§SEG154§§</code></pre>
+<p>§§SEG155§§</p>
+<h3 id="cp-systems-consistency--partition-tolerance">§§SEG156§§</h3>
+<p>§§SEG157§§</p>
+<pre><code>§§SEG158§§</code></pre>
+<p>§§SEG159§§</p>
+<ul>
+<li>§§SEG160§§</li>
+<li>§§SEG161§§</li>
+<li>§§SEG162§§</li>
+<li>§§SEG163§§</li>
+</ul>
+<p>§§SEG164§§</p>
+<pre><code>§§SEG165§§</code></pre>
+<p>§§SEG166§§</p>
+<pre><code>§§SEG167§§</code></pre>
+<h3 id="ap-systems-availability--partition-tolerance">§§SEG168§§</h3>
+<p>§§SEG169§§</p>
+<pre><code>§§SEG170§§</code></pre>
+<p>§§SEG171§§</p>
+<ul>
+<li>§§SEG172§§</li>
+<li>§§SEG173§§</li>
+<li>§§SEG174§§</li>
+<li>§§SEG175§§</li>
+</ul>
+<p>§§SEG176§§</p>
+<pre><code>§§SEG177§§</code></pre>
+<p>§§SEG178§§</p>
+<pre><code>§§SEG179§§</code></pre>
+<h3 id="diagram-cap-trade-offs">§§SEG180§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG181§§</code></pre>
+<p>§§SEG182§§</p>
+<h3 id="how-to-choose">§§SEG183§§</h3>
+<p>§§SEG184§§</p>
+<pre><code class="language-python">def choose_cap_model(feature):
+    if financial_transaction(feature):
+        return "CP"  # Correctness critical
+    
+    if user_can_tolerate_stale_data(feature):
+        return "AP"  # Availability critical
+    
+    if strong_consistency_required(feature):
+        return "CP"
+    
+    return "AP"  # Default: availability usually better UX
+</code></pre>
+<p>§§SEG185§§</p>
+<ol>
+<li>
+<p>§§SEG186§§</p>
+<ul>
+<li>§§SEG187§§</li>
+<li>§§SEG188§§</li>
+</ul>
+</li>
+<li>
+<p>§§SEG189§§</p>
+<ul>
+<li>§§SEG190§§</li>
+<li>§§SEG191§§</li>
+</ul>
+</li>
+<li>
+<p>§§SEG192§§</p>
+<ul>
+<li>§§SEG193§§</li>
+<li>§§SEG194§§</li>
+</ul>
+</li>
+</ol>
+<h3 id="real-world-examples-1">§§SEG195§§</h3>
+<p>§§SEG196§§</p>
+<pre><code>§§SEG197§§</code></pre>
+<p>§§SEG198§§</p>
+<pre><code>§§SEG199§§</code></pre>
+<h3 id="my-personal-framework">§§SEG200§§</h3>
+<p>§§SEG201§§</p>
+<p>§§SEG202§§</p>
+<ul>
+<li>§§SEG203§§</li>
+<li>§§SEG204§§</li>
+<li>§§SEG205§§</li>
+</ul>
+<p>§§SEG206§§</p>
+<p>§§SEG207§§</p>
+<p>§§SEG208§§</p>
+<p>§§SEG209§§</p>
+<h2 id="kết-hợp-các-concepts">§§SEG210§§</h2>
+<p>§§SEG211§§</p>
+<h3 id="example-design-high-traffic-api">§§SEG212§§</h3>
+<p>§§SEG213§§</p>
+<ul>
+<li>§§SEG214§§</li>
+<li>§§SEG215§§</li>
+<li>§§SEG216§§</li>
+<li>§§SEG217§§</li>
+</ul>
+<p>§§SEG218§§</p>
+<pre><code>§§SEG219§§</code></pre>
+<p>§§SEG220§§</p>
+<pre><code>§§SEG221§§</code></pre>
+<h3 id="diagram-integrated-system-design">§§SEG222§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG223§§</code></pre>
+<p>§§SEG224§§</p>
+<h2 id="key-takeaways">§§SEG225§§</h2>
+<p>§§SEG226§§</p>
+<ul>
+<li>§§SEG227§§</li>
+<li>§§SEG228§§</li>
+<li>§§SEG229§§</li>
+<li>§§SEG230§§</li>
+</ul>
+<p>§§SEG231§§</p>
+<ul>
+<li>§§SEG232§§</li>
+<li>§§SEG233§§</li>
+<li>§§SEG234§§</li>
+<li>§§SEG235§§</li>
+<li>§§SEG236§§</li>
+</ul>
+<p>§§SEG237§§</p>
+<ul>
+<li>§§SEG238§§</li>
+<li>§§SEG239§§</li>
+<li>§§SEG240§§</li>
+<li>§§SEG241§§</li>
+</ul>
+<p>§§SEG242§§</p>
+<ol>
+<li>§§SEG243§§</li>
+<li>§§SEG244§§</li>
+<li>§§SEG245§§</li>
+<li>§§SEG246§§</li>
+</ol>
+<p>§§SEG247§§</p></article>

@@ -1,0 +1,250 @@
+@0
+Từ Ưu Tiên Viết Mã đến Ưu Tiên Vấn Đề: Bước Đầu Thay Đổi Tư Duy
+@1
+Tôi còn nhớ rõ lần đầu tiên bị một ⟦kiến trúc sư lâu năm|senior architect⟧ hỏi: *"Tại sao em chọn Redis?"*
+@3
+Anh ấy mỉm cười: *"Nhanh hơn cái gì? Giải quyết vấn đề gì? ⟦Chi phí|cost⟧ của nó là gì?"*
+@4
+Tôi câm nín. Đó là lúc tôi nhận ra: mình đang nghĩ như một lập trình viên, không phải một ⟦kiến trúc sư|architect⟧.
+@6
+Khi bạn giỏi viết mã, bạn có xu hướng nhảy thẳng vào giải pháp. Thấy ⟦bộ nhớ đệm|cache⟧? Nghĩ ngay đến Redis. Thấy ⟦hàng đợi|queue⟧? RabbitMQ. ⟦Vi dịch vụ|Microservices⟧? Kubernetes.
+@7
+Nhưng đó là **⟦tư duy ưu tiên giải pháp|solution-first thinking⟧** - tư duy nguy hiểm nhất trong ⟦thiết kế hệ thống|system design⟧.
+@9
+Một kiến trúc sư lâu năm không bắt đầu bằng "Tôi sẽ dùng X". Họ bắt đầu bằng "Vấn đề tôi cần giải quyết là gì?"
+@10
+⟦Tư Duy Ưu Tiên Viết Mã|Code-First Thinking⟧: Tư Duy Lập Trình Viên
+@11
+Đây là cách một ⟦lập trình viên|developer⟧ thường nghĩ:
+@12
+**Kịch bản:** Trang web bị chậm
+@13
+Tư duy lập trình viên:
+"Trang web chậm → Cần bộ nhớ đệm → Dùng Redis → Xong!"
+
+@14
+Nghe có vẻ hợp lý, nhưng thiếu rất nhiều thứ:
+@15
+Chậm ở đâu? ⟦Truy vấn cơ sở dữ liệu|database queries⟧? ⟦Mạng|network⟧? ⟦Lời gọi API|API calls⟧?
+@16
+Chậm khi nào? ⟦Giờ cao điểm|peak hours⟧? Mọi lúc?
+@18
+Bộ nhớ đệm thực sự giải quyết được không?
+@19
+Chi phí của bộ nhớ đệm là gì? ⟦Bộ nhớ|memory⟧? ⟦Độ phức tạp|complexity⟧? ⟦Dữ liệu cũ|stale data⟧?
+@20
+Đó là 5 câu hỏi mà tư duy ưu tiên viết mã bỏ qua. Và đó chính là lý do nhiều giải pháp kỹ thuật thất bại.
+@21
+Ví Dụ Thực Tế: Thảm Họa Vi Dịch Vụ
+@22
+Tôi từng chứng kiến một ⟦công ty khởi nghiệp|startup⟧ với 0 người dùng quyết định xây dựng hệ thống bằng vi dịch vụ từ ngày đầu.
+@23
+Lý do? *"Netflix dùng vi dịch vụ mà."*
+@25
+15 ⟦dịch vụ|services⟧ cho một tính năng đơn giản
+@26
+⟦Triển khai|deploy⟧ mất 2 giờ
+@27
+⟦Gỡ lỗi|debug⟧ là một cơn ác mộng (lỗi nằm ở dịch vụ nào?)
+@28
+Cả nhóm kiệt sức vì độ phức tạp
+@29
+Họ đã giải quyết được vấn đề gì? Không có. Vì họ chưa hề có vấn đề về ⟦quy mô|scale⟧. Họ cần một ⟦hệ thống nguyên khối|monolith⟧ đơn giản, ra mắt nhanh, cải tiến nhanh.
+@30
+**Bài học:** Netflix dùng vi dịch vụ để giải quyết vấn đề của Netflix (hàng triệu người dùng, hàng trăm nhóm phát triển). Công ty khởi nghiệp kia không có vấn đề đó.
+@31
+⟦Tư Duy Ưu Tiên Vấn Đề|Problem-First Thinking⟧: Tư Duy Kiến Trúc Sư
+@32
+Đây là cách một kiến trúc sư tiếp cận:
+@33
+**Kịch bản:** Trang web bị chậm
+@34
+Tư duy kiến trúc sư:
+1. Xác định vấn đề:
+   - Chậm ở đâu? → Đo đạc: 80% thời gian nằm ở truy vấn cơ sở dữ liệu
+   - Truy vấn nào? → 3 truy vấn chậm nhất chiếm 90% tải
+
+2. Hiểu nguyên nhân:
+   - Tại sao chậm? → Thiếu chỉ mục (index)
+   - Tại sao lại thiếu? → Thiết kế lược đồ (schema) không tối ưu cho cách truy vấn
+
+3. Đánh giá các phương án:
+   - Phương án A: Thêm chỉ mục → Đơn giản, hiệu quả
+   - Phương án B: Lưu đệm kết quả truy vấn → Phức tạp, có thể không cần
+   - Phương án C: Viết lại truy vấn → Tốn thời gian
+
+4. Chọn giải pháp:
+   → Bắt đầu với chỉ mục (đơn giản, tác động lớn)
+   → Giám sát
+   → Thêm bộ nhớ đệm nếu vẫn chưa đủ
+
+@36
+Kiến trúc sư không nhảy thẳng vào Redis. Họ **đo đạc, phân tích, đánh giá, rồi mới quyết định**.
+@37
+⟦Khung tư duy|Framework⟧: 5 Câu Hỏi Vàng
+@40
+Không phải "trang web chậm". Mà là "thời gian tải trang chủ là 3 giây, người dùng kỳ vọng dưới 1 giây".
+@41
+Cụ thể, đo đạc được, có ⟦mục tiêu|target⟧ rõ ràng.
+@43
+Đào sâu. Hỏi "Tại sao?" ít nhất 3 lần.
+@44
+Trang web chậm
+→ Tại sao? Truy vấn cơ sở dữ liệu chậm
+→ Tại sao? Phải quét toàn bộ bảng (full table scan)
+→ Tại sao? Không có chỉ mục trên cột email
+→ Nguyên nhân gốc: Thiếu chỉ mục
+
+@46
+"Redis làm trang web nhanh" là câu trả lời tồi.
+@47
+"Redis lưu đệm kết quả truy vấn để giảm ⟦tải|load⟧ cơ sở dữ liệu từ 1000 req/s xuống 100 req/s" là câu trả lời tốt.
+@48
+**4. Chi phí của giải pháp là gì?**
+@49
+Mọi giải pháp đều có chi phí:
+@50
+Redis: Thêm ⟦hạ tầng|infrastructure⟧, độ phức tạp của việc ⟦vô hiệu hoá bộ nhớ đệm|cache invalidation⟧, chi phí bộ nhớ
+@51
+Vi dịch vụ: ⟦Độ trễ|latency⟧ mạng, độ phức tạp của ⟦hệ thống phân tán|distributed system⟧, gỡ lỗi khó hơn
+@52
+⟦Phân mảnh dữ liệu|Sharding⟧: Truy vấn xuyên nhiều mảnh rất khó, ⟦phân mảnh lại|resharding⟧ là cơn ác mộng
+@53
+Không có bữa trưa nào miễn phí. ⟦Sự đánh đổi|Trade-off⟧ luôn luôn tồn tại.
+@56
+Trước khi thêm Redis, bạn đã thử thêm chỉ mục chưa? Trước khi chuyển sang vi dịch vụ, bạn đã thử ⟦mở rộng|scale⟧ hệ thống nguyên khối chưa?
+@57
+**"Giải pháp đơn giản trước. Giải pháp phức tạp khi thật sự cần."**
+@58
+Ví Dụ So Sánh: Thiết Kế Tính Năng "Đếm Lượt Xem"
+@59
+Hãy xem hai ⟦cách tiếp cận|approach⟧ khác nhau cho cùng một tính năng.
+@60
+Cách tiếp cận 1: Ưu Tiên Viết Mã (Tệ)
+@61
+Tính năng: Đếm số lượt xem video
+
+Tư duy lập trình viên:
+"Cần đếm lượt xem → Dùng bộ đếm Redis → Tăng mỗi lượt xem → Xong"
+
+Cài đặt:
+- Mỗi lượt xem → redis.incr('video:123:views')
+- Hiển thị: redis.get('video:123:views')
+
+@62
+Trông ổn đấy. Nhưng sau 1 tháng chạy trên ⟦môi trường thực tế|production⟧:
+@64
+⟦Máy chủ|server⟧ Redis khởi động lại → Mất hết dữ liệu (lượt xem về 0)
+@65
+Không có ⟦dữ liệu lịch sử|historical data⟧ (lượt xem theo ngày/tháng)
+@66
+Không theo dõi được ⟦xu hướng|trending⟧ (video có lượt xem tăng nhanh)
+@67
+⟦Lưu lượng|traffic⟧ từ bot spam tăng bộ đếm
+@68
+Lập trình viên bây giờ phải ⟦tái cấu trúc|refactor⟧ toàn bộ, ⟦di chuyển dữ liệu|migrate data⟧, xử lý ⟦thời gian ngừng hoạt động|downtime⟧.
+@69
+Cách tiếp cận 2: Ưu Tiên Vấn Đề (Tốt)
+@70
+Tính năng: Đếm số lượt xem video
+
+Tư duy kiến trúc sư:
+1. Yêu cầu:
+   - Độ chính xác: Có cần chính xác 100%? (Có lẽ là không)
+   - Quy mô: Bao nhiêu video? Bao nhiêu lượt xem/giây?
+   - Phân tích: Có cần theo dõi theo thời gian không?
+   - Gian lận: Có cần chặn bot spam không?
+
+2. Thiết kế:
+   - Ghi vào cơ sở dữ liệu (lưu bền vững, là nguồn dữ liệu gốc)
+   - Ghi theo lô bất đồng bộ (gom 10 giây) để giảm tải CSDL
+   - Lưu đệm trong Redis (đọc nhanh, có thể sai lệch 1-2%)
+   - Tác vụ nền đồng bộ Redis ← → CSDL mỗi phút
+
+3. Các đánh đổi chấp nhận:
+   - Số lượt xem có thể trễ vài giây (chấp nhận được)
+   - Có thể sai lệch nhỏ (chấp nhận được với chỉ số mạng xã hội)
+   - Phức tạp hơn giải pháp 1 (cần thiết để đảm bảo độ tin cậy)
+
+@71
+Cách tiếp cận này xử lý được:
+@72
+Redis gặp sự cố → Chuyển sang đọc từ cơ sở dữ liệu
+@73
+Dữ liệu lịch sử → Có sẵn trong cơ sở dữ liệu
+@74
+Xu hướng → Truy vấn cơ sở dữ liệu theo khoảng thời gian
+@75
+Bot spam → ⟦Giới hạn tần suất|rate limit⟧ + lớp kiểm tra hợp lệ
+@76
+Bài Tập Thực Hành: Thay Đổi ⟦Tư Duy|Mindset⟧
+@77
+Bài tập 1: Phân Tích Quyết Định Của Bạn
+@81
+**Bạn đã đo đạc vấn đề chưa?** Có ⟦số liệu đo|metrics⟧ cụ thể không?
+@82
+**Bạn có xem xét ⟦các phương án thay thế|alternatives⟧ không?** Có so sánh với PostgreSQL không?
+@83
+**Chi phí và đánh đổi là gì?** Bạn đã nghĩ đến chưa?
+@84
+Nếu câu trả lời cho câu 3, 4, 5 là "không" → Đó là tư duy ưu tiên viết mã.
+@85
+Bài tập 2: ⟦Phân Tích Ngược|Reverse Engineering⟧
+@87
+**Nhiệm vụ:** Đừng đoán họ dùng công nghệ gì. Thay vào đó:
+@88
+**Xác định các vấn đề họ phải giải quyết:**
+@89
+Quy mô: Bao nhiêu người dùng?
+@90
+⟦Tính nhất quán|Consistency⟧: Số lượt thích có cần chính xác tuyệt đối không?
+@91
+Độ trễ: ⟦Bảng tin|feed⟧ cần tải nhanh đến mức nào?
+@92
+**Lập luận:**
+@93
+Với quy mô này, họ không thể chỉ dùng 1 cơ sở dữ liệu
+@94
+Với yêu cầu về độ trễ, họ phải có ⟦lớp bộ nhớ đệm|cache layer⟧
+@95
+Với yêu cầu về tính nhất quán, họ có thể chấp nhận ⟦nhất quán cuối cùng|eventual consistency⟧
+@96
+**Dự đoán giải pháp:**
+@97
+Có lẽ dùng CDN cho ⟦tài nguyên tĩnh|static assets⟧
+@98
+Có lẽ dùng bộ nhớ đệm cho bảng tin
+@99
+Có lẽ dùng nhất quán cuối cùng cho số lượt thích
+@100
+Thấy sự khác biệt chưa? Bạn đang lập luận từ vấn đề → giải pháp, không phải ngược lại.
+@101
+Danh Sách Tự Kiểm Tra: Bạn Đã Thay Đổi Tư Duy Chưa?
+@104
+Tôi đo đạc vấn đề trước khi ⟦tối ưu|optimize⟧
+@105
+Tôi có thể giải thích "Tại sao" cho mọi quyết định kỹ thuật
+@106
+Tôi xem xét ít nhất 2-3 phương án thay thế trước khi chọn
+@107
+Tôi hiểu các đánh đổi của giải pháp tôi chọn
+@108
+Tôi bắt đầu đơn giản, chỉ thêm độ phức tạp khi cần thiết
+@109
+Tôi có thể bảo vệ quyết định của mình bằng dữ liệu và lập luận
+@110
+Nếu bạn đánh dấu được 5/7 → Bạn đang đi đúng hướng.
+@111
+Những Điểm Cốt Lõi
+@112
+**Tư duy ưu tiên vấn đề không phải là biết thật nhiều công nghệ.**
+@116
+Cân nhắc các đánh đổi
+@117
+Chọn giải pháp phù hợp (không phải "tốt nhất", mà là "vừa vặn")
+@118
+**Tư duy ưu tiên viết mã** là phản xạ: Thấy vấn đề → Nghĩ ngay đến giải pháp quen thuộc.
+@119
+**Tư duy ưu tiên vấn đề** là có chủ đích: Hiểu vấn đề → Phân tích → Đánh giá các phương án → Quyết định.
+@120
+Sự khác biệt này quyết định bạn là một lập trình viên giỏi hay một kiến trúc sư giỏi.

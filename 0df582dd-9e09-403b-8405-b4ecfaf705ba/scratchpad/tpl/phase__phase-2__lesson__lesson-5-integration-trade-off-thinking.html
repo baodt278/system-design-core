@@ -1,0 +1,290 @@
+<article class="prose-ui"><h1 id="integration--trade-off-thinking-kết-hợp-components-thành-hệ-thống">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<h2 id="tại-sao-integration-thinking-quan-trọng-hơn-component-knowledge">§§SEG6§§</h2>
+<p>§§SEG7§§</p>
+<pre><code>§§SEG8§§</code></pre>
+<p>§§SEG9§§</p>
+<h3 id="the-integration-gap">§§SEG10§§</h3>
+<p>§§SEG11§§</p>
+<pre><code>§§SEG12§§</code></pre>
+<p>§§SEG13§§</p>
+<pre><code>§§SEG14§§</code></pre>
+<p>§§SEG15§§</p>
+<pre><code>§§SEG16§§</code></pre>
+<p>§§SEG17§§</p>
+<h2 id="thinking-framework-from-problem-to-architecture">§§SEG18§§</h2>
+<p>§§SEG19§§</p>
+<h3 id="step-1-define-requirements-problem-first">§§SEG20§§</h3>
+<p>§§SEG21§§</p>
+<pre><code>§§SEG22§§</code></pre>
+<p>§§SEG23§§</p>
+<pre><code>§§SEG24§§</code></pre>
+<p>§§SEG25§§</p>
+<pre><code>§§SEG26§§</code></pre>
+<h3 id="step-2-identify-core-components-needed">§§SEG27§§</h3>
+<p>§§SEG28§§</p>
+<pre><code>§§SEG29§§</code></pre>
+<p>§§SEG30§§</p>
+<pre><code>§§SEG31§§</code></pre>
+<p>§§SEG32§§</p>
+<pre><code>§§SEG33§§</code></pre>
+<h3 id="step-3-map-data-flow">§§SEG34§§</h3>
+<p>§§SEG35§§</p>
+<pre><code>§§SEG36§§</code></pre>
+<h3 id="step-4-apply-trade-off-thinking">§§SEG37§§</h3>
+<p>§§SEG38§§</p>
+<pre><code>§§SEG39§§</code></pre>
+<p>§§SEG40§§</p>
+<pre><code>§§SEG41§§</code></pre>
+<h3 id="step-5-start-simple-evolve">§§SEG42§§</h3>
+<p>§§SEG43§§</p>
+<pre><code>§§SEG44§§</code></pre>
+<p>§§SEG45§§</p>
+<pre><code>§§SEG46§§</code></pre>
+<p>§§SEG47§§</p>
+<h2 id="real-architecture-example-1-simple-blog-platform">§§SEG48§§</h2>
+<p>§§SEG49§§</p>
+<h3 id="requirements">§§SEG50§§</h3>
+<pre><code>§§SEG51§§</code></pre>
+<h3 id="architecture-v1-monolith-simple">§§SEG52§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG53§§</code></pre>
+<p>§§SEG54§§</p>
+<p>§§SEG55§§</p>
+<pre><code>§§SEG56§§</code></pre>
+<p>§§SEG57§§</p>
+<h3 id="when-to-evolve-data-driven-decisions">§§SEG58§§</h3>
+<p>§§SEG59§§</p>
+<pre><code>§§SEG60§§</code></pre>
+<p>§§SEG61§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG62§§</code></pre>
+<p>§§SEG63§§</p>
+<p>§§SEG64§§</p>
+<pre><code class="language-python">def get_post(post_id):
+    # Try cache first
+    cache_key = f"post:{post_id}"
+    cached = redis.get(cache_key)
+    
+    if cached:
+        return json.loads(cached)  # Cache hit
+    
+    # Cache miss → Query database
+    post = db.query("SELECT * FROM posts WHERE id = ?", post_id)
+    
+    # Store in cache (TTL 1 hour)
+    redis.setex(cache_key, 3600, json.dumps(post))
+    
+    return post
+
+def create_comment(post_id, comment_data):
+    # Write to database
+    db.insert("comments", comment_data)
+    
+    # Invalidate post cache (has new comment)
+    redis.delete(f"post:{post_id}")
+</code></pre>
+<p>§§SEG65§§</p>
+<p>§§SEG66§§</p>
+<pre><code>§§SEG67§§</code></pre>
+<p>§§SEG68§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG69§§</code></pre>
+<p>§§SEG70§§</p>
+<p>§§SEG71§§</p>
+<h3 id="key-lessons">§§SEG72§§</h3>
+<pre><code>§§SEG73§§</code></pre>
+<h2 id="real-architecture-example-2-image-processing-service">§§SEG74§§</h2>
+<p>§§SEG75§§</p>
+<h3 id="requirements-1">§§SEG76§§</h3>
+<pre><code>§§SEG77§§</code></pre>
+<h3 id="architecture-full-stack">§§SEG78§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG79§§</code></pre>
+<p>§§SEG80§§</p>
+<h3 id="component-interactions--trade-offs">§§SEG81§§</h3>
+<p>§§SEG82§§</p>
+<pre><code class="language-python"># API Server
+@app.post("/upload")
+async def upload_image(file):
+    # 1. Validate file (sync)
+    if not is_valid_image(file):
+        return {"error": "Invalid image"}, 400
+    
+    # 2. Upload original to S3 (sync, fast ~500ms)
+    original_url = s3.upload(file, bucket="originals")
+    
+    # 3. Create database record (sync, fast ~50ms)
+    image_id = db.insert("images", {
+        "original_url": original_url,
+        "status": "processing",
+        "user_id": current_user.id
+    })
+    
+    # 4. Add resize job to queue (async boundary)
+    queue.send({
+        "image_id": image_id,
+        "original_url": original_url,
+        "sizes": ["thumbnail", "medium", "large"]
+    })
+    
+    # 5. Return immediately (&lt; 2 seconds)
+    return {
+        "image_id": image_id,
+        "status": "processing",
+        "message": "Image is being processed"
+    }, 202  # Accepted
+
+# User không đợi resize (5-10 giây)
+</code></pre>
+<p>§§SEG83§§</p>
+<pre><code>§§SEG84§§</code></pre>
+<p>§§SEG85§§</p>
+<pre><code class="language-python"># Worker
+def process_resize_job(job):
+    image_id = job["image_id"]
+    original_url = job["original_url"]
+    
+    try:
+        # 1. Download original
+        original = s3.download(original_url)
+        
+        # 2. Resize to 3 sizes
+        for size in ["thumbnail", "medium", "large"]:
+            resized = resize_image(original, size)
+            
+            # Upload resized
+            resized_url = s3.upload(resized, bucket=f"images-{size}")
+            
+            # Update database
+            db.update("images", image_id, {
+                f"{size}_url": resized_url
+            })
+        
+        # 3. Update status
+        db.update("images", image_id, {"status": "completed"})
+        
+        # 4. Invalidate cache
+        cache.delete(f"image:{image_id}")
+        
+        # 5. Audit log
+        db.insert("audit_logs", {
+            "image_id": image_id,
+            "action": "processed",
+            "timestamp": now()
+        })
+        
+    except Exception as e:
+        # Error handling
+        db.update("images", image_id, {"status": "failed"})
+        
+        # Retry logic (SQS auto-retry)
+        if job.retry_count &lt; 3:
+            raise  # Re-queue
+        else:
+            # Move to dead letter queue
+            dlq.send(job)
+</code></pre>
+<p>§§SEG86§§</p>
+<pre><code>§§SEG87§§</code></pre>
+<p>§§SEG88§§</p>
+<pre><code class="language-python"># API Server
+@app.get("/image/{image_id}/status")
+async def get_status(image_id):
+    # 1. Check cache first
+    cached = cache.get(f"image:{image_id}")
+    if cached:
+        return json.loads(cached)
+    
+    # 2. Cache miss → Query database
+    image = db.query("SELECT * FROM images WHERE id = ?", image_id)
+    
+    # 3. Cache result (TTL 5 minutes)
+    cache.setex(f"image:{image_id}", 300, json.dumps(image))
+    
+    return image
+</code></pre>
+<p>§§SEG89§§</p>
+<pre><code>§§SEG90§§</code></pre>
+<p>§§SEG91§§</p>
+<pre><code class="language-python"># Image URLs include CDN
+image_url = f"https://cdn.example.com/images/large/{image_id}.jpg"
+
+# CDN behavior:
+- First request → CDN fetch từ S3 (origin) → Cache
+- Subsequent requests → Serve từ CDN cache
+- TTL: 1 year (images immutable)
+</code></pre>
+<p>§§SEG92§§</p>
+<pre><code>§§SEG93§§</code></pre>
+<h3 id="total-architecture-trade-offs">§§SEG94§§</h3>
+<pre><code>§§SEG95§§</code></pre>
+<h3 id="what-if-budget-was-500month">§§SEG96§§</h3>
+<p>§§SEG97§§</p>
+<pre><code>§§SEG98§§</code></pre>
+<p>§§SEG99§§</p>
+<h2 id="component-interaction-patterns">§§SEG100§§</h2>
+<h3 id="pattern-1-cache-aside">§§SEG101§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG102§§</code></pre>
+<p>§§SEG103§§</p>
+<p>§§SEG104§§</p>
+<pre><code>§§SEG105§§</code></pre>
+<h3 id="pattern-2-write-through-cache">§§SEG106§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG107§§</code></pre>
+<p>§§SEG108§§</p>
+<p>§§SEG109§§</p>
+<pre><code>§§SEG110§§</code></pre>
+<h3 id="pattern-3-queue-worker-pattern">§§SEG111§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG112§§</code></pre>
+<p>§§SEG113§§</p>
+<p>§§SEG114§§</p>
+<pre><code>§§SEG115§§</code></pre>
+<h3 id="pattern-4-read-replica-pattern">§§SEG116§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG117§§</code></pre>
+<p>§§SEG118§§</p>
+<p>§§SEG119§§</p>
+<pre><code>§§SEG120§§</code></pre>
+<h2 id="decision-framework-component-selection">§§SEG121§§</h2>
+<h3 id="framework-matrix">§§SEG122§§</h3>
+<pre><code>§§SEG123§§</code></pre>
+<h3 id="example-decisions">§§SEG124§§</h3>
+<p>§§SEG125§§</p>
+<pre><code>§§SEG126§§</code></pre>
+<p>§§SEG127§§</p>
+<pre><code>§§SEG128§§</code></pre>
+<p>§§SEG129§§</p>
+<pre><code>§§SEG130§§</code></pre>
+<h2 id="common-integration-mistakes">§§SEG131§§</h2>
+<h3 id="mistake-1-adding-components-just-in-case">§§SEG132§§</h3>
+<pre><code>§§SEG133§§</code></pre>
+<h3 id="mistake-2-copy-pasting-netflix-architecture">§§SEG134§§</h3>
+<pre><code>§§SEG135§§</code></pre>
+<h3 id="mistake-3-premature-optimization">§§SEG136§§</h3>
+<pre><code>§§SEG137§§</code></pre>
+<h3 id="mistake-4-ignoring-operational-burden">§§SEG138§§</h3>
+<pre><code>§§SEG139§§</code></pre>
+<h3 id="mistake-5-not-measuring">§§SEG140§§</h3>
+<pre><code>§§SEG141§§</code></pre>
+<h2 id="key-takeaways">§§SEG142§§</h2>
+<p>§§SEG143§§</p>
+<pre><code>§§SEG144§§</code></pre>
+<p>§§SEG145§§</p>
+<pre><code>§§SEG146§§</code></pre>
+<p>§§SEG147§§</p>
+<pre><code>§§SEG148§§</code></pre>
+<p>§§SEG149§§</p>
+<pre><code>§§SEG150§§</code></pre>
+<p>§§SEG151§§</p>
+<pre><code>§§SEG152§§</code></pre>
+<p>§§SEG153§§</p>
+<pre><code>§§SEG154§§</code></pre>
+<p>§§SEG155§§</p>
+<pre><code>§§SEG156§§</code></pre>
+<p>§§SEG157§§</p>
+<p>§§SEG158§§</p>
+<p>§§SEG159§§</p>
+<p>§§SEG160§§</p>
+<p>§§SEG161§§</p>
+<p>§§SEG162§§</p>
+<hr>
+<p>§§SEG163§§</p></article>

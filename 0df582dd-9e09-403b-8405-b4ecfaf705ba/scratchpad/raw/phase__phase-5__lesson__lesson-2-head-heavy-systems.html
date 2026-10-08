@@ -1,0 +1,939 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Read-Heavy Systems - Design Cho 99% Reads | Phase 5 — Real-World Architecture Patterns | System Design Core</title><meta name="description" content="Học thiết kế read heavy systems với caching heavy architecture: URL shortener TinyURL/Bitly pattern , content delivery systems, ID generation strategies, cache "/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-5/lesson/lesson-2-head-heavy-systems"/><meta property="og:title" content="Read-Heavy Systems - Design Cho 99% Reads | Phase 5 — Real-World Architecture Patterns"/><meta property="og:description" content="Học thiết kế read heavy systems với caching heavy architecture: URL shortener TinyURL/Bitly pattern , content delivery systems, ID generation strategies, cache "/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-5/lesson/lesson-2-head-heavy-systems"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Read-Heavy Systems - Design Cho 99% Reads | Phase 5 — Real-World Architecture Patterns"/><meta name="twitter:description" content="Học thiết kế read heavy systems với caching heavy architecture: URL shortener TinyURL/Bitly pattern , content delivery systems, ID generation strategies, cache "/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 5 — Real-World Architecture Patterns</p><p class="mt-3 text-xl font-semibold text-ink">Read-Heavy Systems - Design Cho 99% Reads</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học thiết kế read-heavy systems với caching-heavy architecture: URL shortener (TinyURL/Bitly pattern), content delivery systems, ID generation strategies, cache optimization, và sharding. Hiểu cache-first thinking và async analytics pipeline.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Architecture Evolution Mindset - Start Simple, Scale Gradually</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-5/lesson/lesson-2-head-heavy-systems"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Read-Heavy Systems - Design Cho 99% Reads</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-5/lesson/lesson-3-social-feed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-5">Phase 5 — Real-World Architecture Patterns</a></li><li>/</li><li aria-current="page" class="text-ink">Read-Heavy Systems - Design Cho 99% Reads</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Read-Heavy Systems - Design Cho 99% Reads</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học thiết kế read-heavy systems với caching-heavy architecture: URL shortener (TinyURL/Bitly pattern), content delivery systems, ID generation strategies, cache optimization, và sharding. Hiểu cache-first thinking và async analytics pipeline.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Read-Heavy Systems - Design Cho 99% Reads"><article class="prose-ui"><h1 id="read-heavy-systems---design-cho-99-reads">Read-Heavy Systems - Design Cho 99% Reads</h1>
+<p>Hầu hết systems trong real world có chung một characteristic:</p>
+<p><strong>Reads &gt;&gt; Writes (thường 100:1 hoặc 1000:1).</strong></p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li><strong>URL shortener:</strong> 1 write (create short URL), 1000+ reads (redirects)</li>
+<li><strong>YouTube:</strong> 1 upload, 10,000+ views</li>
+<li><strong>Twitter:</strong> 1 tweet, 100+ reads</li>
+<li><strong>News site:</strong> 1 article publish, 1,000,000 reads</li>
+</ul>
+<p><strong>Đây là read-heavy system - pattern phổ biến nhất mà bạn sẽ gặp.</strong></p>
+<p>Read-heavy systems có characteristics rất khác write-heavy:</p>
+<ul>
+<li>Database writes không phải bottleneck</li>
+<li>Cache hit rate critical (90%+ = success)</li>
+<li>Eventual consistency acceptable</li>
+<li>Async processing cho analytics</li>
+</ul>
+<p>Lesson này dạy bạn thiết kế read-heavy systems qua 2 case studies thực tế:</p>
+<p><strong>1. URL Shortener (TinyURL/Bitly pattern)</strong></p>
+<ul>
+<li>ID generation strategy</li>
+<li>Redirect optimization</li>
+<li>Cache-first architecture</li>
+<li>Analytics pipeline</li>
+</ul>
+<p><strong>2. Content Delivery System</strong></p>
+<ul>
+<li>Multi-layer caching</li>
+<li>Global distribution</li>
+<li>Cache invalidation</li>
+</ul>
+<p><strong>Mental model:</strong> Cache → Database → Async pipeline.</p>
+<h2 id="read-heavy-characteristics">Read-Heavy Characteristics</h2>
+<h3 id="traffic-pattern">Traffic Pattern</h3>
+<p><strong>Write-heavy system:</strong></p>
+<pre><code>Writes: 1000/s
+Reads:  1000/s
+Ratio:  1:1
+
+Database: Write bottleneck
+Scaling: Complex (sharding, replication)
+</code></pre>
+<p><strong>Read-heavy system:</strong></p>
+<pre><code>Writes: 10/s
+Reads:  10,000/s
+Ratio:  1:1000
+
+Database: Not bottleneck (few writes)
+Scaling: Simple (cache aggressively)
+</code></pre>
+<h3 id="design-priorities">Design Priorities</h3>
+<p><strong>Read-heavy priorities:</strong></p>
+<p><strong>1. Cache hit rate</strong></p>
+<ul>
+<li>Target: 90-99%</li>
+<li>Every cache miss = expensive database query</li>
+<li>Optimize for hot data</li>
+</ul>
+<p><strong>2. Read latency</strong></p>
+<ul>
+<li>Users feel read latency immediately</li>
+<li>Write latency less critical (can be async)</li>
+</ul>
+<p><strong>3. Availability</strong></p>
+<ul>
+<li>Reads must work even if writes down</li>
+<li>Read replicas for redundancy</li>
+</ul>
+<p><strong>4. Cost efficiency</strong></p>
+<ul>
+<li>Cache cheap (RAM)</li>
+<li>Database expensive (disk + compute)</li>
+<li>90% cache hit = 10x cost saving</li>
+</ul>
+<h3 id="architecture-pattern">Architecture Pattern</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    User[User Request]
+    
+    subgraph ReadPath[&quot;Read Path (Hot)&quot;]
+        Cache1[L1: Application Cache]
+        Cache2[L2: Redis Cache]
+        CDN[L3: CDN Cache]
+    end
+    
+    subgraph WritePath[&quot;Write Path (Cold)&quot;]
+        API[API Server]
+        DB[(Database)]
+        Queue[Message Queue]
+    end
+    
+    subgraph Analytics[&quot;Analytics (Async)&quot;]
+        Worker[Worker]
+        Analytics[(Analytics DB)]
+    end
+    
+    User --&gt;|99% requests| ReadPath
+    User --&gt;|1% requests| WritePath
+    
+    ReadPath --&gt;|Cache miss| DB
+    
+    API --&gt; DB
+    API --&gt; Queue
+    Queue --&gt; Worker
+    Worker --&gt; Analytics</code></pre>
+<p><strong>Read path optimized for speed.</strong><br/>
+<strong>Write path optimized for reliability.</strong><br/>
+<strong>Analytics decoupled (async).</strong></p>
+<h2 id="case-study-1-url-shortener-tinyurlbitly">Case Study 1: URL Shortener (TinyURL/Bitly)</h2>
+<p><strong>System requirements:</strong></p>
+<pre><code>Functional:
+- Generate short URL from long URL
+- Redirect short URL to long URL
+- Track click analytics
+
+Non-functional:
+- 100M URLs created/month
+- 10B redirects/month (100:1 ratio)
+- Latency: &amp;lt;50ms for redirects
+- Availability: 99.99%
+</code></pre>
+<h3 id="capacity-estimation">Capacity Estimation</h3>
+<p><strong>Traffic:</strong></p>
+<pre><code>URLs created: 100M/month
+  = ~40 URLs/second
+
+Redirects: 10B/month
+  = ~4000 redirects/second
+</code></pre>
+<p><strong>Storage:</strong></p>
+<pre><code>Per URL:
+- short_id: 7 bytes
+- long_url: 200 bytes (average)
+- metadata: 50 bytes
+Total: ~250 bytes
+
+100M URLs/month * 250 bytes = 25 GB/month
+5 years: 1.5 TB
+</code></pre>
+<p><strong>Bandwidth:</strong></p>
+<pre><code>Redirects: 4000/s * 250 bytes = 1 MB/s
+With safety margin: 5 MB/s
+</code></pre>
+<p><strong>Cache size:</strong></p>
+<pre><code>Hot URLs (20% of data):
+1.5 TB * 0.2 = 300 GB
+
+With replication (3x): 1 TB cache
+</code></pre>
+<h3 id="id-generation-strategy">ID Generation Strategy</h3>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>Short (6-7 characters)</li>
+<li>Unique</li>
+<li>Random (not sequential - security)</li>
+</ul>
+<h4 id="approach-1-hash--collision-detection">Approach 1: Hash + Collision Detection</h4>
+<pre><code class="language-python">import hashlib
+import base62
+
+def generate_short_id(long_url):
+    # Hash long URL
+    hash_bytes = hashlib.md5(long_url.encode()).digest()
+    
+    # Take first 8 bytes
+    hash_int = int.from_bytes(hash_bytes[:8], &#x27;big&#x27;)
+    
+    # Convert to base62
+    short_id = base62.encode(hash_int)[:7]
+    
+    # Check collision in database
+    if db.exists(short_id):
+        # Handle collision (add counter, retry)
+        short_id = handle_collision(long_url)
+    
+    return short_id
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Deterministic (same URL → same short ID)</li>
+<li>Fast generation</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Collision possible (need detection)</li>
+<li>Database check on every generation</li>
+</ul>
+<h4 id="approach-2-auto-increment-id--base62">Approach 2: Auto-increment ID + Base62</h4>
+<pre><code class="language-python">import base62
+
+def generate_short_id():
+    # Get next ID from database
+    id = db.get_next_id()  # Auto-increment
+    
+    # Convert to base62
+    short_id = base62.encode(id)
+    
+    return short_id
+
+# Example:
+# ID 1 → &quot;1&quot;
+# ID 62 → &quot;10&quot;
+# ID 3844 → &quot;100&quot;
+# ID 56800235584 → &quot;zzzzzzz&quot; (7 chars)
+</code></pre>
+<p><strong>Base62 character set:</strong></p>
+<pre><code>[0-9][a-z][A-Z] = 62 characters
+</code></pre>
+<p><strong>Capacity:</strong></p>
+<pre><code>6 characters: 62^6 = 56 billion URLs
+7 characters: 62^7 = 3.5 trillion URLs
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>No collisions</li>
+<li>Simple logic</li>
+<li>Predictable capacity</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Sequential (security concern)</li>
+<li>Single point of failure (ID generator)</li>
+</ul>
+<h4 id="approach-3-distributed-id-generation-production">Approach 3: Distributed ID Generation (Production)</h4>
+<pre><code class="language-python"># Use Twitter Snowflake or similar
+def generate_short_id():
+    # Snowflake generates 64-bit ID
+    id = snowflake.generate()
+    
+    # Convert to base62
+    short_id = base62.encode(id)
+    
+    return short_id
+
+# Snowflake structure:
+# [timestamp: 41 bits][datacenter: 5 bits][machine: 5 bits][sequence: 12 bits]
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>No collisions</li>
+<li>No single point of failure</li>
+<li>Time-ordered (useful for analytics)</li>
+<li>High throughput</li>
+</ul>
+<p><strong>Used by:</strong> Twitter, Instagram, Discord</p>
+<h3 id="database-schema">Database Schema</h3>
+<pre><code class="language-sql">-- URLs table
+CREATE TABLE urls (
+    short_id VARCHAR(7) PRIMARY KEY,
+    long_url VARCHAR(2048) NOT NULL,
+    user_id BIGINT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    expires_at TIMESTAMP NULL,
+    
+    INDEX idx_user_id (user_id),
+    INDEX idx_created_at (created_at)
+);
+
+-- Analytics table (separate for performance)
+CREATE TABLE url_clicks (
+    short_id VARCHAR(7),
+    clicked_at TIMESTAMP,
+    user_agent TEXT,
+    ip_address VARCHAR(45),
+    country VARCHAR(2),
+    
+    INDEX idx_short_id_time (short_id, clicked_at)
+) PARTITION BY RANGE (clicked_at);
+</code></pre>
+<p><strong>Why separate tables:</strong></p>
+<ul>
+<li>URLs: Small, read-heavy, cacheable</li>
+<li>Clicks: Large, write-heavy, append-only</li>
+</ul>
+<h3 id="redirect-flow-optimized">Redirect Flow (Optimized)</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant CDN
+    participant Cache
+    participant API
+    participant DB
+    participant Queue
+    
+    User-&gt;&gt;CDN: GET /abc123
+    
+    alt CDN Cache Hit
+        CDN--&gt;&gt;User: 301 Redirect (5ms)
+    else CDN Cache Miss
+        CDN-&gt;&gt;Cache: Check Redis
+        
+        alt Redis Hit
+            Cache--&gt;&gt;CDN: long_url
+            CDN--&gt;&gt;User: 301 Redirect (20ms)
+        else Redis Miss
+            Cache-&gt;&gt;API: Fetch URL
+            API-&gt;&gt;DB: Query
+            DB--&gt;&gt;API: long_url
+            API--&gt;&gt;Cache: Store in Redis
+            Cache--&gt;&gt;CDN: long_url
+            CDN--&gt;&gt;User: 301 Redirect (50ms)
+        end
+    end
+    
+    Note over User,Queue: Analytics async
+    CDN-&gt;&gt;Queue: Click event</code></pre>
+<p><strong>Cache layers:</strong></p>
+<ol>
+<li><strong>CDN edge:</strong> 80-90% hit rate, &lt;5ms</li>
+<li><strong>Redis:</strong> 95-99% hit rate, &lt;20ms</li>
+<li><strong>Database:</strong> 1-5% miss, &lt;50ms</li>
+</ol>
+<p><strong>Target: p99 latency &lt;50ms.</strong></p>
+<h3 id="api-implementation">API Implementation</h3>
+<pre><code class="language-python">from flask import Flask, redirect, request
+import redis
+import hashlib
+
+app = Flask(__name__)
+cache = redis.Redis(host=&#x27;redis&#x27;, decode_responses=True)
+
+@app.route(&#x27;/&lt;short_id&gt;&#x27;)
+def redirect_url(short_id):
+    # Check cache first
+    long_url = cache.get(f&quot;url:{short_id}&quot;)
+    
+    if not long_url:
+        # Cache miss - query database
+        url = db.query(
+            &quot;SELECT long_url FROM urls WHERE short_id = ?&quot;,
+            short_id
+        )
+        
+        if not url:
+            return &quot;URL not found&quot;, 404
+        
+        long_url = url[&#x27;long_url&#x27;]
+        
+        # Store in cache (24h TTL)
+        cache.setex(f&quot;url:{short_id}&quot;, 86400, long_url)
+    
+    # Track analytics (async)
+    track_click.delay(short_id, request)
+    
+    # Redirect (301 permanent)
+    return redirect(long_url, code=301)
+
+@app.route(&#x27;/api/shorten&#x27;, methods=[&#x27;POST&#x27;])
+def create_short_url():
+    long_url = request.json[&#x27;url&#x27;]
+    
+    # Validate URL
+    if not is_valid_url(long_url):
+        return {&quot;error&quot;: &quot;Invalid URL&quot;}, 400
+    
+    # Generate short ID
+    short_id = generate_short_id(long_url)
+    
+    # Store in database
+    db.execute(
+        &quot;INSERT INTO urls (short_id, long_url, user_id) VALUES (?, ?, ?)&quot;,
+        short_id, long_url, current_user.id
+    )
+    
+    # Warm cache
+    cache.setex(f&quot;url:{short_id}&quot;, 86400, long_url)
+    
+    return {
+        &quot;short_url&quot;: f&quot;https://short.ly/{short_id}&quot;,
+        &quot;long_url&quot;: long_url
+    }
+</code></pre>
+<h3 id="cache-strategy">Cache Strategy</h3>
+<p><strong>Cache hot URLs aggressively:</strong></p>
+<pre><code class="language-python"># Cache tiers
+class URLCache:
+    def __init__(self):
+        self.l1 = {}  # In-memory (application)
+        self.l2 = redis.Redis()  # Redis cluster
+        self.l3 = None  # CDN (edge)
+    
+    def get(self, short_id):
+        # L1: Application memory (microseconds)
+        if short_id in self.l1:
+            metrics.increment(&#x27;cache.l1.hit&#x27;)
+            return self.l1[short_id]
+        
+        # L2: Redis (milliseconds)
+        long_url = self.l2.get(f&quot;url:{short_id}&quot;)
+        if long_url:
+            metrics.increment(&#x27;cache.l2.hit&#x27;)
+            self.l1[short_id] = long_url  # Populate L1
+            return long_url
+        
+        # L3: Database (tens of milliseconds)
+        metrics.increment(&#x27;cache.miss&#x27;)
+        long_url = db.get_url(short_id)
+        
+        if long_url:
+            # Populate all cache layers
+            self.l1[short_id] = long_url
+            self.l2.setex(f&quot;url:{short_id}&quot;, 86400, long_url)
+        
+        return long_url
+</code></pre>
+<p><strong>Cache eviction:</strong></p>
+<pre><code class="language-python"># LRU eviction in Redis
+redis_config = {
+    &#x27;maxmemory&#x27;: &#x27;10gb&#x27;,
+    &#x27;maxmemory-policy&#x27;: &#x27;allkeys-lru&#x27;
+}
+
+# Hot URLs stay cached
+# Cold URLs evicted automatically
+</code></pre>
+<p><strong>Cache warming:</strong></p>
+<pre><code class="language-python"># Warm cache with popular URLs
+def warm_cache():
+    popular_urls = db.query(&quot;&quot;&quot;
+        SELECT short_id, long_url
+        FROM urls
+        WHERE created_at &gt; NOW() - INTERVAL &#x27;7 days&#x27;
+        ORDER BY click_count DESC
+        LIMIT 10000
+    &quot;&quot;&quot;)
+    
+    for url in popular_urls:
+        cache.setex(f&quot;url:{url[&#x27;short_id&#x27;]}&quot;, 86400, url[&#x27;long_url&#x27;])
+</code></pre>
+<h3 id="analytics-pipeline-async">Analytics Pipeline (Async)</h3>
+<p><strong>Problem:</strong> Don&#x27;t slow down redirects với analytics writes.</p>
+<p><strong>Solution:</strong> Async processing.</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    Redirect[Redirect Request] --&gt; Queue[Kafka/SQS]
+    Queue --&gt; Worker1[Worker 1]
+    Queue --&gt; Worker2[Worker 2]
+    Queue --&gt; Worker3[Worker 3]
+    
+    Worker1 --&gt; Batch[Batch Insert]
+    Worker2 --&gt; Batch
+    Worker3 --&gt; Batch
+    
+    Batch --&gt; Analytics[(Analytics DB)]</code></pre>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-python">from celery import Celery
+
+app = Celery(&#x27;tasks&#x27;, broker=&#x27;redis://localhost&#x27;)
+
+@app.task
+def track_click(short_id, request_data):
+    # Extract analytics data
+    analytics = {
+        &#x27;short_id&#x27;: short_id,
+        &#x27;clicked_at&#x27;: datetime.now(),
+        &#x27;ip_address&#x27;: request_data.remote_addr,
+        &#x27;user_agent&#x27;: request_data.user_agent.string,
+        &#x27;referer&#x27;: request_data.referrer,
+        &#x27;country&#x27;: geoip.lookup(request_data.remote_addr)
+    }
+    
+    # Batch insert (better performance)
+    analytics_buffer.append(analytics)
+    
+    if len(analytics_buffer) &gt;= 1000:
+        db.bulk_insert(&#x27;url_clicks&#x27;, analytics_buffer)
+        analytics_buffer.clear()
+</code></pre>
+<p><strong>Batch processing:</strong></p>
+<pre><code class="language-python"># Write clicks in batches
+def batch_write_clicks():
+    while True:
+        clicks = queue.get_batch(size=5000)
+        
+        if clicks:
+            # Bulk insert (much faster)
+            db.bulk_insert(&quot;&quot;&quot;
+                INSERT INTO url_clicks 
+                (short_id, clicked_at, ip_address, user_agent, country)
+                VALUES %s
+            &quot;&quot;&quot;, clicks)
+            
+            # Update click counts
+            update_click_counts(clicks)
+        
+        time.sleep(1)
+</code></pre>
+<h3 id="sharding-strategy">Sharding Strategy</h3>
+<p><strong>When to shard:</strong> &gt;10M URLs, write throughput bottleneck.</p>
+<p><strong>Shard by short_id:</strong></p>
+<pre><code class="language-python">def get_shard(short_id):
+    # Hash short_id to determine shard
+    shard_num = hash(short_id) % NUM_SHARDS
+    return shards[shard_num]
+
+# Example: 4 shards
+# short_id &quot;abc123&quot; → hash → shard 2
+# short_id &quot;xyz789&quot; → hash → shard 3
+</code></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Even distribution</li>
+<li>No hotspots</li>
+<li>Queries always target 1 shard</li>
+</ul>
+<p><strong>Drawback:</strong></p>
+<ul>
+<li>Range queries across all shards</li>
+<li>User&#x27;s URLs scattered across shards</li>
+</ul>
+<p><strong>Alternative: Shard by user_id</strong></p>
+<pre><code class="language-python">def get_shard(user_id):
+    return shards[user_id % NUM_SHARDS]
+</code></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>User&#x27;s URLs on same shard</li>
+<li>Queries by user_id efficient</li>
+</ul>
+<p><strong>Drawback:</strong></p>
+<ul>
+<li>Redirects need lookup table (short_id → shard)</li>
+</ul>
+<h3 id="complete-architecture">Complete Architecture</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    subgraph Clients
+        Browser[Browsers]
+        Mobile[Mobile Apps]
+    end
+    
+    subgraph EdgeLayer[&quot;Edge Layer&quot;]
+        CDN[CDN&lt;br/&gt;Cloudflare/Akamai]
+    end
+    
+    subgraph AppLayer[&quot;Application Layer&quot;]
+        LB[Load Balancer]
+        API1[API Server 1]
+        API2[API Server 2]
+        API3[API Server 3]
+    end
+    
+    subgraph CacheLayer[&quot;Cache Layer&quot;]
+        Redis1[Redis Master]
+        Redis2[Redis Replica 1]
+        Redis3[Redis Replica 2]
+    end
+    
+    subgraph DataLayer[&quot;Data Layer&quot;]
+        DBP[(Primary DB)]
+        DBR1[(Read Replica 1)]
+        DBR2[(Read Replica 2)]
+    end
+    
+    subgraph AsyncLayer[&quot;Async Processing&quot;]
+        Queue[Message Queue]
+        Worker1[Worker 1]
+        Worker2[Worker 2]
+        AnalyticsDB[(Analytics DB)]
+    end
+    
+    Browser --&gt; CDN
+    Mobile --&gt; CDN
+    CDN --&gt; LB
+    
+    LB --&gt; API1
+    LB --&gt; API2
+    LB --&gt; API3
+    
+    API1 --&gt; Redis1
+    API2 --&gt; Redis1
+    API3 --&gt; Redis1
+    
+    Redis1 -.Replicate.-&gt; Redis2
+    Redis1 -.Replicate.-&gt; Redis3
+    
+    API1 --&gt;|Write| DBP
+    API1 --&gt;|Read| DBR1
+    API2 --&gt;|Read| DBR2
+    
+    DBP -.Replicate.-&gt; DBR1
+    DBP -.Replicate.-&gt; DBR2
+    
+    API1 --&gt; Queue
+    API2 --&gt; Queue
+    Queue --&gt; Worker1
+    Queue --&gt; Worker2
+    Worker1 --&gt; AnalyticsDB
+    Worker2 --&gt; AnalyticsDB</code></pre>
+<p><strong>Hoàn chỉnh architecture cho URL shortener scale.</strong></p>
+<h3 id="key-optimizations">Key Optimizations</h3>
+<p><strong>1. Permanent redirects (301)</strong></p>
+<pre><code class="language-python"># 301 = browser caches redirect
+return redirect(long_url, code=301)
+
+# Users won&#x27;t hit server on subsequent visits
+</code></pre>
+<p><strong>2. CDN caching</strong></p>
+<pre><code class="language-python"># Cache-Control header
+response.headers[&#x27;Cache-Control&#x27;] = &#x27;public, max-age=86400&#x27;
+</code></pre>
+<p><strong>3. DNS prefetch</strong></p>
+<pre><code class="language-html">&lt;!-- In landing page --&gt;
+&lt;link rel=&quot;dns-prefetch&quot; href=&quot;//short.ly&quot;&gt;
+</code></pre>
+<p><strong>4. Connection pooling</strong></p>
+<pre><code class="language-python"># Reuse database connections
+db_pool = ConnectionPool(max_connections=100)
+</code></pre>
+<p><strong>5. Read replicas</strong></p>
+<pre><code class="language-python"># Route reads to replicas
+if operation == &#x27;read&#x27;:
+    db = read_replica
+else:
+    db = primary_db
+</code></pre>
+<h2 id="case-study-2-content-delivery-system">Case Study 2: Content Delivery System</h2>
+<p><strong>Examples:</strong> WordPress, Medium, News sites</p>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>Write once, read millions</li>
+<li>Heavy media (images, videos)</li>
+<li>Global audience</li>
+<li>SEO critical</li>
+</ul>
+<h3 id="multi-layer-caching">Multi-Layer Caching</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    User[User Request]
+    
+    subgraph Layer1[&quot;Layer 1: Browser Cache&quot;]
+        BC[Browser Cache&lt;br/&gt;Images, CSS, JS]
+    end
+    
+    subgraph Layer2[&quot;Layer 2: CDN Edge&quot;]
+        CDN[CDN Cache&lt;br/&gt;Static assets + HTML]
+    end
+    
+    subgraph Layer3[&quot;Layer 3: Application Cache&quot;]
+        Redis[Redis Cache&lt;br/&gt;Rendered pages]
+    end
+    
+    subgraph Layer4[&quot;Layer 4: Database Query Cache&quot;]
+        DB[(Database)]
+    end
+    
+    User --&gt; Layer1
+    Layer1 --&gt;|Miss| Layer2
+    Layer2 --&gt;|Miss| Layer3
+    Layer3 --&gt;|Miss| Layer4</code></pre>
+<p><strong>Cache hit rates:</strong></p>
+<ul>
+<li>Browser: 50-60% (returning visitors)</li>
+<li>CDN: 80-90% (popular content)</li>
+<li>Redis: 95-99% (hot data)</li>
+<li>Database: 1-5% (cache misses)</li>
+</ul>
+<h3 id="content-type-strategy">Content Type Strategy</h3>
+<p><strong>Static assets (images, CSS, JS):</strong></p>
+<pre><code class="language-http">Cache-Control: public, max-age=31536000, immutable
+</code></pre>
+<p><strong>Aggressive caching, versioned URLs:</strong></p>
+<pre><code>/static/app.v123.js
+/images/logo.abc123.png
+</code></pre>
+<p><strong>HTML pages:</strong></p>
+<pre><code class="language-http">Cache-Control: public, max-age=300, s-maxage=3600
+</code></pre>
+<p><strong>Browser: 5 minutes, CDN: 1 hour.</strong></p>
+<p><strong>API responses:</strong></p>
+<pre><code class="language-http">Cache-Control: public, max-age=60
+</code></pre>
+<p><strong>Short TTL, frequent updates.</strong></p>
+<h3 id="cache-invalidation">Cache Invalidation</h3>
+<p><strong>Problem:</strong> Content updated, cache stale.</p>
+<p><strong>Strategy 1: TTL-based</strong></p>
+<pre><code class="language-python"># Short TTL for frequently updated content
+cache.setex(&#x27;article:123&#x27;, 300, article_html)  # 5 minutes
+</code></pre>
+<p><strong>Pros:</strong> Simple, eventual consistency<br/>
+<strong>Cons:</strong> Delay before fresh content</p>
+<p><strong>Strategy 2: Event-based</strong></p>
+<pre><code class="language-python"># Invalidate on update
+@app.route(&#x27;/admin/article/&lt;id&gt;&#x27;, methods=[&#x27;PUT&#x27;])
+def update_article(id):
+    # Update database
+    db.update_article(id, data)
+    
+    # Invalidate all caches
+    cache.delete(f&#x27;article:{id}&#x27;)
+    cdn.purge(f&#x27;/article/{id}&#x27;)
+    
+    return {&quot;status&quot;: &quot;updated&quot;}
+</code></pre>
+<p><strong>Pros:</strong> Immediate consistency<br/>
+<strong>Cons:</strong> Complex, API rate limits</p>
+<p><strong>Strategy 3: Versioned URLs</strong></p>
+<pre><code class="language-python"># Include version in URL
+def article_url(article):
+    return f&quot;/article/{article.id}?v={article.updated_at.timestamp()}&quot;
+
+# Old URL cached, new URL = cache miss
+</code></pre>
+<p><strong>Pros:</strong> Simple, no invalidation needed<br/>
+<strong>Cons:</strong> Cluttered URLs</p>
+<p><strong>Hybrid approach (production):</strong></p>
+<pre><code class="language-python"># Static assets: versioned URLs
+/static/app.v123.js
+
+# HTML pages: short TTL + event invalidation
+cache.setex(&#x27;page:home&#x27;, 300, html)  # 5 min TTL
+on_update: cache.delete(&#x27;page:home&#x27;)  # Immediate
+
+# API: very short TTL
+cache.setex(&#x27;api:posts&#x27;, 60, json)  # 1 min TTL
+</code></pre>
+<h3 id="database-modeling-for-reads">Database Modeling For Reads</h3>
+<p><strong>Denormalization for performance:</strong></p>
+<pre><code class="language-sql">-- Normalized (slow - requires JOIN)
+SELECT a.*, u.name, u.avatar
+FROM articles a
+JOIN users u ON a.author_id = u.id
+WHERE a.id = 123;
+
+-- Denormalized (fast - single query)
+CREATE TABLE articles (
+    id BIGINT PRIMARY KEY,
+    title VARCHAR(200),
+    content TEXT,
+    author_id BIGINT,
+    author_name VARCHAR(100),  -- Denormalized
+    author_avatar VARCHAR(255), -- Denormalized
+    created_at TIMESTAMP
+);
+
+SELECT * FROM articles WHERE id = 123;
+</code></pre>
+<p><strong>Trade-off:</strong> Storage + update complexity vs read performance.</p>
+<p><strong>Materialized views:</strong></p>
+<pre><code class="language-sql">-- Pre-computed popular articles
+CREATE MATERIALIZED VIEW popular_articles AS
+SELECT 
+    a.*,
+    COUNT(v.id) as view_count,
+    COUNT(c.id) as comment_count
+FROM articles a
+LEFT JOIN views v ON a.id = v.article_id
+LEFT JOIN comments c ON a.id = c.article_id
+WHERE a.published_at &gt; NOW() - INTERVAL &#x27;7 days&#x27;
+GROUP BY a.id
+ORDER BY view_count DESC
+LIMIT 100;
+
+-- Refresh periodically
+REFRESH MATERIALIZED VIEW popular_articles;
+</code></pre>
+<p><strong>Query directly from view - instant results.</strong></p>
+<h3 id="global-deployment">Global Deployment</h3>
+<p><strong>Multi-region architecture:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    subgraph US[&quot;US Region&quot;]
+        US_CDN[CDN Edge]
+        US_DB[(Read Replica)]
+    end
+    
+    subgraph EU[&quot;EU Region&quot;]
+        EU_CDN[CDN Edge]
+        EU_DB[(Read Replica)]
+    end
+    
+    subgraph ASIA[&quot;Asia Region&quot;]
+        ASIA_CDN[CDN Edge]
+        ASIA_DB[(Read Replica)]
+    end
+    
+    Primary[(Primary DB&lt;br/&gt;US)]
+    
+    Primary -.Replicate.-&gt; US_DB
+    Primary -.Replicate.-&gt; EU_DB
+    Primary -.Replicate.-&gt; ASIA_DB
+    
+    US_Users[US Users] --&gt; US_CDN
+    EU_Users[EU Users] --&gt; EU_CDN
+    ASIA_Users[Asia Users] --&gt; ASIA_CDN
+    
+    US_CDN --&gt; US_DB
+    EU_CDN --&gt; EU_DB
+    ASIA_CDN --&gt; ASIA_DB</code></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Low latency worldwide</li>
+<li>Redundancy (region failure)</li>
+</ul>
+<p><strong>Challenges:</strong></p>
+<ul>
+<li>Replication lag (eventual consistency)</li>
+<li>Higher cost</li>
+</ul>
+<h3 id="image-optimization">Image Optimization</h3>
+<p><strong>Critical for content sites.</strong></p>
+<p><strong>Responsive images:</strong></p>
+<pre><code class="language-html">&lt;img 
+    src=&quot;/images/hero.jpg&quot;
+    srcset=&quot;
+        /images/hero-320w.jpg 320w,
+        /images/hero-640w.jpg 640w,
+        /images/hero-1024w.jpg 1024w
+    &quot;
+    sizes=&quot;(max-width: 640px) 100vw, 640px&quot;
+&gt;
+</code></pre>
+<p><strong>Browser loads appropriate size.</strong></p>
+<p><strong>Format optimization:</strong></p>
+<pre><code class="language-python"># Serve WebP to supporting browsers
+def serve_image(image_id):
+    accepts_webp = &#x27;image/webp&#x27; in request.headers.get(&#x27;Accept&#x27;, &#x27;&#x27;)
+    
+    if accepts_webp:
+        return f&quot;/images/{image_id}.webp&quot;
+    else:
+        return f&quot;/images/{image_id}.jpg&quot;
+</code></pre>
+<p><strong>WebP: 30% smaller than JPEG.</strong></p>
+<p><strong>Lazy loading:</strong></p>
+<pre><code class="language-html">&lt;img src=&quot;placeholder.jpg&quot; data-src=&quot;actual-image.jpg&quot; loading=&quot;lazy&quot;&gt;
+</code></pre>
+<p><strong>Load images khi scroll vào view.</strong></p>
+<p><strong>CDN image processing:</strong></p>
+<pre><code>Original: /images/photo.jpg
+Resize: /images/photo.jpg?w=800&amp;h=600
+Optimize: /images/photo.jpg?format=webp&amp;quality=80
+</code></pre>
+<p><strong>Cloudflare, Cloudinary, Imgix support này.</strong></p>
+<h2 id="cache-first-thinking">Cache-First Thinking</h2>
+<p><strong>Mindset shift cho read-heavy systems.</strong></p>
+<h3 id="traditional-flow">Traditional Flow</h3>
+<pre><code>User request → API → Database → Response
+</code></pre>
+<p><strong>Every request hits database - slow, expensive.</strong></p>
+<h3 id="cache-first-flow">Cache-First Flow</h3>
+<pre><code>User request → Cache (hit) → Response (fast)
+              → Cache (miss) → Database → Cache → Response
+</code></pre>
+<p><strong>99% requests serve từ cache - fast, cheap.</strong></p>
+<h3 id="design-questions">Design Questions</h3>
+<p><strong>When designing read-heavy system, ask:</strong></p>
+<p><strong>1. What&#x27;s the read/write ratio?</strong></p>
+<pre><code>If 100:1 or higher → Cache-first architecture
+</code></pre>
+<p><strong>2. What&#x27;s the hot data set?</strong></p>
+<pre><code>Identify 20% data = 80% traffic
+Cache này aggressively
+</code></pre>
+<p><strong>3. How fresh must data be?</strong></p>
+<pre><code>Real-time: Short TTL (seconds)
+Near-real-time: Medium TTL (minutes)
+Eventually consistent: Long TTL (hours)
+</code></pre>
+<p><strong>4. What&#x27;s acceptable cache miss rate?</strong></p>
+<pre><code>Target: 90-99% cache hit
+Measure và optimize
+</code></pre>
+<p><strong>5. Where to cache?</strong></p>
+<pre><code>Browser → CDN → Application → Database
+Multiple layers = higher hit rate
+</code></pre>
+<h3 id="cache-warming">Cache Warming</h3>
+<p><strong>Don&#x27;t wait for cache misses.</strong></p>
+<pre><code class="language-python"># Warm cache on deploy
+def warm_cache():
+    # Popular articles
+    articles = db.query(&quot;&quot;&quot;
+        SELECT id, rendered_html
+        FROM articles
+        WHERE view_count &gt; 1000
+        ORDER BY view_count DESC
+        LIMIT 1000
+    &quot;&quot;&quot;)
+    
+    for article in articles:
+        cache.setex(
+            f&#x27;article:{article.id}&#x27;,
+            3600,
+            article.rendered_html
+        )
+    
+    # User sessions
+    sessions = db.query(&quot;SELECT * FROM active_sessions&quot;)
+    for session in sessions:
+        cache.setex(f&#x27;session:{session.id}&#x27;, 1800, session.data)
+</code></pre>
+<p><strong>Proactive caching = consistent performance.</strong></p>
+<h2 id="key-patterns-summary">Key Patterns Summary</h2>
+<h3 id="pattern-1-multi-layer-cache">Pattern 1: Multi-Layer Cache</h3>
+<pre><code>Browser → CDN → Redis → Database
+</code></pre>
+<p><strong>Each layer catches different traffic.</strong></p>
+<h3 id="pattern-2-async-analytics">Pattern 2: Async Analytics</h3>
+<pre><code>Request → Quick response
+        → Queue event
+        → Worker processes
+        → Analytics DB
+</code></pre>
+<p><strong>Don&#x27;t slow down reads với analytics writes.</strong></p>
+<h3 id="pattern-3-denormalization">Pattern 3: Denormalization</h3>
+<pre><code>JOIN 3 tables → Slow
+Denormalized table → Fast
+</code></pre>
+<p><strong>Trade storage cho read performance.</strong></p>
+<h3 id="pattern-4-read-replicas">Pattern 4: Read Replicas</h3>
+<pre><code>Writes → Primary
+Reads → Replicas (3-5x)
+</code></pre>
+<p><strong>Scale reads horizontally.</strong></p>
+<h3 id="pattern-5-permanent-redirects">Pattern 5: Permanent Redirects</h3>
+<pre><code>HTTP 301 → Browser caches
+HTTP 302 → Browser doesn&#x27;t cache
+</code></pre>
+<p><strong>Use 301 cho stable URLs.</strong></p>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>1. Read-heavy systems = cache-first architecture</strong></p>
+<p>90-99% cache hit rate critical. Multiple cache layers.</p>
+<p><strong>2. URL shortener pattern: ID generation + aggressive caching</strong></p>
+<p>Base62 encoding, multi-layer cache, async analytics.</p>
+<p><strong>3. Content delivery: Multi-layer caching + CDN</strong></p>
+<p>Browser → CDN → Application → Database.</p>
+<p><strong>4. ID generation strategies: Hash, auto-increment, Snowflake</strong></p>
+<p>Snowflake best cho distributed systems.</p>
+<p><strong>5. Async analytics pipeline</strong></p>
+<p>Don&#x27;t slow down reads. Queue → Workers → Analytics DB.</p>
+<p><strong>6. Cache invalidation strategies: TTL, event-based, versioned URLs</strong></p>
+<p>Hybrid approach in production.</p>
+<p><strong>7. Database denormalization for reads</strong></p>
+<p>Trade storage + update complexity cho query performance.</p>
+<p><strong>8. Sharding by ID for even distribution</strong></p>
+<p>Avoid hotspots, scale writes.</p>
+<p><strong>9. Global deployment với read replicas</strong></p>
+<p>Low latency worldwide, eventual consistency acceptable.</p>
+<p><strong>10. Monitor cache hit rate continuously</strong></p>
+<p>Target 90-99%. Optimize hot data caching.</p>
+<hr/>
+<p><strong>Remember: For read-heavy systems, cache is not optimization - it&#x27;s the architecture. Design cache-first, not cache-as-afterthought. 99% of your users should never hit the database.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Architecture Evolution Mindset - Start Simple, Scale Gradually</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-5/lesson/lesson-3-social-feed-systems">Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-5\",\"lesson\",\"lesson-2-head-heavy-systems\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-5\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-2-head-heavy-systems\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 5 — Real-World Architecture Patterns\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Read-Heavy Systems - Design Cho 99% Reads\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học thiết kế read-heavy systems với caching-heavy architecture: URL shortener (TinyURL/Bitly pattern), content delivery systems, ID generation strategies, cache optimization, và sharding. Hiểu cache-first thinking và async analytics pipeline.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-architecture-evolution-mindset\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually\"}]]}]}],[\"$\",\"li\",\"lesson-2-head-heavy-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-2-head-heavy-systems\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Read-Heavy Systems - Design Cho 99% Reads\"}]]}]}],[\"$\",\"li\",\"lesson-3-social-feed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-3-social-feed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5\",\"className\":\"hover:text-ink\",\"children\":\"Phase 5 — Real-World Architecture Patterns\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],\"$L24\"]}]}],\"$L25\",\"$L26\",\"$L27\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Read-Heavy Systems - Design Cho 99% Reads\"}]\n25:[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Read-Heavy Systems - Design Cho 99% Reads\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học thiết kế read-heavy systems với caching-heavy architecture: URL shortener (TinyURL/Bitly pattern), content delivery systems, ID generation strategies, cache optimization, và sharding. Hiểu cache-first thinking và async analytics pipeline.\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-5/lesson/lesson-2-head-heavy-systems\",\"title\":\"Read-Heavy Systems - Design Cho 99% Reads\",\"description\":\"Học thiết kế read-heavy systems với caching-heavy architecture: URL shortener (TinyURL/Bitly pattern), content delivery systems, ID generation strategies, cache optimization, và sharding. Hiểu cache-first thinking và async analytics pipeline.\",\"className\":\"sm:shrink-0\"}]]}]}]\n26:[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Read-Heavy Systems - Design Cho 99% Reads\",\"children\":\"$L29\"}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Architecture Evolution Mindset - Start Simple, Scale Gradually\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-3-social-feed-systems\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]\n"])</script><script>self.__next_f.push([1,"2a:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"read-heavy-systems---design-cho-99-reads\",\"children\":\"Read-Heavy Systems - Design Cho 99% Reads\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Hầu hết systems trong real world có chung một characteristic:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Reads \u003e\u003e Writes (thường 100:1 hoặc 1000:1).\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Examples:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"URL shortener:\"}],\" 1 write (create short URL), 1000+ reads (redirects)\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"YouTube:\"}],\" 1 upload, 10,000+ views\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Twitter:\"}],\" 1 tweet, 100+ reads\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"News site:\"}],\" 1 article publish, 1,000,000 reads\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Đây là read-heavy system - pattern phổ biến nhất mà bạn sẽ gặp.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Read-heavy systems có characteristics rất khác write-heavy:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database writes không phải bottleneck\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cache hit rate critical (90%+ = success)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Eventual consistency acceptable\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Async processing cho analytics\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Lesson này dạy bạn thiết kế read-heavy systems qua 2 case studies thực tế:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. URL Shortener (TinyURL/Bitly pattern)\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"ID generation strategy\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Redirect optimization\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cache-first architecture\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Analytics pipeline\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Content Delivery System\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Multi-layer caching\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Global distribution\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cache invalidation\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Mental model:\"}],\" Cache → Database → Async pipeline.\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"read-heavy-characteristics\",\"children\":\"Read-Heavy Characteristics\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"traffic-pattern\",\"children\":\"Traffic Pattern\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Write-heavy system:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Writes: 1000/s\\nReads:  1000/s\\nRatio:  1:1\\n\\nDatabase: Write bottleneck\\nScaling: Complex (sharding, replication)\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Read-heavy system:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Writes: 10/s\\nReads:  10,000/s\\nRatio:  1:1000\\n\\nDatabase: Not bottleneck (few writes)\\nScaling: Simple (cache aggressively)\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"design-priorities\",\"children\":\"Design Priorities\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Read-heavy priorities:\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Cache hit rate\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Target: 90-99%\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Every cache miss = expensive database query\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Optimize for hot data\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Read latency\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Users feel read latency immediately\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Write latency less critical (can be async)\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Availability\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Reads must work even if writes down\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read replicas for redundancy\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Cost efficiency\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cache cheap (RAM)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database expensive (disk + compute)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"90% cache hit = 10x cost saving\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"architecture-pattern\",\"children\":\"Architecture Pattern\"}],\"\\n\",[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    User[User Request]\\n    \\n    subgraph ReadPath[\\\"Read Path (Hot)\\\"]\\n        Cache1[L1: Application Cache]\\n        Cache2[L2: Redis Cache]\\n        CDN[L3: CDN Cache]\\n    end\\n    \\n    subgraph WritePath[\\\"Write Path (Cold)\\\"]\\n        API[API Server]\\n        DB[(Database)]\\n        Queue[Message Queue]\\n    end\\n    \\n    subgraph Analytics[\\\"Analytics (Async)\\\"]\\n        Worker[Worker]\\n        Analytics[(Analytics DB)]\\n    end\\n    \\n    User --\u003e|99% requests| ReadPath\\n    User --\u003e|1% requests| WritePath\\n    \\n    ReadPath --\u003e|Cache miss| DB\\n    \\n    API --\u003e DB\\n    API --\u003e Queue\\n    Queue --\u003e Worker\\n    Worker --\u003e Analytics\"}],\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\",\"\\n\",\"$Lc9\",\"\\n\",\"$Lca\",\"\\n\",\"$Lcb\",\"\\n\",\"$Lcc\",\"\\n\",\"$Lcd\",\"\\n\",\"$Lce\",\"\\n\",\"$Lcf\",\"\\n\",\"$Ld0\",\"\\n\",\"$Ld1\",\"\\n\",\"$Ld2\",\"\\n\",\"$Ld3\",\"\\n\",\"$Ld4\",\"\\n\",\"$Ld5\",\"\\n\",\"$Ld6\",\"\\n\",\"$Ld7\",\"\\n\",\"$Ld8\",\"\\n\",\"$Ld9\",\"\\n\",\"$Lda\",\"\\n\",\"$Ldb\",\"\\n\",\"$Ldc\",\"\\n\",\"$Ldd\",\"\\n\",\"$Lde\",\"\\n\",\"$Ldf\",\"\\n\",\"$Le0\",\"\\n\",\"$Le1\",\"\\n\",\"$Le2\",\"\\n\",\"$Le3\",\"\\n\",\"$Le4\",\"\\n\",\"$Le5\",\"\\n\",\"$Le6\",\"\\n\",\"$Le7\",\"\\n\",\"$Le8\",\"\\n\",\"$Le9\",\"\\n\",\"$Lea\",\"\\n\",\"$Leb\",\"\\n\",\"$Lec\",\"\\n\",\"$Led\",\"\\n\",\"$Lee\",\"\\n\",\"$Lef\",\"\\n\",\"$Lf0\",\"\\n\",\"$Lf1\",\"\\n\",\"$Lf2\",\"\\n\",\"$Lf3\",\"\\n\",\"$Lf4\",\"\\n\",\"$Lf5\",\"\\n\",\"$Lf6\",\"\\n\",\"$Lf7\",\"\\n\",\"$Lf8\",\"\\n\",\"$Lf9\",\"\\n\",\"$Lfa\",\"\\n\",\"$Lfb\",\"\\n\",\"$Lfc\",\"\\n\",\"$Lfd\",\"\\n\",\"$Lfe\",\"\\n\",\"$Lff\",\"\\n\",\"$L100\"]}]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Read path optimized for speed.\"}],[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Write path optimized for reliability.\"}],[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Analytics decoupled (async).\"}]]}]\n2c:[\"$\",\"h2\",null,{\"id\":\"case-study-1-url-shortener-tinyurlbitly\",\"children\":\"Case Study 1: URL Shortener (TinyURL/Bitly)\"}]\n2d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"System requirements:\"}]}]\n2e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Functional:\\n- Generate short URL from long URL\\n- Redirect short URL to long URL\\n- Track click analytics\\n\\nNon-functional:\\n- 100M URLs created/month\\n- 10B redirects/month (100:1 ratio)\\n- Latency: \u0026lt;50ms for redirects\\n- Availability: 99.99%\\n\"}]}]\n2f:[\"$\",\"h3\",null,{\"id\":\"capacity-estimation\",\"children\":\"Capacity Estimation\"}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Traffic:\"}]}]\n31:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"URLs created: 100M/month\\n  = ~40 URLs/second\\n\\nRedirects: 10B/month\\n  = ~4000 redirects/second\\n\"}]}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Storage:\"}]}]\n33:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Per URL:\\n- short_id: 7 bytes\\n- long_url: 200 bytes (average)\\n- metadata: 50 bytes\\nTotal: ~250 bytes\\n\\n100M URLs/month * 250 bytes = 25 GB/month\\n5 years: 1.5 TB\\n\"}]}]\n34:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bandwidth:\"}]}]\n35:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Redirects: 4000/s * 250 bytes = 1 MB/s\\nWith safety margin: 5 MB/s\\n\"}]}]\n36:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache size:\"}]}]\n37:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Hot URLs (20% of data):\\n1.5 TB * 0.2 = 300 GB\\n\\nWith replication (3x): 1 TB cache\\n\"}]}]\n38:[\"$\",\"h3\",null,{\"id\":\"id-generation-strategy\",\"children\":\"ID Generation Strategy\"}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Requirements:\"}]}]\n3a:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Short (6-7 characters)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Unique\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Random (not sequential - security)\"}],\"\\n\"]}]\n3b:[\"$\",\"h4\",null,{\"id\":\"approach-1-hash--collision-detection\",\"children\":\"Approach 1: Hash + Collision Detection\"}]\n3c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import hashlib\\nimport base62\\n\\ndef generate_short_id(long_url):\\n    # Hash long URL\\n    hash_bytes = hashlib.md5(long_url.encode()).digest()\\n    \\n    # Take first 8 bytes\\n    hash_int = int.from_bytes(hash_bytes[:8], 'big')\\n    \\n    # Convert to base62\\n    short_id = base62.encode(hash_int)[:7]\\n    \\n    # Check collision in database\\n    if db.exists(short_id):\\n        # Handle collision (add counter, retry)\\n        short_id = handle_collision(long_url)\\n    \\n    return short_id\\n\"}]}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n3e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Deterministic (same URL → same short ID)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fast generation\"}],\"\\n\"]}]\n3f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n40:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Collision possible (need detection)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database check on every generation\"}],\"\\n\"]}]\n41:[\"$\",\"h4\",null,{\"id\":\"approach-2-auto-increment-id--base62\",\"children\":\"Approach 2: Auto-increment ID + Base62\"}]\n42:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import base62\\n\\ndef generate_short_id():\\n    # Get next ID from database\\n    id = db.get_next_id()  # Auto-increment\\n    \\n    # Convert to base62\\n    short_id = base62.encode(id)\\n    \\n    return short_id\\n\\n# Example:\\n# ID 1 → \\\"1\\\"\\n# ID 62 → \\\"10\\\"\\n# ID 3844 → \\\"100\\\"\\n# ID 56800235584 → \\\"zzzzzzz\\\" (7 chars)\\n\"}]}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Base62 charact"])</script><script>self.__next_f.push([1,"er set:\"}]}]\n44:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"[0-9][a-z][A-Z] = 62 characters\\n\"}]}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Capacity:\"}]}]\n46:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"6 characters: 62^6 = 56 billion URLs\\n7 characters: 62^7 = 3.5 trillion URLs\\n\"}]}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n48:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"No collisions\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple logic\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Predictable capacity\"}],\"\\n\"]}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n4a:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Sequential (security concern)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Single point of failure (ID generator)\"}],\"\\n\"]}]\n4b:[\"$\",\"h4\",null,{\"id\":\"approach-3-distributed-id-generation-production\",\"children\":\"Approach 3: Distributed ID Generation (Production)\"}]\n4c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Use Twitter Snowflake or similar\\ndef generate_short_id():\\n    # Snowflake generates 64-bit ID\\n    id = snowflake.generate()\\n    \\n    # Convert to base62\\n    short_id = base62.encode(id)\\n    \\n    return short_id\\n\\n# Snowflake structure:\\n# [timestamp: 41 bits][datacenter: 5 bits][machine: 5 bits][sequence: 12 bits]\\n\"}]}]\n4d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n4e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"No collisions\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"No single point of failure\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Time-ordered (useful for analytics)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"High throughput\"}],\"\\n\"]}]\n4f:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Used by:\"}],\" Twitter, Instagram, Discord\"]}]\n50:[\"$\",\"h3\",null,{\"id\":\"database-schema\",\"children\":\"Database Schema\"}]\n51:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- URLs table\\nCREATE TABLE urls (\\n    short_id VARCHAR(7) PRIMARY KEY,\\n    long_url VARCHAR(2048) NOT NULL,\\n    user_id BIGINT,\\n    created_at TIMESTAMP DEFAULT NOW(),\\n    expires_at TIMESTAMP NULL,\\n    \\n    INDEX idx_user_id (user_id),\\n    INDEX idx_created_at (created_at)\\n);\\n\\n-- Analytics table (separate for performance)\\nCREATE TABLE url_clicks (\\n    short_id VARCHAR(7),\\n    clicked_at TIMESTAMP,\\n    user_agent TEXT,\\n    ip_address VARCHAR(45),\\n    country VARCHAR(2),\\n    \\n    INDEX idx_short_id_time (short_id, clicked_at)\\n) PARTITION BY RANGE (clicked_at);\\n\"}]}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why separate tables:\"}]}]\n53:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"URLs: Small, read-heavy, cacheable\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Clicks: Large, write-heavy, append-only\"}],\"\\n\"]}]\n54:[\"$\",\"h3\",null,{\"id\":\"redirect-flow-optimized\",\"children\":\"Redirect Flow (Optimized)\"}]\n55:[\"$\",\"$L2a\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant CDN\\n    participant Cache\\n    participant API\\n    participant DB\\n    participant Queue\\n    \\n    User-\u003e\u003eCDN: GET /abc123\\n    \\n    alt CDN Cache Hit\\n        CDN--\u003e\u003eUser: 301 Redirect (5ms)\\n    else CDN Cache Miss\\n        CDN-\u003e\u003eCache: Check Redis\\n        \\n        alt Redis Hit\\n            Cache--\u003e\u003eCDN: long_url\\n            CDN--\u003e\u003eUser: 301 Redirect (20ms)\\n        else Redis Miss\\n            Cache-\u003e\u003eAPI: Fetch URL\\n            API-\u003e\u003eDB: Query\\n            DB--\u003e\u003eAPI: long_url\\n            API--\u003e\u003eCache: Store in Redis\\n            Cache--\u003e\u003eCDN: long_url\\n            CDN--\u003e\u003eUser: 301 Redirect (50ms)\\n        end\\n    end\\n    \\n    Note over User,Queue: Analytics async\\n    CDN-\u003e\u003eQueue: Click event\"}]\n56:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache layers:\"}]}]\n57:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"CDN edge:\"}],\" 80-90% hit rate, \u003c5ms\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Redis:\"}],\" 95-"])</script><script>self.__next_f.push([1,"99% hit rate, \u003c20ms\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Database:\"}],\" 1-5% miss, \u003c50ms\"]}],\"\\n\"]}]\n58:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Target: p99 latency \u003c50ms.\"}]}]\n59:[\"$\",\"h3\",null,{\"id\":\"api-implementation\",\"children\":\"API Implementation\"}]\n101:T5a9,"])</script><script>self.__next_f.push([1,"from flask import Flask, redirect, request\nimport redis\nimport hashlib\n\napp = Flask(__name__)\ncache = redis.Redis(host='redis', decode_responses=True)\n\n@app.route('/\u003cshort_id\u003e')\ndef redirect_url(short_id):\n    # Check cache first\n    long_url = cache.get(f\"url:{short_id}\")\n    \n    if not long_url:\n        # Cache miss - query database\n        url = db.query(\n            \"SELECT long_url FROM urls WHERE short_id = ?\",\n            short_id\n        )\n        \n        if not url:\n            return \"URL not found\", 404\n        \n        long_url = url['long_url']\n        \n        # Store in cache (24h TTL)\n        cache.setex(f\"url:{short_id}\", 86400, long_url)\n    \n    # Track analytics (async)\n    track_click.delay(short_id, request)\n    \n    # Redirect (301 permanent)\n    return redirect(long_url, code=301)\n\n@app.route('/api/shorten', methods=['POST'])\ndef create_short_url():\n    long_url = request.json['url']\n    \n    # Validate URL\n    if not is_valid_url(long_url):\n        return {\"error\": \"Invalid URL\"}, 400\n    \n    # Generate short ID\n    short_id = generate_short_id(long_url)\n    \n    # Store in database\n    db.execute(\n        \"INSERT INTO urls (short_id, long_url, user_id) VALUES (?, ?, ?)\",\n        short_id, long_url, current_user.id\n    )\n    \n    # Warm cache\n    cache.setex(f\"url:{short_id}\", 86400, long_url)\n    \n    return {\n        \"short_url\": f\"https://short.ly/{short_id}\",\n        \"long_url\": long_url\n    }\n"])</script><script>self.__next_f.push([1,"5a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$101\"}]}]\n5b:[\"$\",\"h3\",null,{\"id\":\"cache-strategy\",\"children\":\"Cache Strategy\"}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache hot URLs aggressively:\"}]}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Cache tiers\\nclass URLCache:\\n    def __init__(self):\\n        self.l1 = {}  # In-memory (application)\\n        self.l2 = redis.Redis()  # Redis cluster\\n        self.l3 = None  # CDN (edge)\\n    \\n    def get(self, short_id):\\n        # L1: Application memory (microseconds)\\n        if short_id in self.l1:\\n            metrics.increment('cache.l1.hit')\\n            return self.l1[short_id]\\n        \\n        # L2: Redis (milliseconds)\\n        long_url = self.l2.get(f\\\"url:{short_id}\\\")\\n        if long_url:\\n            metrics.increment('cache.l2.hit')\\n            self.l1[short_id] = long_url  # Populate L1\\n            return long_url\\n        \\n        # L3: Database (tens of milliseconds)\\n        metrics.increment('cache.miss')\\n        long_url = db.get_url(short_id)\\n        \\n        if long_url:\\n            # Populate all cache layers\\n            self.l1[short_id] = long_url\\n            self.l2.setex(f\\\"url:{short_id}\\\", 86400, long_url)\\n        \\n        return long_url\\n\"}]}]\n5e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache eviction:\"}]}]\n5f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# LRU eviction in Redis\\nredis_config = {\\n    'maxmemory': '10gb',\\n    'maxmemory-policy': 'allkeys-lru'\\n}\\n\\n# Hot URLs stay cached\\n# Cold URLs evicted automatically\\n\"}]}]\n60:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache warming:\"}]}]\n61:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Warm cache with popular URLs\\ndef warm_cache():\\n    popular_urls = db.query(\\\"\\\"\\\"\\n        SELECT short_id, long_url\\n        FROM urls\\n        WHERE created_at \u003e NOW() - INTERVAL '7 days'\\n        ORDER BY click_count DESC\\n        LIMIT 10000\\n    \\\"\\\"\\\")\\n    \\n    for url in popular_urls:\\n        cache.setex(f\\\"url:{url['short_id']}\\\", 86400, url['long_url'])\\n\"}]}]\n62:[\"$\",\"h3\",null,{\"id\":\"analytics-pipeline-async\",\"children\":\"Analytics Pipeline (Async)\"}]\n63:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Problem:\"}],\" Don't slow down redirects với analytics writes.\"]}]\n64:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Solution:\"}],\" Async processing.\"]}]\n65:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart LR\\n    Redirect[Redirect Request] --\u003e Queue[Kafka/SQS]\\n    Queue --\u003e Worker1[Worker 1]\\n    Queue --\u003e Worker2[Worker 2]\\n    Queue --\u003e Worker3[Worker 3]\\n    \\n    Worker1 --\u003e Batch[Batch Insert]\\n    Worker2 --\u003e Batch\\n    Worker3 --\u003e Batch\\n    \\n    Batch --\u003e Analytics[(Analytics DB)]\"}]\n66:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation:\"}]}]\n67:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from celery import Celery\\n\\napp = Celery('tasks', broker='redis://localhost')\\n\\n@app.task\\ndef track_click(short_id, request_data):\\n    # Extract analytics data\\n    analytics = {\\n        'short_id': short_id,\\n        'clicked_at': datetime.now(),\\n        'ip_address': request_data.remote_addr,\\n        'user_agent': request_data.user_agent.string,\\n        'referer': request_data.referrer,\\n        'country': geoip.lookup(request_data.remote_addr)\\n    }\\n    \\n    # Batch insert (better performance)\\n    analytics_buffer.append(analytics)\\n    \\n    if len(analytics_buffer) \u003e= 1000:\\n        db.bulk_insert('url_clicks', analytics_buffer)\\n        analytics_buffer.clear()\\n\"}]}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Batch processing:\"}]}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Write clicks in batches\\ndef batch_write_clicks():\\n    while True:\\n        clicks = queue.get_batch(size=5000)\\n        \\n"])</script><script>self.__next_f.push([1,"        if clicks:\\n            # Bulk insert (much faster)\\n            db.bulk_insert(\\\"\\\"\\\"\\n                INSERT INTO url_clicks \\n                (short_id, clicked_at, ip_address, user_agent, country)\\n                VALUES %s\\n            \\\"\\\"\\\", clicks)\\n            \\n            # Update click counts\\n            update_click_counts(clicks)\\n        \\n        time.sleep(1)\\n\"}]}]\n6a:[\"$\",\"h3\",null,{\"id\":\"sharding-strategy\",\"children\":\"Sharding Strategy\"}]\n6b:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"When to shard:\"}],\" \u003e10M URLs, write throughput bottleneck.\"]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Shard by short_id:\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_shard(short_id):\\n    # Hash short_id to determine shard\\n    shard_num = hash(short_id) % NUM_SHARDS\\n    return shards[shard_num]\\n\\n# Example: 4 shards\\n# short_id \\\"abc123\\\" → hash → shard 2\\n# short_id \\\"xyz789\\\" → hash → shard 3\\n\"}]}]\n6e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\n6f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Even distribution\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"No hotspots\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Queries always target 1 shard\"}],\"\\n\"]}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Drawback:\"}]}]\n71:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Range queries across all shards\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"User's URLs scattered across shards\"}],\"\\n\"]}]\n72:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Alternative: Shard by user_id\"}]}]\n73:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_shard(user_id):\\n    return shards[user_id % NUM_SHARDS]\\n\"}]}]\n74:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\n75:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"User's URLs on same shard\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Queries by user_id efficient\"}],\"\\n\"]}]\n76:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Drawback:\"}]}]\n77:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Redirects need lookup table (short_id → shard)\"}],\"\\n\"]}]\n78:[\"$\",\"h3\",null,{\"id\":\"complete-architecture\",\"children\":\"Complete Architecture\"}]\n102:T535,flowchart TB\n    subgraph Clients\n        Browser[Browsers]\n        Mobile[Mobile Apps]\n    end\n    \n    subgraph EdgeLayer[\"Edge Layer\"]\n        CDN[CDN\u003cbr/\u003eCloudflare/Akamai]\n    end\n    \n    subgraph AppLayer[\"Application Layer\"]\n        LB[Load Balancer]\n        API1[API Server 1]\n        API2[API Server 2]\n        API3[API Server 3]\n    end\n    \n    subgraph CacheLayer[\"Cache Layer\"]\n        Redis1[Redis Master]\n        Redis2[Redis Replica 1]\n        Redis3[Redis Replica 2]\n    end\n    \n    subgraph DataLayer[\"Data Layer\"]\n        DBP[(Primary DB)]\n        DBR1[(Read Replica 1)]\n        DBR2[(Read Replica 2)]\n    end\n    \n    subgraph AsyncLayer[\"Async Processing\"]\n        Queue[Message Queue]\n        Worker1[Worker 1]\n        Worker2[Worker 2]\n        AnalyticsDB[(Analytics DB)]\n    end\n    \n    Browser --\u003e CDN\n    Mobile --\u003e CDN\n    CDN --\u003e LB\n    \n    LB --\u003e API1\n    LB --\u003e API2\n    LB --\u003e API3\n    \n    API1 --\u003e Redis1\n    API2 --\u003e Redis1\n    API3 --\u003e Redis1\n    \n    Redis1 -.Replicate.-\u003e Redis2\n    Redis1 -.Replicate.-\u003e Redis3\n    \n    API1 --\u003e|Write| DBP\n    API1 --\u003e|Read| DBR1\n    API2 --\u003e|Read| DBR2\n    \n    DBP -.Replicate.-\u003e DBR1\n    DBP -.Replicate.-\u003e DBR2\n    \n    API1 --\u003e Queue\n    API2 --\u003e Queue\n    Queue --\u003e Worker1\n    Queue --\u003e Worker2\n    Worker1 --\u003e AnalyticsDB\n    Worker2 --\u003e AnalyticsDB79:[\"$\",\"$L2a\",null,{\"chart\":\"$102\"}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Hoàn chỉnh architecture cho URL shortener scale.\"}]}]\n7b:[\"$\",\"h3\",null,{\"id\":\"key-optimizations\",\"children\":\"Key Optimizations\"}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Permanent redirects (301)\"}]}]\n7d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language"])</script><script>self.__next_f.push([1,"-python\",\"children\":\"# 301 = browser caches redirect\\nreturn redirect(long_url, code=301)\\n\\n# Users won't hit server on subsequent visits\\n\"}]}]\n7e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. CDN caching\"}]}]\n7f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Cache-Control header\\nresponse.headers['Cache-Control'] = 'public, max-age=86400'\\n\"}]}]\n80:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. DNS prefetch\"}]}]\n81:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-html\",\"children\":\"\u003c!-- In landing page --\u003e\\n\u003clink rel=\\\"dns-prefetch\\\" href=\\\"//short.ly\\\"\u003e\\n\"}]}]\n82:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Connection pooling\"}]}]\n83:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Reuse database connections\\ndb_pool = ConnectionPool(max_connections=100)\\n\"}]}]\n84:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Read replicas\"}]}]\n85:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Route reads to replicas\\nif operation == 'read':\\n    db = read_replica\\nelse:\\n    db = primary_db\\n\"}]}]\n86:[\"$\",\"h2\",null,{\"id\":\"case-study-2-content-delivery-system\",\"children\":\"Case Study 2: Content Delivery System\"}]\n87:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Examples:\"}],\" WordPress, Medium, News sites\"]}]\n88:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Characteristics:\"}]}]\n89:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Write once, read millions\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Heavy media (images, videos)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Global audience\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"SEO critical\"}],\"\\n\"]}]\n8a:[\"$\",\"h3\",null,{\"id\":\"multi-layer-caching\",\"children\":\"Multi-Layer Caching\"}]\n8b:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    User[User Request]\\n    \\n    subgraph Layer1[\\\"Layer 1: Browser Cache\\\"]\\n        BC[Browser Cache\u003cbr/\u003eImages, CSS, JS]\\n    end\\n    \\n    subgraph Layer2[\\\"Layer 2: CDN Edge\\\"]\\n        CDN[CDN Cache\u003cbr/\u003eStatic assets + HTML]\\n    end\\n    \\n    subgraph Layer3[\\\"Layer 3: Application Cache\\\"]\\n        Redis[Redis Cache\u003cbr/\u003eRendered pages]\\n    end\\n    \\n    subgraph Layer4[\\\"Layer 4: Database Query Cache\\\"]\\n        DB[(Database)]\\n    end\\n    \\n    User --\u003e Layer1\\n    Layer1 --\u003e|Miss| Layer2\\n    Layer2 --\u003e|Miss| Layer3\\n    Layer3 --\u003e|Miss| Layer4\"}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache hit rates:\"}]}]\n8d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Browser: 50-60% (returning visitors)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"CDN: 80-90% (popular content)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Redis: 95-99% (hot data)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database: 1-5% (cache misses)\"}],\"\\n\"]}]\n8e:[\"$\",\"h3\",null,{\"id\":\"content-type-strategy\",\"children\":\"Content Type Strategy\"}]\n8f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Static assets (images, CSS, JS):\"}]}]\n90:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-http\",\"children\":\"Cache-Control: public, max-age=31536000, immutable\\n\"}]}]\n91:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Aggressive caching, versioned URLs:\"}]}]\n92:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"/static/app.v123.js\\n/images/logo.abc123.png\\n\"}]}]\n93:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"HTML pages:\"}]}]\n94:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-http\",\"children\":\"Cache-Control: public, max-age=300, s-maxage=3600\\n\"}]}]\n95:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Browser: 5 minutes, CDN: 1 hour.\"}]}]\n96:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"API responses:\"}]}]\n97:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-http\",\"children\":\"Cache-Control: public, max-age=60\\n\"}]}]\n98:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Short TTL, frequent updates.\"}]}]\n99:[\"$\",\"h3\",null,{\"id\":\"cache-invalidation\",\"children\":"])</script><script>self.__next_f.push([1,"\"Cache Invalidation\"}]\n9a:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Problem:\"}],\" Content updated, cache stale.\"]}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy 1: TTL-based\"}]}]\n9c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Short TTL for frequently updated content\\ncache.setex('article:123', 300, article_html)  # 5 minutes\\n\"}]}]\n9d:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Pros:\"}],\" Simple, eventual consistency\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Cons:\"}],\" Delay before fresh content\"]}]\n9e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy 2: Event-based\"}]}]\n9f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Invalidate on update\\n@app.route('/admin/article/\u003cid\u003e', methods=['PUT'])\\ndef update_article(id):\\n    # Update database\\n    db.update_article(id, data)\\n    \\n    # Invalidate all caches\\n    cache.delete(f'article:{id}')\\n    cdn.purge(f'/article/{id}')\\n    \\n    return {\\\"status\\\": \\\"updated\\\"}\\n\"}]}]\na0:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Pros:\"}],\" Immediate consistency\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Cons:\"}],\" Complex, API rate limits\"]}]\na1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy 3: Versioned URLs\"}]}]\na2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Include version in URL\\ndef article_url(article):\\n    return f\\\"/article/{article.id}?v={article.updated_at.timestamp()}\\\"\\n\\n# Old URL cached, new URL = cache miss\\n\"}]}]\na3:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Pros:\"}],\" Simple, no invalidation needed\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Cons:\"}],\" Cluttered URLs\"]}]\na4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Hybrid approach (production):\"}]}]\na5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Static assets: versioned URLs\\n/static/app.v123.js\\n\\n# HTML pages: short TTL + event invalidation\\ncache.setex('page:home', 300, html)  # 5 min TTL\\non_update: cache.delete('page:home')  # Immediate\\n\\n# API: very short TTL\\ncache.setex('api:posts', 60, json)  # 1 min TTL\\n\"}]}]\na6:[\"$\",\"h3\",null,{\"id\":\"database-modeling-for-reads\",\"children\":\"Database Modeling For Reads\"}]\na7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Denormalization for performance:\"}]}]\na8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Normalized (slow - requires JOIN)\\nSELECT a.*, u.name, u.avatar\\nFROM articles a\\nJOIN users u ON a.author_id = u.id\\nWHERE a.id = 123;\\n\\n-- Denormalized (fast - single query)\\nCREATE TABLE articles (\\n    id BIGINT PRIMARY KEY,\\n    title VARCHAR(200),\\n    content TEXT,\\n    author_id BIGINT,\\n    author_name VARCHAR(100),  -- Denormalized\\n    author_avatar VARCHAR(255), -- Denormalized\\n    created_at TIMESTAMP\\n);\\n\\nSELECT * FROM articles WHERE id = 123;\\n\"}]}]\na9:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Trade-off:\"}],\" Storage + update complexity vs read performance.\"]}]\naa:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Materialized views:\"}]}]\nab:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Pre-computed popular articles\\nCREATE MATERIALIZED VIEW popular_articles AS\\nSELECT \\n    a.*,\\n    COUNT(v.id) as view_count,\\n    COUNT(c.id) as comment_count\\nFROM articles a\\nLEFT JOIN views v ON a.id = v.article_id\\nLEFT JOIN comments c ON a.id = c.article_id\\nWHERE a.published_at \u003e NOW() - INTERVAL '7 days'\\nGROUP BY a.id\\nORDER BY view_count DESC\\nLIMIT 100;\\n\\n-- Refresh periodically\\nREFRESH MATERIALIZED VIEW popular_articles;\\n\"}]}]\nac:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Query directly from view - instant results.\"}]}]\nad:[\"$\",\"h3\",null,{\"id\":\"global-deployment\",\"children\":\"Global Deployment\"}]\nae:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Multi-r"])</script><script>self.__next_f.push([1,"egion architecture:\"}]}]\naf:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    subgraph US[\\\"US Region\\\"]\\n        US_CDN[CDN Edge]\\n        US_DB[(Read Replica)]\\n    end\\n    \\n    subgraph EU[\\\"EU Region\\\"]\\n        EU_CDN[CDN Edge]\\n        EU_DB[(Read Replica)]\\n    end\\n    \\n    subgraph ASIA[\\\"Asia Region\\\"]\\n        ASIA_CDN[CDN Edge]\\n        ASIA_DB[(Read Replica)]\\n    end\\n    \\n    Primary[(Primary DB\u003cbr/\u003eUS)]\\n    \\n    Primary -.Replicate.-\u003e US_DB\\n    Primary -.Replicate.-\u003e EU_DB\\n    Primary -.Replicate.-\u003e ASIA_DB\\n    \\n    US_Users[US Users] --\u003e US_CDN\\n    EU_Users[EU Users] --\u003e EU_CDN\\n    ASIA_Users[Asia Users] --\u003e ASIA_CDN\\n    \\n    US_CDN --\u003e US_DB\\n    EU_CDN --\u003e EU_DB\\n    ASIA_CDN --\u003e ASIA_DB\"}]\nb0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\nb1:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Low latency worldwide\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Redundancy (region failure)\"}],\"\\n\"]}]\nb2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Challenges:\"}]}]\nb3:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Replication lag (eventual consistency)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Higher cost\"}],\"\\n\"]}]\nb4:[\"$\",\"h3\",null,{\"id\":\"image-optimization\",\"children\":\"Image Optimization\"}]\nb5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Critical for content sites.\"}]}]\nb6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Responsive images:\"}]}]\nb7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-html\",\"children\":\"\u003cimg \\n    src=\\\"/images/hero.jpg\\\"\\n    srcset=\\\"\\n        /images/hero-320w.jpg 320w,\\n        /images/hero-640w.jpg 640w,\\n        /images/hero-1024w.jpg 1024w\\n    \\\"\\n    sizes=\\\"(max-width: 640px) 100vw, 640px\\\"\\n\u003e\\n\"}]}]\nb8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Browser loads appropriate size.\"}]}]\nb9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Format optimization:\"}]}]\nba:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Serve WebP to supporting browsers\\ndef serve_image(image_id):\\n    accepts_webp = 'image/webp' in request.headers.get('Accept', '')\\n    \\n    if accepts_webp:\\n        return f\\\"/images/{image_id}.webp\\\"\\n    else:\\n        return f\\\"/images/{image_id}.jpg\\\"\\n\"}]}]\nbb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"WebP: 30% smaller than JPEG.\"}]}]\nbc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Lazy loading:\"}]}]\nbd:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-html\",\"children\":\"\u003cimg src=\\\"placeholder.jpg\\\" data-src=\\\"actual-image.jpg\\\" loading=\\\"lazy\\\"\u003e\\n\"}]}]\nbe:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Load images khi scroll vào view.\"}]}]\nbf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"CDN image processing:\"}]}]\nc0:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Original: /images/photo.jpg\\nResize: /images/photo.jpg?w=800\u0026h=600\\nOptimize: /images/photo.jpg?format=webp\u0026quality=80\\n\"}]}]\nc1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cloudflare, Cloudinary, Imgix support này.\"}]}]\nc2:[\"$\",\"h2\",null,{\"id\":\"cache-first-thinking\",\"children\":\"Cache-First Thinking\"}]\nc3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mindset shift cho read-heavy systems.\"}]}]\nc4:[\"$\",\"h3\",null,{\"id\":\"traditional-flow\",\"children\":\"Traditional Flow\"}]\nc5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User request → API → Database → Response\\n\"}]}]\nc6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Every request hits database - slow, expensive.\"}]}]\nc7:[\"$\",\"h3\",null,{\"id\":\"cache-first-flow\",\"children\":\"Cache-First Flow\"}]\nc8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User request → Cache (hit) → Response (fast)\\n              → Cache (miss) → Database → Cache → Response\\n\"}]}]\nc9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"99% requests serve từ cache - fast, cheap.\"}]}]\nca:[\"$\",\"h3\",null,{\"id\":\"design-questions\",\"children\":\"Design Questions\"}]\ncb"])</script><script>self.__next_f.push([1,":[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When designing read-heavy system, ask:\"}]}]\ncc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. What's the read/write ratio?\"}]}]\ncd:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"If 100:1 or higher → Cache-first architecture\\n\"}]}]\nce:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. What's the hot data set?\"}]}]\ncf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Identify 20% data = 80% traffic\\nCache này aggressively\\n\"}]}]\nd0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. How fresh must data be?\"}]}]\nd1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Real-time: Short TTL (seconds)\\nNear-real-time: Medium TTL (minutes)\\nEventually consistent: Long TTL (hours)\\n\"}]}]\nd2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. What's acceptable cache miss rate?\"}]}]\nd3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Target: 90-99% cache hit\\nMeasure và optimize\\n\"}]}]\nd4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Where to cache?\"}]}]\nd5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Browser → CDN → Application → Database\\nMultiple layers = higher hit rate\\n\"}]}]\nd6:[\"$\",\"h3\",null,{\"id\":\"cache-warming\",\"children\":\"Cache Warming\"}]\nd7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't wait for cache misses.\"}]}]\nd8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Warm cache on deploy\\ndef warm_cache():\\n    # Popular articles\\n    articles = db.query(\\\"\\\"\\\"\\n        SELECT id, rendered_html\\n        FROM articles\\n        WHERE view_count \u003e 1000\\n        ORDER BY view_count DESC\\n        LIMIT 1000\\n    \\\"\\\"\\\")\\n    \\n    for article in articles:\\n        cache.setex(\\n            f'article:{article.id}',\\n            3600,\\n            article.rendered_html\\n        )\\n    \\n    # User sessions\\n    sessions = db.query(\\\"SELECT * FROM active_sessions\\\")\\n    for session in sessions:\\n        cache.setex(f'session:{session.id}', 1800, session.data)\\n\"}]}]\nd9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Proactive caching = consistent performance.\"}]}]\nda:[\"$\",\"h2\",null,{\"id\":\"key-patterns-summary\",\"children\":\"Key Patterns Summary\"}]\ndb:[\"$\",\"h3\",null,{\"id\":\"pattern-1-multi-layer-cache\",\"children\":\"Pattern 1: Multi-Layer Cache\"}]\ndc:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Browser → CDN → Redis → Database\\n\"}]}]\ndd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Each layer catches different traffic.\"}]}]\nde:[\"$\",\"h3\",null,{\"id\":\"pattern-2-async-analytics\",\"children\":\"Pattern 2: Async Analytics\"}]\ndf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Request → Quick response\\n        → Queue event\\n        → Worker processes\\n        → Analytics DB\\n\"}]}]\ne0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't slow down reads với analytics writes.\"}]}]\ne1:[\"$\",\"h3\",null,{\"id\":\"pattern-3-denormalization\",\"children\":\"Pattern 3: Denormalization\"}]\ne2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"JOIN 3 tables → Slow\\nDenormalized table → Fast\\n\"}]}]\ne3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade storage cho read performance.\"}]}]\ne4:[\"$\",\"h3\",null,{\"id\":\"pattern-4-read-replicas\",\"children\":\"Pattern 4: Read Replicas\"}]\ne5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Writes → Primary\\nReads → Replicas (3-5x)\\n\"}]}]\ne6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scale reads horizontally.\"}]}]\ne7:[\"$\",\"h3\",null,{\"id\":\"pattern-5-permanent-redirects\",\"children\":\"Pattern 5: Permanent Redirects\"}]\ne8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"HTTP 301 → Browser caches\\nHTTP 302 → Browser doesn't cache\\n\"}]}]\ne9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use 301 cho stable URLs.\"}]}]\nea:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\neb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Read-heavy systems = c"])</script><script>self.__next_f.push([1,"ache-first architecture\"}]}]\nec:[\"$\",\"p\",null,{\"children\":\"90-99% cache hit rate critical. Multiple cache layers.\"}]\ned:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. URL shortener pattern: ID generation + aggressive caching\"}]}]\nee:[\"$\",\"p\",null,{\"children\":\"Base62 encoding, multi-layer cache, async analytics.\"}]\nef:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Content delivery: Multi-layer caching + CDN\"}]}]\nf0:[\"$\",\"p\",null,{\"children\":\"Browser → CDN → Application → Database.\"}]\nf1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. ID generation strategies: Hash, auto-increment, Snowflake\"}]}]\nf2:[\"$\",\"p\",null,{\"children\":\"Snowflake best cho distributed systems.\"}]\nf3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Async analytics pipeline\"}]}]\nf4:[\"$\",\"p\",null,{\"children\":\"Don't slow down reads. Queue → Workers → Analytics DB.\"}]\nf5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"6. Cache invalidation strategies: TTL, event-based, versioned URLs\"}]}]\nf6:[\"$\",\"p\",null,{\"children\":\"Hybrid approach in production.\"}]\nf7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"7. Database denormalization for reads\"}]}]\nf8:[\"$\",\"p\",null,{\"children\":\"Trade storage + update complexity cho query performance.\"}]\nf9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"8. Sharding by ID for even distribution\"}]}]\nfa:[\"$\",\"p\",null,{\"children\":\"Avoid hotspots, scale writes.\"}]\nfb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"9. Global deployment với read replicas\"}]}]\nfc:[\"$\",\"p\",null,{\"children\":\"Low latency worldwide, eventual consistency acceptable.\"}]\nfd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"10. Monitor cache hit rate continuously\"}]}]\nfe:[\"$\",\"p\",null,{\"children\":\"Target 90-99%. Optimize hot data caching.\"}]\nff:[\"$\",\"hr\",null,{}]\n100:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember: For read-heavy systems, cache is not optimization - it's the architecture. Design cache-first, not cache-as-afterthought. 99% of your users should never hit the database.\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"103:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Read-Heavy Systems - Design Cho 99% Reads | Phase 5 — Real-World Architecture Patterns | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học thiết kế read heavy systems với caching heavy architecture: URL shortener TinyURL/Bitly pattern , content delivery systems, ID generation strategies, cache \"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-5/lesson/lesson-2-head-heavy-systems\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Read-Heavy Systems - Design Cho 99% Reads | Phase 5 — Real-World Architecture Patterns\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học thiết kế read heavy systems với caching heavy architecture: URL shortener TinyURL/Bitly pattern , content delivery systems, ID generation strategies, cache \"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-5/lesson/lesson-2-head-heavy-systems\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Read-Heavy Systems - Design Cho 99% Reads | Phase 5 — Real-World Architecture Patterns\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học thiết kế read heavy systems với caching heavy architecture: URL shortener TinyURL/Bitly pattern , content delivery systems, ID generation strategies, cache \"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L103\",\"14\",{}]]\n"])</script></body></html>

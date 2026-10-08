@@ -1,0 +1,504 @@
+@0 h1
+Communication Patterns: Sync vs Async
+@1 p
+Sau khi hiểu các components trong hệ thống, câu hỏi tiếp theo là: **Chúng communicate với nhau thế nào?**
+@2 p
+Tôi còn nhớ lần đầu design một tính năng "upload video". Approach của tôi:
+@3 p
+Senior architect nhìn code, hỏi: *"User có cần đợi tất cả này không?"*
+@4 p
+Tôi nhận ra: **Không.** User chỉ cần biết video đã upload. Processing có thể làm sau.
+@5 p
+Đó là lúc tôi học về **synchronous vs asynchronous communication** - một trong những quyết định quan trọng nhất trong system design.
+@6 h2
+Tại Sao Communication Pattern Quan Trọng?
+@7 p
+Pattern bạn chọn ảnh hưởng đến:
+@8 p
+**Performance:**
+@9 li
+Sync: User đợi cho đến khi xong
+@10 li
+Async: User nhận response ngay, process sau
+@11 p
+**Scalability:**
+@12 li
+Sync: Hard to handle traffic spikes
+@13 li
+Async: Queue buffer requests naturally
+@14 p
+**Reliability:**
+@15 li
+Sync: Failure = immediate error
+@16 li
+Async: Retry logic built-in
+@17 p
+**Complexity:**
+@18 li
+Sync: Simple, straightforward
+@19 li
+Async: Complex, eventual consistency
+@20 p
+**Không có "better" pattern. Chỉ có "appropriate" pattern.**
+@21 h2
+Synchronous Communication (Request-Response)
+@22 h3
+How It Works
+@23 pre
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Database
+    
+    Client->>Server: HTTP Request
+    activate Server
+    Server->>Database: Query
+    activate Database
+    Database-->>Server: Result
+    deactivate Database
+    Server-->>Client: HTTP Response
+    deactivate Server
+    Note over Client: Client đợi suốt quá trình
+@24 p
+Client gửi request → đợi → nhận response. Blocking operation.
+@25 h3
+Code Example
+@26 p
+**Flow:**
+@27 li
+Client sends request
+@28 li
+Client **waits** (blocks)
+@29 li
+Server processes
+@30 li
+Server returns response
+@31 li
+Client receives result
+@32 p
+Total time = Sum of all steps.
+@33 h3
+When to Use Synchronous
+@34 p
+**Use sync khi:**
+@35 p
+**User cần result ngay lập tức**
+@36 pre
+Examples:
+- Login (cần biết success/fail ngay)
+- Search (user đang đợi results)
+- Form submission (cần validation feedback)
+- API calls (client cần data để continue)
+
+@37 p
+**Operation nhanh (< 5 seconds)**
+@38 pre
+- Database lookups
+- Simple calculations
+- File reads (small files)
+
+@39 p
+**Workflow đơn giản**
+@40 pre
+Request → Process → Response
+Không có branching logic phức tạp
+
+@41 h3
+When NOT to Use Synchronous
+@42 p
+**Processing lâu (> 5 seconds)**
+@43 pre
+- Video encoding
+- Large file processing
+- Complex reports
+- Batch operations
+→ User timeout, bad UX
+
+@44 p
+**External dependencies không reliable**
+@45 pre
+- Third-party APIs (có thể slow/down)
+- Payment gateways
+- Email sending
+→ Your API slow vì dependency slow
+
+@46 p
+**Traffic spikes không dự đoán được**
+@47 pre
+Black Friday sale, viral posts
+→ All requests queue up
+→ System overload
+
+@48 h3
+Trade-offs
+@49 pre
+ Advantages:
+- Simple logic (easy to understand)
+- Immediate feedback
+- Easy debugging (linear flow)
+- Transaction support (ACID)
+
+ Disadvantages:
+- Poor UX cho slow operations
+- Tight coupling (client depends on server availability)
+- Hard to scale (synchronous blocking)
+- Timeout risk
+
+@50 h3
+Real-World Example: Login Flow
+@51 p
+**Why sync is appropriate:**
+@52 li
+User cần result ngay (cannot proceed without token)
+@53 li
+Fast operation (< 100ms)
+@54 li
+Simple workflow
+@55 h2
+Asynchronous Communication (Message Queue)
+@56 h3
+How It Works
+@57 pre
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Queue
+    participant Worker
+    participant Database
+    
+    Client->>Server: HTTP Request
+    activate Server
+    Server->>Queue: Add Job
+    Server-->>Client: Accepted (202)
+    deactivate Server
+    Note over Client: Client continues immediately
+    
+    Queue->>Worker: Fetch Job
+    activate Worker
+    Worker->>Database: Process
+    Database-->>Worker: Result
+    Worker->>Queue: Acknowledge
+    deactivate Worker
+@58 p
+Client gửi request → server add to queue → return ngay. Worker process sau.
+@59 h3
+Code Example
+@60 p
+**Flow:**
+@61 li
+Client sends request
+@62 li
+Server saves và queues job
+@63 li
+Server returns immediately (202 Accepted)
+@64 li
+Client continues (không đợi)
+@65 li
+Background worker picks up job
+@66 li
+Worker processes (có thể mất lâu)
+@67 li
+(Optional) Notify client khi done
+@68 h3
+When to Use Asynchronous
+@69 p
+**Use async khi:**
+@70 p
+**Processing lâu (> 5 seconds)**
+@71 pre
+Examples:
+- Video/image processing
+- Report generation
+- Batch imports
+- Data synchronization
+
+@72 p
+**User không cần result ngay**
+@73 pre
+- Send email
+- Generate invoice
+- Update analytics
+- Background sync
+
+@74 p
+**Need to handle traffic spikes**
+@75 pre
+Queue buffers requests:
+1000 requests/second → Queue holds
+Workers process at steady rate (100/s)
+No server overload
+
+@76 p
+**External dependencies không reliable**
+@77 pre
+- Third-party API calls
+- Webhook deliveries
+- Payment processing
+→ Retry logic built into queue
+
+@78 h3
+Message Queue Components
+@79 pre
+flowchart LR
+    Producer[Producer<br/>Web Server] --> Queue[Message Queue<br/>RabbitMQ/Redis]
+    Queue --> Worker1[Worker 1]
+    Queue --> Worker2[Worker 2]
+    Queue --> Worker3[Worker 3]
+    Worker1 --> Database[(Database)]
+    Worker2 --> Database
+    Worker3 --> Database
+@80 p
+**Producer:** Service tạo jobs (web server)
+**Queue:** Lưu jobs waiting to be processed
+**Consumer/Worker:** Services process jobs
+@81 h3
+Queue Guarantees
+@82 p
+**At-Most-Once:**
+@83 pre
+Message có thể bị mất
+Không retry
+Use case: Metrics, logs (mất 1 ít OK)
+
+@84 p
+**At-Least-Once (Common):**
+@85 pre
+Message không bị mất
+Có thể process nhiều lần
+Use case: Most business logic (with idempotency)
+
+@86 p
+**Exactly-Once (Rare):**
+@87 pre
+Message process đúng 1 lần
+Rất khó implement
+Use case: Financial transactions
+
+@88 h3
+Idempotency - Critical Concept
+@89 p
+**Problem:** Worker crashes sau khi process nhưng trước khi acknowledge.
+@90 pre
+Job: "Charge $100 to user"
+Worker 1: Process → Charge $100 → Crash (no ACK)
+Queue: Redeliver job
+Worker 2: Process → Charge $100 again!
+User charged $200 (wrong!)
+
+@91 p
+**Solution: Idempotent operations**
+@92 p
+**Khi design async operations, luôn make them idempotent.**
+@93 h3
+Trade-offs
+@94 pre
+ Advantages:
+- Better UX (fast response)
+- Handle traffic spikes (queue buffers)
+- Retry logic (reliability)
+- Decouple services
+
+ Disadvantages:
+- Complex architecture
+- Eventual consistency
+- Harder debugging (distributed)
+- Need monitoring (queue length, worker health)
+
+@95 h3
+Real-World Example: E-commerce Order
+@96 p
+**Why this design?**
+@97 li
+Order creation: Sync (user needs order_id)
+@98 li
+Inventory: Sync (must prevent overselling)
+@99 li
+Email: Async (user doesn't wait for email)
+@100 li
+Analytics: Async (not critical path)
+@101 h2
+Event-Driven Architecture (Advanced Async)
+@102 h3
+How It Works
+@103 pre
+flowchart TD
+    Service1[User Service] -->|user.created| EventBus[Event Bus<br/>Kafka/RabbitMQ]
+    EventBus -->|Subscribe| EmailService[Email Service]
+    EventBus -->|Subscribe| AnalyticsService[Analytics Service]
+    EventBus -->|Subscribe| RecommendationService[Recommendation Service]
+    
+    style EventBus fill:#f9f,stroke:#333
+@104 p
+Thay vì User Service gọi trực tiếp Email/Analytics, nó publish event. Services khác subscribe.
+@105 h3
+Code Example
+@106 p
+**Benefits:**
+@107 li
+User Service không biết ai consume events
+@108 li
+Easy thêm subscribers mới (không modify User Service)
+@109 li
+Each service independent
+@110 h3
+When to Use Event-Driven
+@111 p
+**Microservices architecture**
+**Multiple services cần react to same event**
+**Need loose coupling**
+@112 p
+**Simple monolith** (over-engineering)
+**Small team** (maintenance overhead)
+@113 h2
+Pattern Comparison
+@114 h3
+Scenario: User uploads profile photo
+@115 p
+**Approach 1: Synchronous**
+@116 p
+**Approach 2: Asynchronous**
+@117 p
+**Approach 3: Event-Driven**
+@118 h3
+Decision Framework
+@119 pre
+Choose Sync khi:
+✓ User needs immediate result
+✓ Fast operation (< 5s)
+✓ Simple workflow
+✓ Strong consistency required
+
+Choose Async (Queue) khi:
+✓ Long processing (> 5s)
+✓ User doesn't need immediate result
+✓ Need retry logic
+✓ Handle traffic spikes
+
+Choose Event-Driven khi:
+✓ Multiple services react to same event
+✓ Microservices architecture
+✓ Need loose coupling
+✓ Complex workflows
+
+@120 h2
+Common Patterns & Anti-Patterns
+@121 h3
+Pattern 1: Sync for Reads, Async for Writes
+@122 h3
+Pattern 2: Saga Pattern (Distributed Transactions)
+@123 p
+Khi cần coordinate nhiều services:
+@124 pre
+sequenceDiagram
+    participant Order
+    participant Payment
+    participant Inventory
+    participant Shipping
+    
+    Order->>Payment: Charge card
+    Payment-->>Order: Success
+    Order->>Inventory: Reserve items
+    Inventory-->>Order: Success
+    Order->>Shipping: Create shipment
+    Shipping-->>Order: Failed!
+    Order->>Inventory: Rollback (release items)
+    Order->>Payment: Rollback (refund)
+@125 p
+**Implementation:**
+@126 h3
+Anti-Pattern 1: Sync Calls in Chain
+@127 h3
+Anti-Pattern 2: No Timeout for Sync Calls
+@128 h3
+Anti-Pattern 3: Not Handling Queue Failures
+@129 h2
+Monitoring & Observability
+@130 h3
+Key Metrics
+@131 p
+**For Sync APIs:**
+@132 pre
+- Response time (p50, p95, p99)
+- Error rate
+- Request rate
+- Timeout rate
+
+@133 p
+**For Async Queues:**
+@134 pre
+- Queue length (backlog)
+- Processing time per job
+- Failure rate
+- Retry rate
+- Worker health
+
+@135 h3
+Alerting
+@136 h2
+Key Takeaways
+@137 p
+**Communication patterns shape system behavior:**
+@138 p
+**Synchronous (Request-Response):**
+@139 li
+Simple, immediate feedback
+@140 li
+Poor for slow operations, tight coupling
+@141 li
+**Use for:** Reads, fast operations, user-facing APIs
+@142 p
+**Asynchronous (Message Queue):**
+@143 li
+Better UX, handle spikes, retry logic
+@144 li
+Complex, eventual consistency
+@145 li
+**Use for:** Slow processing, background jobs, decoupling
+@146 p
+**Event-Driven:**
+@147 li
+Loose coupling, scalable, flexible
+@148 li
+Most complex, hard to debug
+@149 li
+**Use for:** Microservices, multiple reactions to events
+@150 p
+**Golden rules:**
+@151 li
+**Default to sync** cho simplicity
+@152 li
+**Go async** khi user experience demands
+@153 li
+**Make async operations idempotent**
+@154 li
+**Always set timeouts** cho sync calls
+@155 li
+**Monitor queue health** religiously
+@156 p
+**Decision checklist:**
+@157 p
+Trước khi chọn pattern, tự hỏi:
+@158 li
+User có cần result ngay không?
+@159 li
+Operation mất bao lâu?
+@160 li
+External dependencies reliable không?
+@161 li
+Team có experience với async patterns không?
+@162 p
+**Practice exercise:**
+@163 p
+Design communication pattern cho các scenarios:
+@164 li
+User đổi password
+@165 li
+Generate monthly report
+@166 li
+Process payment
+@167 li
+Send push notification to 1M users
+@168 li
+Real-time chat message
+@169 p
+Với mỗi scenario, defend choice của bạn với trade-offs.

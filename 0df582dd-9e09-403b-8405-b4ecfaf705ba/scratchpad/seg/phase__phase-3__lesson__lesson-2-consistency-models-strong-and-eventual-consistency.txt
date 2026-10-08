@@ -1,0 +1,619 @@
+@0 h1
+Consistency Models: Strong vs Eventual Consistency
+@1 p
+Tôi còn nhớ cái ngày tôi gây ra một bug nghiêm trọng vì không hiểu consistency.
+@2 p
+E-commerce system. User đặt hàng sản phẩm cuối cùng trong kho. Nhưng vì eventual consistency, 2 users cùng thấy "còn hàng" và đặt hàng thành công.
+@3 p
+Kết quả? Oversold. Phải refund một người. Customer service nightmare. CEO gọi meeting.
+@4 p
+Tôi học được bài học đắt giá: **Consistency không phải technical preference. Nó là business decision.**
+@5 p
+Lesson này sẽ giúp bạn tránh sai lầm đó.
+@6 h2
+Tại Sao Consistency Quan Trọng?
+@7 p
+Trong single database, consistency là đương nhiên:
+@8 pre
+User A: Writes X = 10
+User B: Reads X → Always sees 10
+
+Simple. Always correct.
+
+@9 p
+Nhưng trong distributed systems với multiple databases:
+@10 pre
+User A: Writes X = 10 to Database 1
+        Database 1 → Replicate to Database 2 (takes time)
+User B: Reads X from Database 2 → Might see old value (X = 5)
+
+Not simple. Might be wrong.
+
+@11 p
+**Question:** User B có nên thấy giá trị cũ không?
+@12 p
+**Answer:** Depends. Đó chính là consistency models.
+@13 h2
+Strong Consistency: Luôn Đúng, Nhưng Chậm
+@14 h3
+Định Nghĩa
+@15 p
+**Strong consistency = Mọi read đều thấy most recent write**
+@16 pre
+sequenceDiagram
+    participant UserA
+    participant DB1
+    participant DB2
+    participant UserB
+    
+    UserA->>DB1: Write X = 10
+    DB1->>DB2: Replicate X = 10
+    Note over DB1,DB2: Wait until replicated
+    DB1-->>UserA: Write confirmed
+    UserB->>DB2: Read X
+    DB2-->>UserB: Returns X = 10
+    
+    Note over UserA,UserB: User B LUÔN thấy giá trị mới nhất
+@17 p
+*Strong consistency: Write chỉ confirm sau khi replicate xong*
+@18 p
+**Behavior:**
+@19 pre
+Timeline:
+10:00:00.000 - User A writes X = 10
+10:00:00.050 - System replicates to all nodes (50ms)
+10:00:00.051 - Write confirmed to User A
+10:00:00.052 - User B reads X → Sees 10
+
+User B LUÔN LUÔN thấy latest value
+Giống như chỉ có 1 database duy nhất
+
+@20 h3
+Linearizability: Strongest Form
+@21 p
+**Linearizability = Operations appear to happen instantly at some point between start và end**
+@22 p
+Nghe abstract? Hãy xem ví dụ:
+@23 pre
+Timeline:
+
+User A: Write X = 10   [====== 50ms ======]
+User B:                     Read X     → Must see 10 (happened after write started)
+User C:        Read X   → Might see 5 or 10 (concurrent với write)
+User D:                                          Read X → Must see 10
+
+Rules:
+- Nếu read bắt đầu sau write complete → Phải thấy new value
+- Nếu read concurrent với write → Có thể thấy old hoặc new
+- Nếu write complete → Mọi read sau đó thấy new value
+
+@24 p
+**Real-world analogy:**
+@25 p
+Tưởng tượng bạn post trên Facebook:
+@26 pre
+Strong consistency (Linearizable):
+- Bạn post photo lúc 10:00
+- Friend refresh lúc 10:01 → PHẢI thấy photo
+- Không bao giờ "bạn thấy photo nhưng friend không thấy"
+
+Giống như post lên tường nhà
+→ Ai đi ngang qua đều thấy
+
+@27 h3
+Implementation Cost
+@28 p
+**Để achieve strong consistency:**
+@29 p
+**Performance impact:**
+@30 pre
+Single database:
+Write latency: 10ms
+
+Strong consistency (3 replicas):
+Write latency: 
+- Local write: 10ms
+- Replicate to Replica 1: 50ms (network)
+- Replicate to Replica 2: 50ms (network)
+- Replicate to Replica 3: 50ms (network)
+- Wait for all: max(50, 50, 50) = 50ms
+
+Total: 10 + 50 = 60ms (6x slower!)
+
+Nếu có replica ở xa:
+- US → EU replica: 100ms
+- US → Asia replica: 200ms
+Total: 10 + 200 = 210ms (21x slower!)
+
+@31 h3
+Trade-offs
+@32 pre
+Strong Consistency:
+
+Advantages:
+- Always correct
+- No stale data
+- Simple to reason about (như single database)
+- No application-level conflict resolution
+
+Disadvantages:
+- Slow (wait for replication)
+- Lower availability (nếu replica down, can't write)
+- Geographic distribution expensive
+- Scale limits (more replicas = slower)
+
+@33 h3
+Khi Nào Cần Strong Consistency?
+@34 p
+**Cần strong consistency khi:**
+@35 pre
+✓ Financial transactions
+  - Bank transfers
+  - Payment processing
+  - Accounting
+
+✓ Inventory management
+  - Last item in stock
+  - Seat booking
+  - Limited edition sales
+
+✓ Authentication
+  - Password changes
+  - Permission updates
+  - Security tokens
+
+✓ Critical business logic
+  - Order state transitions
+  - Contract signing
+  - Legal documents
+
+@36 p
+**Ví dụ thực tế:**
+@37 h2
+Eventual Consistency: Nhanh Nhưng Có Thể Sai Tạm Thời
+@38 h3
+Định Nghĩa
+@39 p
+**Eventual consistency = Nếu không có writes mới, eventually tất cả replicas sẽ converge về cùng value**
+@40 pre
+sequenceDiagram
+    participant UserA
+    participant DB1
+    participant DB2
+    participant UserB
+    
+    UserA->>DB1: Write X = 10
+    DB1-->>UserA: Write confirmed immediately
+    Note over DB1: Don't wait for replication
+    DB1--)DB2: Replicate async
+    UserB->>DB2: Read X
+    DB2-->>UserB: Returns X = 5 (old value)
+    Note over DB2: Eventually receives X = 10
+    UserB->>DB2: Read X again
+    DB2-->>UserB: Returns X = 10 (new value)
+    
+    Note over UserA,UserB: User B có thể thấy stale data tạm thời
+@41 p
+*Eventual consistency: Write confirm ngay, replicate async*
+@42 p
+**Behavior:**
+@43 pre
+Timeline:
+10:00:00.000 - User A writes X = 10 to DB1
+10:00:00.001 - Write confirmed immediately (1ms)
+10:00:00.010 - User B reads from DB2 → Sees X = 5 (stale!)
+10:00:00.050 - DB1 replicates to DB2
+10:00:00.100 - User B reads again → Sees X = 10
+
+User B thấy stale data trong 50ms
+Sau đó eventually consistent
+
+@44 h3
+Real-World Analogy
+@45 pre
+Facebook likes:
+- Bạn like post
+- Your like appears immediately (optimistic update)
+- Backend replicate async
+- Friend có thể thấy count khác nhau
+- After vài giây, everyone sees same count
+
+Acceptable vì:
+- Like count không critical
+- User experience tốt hơn (fast)
+- Eventual correctness là enough
+
+@46 h3
+Implementation
+@47 h3
+Conflict Resolution
+@48 p
+**Problem với eventual consistency:**
+@49 pre
+Scenario:
+10:00:00 - User A writes X = 10 to DB1
+10:00:00 - User B writes X = 20 to DB2 (concurrent!)
+
+Conflict! Cả hai writes success, nhưng giá trị nào đúng?
+
+DB1 thinks X = 10
+DB2 thinks X = 20
+
+When replicate → Conflict!
+
+@50 p
+**Resolution strategies:**
+@51 p
+**Strategy 1: Last Write Wins (LWW)**
+@52 p
+**Strategy 2: Application-Level Merge**
+@53 p
+**Strategy 3: Keep Both (CRDTs)**
+@54 h3
+Trade-offs
+@55 pre
+Eventual Consistency:
+
+Advantages:
+- Fast writes (no wait)
+- High availability (replicas independent)
+- Good for geo-distributed
+- Scales well
+
+Disadvantages:
+- Stale reads possible
+- Application phải handle inconsistency
+- Conflict resolution complexity
+- Harder to reason about
+
+@56 h3
+Khi Nào Dùng Eventual Consistency?
+@57 p
+**Eventual consistency OK khi:**
+@58 pre
+✓ Social features
+  - Likes, views counts
+  - Follower counts
+  - Activity feeds
+
+✓ Analytics
+  - Dashboards
+  - Metrics
+  - Reports
+
+✓ Recommendations
+  - Product suggestions
+  - Content feeds
+  - Search results
+
+✓ Non-critical updates
+  - Profile changes
+  - Preferences
+  - UI settings
+
+@59 p
+**Ví dụ thực tế:**
+@60 h2
+Read/Write Trade-offs
+@61 h3
+The Fundamental Trade-off
+@62 pre
+Consistency vs Performance vs Availability
+
+Pick 2:
+- Strong consistency + High availability → Slow
+- Strong consistency + Fast → Lower availability
+- Fast + High availability → Eventual consistency
+
+@63 p
+**Visual comparison:**
+@64 pre
+Strong Consistency:
+Write: ████████████ 60ms
+Read:  ███ 10ms
+Availability: 99.9%
+
+Eventual Consistency:
+Write: █ 5ms
+Read:  █ 5ms  
+Availability: 99.99%
+
+@65 h3
+Tunable Consistency
+@66 p
+Một số systems cho phép tune consistency per operation:
+@67 p
+**Trade-off matrix:**
+@68 pre
+Consistency Level | Latency | Availability | Correctness
+------------------|---------|--------------|------------
+ALL               | High    | Low          | Perfect
+QUORUM            | Medium  | Medium       | Very Good
+ONE               | Low     | High         | Eventually
+
+@69 h2
+Real-World Decision Making
+@70 h3
+Framework: 4 Questions
+@71 p
+Khi design feature, tự hỏi 4 câu hỏi này:
+@72 p
+**Question 1: User có bị harm nếu thấy stale data không?**
+@73 pre
+Example:
+- Bank balance stale → YES harm (user overdraft)
+- Like count stale → NO harm (just display)
+
+If YES → Strong consistency
+If NO → Eventual consistency OK
+
+@74 p
+**Question 2: Business loss nếu data inconsistent?**
+@75 pre
+Example:
+- Inventory oversold → YES loss (refund, reputation)
+- Feed order wrong → NO loss (just UX)
+
+If YES → Strong consistency  
+If NO → Eventual consistency OK
+
+@76 p
+**Question 3: Có thể fix sau không?**
+@77 pre
+Example:
+- Money transfer wrong → CANNOT fix (legal issue)
+- Duplicate notification → CAN fix (just annoying)
+
+If CANNOT fix → Strong consistency
+If CAN fix → Eventual consistency OK
+
+@78 p
+**Question 4: User có expect real-time không?**
+@79 pre
+Example:
+- Chat message → YES expect immediate
+- Email read status → NO expect (delay OK)
+
+If YES → Strong consistency (or appear so)
+If NO → Eventual consistency OK
+
+@80 h3
+Decision Matrix
+@81 pre
+Feature Type              | Consistency  | Reasoning
+--------------------------|--------------|------------------
+Payment processing        | Strong       | Cannot be wrong
+Inventory (last item)     | Strong       | Oversell bad
+User authentication       | Strong       | Security critical
+Password change           | Strong       | Security critical
+Order status              | Strong       | User expectation
+--------------------------|--------------|------------------
+Like/view counts          | Eventual     | Approximate OK
+Activity feed             | Eventual     | Delay acceptable
+Recommendations           | Eventual     | Personalized anyway
+Analytics dashboard       | Eventual     | Batch updates fine
+Profile updates           | Eventual     | Not time-critical
+Search results            | Eventual     | Ranking varies
+Notification count        | Eventual     | Off by 1-2 OK
+
+@82 h3
+Hybrid Approach
+@83 p
+Trong thực tế, **most systems dùng cả hai**:
+@84 h2
+Feature-Based Consistency Decisions
+@85 h3
+Case Study 1: E-commerce Checkout
+@86 p
+**Feature: Add to cart**
+@87 pre
+Decision: Eventual consistency
+
+Why?
+- Cart là temporary state
+- User có thể sửa before checkout
+- Delay vài giây acceptable
+- High availability quan trọng hơn
+
+Implementation:
+- Write to local cache immediately
+- Async replicate to database
+- User sees cart update instant
+
+@88 p
+**Feature: Place order**
+@89 pre
+Decision: Strong consistency
+
+Why?
+- Payment processing critical
+- Inventory check must be accurate
+- No oversell allowed
+- User expect confirmation immediately
+
+Implementation:
+- Transaction across inventory + payment + order
+- Wait for all confirms
+- User đợi vài giây OK (expected)
+
+@90 h3
+Case Study 2: Social Media
+@91 p
+**Feature: Post content**
+@92 pre
+Decision: Hybrid
+
+Why?
+- User expect to see own post immediately (strong)
+- Followers có thể thấy sau (eventual)
+
+Implementation:
+- Write với strong consistency
+- User thấy post ngay
+- Replicate to followers async
+- Followers thấy trong vài giây
+
+@93 p
+**Feature: Like count**
+@94 pre
+Decision: Eventual consistency
+
+Why?
+- Approximate count acceptable
+- High volume (thousands likes/second)
+- User không care nếu off by 10-20
+- Fast response critical
+
+Implementation:
+- Increment counter async
+- Update UI optimistically
+- Background sync to database
+- Eventually consistent count
+
+@95 h3
+Case Study 3: Messaging App
+@96 p
+**Feature: Send message**
+@97 pre
+Decision: Strong consistency
+
+Why?
+- Message order critical
+- User expect recipient sees immediately
+- Cannot lose messages
+- Delivery confirmation important
+
+Implementation:
+- Write to sender's DB với strong consistency
+- Replicate to recipient's DB synchronously
+- Confirm delivery after both writes
+- User waits vài ms (acceptable)
+
+@98 p
+**Feature: "Last seen" status**
+@99 pre
+Decision: Eventual consistency
+
+Why?
+- Approximate time OK
+- High frequency updates
+- Not critical data
+- Slight delay acceptable
+
+Implementation:
+- Update async every 30 seconds
+- Users might see "online" với small delay
+- Eventually converges
+- Performance > Accuracy
+
+@100 h2
+Mental Model: Consistency = Business Decision
+@101 p
+**Key insight:** Consistency không phải technical preference.
+@102 pre
+Wrong thinking:
+"Eventual consistency tốt hơn vì fast"
+"Strong consistency tốt hơn vì correct"
+
+Right thinking:
+"Feature này cần strong consistency vì business requirement X"
+"Feature này OK với eventual consistency vì business tolerates Y"
+
+@103 p
+**Framework:**
+@104 pre
+For each feature:
+
+1. Identify business requirement
+   → What matters most?
+
+2. Assess risk
+   → What's worst case với stale data?
+
+3. Check user expectation
+   → User expect instant hoặc delay OK?
+
+4. Choose consistency model
+   → Strong nếu critical
+   → Eventual nếu acceptable
+
+5. Implement accordingly
+   → Don't second-guess business needs
+
+@105 h2
+Key Takeaways
+@106 p
+**Consistency models summary:**
+@107 pre
+Strong Consistency:
+- Always correct
+- Slower, lower availability
+- Use cho: payments, inventory, auth
+- Trade: Performance cho correctness
+
+Eventual Consistency:
+- Fast, high availability
+- Temporarily incorrect
+- Use cho: likes, feeds, analytics
+- Trade: Correctness cho performance
+
+@108 p
+**Decision framework:**
+@109 pre
+Choose Strong Consistency nếu:
+✓ Data critical to business
+✓ Cannot tolerate errors
+✓ User harm nếu wrong
+✓ Legal/compliance requirements
+
+Choose Eventual Consistency nếu:
+✓ Approximate data OK
+✓ Can fix errors later
+✓ User không care về delays
+✓ Performance critical
+
+@110 p
+**Hybrid approach best:**
+@111 pre
+Most real systems:
+- Strong consistency cho critical paths
+- Eventual consistency cho everything else
+
+Examples:
+- E-commerce: Strong cho checkout, Eventual cho browse
+- Social: Strong cho posts, Eventual cho likes
+- Banking: Strong cho transactions, Eventual cho statements
+
+@112 p
+**Golden rule:**
+@113 p
+Consistency là business decision, không phải technical preference. Always start bằng business requirements, then choose consistency model accordingly.
+@114 p
+**Self-check questions:**
+@115 p
+Trước khi implement feature, tự hỏi:
+@116 li
+*User có bị harm nếu data stale vài giây không?*
+@117 li
+*Business có loss nếu data inconsistent không?*
+@118 li
+*User có expect real-time updates không?*
+@119 li
+*Có thể compensate/fix errors sau không?*
+@120 p
+Answers sẽ guide consistency decision.
+@121 p
+**Remember:**
+@122 pre
+Perfect consistency everywhere = Slow system
+No consistency anywhere = Wrong system
+
+Smart architect:
+- Strong consistency where needed
+- Eventual consistency where acceptable
+- Clear reasoning cho mỗi decision
+
+@123 p
+Consistency models không phải về choosing "better" option. Nó về choosing **right** option cho **context** cụ thể.
+@124 p
+Business first. Technology second. Always.

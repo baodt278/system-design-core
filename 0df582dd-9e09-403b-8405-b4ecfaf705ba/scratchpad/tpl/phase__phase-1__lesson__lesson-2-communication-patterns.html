@@ -1,0 +1,488 @@
+<article class="prose-ui"><h1 id="communication-patterns-sync-vs-async">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<pre><code class="language-python">def upload_video(video_file):
+    save_to_s3(video_file)           # 2 giây
+    generate_thumbnail(video_file)   # 5 giây
+    transcode_720p(video_file)       # 30 giây
+    transcode_1080p(video_file)      # 60 giây
+    send_notification()              # 1 giây
+    return "Success"                 # User đợi 98 giây!
+</code></pre>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<h2 id="tại-sao-communication-pattern-quan-trọng">§§SEG6§§</h2>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<ul>
+<li>§§SEG9§§</li>
+<li>§§SEG10§§</li>
+</ul>
+<p>§§SEG11§§</p>
+<ul>
+<li>§§SEG12§§</li>
+<li>§§SEG13§§</li>
+</ul>
+<p>§§SEG14§§</p>
+<ul>
+<li>§§SEG15§§</li>
+<li>§§SEG16§§</li>
+</ul>
+<p>§§SEG17§§</p>
+<ul>
+<li>§§SEG18§§</li>
+<li>§§SEG19§§</li>
+</ul>
+<p>§§SEG20§§</p>
+<h2 id="synchronous-communication-request-response">§§SEG21§§</h2>
+<h3 id="how-it-works">§§SEG22§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG23§§</code></pre>
+<p>§§SEG24§§</p>
+<h3 id="code-example">§§SEG25§§</h3>
+<pre><code class="language-python"># Client code
+def get_user_profile(user_id):
+    response = requests.get(f"/api/users/{user_id}")  # Blocks here
+    return response.json()
+
+# Server code
+@app.route('/api/users/&lt;user_id&gt;')
+def get_user(user_id):
+    user = database.query(f"SELECT * FROM users WHERE id = {user_id}")
+    return jsonify(user)
+</code></pre>
+<p>§§SEG26§§</p>
+<ol>
+<li>§§SEG27§§</li>
+<li>§§SEG28§§</li>
+<li>§§SEG29§§</li>
+<li>§§SEG30§§</li>
+<li>§§SEG31§§</li>
+</ol>
+<p>§§SEG32§§</p>
+<h3 id="when-to-use-synchronous">§§SEG33§§</h3>
+<p>§§SEG34§§</p>
+<p>§§SEG35§§</p>
+<pre><code>§§SEG36§§</code></pre>
+<p>§§SEG37§§</p>
+<pre><code>§§SEG38§§</code></pre>
+<p>§§SEG39§§</p>
+<pre><code>§§SEG40§§</code></pre>
+<h3 id="when-not-to-use-synchronous">§§SEG41§§</h3>
+<p>§§SEG42§§</p>
+<pre><code>§§SEG43§§</code></pre>
+<p>§§SEG44§§</p>
+<pre><code>§§SEG45§§</code></pre>
+<p>§§SEG46§§</p>
+<pre><code>§§SEG47§§</code></pre>
+<h3 id="trade-offs">§§SEG48§§</h3>
+<pre><code>§§SEG49§§</code></pre>
+<h3 id="real-world-example-login-flow">§§SEG50§§</h3>
+<pre><code class="language-python">@app.route('/login', methods=['POST'])
+def login():
+    email = request.json['email']
+    password = request.json['password']
+    
+    # Step 1: Validate credentials (50ms)
+    user = db.query("SELECT * FROM users WHERE email = ?", email)
+    if not user or not verify_password(password, user.password_hash):
+        return {"error": "Invalid credentials"}, 401
+    
+    # Step 2: Generate token (10ms)
+    token = generate_jwt(user.id)
+    
+    # Step 3: Log login event (20ms)
+    db.insert("INSERT INTO login_logs (user_id, timestamp) VALUES (?, ?)", 
+              user.id, datetime.now())
+    
+    return {"token": token, "user": user}, 200
+    # Total: ~80ms - Acceptable cho sync
+</code></pre>
+<p>§§SEG51§§</p>
+<ul>
+<li>§§SEG52§§</li>
+<li>§§SEG53§§</li>
+<li>§§SEG54§§</li>
+</ul>
+<h2 id="asynchronous-communication-message-queue">§§SEG55§§</h2>
+<h3 id="how-it-works-1">§§SEG56§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG57§§</code></pre>
+<p>§§SEG58§§</p>
+<h3 id="code-example-1">§§SEG59§§</h3>
+<pre><code class="language-python"># Server code
+from celery import Celery
+app = Celery('tasks', broker='redis://localhost:6379')
+
+@app.route('/upload-video', methods=['POST'])
+def upload_video():
+    video_file = request.files['video']
+    
+    # Quick operation: Save original
+    video_id = save_to_s3(video_file)  # 2 seconds
+    
+    # Add processing to queue
+    process_video_task.delay(video_id)
+    
+    return {"status": "processing", "video_id": video_id}, 202
+    # User gets response sau 2s (not 98s!)
+
+# Worker code (runs separately)
+@app.task
+def process_video_task(video_id):
+    video = get_from_s3(video_id)
+    generate_thumbnail(video)      # 5s
+    transcode_720p(video)          # 30s
+    transcode_1080p(video)         # 60s
+    send_notification(video_id)    # 1s
+    # Total: 96s, but user doesn't wait
+</code></pre>
+<p>§§SEG60§§</p>
+<ol>
+<li>§§SEG61§§</li>
+<li>§§SEG62§§</li>
+<li>§§SEG63§§</li>
+<li>§§SEG64§§</li>
+<li>§§SEG65§§</li>
+<li>§§SEG66§§</li>
+<li>§§SEG67§§</li>
+</ol>
+<h3 id="when-to-use-asynchronous">§§SEG68§§</h3>
+<p>§§SEG69§§</p>
+<p>§§SEG70§§</p>
+<pre><code>§§SEG71§§</code></pre>
+<p>§§SEG72§§</p>
+<pre><code>§§SEG73§§</code></pre>
+<p>§§SEG74§§</p>
+<pre><code>§§SEG75§§</code></pre>
+<p>§§SEG76§§</p>
+<pre><code>§§SEG77§§</code></pre>
+<h3 id="message-queue-components">§§SEG78§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG79§§</code></pre>
+<p>§§SEG80§§</p>
+<h3 id="queue-guarantees">§§SEG81§§</h3>
+<p>§§SEG82§§</p>
+<pre><code>§§SEG83§§</code></pre>
+<p>§§SEG84§§</p>
+<pre><code>§§SEG85§§</code></pre>
+<p>§§SEG86§§</p>
+<pre><code>§§SEG87§§</code></pre>
+<h3 id="idempotency---critical-concept">§§SEG88§§</h3>
+<p>§§SEG89§§</p>
+<pre><code>§§SEG90§§</code></pre>
+<p>§§SEG91§§</p>
+<pre><code class="language-python">@app.task
+def charge_user(order_id, amount):
+    # Check if already processed
+    existing = db.query("SELECT * FROM charges WHERE order_id = ?", order_id)
+    if existing:
+        return "Already charged"  # Idempotent!
+    
+    # Process
+    charge_credit_card(amount)
+    db.insert("INSERT INTO charges (order_id, amount) VALUES (?, ?)", 
+              order_id, amount)
+    
+    return "Charged successfully"
+</code></pre>
+<p>§§SEG92§§</p>
+<h3 id="trade-offs-1">§§SEG93§§</h3>
+<pre><code>§§SEG94§§</code></pre>
+<h3 id="real-world-example-e-commerce-order">§§SEG95§§</h3>
+<pre><code class="language-python">@app.route('/orders', methods=['POST'])
+def create_order():
+    items = request.json['items']
+    user_id = request.json['user_id']
+    
+    # Sync: Critical operations
+    order_id = db.insert("INSERT INTO orders (...) VALUES (...)")
+    reserve_inventory(items)  # Must happen now
+    
+    # Async: Non-critical operations
+    send_confirmation_email.delay(order_id)
+    update_analytics.delay(order_id)
+    notify_warehouse.delay(order_id)
+    
+    return {"order_id": order_id, "status": "confirmed"}, 201
+    # User gets response immediately
+    # Email/analytics happen in background
+</code></pre>
+<p>§§SEG96§§</p>
+<ul>
+<li>§§SEG97§§</li>
+<li>§§SEG98§§</li>
+<li>§§SEG99§§</li>
+<li>§§SEG100§§</li>
+</ul>
+<h2 id="event-driven-architecture-advanced-async">§§SEG101§§</h2>
+<h3 id="how-it-works-2">§§SEG102§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG103§§</code></pre>
+<p>§§SEG104§§</p>
+<h3 id="code-example-2">§§SEG105§§</h3>
+<pre><code class="language-python"># User Service (Publisher)
+def create_user(email, name):
+    user_id = db.insert("INSERT INTO users (...) VALUES (...)")
+    
+    # Publish event
+    event_bus.publish('user.created', {
+        'user_id': user_id,
+        'email': email,
+        'name': name,
+        'timestamp': datetime.now()
+    })
+    
+    return user_id
+
+# Email Service (Subscriber)
+@event_bus.subscribe('user.created')
+def on_user_created(event):
+    send_welcome_email(event['email'], event['name'])
+
+# Analytics Service (Subscriber)
+@event_bus.subscribe('user.created')
+def on_user_created(event):
+    track_signup(event['user_id'], event['timestamp'])
+
+# Recommendation Service (Subscriber)
+@event_bus.subscribe('user.created')
+def on_user_created(event):
+    initialize_recommendations(event['user_id'])
+</code></pre>
+<p>§§SEG106§§</p>
+<ul>
+<li>§§SEG107§§</li>
+<li>§§SEG108§§</li>
+<li>§§SEG109§§</li>
+</ul>
+<h3 id="when-to-use-event-driven">§§SEG110§§</h3>
+<p>§§SEG111§§</p>
+<p>§§SEG112§§</p>
+<h2 id="pattern-comparison">§§SEG113§§</h2>
+<h3 id="scenario-user-uploads-profile-photo">§§SEG114§§</h3>
+<p>§§SEG115§§</p>
+<pre><code class="language-python">@app.route('/upload-photo', methods=['POST'])
+def upload_photo():
+    photo = request.files['photo']
+    
+    # All sync
+    uploaded_url = s3.upload(photo)           # 2s
+    thumbnail_url = resize_image(photo)       # 3s
+    update_database(user_id, uploaded_url)    # 0.1s
+    invalidate_cache(user_id)                 # 0.1s
+    
+    return {"url": uploaded_url}, 200
+    # User waits 5.2 seconds
+</code></pre>
+<p>§§SEG116§§</p>
+<pre><code class="language-python">@app.route('/upload-photo', methods=['POST'])
+def upload_photo():
+    photo = request.files['photo']
+    
+    # Sync: Upload original only
+    uploaded_url = s3.upload(photo)  # 2s
+    
+    # Async: Processing
+    process_photo.delay(user_id, uploaded_url)
+    
+    return {"url": uploaded_url, "status": "processing"}, 202
+    # User waits 2 seconds
+
+@app.task
+def process_photo(user_id, photo_url):
+    thumbnail = generate_thumbnail(photo_url)  # 3s
+    update_database(user_id, photo_url)
+    invalidate_cache(user_id)
+</code></pre>
+<p>§§SEG117§§</p>
+<pre><code class="language-python">@app.route('/upload-photo', methods=['POST'])
+def upload_photo():
+    photo = request.files['photo']
+    uploaded_url = s3.upload(photo)
+    
+    # Publish event
+    events.publish('photo.uploaded', {
+        'user_id': user_id,
+        'photo_url': uploaded_url
+    })
+    
+    return {"url": uploaded_url}, 202
+
+# Different services subscribe
+@events.subscribe('photo.uploaded')
+def generate_thumbnails(event):
+    create_thumbnail(event['photo_url'])
+
+@events.subscribe('photo.uploaded')
+def update_ml_model(event):
+    facial_recognition.train(event['photo_url'])
+
+@events.subscribe('photo.uploaded')
+def moderate_content(event):
+    check_inappropriate_content(event['photo_url'])
+</code></pre>
+<h3 id="decision-framework">§§SEG118§§</h3>
+<pre><code>§§SEG119§§</code></pre>
+<h2 id="common-patterns--anti-patterns">§§SEG120§§</h2>
+<h3 id="pattern-1-sync-for-reads-async-for-writes">§§SEG121§§</h3>
+<pre><code class="language-python"># Read: Sync (user needs data now)
+@app.route('/products/&lt;id&gt;')
+def get_product(id):
+    return db.query("SELECT * FROM products WHERE id = ?", id)
+
+# Write: Async (can process later)
+@app.route('/products/&lt;id&gt;/review', methods=['POST'])
+def add_review(id):
+    review_data = request.json
+    add_review_task.delay(id, review_data)
+    return {"status": "submitted"}, 202
+</code></pre>
+<h3 id="pattern-2-saga-pattern-distributed-transactions">§§SEG122§§</h3>
+<p>§§SEG123§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG124§§</code></pre>
+<p>§§SEG125§§</p>
+<pre><code class="language-python">def create_order_saga(order_data):
+    order_id = create_order(order_data)
+    
+    try:
+        # Step 1: Payment
+        payment_id = charge_payment.delay(order_id).get()
+        
+        # Step 2: Inventory
+        reserve_inventory.delay(order_id, order_data['items']).get()
+        
+        # Step 3: Shipping
+        create_shipment.delay(order_id).get()
+        
+        return {"order_id": order_id, "status": "success"}
+    
+    except Exception as e:
+        # Compensate (rollback)
+        if payment_id:
+            refund_payment.delay(payment_id)
+        release_inventory.delay(order_id)
+        cancel_order.delay(order_id)
+        
+        return {"error": str(e), "status": "failed"}
+</code></pre>
+<h3 id="anti-pattern-1-sync-calls-in-chain">§§SEG126§§</h3>
+<pre><code class="language-python">#  BAD: Synchronous chain
+def process_order(order_id):
+    order = get_order(order_id)              # 100ms
+    user = get_user(order.user_id)           # 100ms
+    payment = process_payment(order.total)   # 500ms
+    inventory = reserve_items(order.items)   # 200ms
+    shipping = create_shipment(order_id)     # 300ms
+    
+    return order
+    # Total: 1200ms (serial)
+
+#  GOOD: Parallel async
+def process_order(order_id):
+    order = get_order(order_id)
+    
+    # Parallel processing
+    tasks = [
+        get_user_task.delay(order.user_id),
+        process_payment_task.delay(order.total),
+        reserve_items_task.delay(order.items)
+    ]
+    
+    results = [task.get() for task in tasks]
+    
+    # Finally, shipping (depends on above)
+    create_shipment_task.delay(order_id)
+    
+    return order
+    # Total: ~500ms (parallel)
+</code></pre>
+<h3 id="anti-pattern-2-no-timeout-for-sync-calls">§§SEG127§§</h3>
+<pre><code class="language-python">#  BAD: No timeout
+response = requests.get('https://external-api.com/data')
+
+#  GOOD: Always timeout
+try:
+    response = requests.get('https://external-api.com/data', timeout=5)
+except requests.Timeout:
+    # Fallback or queue for retry
+    retry_later.delay('https://external-api.com/data')
+    return {"status": "processing"}
+</code></pre>
+<h3 id="anti-pattern-3-not-handling-queue-failures">§§SEG128§§</h3>
+<pre><code class="language-python">#  BAD: No error handling
+@app.task
+def send_email(user_id, subject, body):
+    smtp.send(user_id, subject, body)  # What if SMTP down?
+
+#  GOOD: Retry with backoff
+@app.task(bind=True, max_retries=3)
+def send_email(self, user_id, subject, body):
+    try:
+        smtp.send(user_id, subject, body)
+    except SMTPException as exc:
+        # Exponential backoff: 1min, 2min, 4min
+        raise self.retry(exc=exc, countdown=2 ** self.request.retries * 60)
+</code></pre>
+<h2 id="monitoring--observability">§§SEG129§§</h2>
+<h3 id="key-metrics">§§SEG130§§</h3>
+<p>§§SEG131§§</p>
+<pre><code>§§SEG132§§</code></pre>
+<p>§§SEG133§§</p>
+<pre><code>§§SEG134§§</code></pre>
+<h3 id="alerting">§§SEG135§§</h3>
+<pre><code class="language-python"># Alert khi queue backlog too high
+if queue_length &gt; 10000:
+    alert("Queue backlog high - need more workers")
+
+# Alert khi workers failing
+if worker_failure_rate &gt; 0.05:  # 5%
+    alert("High worker failure rate - check errors")
+
+# Alert khi processing slow
+if avg_processing_time &gt; 60:  # 60 seconds
+    alert("Slow job processing - investigate")
+</code></pre>
+<h2 id="key-takeaways">§§SEG136§§</h2>
+<p>§§SEG137§§</p>
+<p>§§SEG138§§</p>
+<ul>
+<li>§§SEG139§§</li>
+<li>§§SEG140§§</li>
+<li>§§SEG141§§</li>
+</ul>
+<p>§§SEG142§§</p>
+<ul>
+<li>§§SEG143§§</li>
+<li>§§SEG144§§</li>
+<li>§§SEG145§§</li>
+</ul>
+<p>§§SEG146§§</p>
+<ul>
+<li>§§SEG147§§</li>
+<li>§§SEG148§§</li>
+<li>§§SEG149§§</li>
+</ul>
+<p>§§SEG150§§</p>
+<ol>
+<li>§§SEG151§§</li>
+<li>§§SEG152§§</li>
+<li>§§SEG153§§</li>
+<li>§§SEG154§§</li>
+<li>§§SEG155§§</li>
+</ol>
+<p>§§SEG156§§</p>
+<p>§§SEG157§§</p>
+<ul>
+<li>§§SEG158§§</li>
+<li>§§SEG159§§</li>
+<li>§§SEG160§§</li>
+<li>§§SEG161§§</li>
+</ul>
+<p>§§SEG162§§</p>
+<p>§§SEG163§§</p>
+<ol>
+<li>§§SEG164§§</li>
+<li>§§SEG165§§</li>
+<li>§§SEG166§§</li>
+<li>§§SEG167§§</li>
+<li>§§SEG168§§</li>
+</ol>
+<p>§§SEG169§§</p></article>

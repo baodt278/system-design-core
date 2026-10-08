@@ -1,0 +1,158 @@
+@0 h2
+1) Giới thiệu Phase
+@1 p
+Phase 0 là cổng vào của toàn bộ hành trình System Design.
+@2 p
+Giai đoạn này không tập trung vào tool, framework hay implementation. Mục tiêu chính là thay đổi cách bạn nhìn nhận và giải quyết vấn đề — từ **code-centric thinking** sang **system-level thinking**.
+@3 p
+Phần lớn developer gặp khó khi học system design không phải vì thiếu kỹ thuật, mà vì chưa có mental model đúng về hệ thống. Phase này giúp xây dựng nền tảng tư duy đó trước khi đi sâu vào kiến trúc và distributed systems.
+@4 p
+Nếu không có bước chuyển này, bạn dễ:
+@5 li
+Chọn công nghệ trước khi hiểu vấn đề
+@6 li
+Tối ưu local solution thay vì toàn hệ thống
+@7 li
+Bỏ qua constraint thực tế của production
+@8 li
+Không thấy trade-off trong quyết định kiến trúc
+@9 p
+Phase 0 giúp bạn tránh những sai lầm này.
+@10 h2
+2) Vì sao phase này tồn tại
+@11 h3
+Coding và System Design là hai lớp tư duy khác nhau
+@12 li
+**Coding:** tập trung vào implementation và logic chức năng.
+@13 li
+**System design:** tập trung vào scale, reliability, constraint và trade-off.
+@14 p
+Một system tốt không chỉ chạy đúng — mà phải chạy ổn định, mở rộng được và phù hợp với bối cảnh thực tế.
+@15 h3
+Engineer mindset và Architect mindset khác nhau
+@16 li
+**Engineer mindset:** giải quyết task trước mắt.
+@17 li
+**Architect mindset:** nhìn toàn hệ thống, dự đoán bottleneck và tối ưu dài hạn.
+@18 p
+Phase này giúp bạn chuyển sang góc nhìn architect.
+@19 h3
+Trade-off là trung tâm của mọi quyết định kiến trúc
+@20 p
+Không có giải pháp hoàn hảo.\n
+ Chỉ có giải pháp phù hợp với:
+@21 li
+scale
+@22 li
+constraint
+@23 li
+cost
+@24 li
+latency
+@25 li
+reliability
+@26 li
+business context
+@27 h2
+3) Learning Objectives
+@28 p
+Sau phase này bạn sẽ:
+@29 li
+Chuyển từ code-first sang problem-first reasoning.
+@30 li
+Hiểu system design là quản lý constraint và trade-off.
+@31 li
+Hình thành trực giác về scale và bottleneck.
+@32 li
+Nhìn hệ thống như một tổng thể thay vì từng component riêng lẻ.
+@33 li
+Hiểu high-level architecture của distributed systems.
+@34 li
+Có framework tư duy trước khi đi vào kỹ thuật chuyên sâu.
+@35 h2
+4) Bạn sẽ học gì trong phase này
+@36 p
+Phase này xây dựng nền tảng tư duy cốt lõi của system architect:
+@37 li
+**Problem-first thinking** — bắt đầu từ bài toán, không bắt đầu từ tool.
+@38 li
+**Trade-off mindset** — hiểu mặt được và mặt mất trong mỗi quyết định.
+@39 li
+**System components & communication** — các thành phần chính của hệ thống hiện đại.
+@40 li
+**Constraint thinking** — design dựa trên giới hạn thực tế.
+@41 li
+**Scale intuition** — hiểu hệ thống hoạt động ở quy mô lớn.
+@42 li
+**System thinking framework** — nhìn hệ thống như một flow hoàn chỉnh.
+@43 h2
+5) Lessons Overview
+@44 h3
+Lesson 1 — Từ Code-First đến Problem-First — Thay Đổi Tư Duy Architect
+@45 p
+Xây nền tư duy bắt đầu từ bài toán, requirement và constraint trước khi chọn giải pháp kỹ thuật.
+@46 h3
+Lesson 2 — Từ Perfect Solution đến Trade-off Thinking — Nghệ Thuật Của Quyết Định Kiến Trúc
+@47 p
+Hiểu rằng mọi lựa chọn kiến trúc đều có chi phí và giới hạn.\n
+ Học cách ra quyết định trong môi trường production thực tế.
+@48 h3
+Lesson 3 — Thinking in Constraints — Engineering Là Quản Lý Giới Hạn
+@49 p
+Hiểu rằng engineering thực chất là quản lý resource và constraint: compute, memory, network và data.
+@50 h3
+Lesson 4 — Scale Intuition — Xây Dựng Cảm Giác Về Numbers
+@51 p
+Xây dựng trực giác về traffic, data growth, throughput và bottleneck khi hệ thống mở rộng.
+@52 h3
+Lesson 5 — System Thinking Framework — Nhìn Hệ Thống Như Một Tổng Thể
+@53 p
+Học cách nhìn hệ thống theo flow: input → processing → storage → output, thay vì từng module rời rạc.
+@54 h3
+Lesson 6 — System Question Framework - Checklist Chuẩn Khi Design Hệ Thống
+@55 p
+Học cách đặt câu hỏi đúng khi thiết kế hệ thống.
+@56 h3
+Lesson 7 — Mental Model Recap - Củng Cố Tư Duy System Design
+@57 p
+Tổng kết Phase 0 với 4 mindset shift quan trọng nhất: không có best solution, luôn hỏi why, trade-off quan trọng hơn technology, và system thinking trên code. Nền tảng tư duy cho system architect.
+@58 h2
+6) Kết quả sau khi hoàn thành Phase 0
+@59 p
+Bạn có thể:
+@60 li
+Nhìn hệ thống dưới góc độ bài toán và constraint.
+@61 li
+Giải thích quyết định kiến trúc bằng trade-off thay vì cảm tính.
+@62 li
+Hiểu high-level architecture của một system.
+@63 li
+Dự đoán bottleneck và rủi ro cơ bản.
+@64 li
+Thảo luận system design với tư duy có cấu trúc.
+@65 p
+Bạn sẽ không còn chỉ "viết code", mà bắt đầu **thiết kế hệ thống**.
+@66 h2
+7) Chuẩn bị cho Phase 1
+@67 p
+Phase 0 giúp bạn có **cách nghĩ đúng**.
+@68 p
+Phase 1 — **Foundation: Thinking in Systems** sẽ mở rộng từ mindset sang nền tảng kỹ thuật:
+@69 li
+system components
+@70 li
+communication patterns
+@71 li
+data flow
+@72 li
+latency vs throughput
+@73 li
+bottlenecks
+@74 li
+availability
+@75 li
+consistency
+@76 li
+CAP intuition
+@77 p
+Bạn sẽ chuyển từ tư duy → kiến thức hệ thống cốt lõi.

@@ -1,0 +1,176 @@
+@0 h1
+System Design: Bắt đầu đúng ngay từ ngày đầu
+@1 p
+Nền tảng này được xây để giúp developer Việt Nam chuyển từ **code-first** sang **system thinking**.
+@2 p
+Bạn không chỉ học cách vẽ sơ đồ hệ thống. Bạn học cách tư duy như một kỹ sư thiết kế sản phẩm thật: hiểu bài toán, nhìn trade-off, và ra quyết định kiến trúc phù hợp với bối cảnh.
+@3 p
+**Mission:** Giúp bạn đi từ người "làm feature" thành người có thể thiết kế, giải thích và bảo vệ kiến trúc hệ thống trong môi trường production.
+@4 h2
+1. Bạn sẽ học được gì
+@5 li
+**System thinking:** nhìn hệ thống như một tổng thể thay vì từng service rời rạc.
+@6 li
+**Architecture mindset:** biết cách chia thành phần, ranh giới trách nhiệm, và luồng dữ liệu.
+@7 li
+**Trade-off reasoning:** hiểu vì sao không có “best solution”, chỉ có giải pháp phù hợp.
+@8 li
+**Real-world system design:** học theo các tình huống gần với production: scale, reliability, observability, cost.
+@9 li
+**Product-aware engineering:** kết nối quyết định kỹ thuật với nhu cầu người dùng và mục tiêu sản phẩm.
+@10 h2
+2. Trang này dành cho ai
+@11 h3
+Phù hợp nhất với
+@12 li
+Backend engineer muốn nâng cấp tư duy thiết kế hệ thống.
+@13 li
+Fullstack/frontend engineer muốn hiểu kiến trúc end-to-end.
+@14 li
+Developer đang chuẩn bị system design interview.
+@15 li
+Dev từ junior đến senior muốn phát triển career dài hạn theo hướng architecture.
+@16 h3
+Có thể chưa phù hợp nếu
+@17 li
+Bạn chỉ muốn “template trả lời phỏng vấn” mà không muốn hiểu bản chất.
+@18 li
+Bạn không sẵn sàng rèn tư duy đặt câu hỏi và phân tích trade-off.
+@19 h2
+3. Triết lý học tập
+@20 h3
+Bắt đầu đơn giản, tiến hóa dần
+@21 p
+Thiết kế hệ thống tốt không bắt đầu từ độ phức tạp. Nó bắt đầu từ phiên bản đơn giản nhất có thể chạy được, rồi mở rộng theo nhu cầu thật.
+@22 h3
+Mental model trước, công nghệ sau
+@23 p
+Framework và tool thay đổi liên tục. Mental model về latency, consistency, throughput, fault tolerance mới là thứ giữ giá trị lâu dài.
+@24 h3
+Problem-first, không phải tool-first
+@25 p
+Đừng hỏi "dùng Redis hay Kafka trước". Hãy hỏi: "Bài toán là gì, constraint là gì, và chi phí trade-off là gì?"
+@26 h3
+Tư duy production
+@27 p
+Mọi quyết định đều cần nghĩ tới vận hành thật: monitor thế nào, fail thì sao, rollback ra sao, scale bao nhiêu là đủ.
+@28 h2
+4. Learning Journey: Zero → Hero
+@29 th
+Phase
+@30 th
+Trọng tâm
+@31 th
+Thời lượng gợi ý
+@32 td
+**Phase 0: Mental Model Shift**
+@33 td
+Chuyển tư duy từ code-first sang problem-first, trade-off thinking
+@34 td
+**2 tuần**
+@35 td
+**Phase 1: Foundation — Thinking in Systems**
+@36 td
+Components, communication patterns, data flow, bottlenecks, CAP/availability
+@37 td
+**3-4 tuần**
+@38 td
+**Phase 2: Core Building Blocks**
+@39 td
+Load balancing, caching, database scaling, queue, integration trade-offs
+@40 td
+**4-5 tuần**
+@41 td
+**Phase 3: Distributed Systems Fundamentals**
+@42 td
+Failure model, consistency model, consensus, distributed transaction, ID
+@43 td
+**5-6 tuần**
+@44 td
+**Phase 4: Scalability & Performance**
+@45 td
+Performance, caching strategy, CDN/edge, rate limit, async, observability
+@46 td
+**4-5 tuần**
+@47 td
+**Phase 5: Real-World Architecture Patterns**
+@48 td
+Evolution mindset, read-heavy system, social/feed architecture
+@49 td
+**4-5 tuần**
+@50 td
+**Phase 6: System Design Mastery**
+@51 td
+Framework, SNAKE methodology, decision-making, interview strategy, architect mindset
+@52 td
+**Ongoing**
+@53 h2
+5. Cách học hiệu quả
+@54 h3
+Nhịp học khuyến nghị
+@55 li
+**4-5 buổi/tuần**
+@56 li
+**60-90 phút/buổi**
+@57 li
+Mỗi tuần dành 1 buổi để review và viết lại reasoning của bản thân
+@58 h3
+Quy trình học cho mỗi lesson
+@59 li
+Đọc mục tiêu và context của lesson.
+@60 li
+Tự tóm tắt bài toán bằng 3-5 dòng.
+@61 li
+Liệt kê 2-3 phương án khả thi.
+@62 li
+Chọn 1 phương án và ghi rõ trade-off.
+@63 li
+So sánh với nội dung bài học và update mental model.
+@64 h3
+Nguyên tắc quan trọng
+@65 li
+Học để **ra quyết định**, không phải học để nhớ keyword.
+@66 li
+Nếu gặp khái niệm khó, quay về nguyên lý gốc (data flow, bottleneck, constraint).
+@67 li
+Viết lại bằng ngôn ngữ của bạn sau mỗi lesson để biến kiến thức thành kỹ năng.
+@68 h2
+6. Prerequisites
+@69 p
+Bạn không cần biết hết distributed systems từ đầu, nhưng nên có:
+@70 li
+Kiến thức lập trình cơ bản (backend hoặc fullstack).
+@71 li
+Hiểu HTTP/API ở mức làm sản phẩm thực tế.
+@72 li
+Nền tảng database cơ bản (SQL/NoSQL ở mức sử dụng).
+@73 li
+Tư duy chủ động đặt câu hỏi "vì sao".
+@74 h2
+7. Kết quả kỳ vọng sau lộ trình
+@75 p
+Sau khi hoàn thành, bạn có thể:
+@76 li
+Phân tích đề bài system design có cấu trúc.
+@77 li
+Thiết kế kiến trúc từ simple baseline đến scalable architecture.
+@78 li
+Trình bày trade-off rõ ràng với team/product/stakeholder.
+@79 li
+Tự tin hơn khi tham gia system design interview.
+@80 li
+Ra quyết định kỹ thuật gắn với giá trị sản phẩm và mục tiêu dài hạn.
+@81 h2
+8. Cam kết thời gian thực tế
+@82 li
+Tổng thời gian để hoàn thành từ Phase 0 đến Phase 5: khoảng **5-7 tháng** nếu học đều.
+@83 li
+Phase 6 là quá trình liên tục để nâng chuẩn tư duy architect-level.
+@84 li
+Bạn không cần học nhanh. Bạn cần học **đúng cách và bền vững**.
+@85 h2
+9. Bắt đầu ngay
+@86 p
+Nếu bạn mới vào nền tảng, hãy bắt đầu từ **Phase 0 — Mental Model Shift**.
+@87 p
+Đây là phần quan trọng nhất để reset tư duy trước khi đi sâu vào software architecture và distributed systems.

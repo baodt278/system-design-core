@@ -1,0 +1,1087 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer | Phase 6 — System Design Mastery | System Design Core</title><meta name="description" content="Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability k"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-6/lesson/lesson-5-advanced-architecture-topics"/><meta property="og:title" content="Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer | Phase 6 — System Design Mastery"/><meta property="og:description" content="Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability k"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-6/lesson/lesson-5-advanced-architecture-topics"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer | Phase 6 — System Design Mastery"/><meta name="twitter:description" content="Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability k"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 6 — System Design Mastery</p><p class="mt-3 text-xl font-semibold text-ink">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</p><p class="mt-3 text-sm leading-7 text-ink-dim">Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability - kiến thức phân biệt senior và staff engineer</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-1-system-design-thinking-framework"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-2-snake-framework"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">SNAKE Framework - Methodology Để Ace System Design Interview</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-4-real-interview-strategy"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-6/lesson/lesson-5-advanced-architecture-topics"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-6">Phase 6 — System Design Mastery</a></li><li>/</li><li aria-current="page" class="text-ink">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability - kiến thức phân biệt senior và staff engineer</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer"><article class="prose-ui"><h1 id="advanced-architecture-topics---kiến-thức-differentiate-senior-vs-staff-engineer">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</h1>
+<p>Khi bạn đã master được system design fundamentals, patterns, và trade-off thinking, câu hỏi tiếp theo là: <strong>&quot;Điều gì tạo nên sự khác biệt giữa senior và staff engineer?&quot;</strong></p>
+<p>Câu trả lời không phải là học thêm patterns. Mà là <strong>hiểu sâu về những vấn đề mà chỉ distributed systems ở scale mới gặp phải</strong> - và biết cách giải quyết chúng một cách có hệ thống.</p>
+<p>Lesson này không phải &quot;must-know&quot; để làm system design interview. Nhưng nó là <strong>kiến thức giúp bạn thinking ở level cao hơn</strong> - từ &quot;design một system&quot; sang &quot;evolve và maintain production systems at scale&quot;.</p>
+<h2 id="tại-sao-các-topics-này-lại-advanced">Tại Sao Các Topics Này Lại &quot;Advanced&quot;?</h2>
+<h3 id="reality-check">Reality Check</h3>
+<p>Hầu hết systems không cần event sourcing hay service mesh. Nhưng khi bạn gặp những problems này:</p>
+<ul>
+<li><strong>Audit trail không đầy đủ</strong> → cần replay toàn bộ history</li>
+<li><strong>Read và write có requirement khác nhau hoàn toàn</strong> → CQRS</li>
+<li><strong>Service communication phức tạp với 50+ microservices</strong> → Service Mesh</li>
+<li><strong>Không tin hệ thống có thể handle failure</strong> → Chaos Engineering</li>
+<li><strong>Duplicate requests gây data corruption</strong> → Idempotency</li>
+<li><strong>Cascading failures lan như domino</strong> → Circuit Breaker</li>
+<li><strong>Debug distributed systems như mò kim đáy bể</strong> → Distributed Tracing</li>
+</ul>
+<p>Lúc đó, bạn mới hiểu tại sao những concepts này tồn tại.</p>
+<h2 id="1-event-sourcing---store-events-not-state">1. Event Sourcing - Store Events, Not State</h2>
+<h3 id="vấn-đề-của-traditional-state-storage">Vấn Đề Của Traditional State Storage</h3>
+<pre><code>Traditional Database:
+User Balance: $1000 (current state only)
+
+Mất hết history
+Không biết balance này từ đâu ra
+Không audit được
+Không replay được
+</code></pre>
+<h3 id="event-sourcing-approach">Event Sourcing Approach</h3>
+<p><strong>Core idea: Store every change as an event, derive state from events</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    E1[Event: Deposit $500] --&gt; E2[Event: Withdraw $200]
+    E2 --&gt; E3[Event: Deposit $700]
+    E3 --&gt; State[Current State: $1000]</code></pre>
+<pre><code>Event Store:
+1. UserCreated { userId: 123 }
+2. MoneyDeposited { userId: 123, amount: 500 }
+3. MoneyWithdrawn { userId: 123, amount: 200 }
+4. MoneyDeposited { userId: 123, amount: 700 }
+
+Current State = Replay all events
+Balance = 0 + 500 - 200 + 700 = $1000
+</code></pre>
+<h3 id="tại-sao-event-sourcing">Tại Sao Event Sourcing?</h3>
+<p><strong>1. Complete Audit Trail</strong></p>
+<ul>
+<li>Biết chính xác điều gì đã xảy ra, khi nào, tại sao</li>
+<li>Compliance và regulatory requirements</li>
+</ul>
+<p><strong>2. Time Travel</strong></p>
+<ul>
+<li>Rebuild state tại bất kỳ thời điểm nào trong quá khứ</li>
+<li>Debug production issues by replaying events</li>
+</ul>
+<p><strong>3. Multiple Projections</strong></p>
+<ul>
+<li>Cùng một event stream → nhiều views khác nhau</li>
+<li>Analytics, reporting, real-time dashboards</li>
+</ul>
+<p><strong>4. Scalability</strong></p>
+<ul>
+<li>Events là append-only → cực kỳ nhanh</li>
+<li>Không cần locking, transactions phức tạp</li>
+</ul>
+<h3 id="trade-offs">Trade-offs</h3>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Full history và audit trail</li>
+<li>Time travel capabilities</li>
+<li>Easy to add new projections</li>
+<li>Event replay cho debugging</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Complexity tăng đáng kể</li>
+<li>Event schema evolution khó</li>
+<li>Storage tăng (lưu mọi event)</li>
+<li>Query current state phải replay events</li>
+<li>Learning curve cao</li>
+</ul>
+<h3 id="khi-nào-dùng-event-sourcing">Khi Nào Dùng Event Sourcing?</h3>
+<p><strong>Dùng khi:</strong></p>
+<ul>
+<li>Banking, financial systems (cần audit đầy đủ)</li>
+<li>Domain phức tạp với nhiều business rules</li>
+<li>Cần complete history và time travel</li>
+<li>Multiple projections từ cùng data</li>
+</ul>
+<p><strong>Không dùng khi:</strong></p>
+<ul>
+<li>Simple CRUD applications</li>
+<li>Team chưa có experience</li>
+<li>Audit trail không critical</li>
+<li>Complexity không justify benefits</li>
+</ul>
+<h2 id="2-cqrs---command-query-responsibility-segregation">2. CQRS - Command Query Responsibility Segregation</h2>
+<h3 id="core-concept">Core Concept</h3>
+<p><strong>CQRS = Tách riêng read và write models</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    Client[Client Request]
+    Client --&gt;|Write: UpdateUser| WriteModel[Write Model&lt;br/&gt;Normalized DB]
+    Client --&gt;|Read: GetUserProfile| ReadModel[Read Model&lt;br/&gt;Denormalized View]
+    WriteModel --&gt;|Events/Sync| ReadModel</code></pre>
+<h3 id="tại-sao-cqrs">Tại Sao CQRS?</h3>
+<p><strong>Reality: Read và Write có requirements hoàn toàn khác nhau</strong></p>
+<pre><code>Write Side:
+- Validate business rules
+- Ensure consistency
+- Handle transactions
+- Normalized data
+
+Read Side:
+- Fast queries
+- Complex joins
+- Aggregations
+- Denormalized views
+</code></pre>
+<h3 id="example-e-commerce-product-page">Example: E-commerce Product Page</h3>
+<p><strong>Without CQRS (Single Model):</strong></p>
+<pre><code class="language-sql">-- Mỗi lần load product page:
+SELECT p.*, c.name as category_name, 
+       AVG(r.rating) as avg_rating,
+       COUNT(r.id) as review_count,
+       i.quantity as stock
+FROM products p
+JOIN categories c ON p.category_id = c.id
+LEFT JOIN reviews r ON p.id = r.product_id
+LEFT JOIN inventory i ON p.id = i.product_id
+WHERE p.id = ?
+GROUP BY p.id
+
+-- Slow vì phải join nhiều tables mỗi request
+</code></pre>
+<p><strong>With CQRS:</strong></p>
+<pre><code class="language-javascript">// Write Side (normalized)
+await db.products.update({ id, name, price })
+await eventBus.publish(&#x27;ProductUpdated&#x27;, { id, name, price })
+
+// Read Side (denormalized view)
+await cache.set(`product:${id}`, {
+  id, name, price,
+  category: &#x27;Electronics&#x27;,
+  avgRating: 4.5,
+  reviewCount: 1203,
+  stock: 50
+})
+
+// Read cực nhanh - chỉ 1 cache lookup
+const product = await cache.get(`product:${id}`)
+</code></pre>
+<h3 id="cqrs--event-sourcing-combo">CQRS + Event Sourcing Combo</h3>
+<pre><code>Write Side: Event Store
+↓
+Events: ProductCreated, PriceUpdated, ReviewAdded
+↓
+Read Side: Materialized Views
+- Product Detail View (cache)
+- Search Index (Elasticsearch)
+- Analytics Dashboard (BigQuery)
+</code></pre>
+<h3 id="trade-offs-1">Trade-offs</h3>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Optimize read và write độc lập</li>
+<li>Scale read và write riêng biệt</li>
+<li>Multiple read models cho use cases khác nhau</li>
+<li>Performance cải thiện đáng kể</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Eventual consistency giữa write và read</li>
+<li>Complexity tăng (2 models thay vì 1)</li>
+<li>Data sync phải reliable</li>
+<li>Harder để debug và maintain</li>
+</ul>
+<h3 id="khi-nào-dùng-cqrs">Khi Nào Dùng CQRS?</h3>
+<p><strong>Dùng khi:</strong></p>
+<ul>
+<li>Read:Write ratio chênh lệch lớn (99:1)</li>
+<li>Read queries cực kỳ complex</li>
+<li>Cần scale read và write khác nhau</li>
+<li>Multiple views từ cùng data</li>
+</ul>
+<p><strong>Không dùng khi:</strong></p>
+<ul>
+<li>Simple CRUD với read/write balanced</li>
+<li>Strong consistency required</li>
+<li>Team nhỏ, không đủ resource maintain</li>
+</ul>
+<h2 id="3-service-mesh---infrastructure-layer-for-service-communication">3. Service Mesh - Infrastructure Layer For Service Communication</h2>
+<h3 id="vấn-đề-của-microservices-communication">Vấn Đề Của Microservices Communication</h3>
+<p>Khi bạn có 50+ microservices:</p>
+<pre><code>Service A call Service B:
+- Retry logic?
+- Circuit breaker?
+- Load balancing?
+- TLS encryption?
+- Tracing?
+- Metrics?
+
+→ Mỗi service phải implement lại tất cả
+→ Code duplication
+→ Inconsistent behavior
+</code></pre>
+<h3 id="service-mesh-solution">Service Mesh Solution</h3>
+<p><strong>Core idea: Move network logic ra khỏi application code, vào infrastructure layer</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    A[Service A] &lt;--&gt; PA[Sidecar Proxy]
+    PB[Sidecar Proxy] &lt;--&gt; B[Service B]
+    PA &lt;--&gt; PB
+    PA --&gt; Control[Control Plane&lt;br/&gt;Rules &amp; Config]
+    PB --&gt; Control</code></pre>
+<p><strong>Sidecar proxy</strong> (như Envoy) intercept tất cả traffic:</p>
+<pre><code>Service A → Sidecar Proxy A → Sidecar Proxy B → Service B
+
+Proxy handles:
+- Load balancing
+- Retries
+- Circuit breaking
+- TLS
+- Metrics
+- Tracing
+</code></pre>
+<h3 id="service-mesh-features">Service Mesh Features</h3>
+<p><strong>1. Traffic Management</strong></p>
+<ul>
+<li>Load balancing algorithms</li>
+<li>Circuit breakers tự động</li>
+<li>Retry và timeout policies</li>
+<li>Traffic splitting (canary, blue-green)</li>
+</ul>
+<p><strong>2. Security</strong></p>
+<ul>
+<li>Mutual TLS (mTLS) tự động</li>
+<li>Authentication giữa services</li>
+<li>Authorization policies</li>
+</ul>
+<p><strong>3. Observability</strong></p>
+<ul>
+<li>Distributed tracing tự động</li>
+<li>Metrics collection</li>
+<li>Service topology visualization</li>
+</ul>
+<p><strong>4. Resilience</strong></p>
+<ul>
+<li>Automatic retries</li>
+<li>Circuit breakers</li>
+<li>Fault injection để test</li>
+</ul>
+<h3 id="popular-service-meshes">Popular Service Meshes</h3>
+<ul>
+<li><strong>Istio</strong> - full-featured, complex</li>
+<li><strong>Linkerd</strong> - simpler, lightweight</li>
+<li><strong>Consul Connect</strong> - HashiCorp ecosystem</li>
+</ul>
+<h3 id="trade-offs-2">Trade-offs</h3>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Centralized configuration</li>
+<li>Consistent behavior across services</li>
+<li>Observability out-of-the-box</li>
+<li>Security features tự động</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Complexity cao - thêm 1 layer infrastructure</li>
+<li>Performance overhead (proxy layer)</li>
+<li>Learning curve steep</li>
+<li>Debugging khó hơn</li>
+</ul>
+<h3 id="khi-nào-cần-service-mesh">Khi Nào Cần Service Mesh?</h3>
+<p><strong>Dùng khi:</strong></p>
+<ul>
+<li>50+ microservices</li>
+<li>Need consistent traffic management</li>
+<li>Security requirements cao (mTLS everywhere)</li>
+<li>Observability critical</li>
+</ul>
+<p><strong>Không dùng khi:</strong></p>
+<ul>
+<li>&lt; 10 microservices</li>
+<li>Monolith hoặc simple architecture</li>
+<li>Team chưa mature với Kubernetes</li>
+<li>Performance overhead không chấp nhận được</li>
+</ul>
+<h2 id="4-chaos-engineering---break-things-on-purpose">4. Chaos Engineering - Break Things On Purpose</h2>
+<h3 id="core-philosophy">Core Philosophy</h3>
+<p><strong>&quot;The best way to avoid failure is to fail constantly&quot;</strong></p>
+<pre><code>Traditional Testing:
+Test → Deploy → Hope nothing breaks
+
+Chaos Engineering:
+Deploy → Intentionally break things → Fix weaknesses → More resilient
+</code></pre>
+<h3 id="netflixs-chaos-monkey">Netflix&#x27;s Chaos Monkey</h3>
+<p>Netflix pioneer chaos engineering:</p>
+<pre><code>Chaos Monkey randomly:
+- Terminates production instances
+- Kills services
+- Adds latency
+- Drops network packets
+
+Goal: Force systems to be resilient by design
+</code></pre>
+<h3 id="chaos-engineering-principles">Chaos Engineering Principles</h3>
+<p><strong>1. Start With Hypothesis</strong></p>
+<pre><code>Hypothesis: &quot;If payment service fails, 
+            users can still browse products&quot;
+
+Experiment: Kill payment service in production
+Measure: Browse functionality still works?
+</code></pre>
+<p><strong>2. Minimize Blast Radius</strong></p>
+<pre><code>Start small:
+- 1 instance → 1 service → 1 region → global
+
+Not: Kill everything at once
+</code></pre>
+<p><strong>3. Automate Experiments</strong></p>
+<pre><code class="language-javascript">// Automated chaos experiment
+const experiment = {
+  name: &#x27;Database Failover&#x27;,
+  hypothesis: &#x27;System handles DB failure gracefully&#x27;,
+  blast_radius: &#x27;10% traffic&#x27;,
+  
+  fault: {
+    type: &#x27;database_failure&#x27;,
+    duration: &#x27;5 minutes&#x27;
+  },
+  
+  steady_state: {
+    metric: &#x27;api_success_rate&#x27;,
+    threshold: &#x27;&gt; 99%&#x27;
+  }
+}
+
+// Run weekly tự động
+</code></pre>
+<h3 id="common-chaos-experiments">Common Chaos Experiments</h3>
+<p><strong>1. Service Failures</strong></p>
+<ul>
+<li>Random instance termination</li>
+<li>Service unavailable</li>
+<li>Dependency failures</li>
+</ul>
+<p><strong>2. Network Issues</strong></p>
+<ul>
+<li>Latency injection</li>
+<li>Packet loss</li>
+<li>Network partition</li>
+</ul>
+<p><strong>3. Resource Exhaustion</strong></p>
+<ul>
+<li>CPU spike</li>
+<li>Memory leak simulation</li>
+<li>Disk full</li>
+</ul>
+<p><strong>4. State Corruption</strong></p>
+<ul>
+<li>Clock skew</li>
+<li>Data corruption</li>
+<li>Zombie nodes</li>
+</ul>
+<h3 id="tools">Tools</h3>
+<ul>
+<li><strong>Chaos Monkey</strong> - Netflix&#x27;s original</li>
+<li><strong>Gremlin</strong> - commercial platform</li>
+<li><strong>Chaos Mesh</strong> - Kubernetes native</li>
+<li><strong>Litmus</strong> - CNCF project</li>
+</ul>
+<h3 id="trade-offs-3">Trade-offs</h3>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Uncover weaknesses trước khi production incident</li>
+<li>Build confidence in system resilience</li>
+<li>Force teams thinking về failure scenarios</li>
+<li>Reduce MTTR (Mean Time To Recovery)</li>
+</ul>
+<p><strong>Challenges:</strong></p>
+<ul>
+<li>Rủi ro cause real outages</li>
+<li>Cần mature monitoring và alerting</li>
+<li>Cultural shift - accept breaking things</li>
+<li>Time investment lớn</li>
+</ul>
+<h3 id="khi-nào-áp-dụng-chaos-engineering">Khi Nào Áp Dụng Chaos Engineering?</h3>
+<p><strong>Dùng khi:</strong></p>
+<ul>
+<li>Production systems critical</li>
+<li>Already have good monitoring</li>
+<li>Team mature với distributed systems</li>
+<li>Cost of downtime cao</li>
+</ul>
+<p><strong>Chưa dùng khi:</strong></p>
+<ul>
+<li>System chưa stable</li>
+<li>Monitoring chưa tốt</li>
+<li>Đang fire-fighting incidents thường xuyên</li>
+</ul>
+<h2 id="5-idempotency---handle-duplicate-requests-safely">5. Idempotency - Handle Duplicate Requests Safely</h2>
+<h3 id="vấn-đề-network-unreliable">Vấn Đề: Network Unreliable</h3>
+<pre><code>Client → Server: Create Payment $100
+
+Scenario 1:
+Client sends → Server processes → Response lost
+Client retries → Server charges $200 ❌
+
+Scenario 2 (Idempotent):
+Client sends with ID → Server processes
+Client retries with same ID → Server returns cached result
+Total charged: $100 ✅
+</code></pre>
+<h3 id="core-concept-1">Core Concept</h3>
+<p><strong>Idempotent operation: Calling multiple times = same result as calling once</strong></p>
+<pre><code>Mathematical:
+f(f(x)) = f(x)
+
+Example:
+SET value = 10  → idempotent
+value = value + 1  → NOT idempotent
+</code></pre>
+<h3 id="implementation-strategies">Implementation Strategies</h3>
+<p><strong>1. Idempotency Keys</strong></p>
+<pre><code class="language-javascript">// Client generates unique key
+const idempotencyKey = uuidv4()
+
+await api.post(&#x27;/payments&#x27;, {
+  amount: 100,
+  idempotency_key: idempotencyKey
+})
+
+// Server side
+async function processPayment(request) {
+  const { amount, idempotency_key } = request
+  
+  // Check if already processed
+  const cached = await cache.get(idempotency_key)
+  if (cached) {
+    return cached.result  // Return previous result
+  }
+  
+  // Process payment
+  const result = await chargeCard(amount)
+  
+  // Cache result
+  await cache.set(idempotency_key, { result }, { ttl: 86400 })
+  
+  return result
+}
+</code></pre>
+<p><strong>2. Natural Idempotency</strong></p>
+<pre><code class="language-javascript">// Idempotent by design
+PUT /users/123
+{
+  &quot;name&quot;: &quot;John&quot;,
+  &quot;email&quot;: &quot;john@example.com&quot;
+}
+
+// Calling nhiều lần → same state
+</code></pre>
+<p><strong>3. Database Constraints</strong></p>
+<pre><code class="language-sql">CREATE UNIQUE INDEX idx_payment_idempotency 
+ON payments(idempotency_key);
+
+-- Duplicate insert sẽ fail → retry-safe
+</code></pre>
+<h3 id="idempotency-levels">Idempotency Levels</h3>
+<p><strong>1. HTTP Method Level</strong></p>
+<pre><code>GET, PUT, DELETE → idempotent by spec
+POST → NOT idempotent (need explicit handling)
+</code></pre>
+<p><strong>2. Application Level</strong></p>
+<pre><code class="language-javascript">// Check database state
+const existingOrder = await db.orders.findOne({ 
+  userId, productId 
+})
+
+if (existingOrder) {
+  return existingOrder  // Already exists
+}
+
+// Create new
+return await db.orders.create({ userId, productId })
+</code></pre>
+<p><strong>3. Distributed System Level</strong></p>
+<pre><code>Use distributed locks:
+- Acquire lock with idempotency key
+- Process if lock acquired
+- Release lock
+- Retry safe
+</code></pre>
+<h3 id="real-world-examples">Real-World Examples</h3>
+<p><strong>Stripe Payments:</strong></p>
+<pre><code class="language-javascript">await stripe.charges.create({
+  amount: 1000,
+  currency: &#x27;usd&#x27;,
+  source: &#x27;tok_visa&#x27;,
+  idempotency_key: &#x27;123e4567-e89b-12d3&#x27;
+})
+
+// Retry with same key → returns original charge
+</code></pre>
+<p><strong>Message Processing:</strong></p>
+<pre><code class="language-javascript">// Consumer with deduplication
+async function processMessage(message) {
+  const messageId = message.id
+  
+  const processed = await db.processed_messages
+    .findOne({ messageId })
+  
+  if (processed) {
+    return  // Already processed
+  }
+  
+  // Process message
+  await handleMessage(message)
+  
+  // Mark as processed
+  await db.processed_messages.insert({ 
+    messageId, 
+    processedAt: Date.now() 
+  })
+}
+</code></pre>
+<h3 id="trade-offs-4">Trade-offs</h3>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Safe retries</li>
+<li>Avoid duplicate charges, orders, etc.</li>
+<li>Better reliability</li>
+</ul>
+<p><strong>Costs:</strong></p>
+<ul>
+<li>Extra storage (cache idempotency keys)</li>
+<li>Complexity in implementation</li>
+<li>TTL management (keys expire khi nào?)</li>
+</ul>
+<h2 id="6-circuit-breaker---stop-cascading-failures">6. Circuit Breaker - Stop Cascading Failures</h2>
+<h3 id="vấn-đề-cascading-failures">Vấn Đề: Cascading Failures</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    User --&gt; A[Service A]
+    A --&gt; B[Service B - Slow]
+    A --&gt; C[Service C - Slow]
+    B --&gt; D[Database - Down]
+    C --&gt; D</code></pre>
+<pre><code>Database down → Service B slow (waiting for timeout)
+→ Service A threads blocked waiting for B
+→ Service A down
+→ All dependent services down
+→ Entire system down
+</code></pre>
+<h3 id="circuit-breaker-pattern">Circuit Breaker Pattern</h3>
+<p><strong>Idea: Stop calling failing services, fail fast</strong></p>
+<pre><code>States:
+1. CLOSED → calls go through normally
+2. OPEN → calls fail immediately (no wait)
+3. HALF-OPEN → test if service recovered
+
+Closed → (failures &gt; threshold) → Open
+Open → (timeout) → Half-Open
+Half-Open → (success) → Closed
+Half-Open → (failure) → Open
+</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>stateDiagram-v2
+    [*] --&gt; Closed
+    Closed --&gt; Open: Failures &gt; threshold
+    Open --&gt; HalfOpen: Timeout elapsed
+    HalfOpen --&gt; Closed: Success
+    HalfOpen --&gt; Open: Failure</code></pre>
+<h3 id="implementation">Implementation</h3>
+<pre><code class="language-javascript">class CircuitBreaker {
+  constructor(options) {
+    this.failureThreshold = options.failureThreshold || 5
+    this.timeout = options.timeout || 60000  // 1 minute
+    this.failures = 0
+    this.state = &#x27;CLOSED&#x27;
+    this.nextAttempt = null
+  }
+  
+  async call(fn) {
+    if (this.state === &#x27;OPEN&#x27;) {
+      if (Date.now() &lt; this.nextAttempt) {
+        throw new Error(&#x27;Circuit breaker OPEN&#x27;)
+      }
+      // Try half-open
+      this.state = &#x27;HALF-OPEN&#x27;
+    }
+    
+    try {
+      const result = await fn()
+      this.onSuccess()
+      return result
+    } catch (error) {
+      this.onFailure()
+      throw error
+    }
+  }
+  
+  onSuccess() {
+    this.failures = 0
+    this.state = &#x27;CLOSED&#x27;
+  }
+  
+  onFailure() {
+    this.failures++
+    if (this.failures &gt;= this.failureThreshold) {
+      this.state = &#x27;OPEN&#x27;
+      this.nextAttempt = Date.now() + this.timeout
+    }
+  }
+}
+
+// Usage
+const breaker = new CircuitBreaker({ 
+  failureThreshold: 5, 
+  timeout: 60000 
+})
+
+try {
+  const data = await breaker.call(() =&gt; 
+    fetch(&#x27;https://api.example.com/data&#x27;)
+  )
+} catch (error) {
+  // Circuit open hoặc call failed
+  return fallbackData
+}
+</code></pre>
+<h3 id="circuit-breaker--fallback">Circuit Breaker + Fallback</h3>
+<pre><code class="language-javascript">async function getUserProfile(userId) {
+  try {
+    return await circuitBreaker.call(() =&gt; 
+      userService.getProfile(userId)
+    )
+  } catch (error) {
+    // Circuit open → use fallback
+    return {
+      id: userId,
+      name: &#x27;User&#x27;,
+      avatar: &#x27;default-avatar.png&#x27;,
+      _fallback: true
+    }
+  }
+}
+</code></pre>
+<h3 id="advanced-bulkhead-pattern">Advanced: Bulkhead Pattern</h3>
+<p><strong>Isolate failures với resource pools:</strong></p>
+<pre><code class="language-javascript">// Separate thread pools cho từng service
+const paymentPool = createThreadPool({ size: 10 })
+const userPool = createThreadPool({ size: 20 })
+const searchPool = createThreadPool({ size: 30 })
+
+// Payment service down → only payment pool exhausted
+// User và search services still working
+</code></pre>
+<h3 id="monitoring-circuit-breaker">Monitoring Circuit Breaker</h3>
+<pre><code class="language-javascript">// Metrics quan trọng
+circuitBreaker.on(&#x27;open&#x27;, () =&gt; {
+  metrics.increment(&#x27;circuit_breaker.opened&#x27;, {
+    service: &#x27;payment_service&#x27;
+  })
+  alert.send(&#x27;Circuit breaker opened: payment_service&#x27;)
+})
+
+circuitBreaker.on(&#x27;half-open&#x27;, () =&gt; {
+  metrics.increment(&#x27;circuit_breaker.half_open&#x27;)
+})
+
+circuitBreaker.on(&#x27;closed&#x27;, () =&gt; {
+  metrics.increment(&#x27;circuit_breaker.closed&#x27;)
+})
+</code></pre>
+<h3 id="trade-offs-5">Trade-offs</h3>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Prevent cascading failures</li>
+<li>Fail fast thay vì wait timeout</li>
+<li>Give failing service time to recover</li>
+<li>Better resource utilization</li>
+</ul>
+<p><strong>Challenges:</strong></p>
+<ul>
+<li>False positives (open khi không cần)</li>
+<li>Fallback logic cần maintain</li>
+<li>Tuning thresholds khó</li>
+<li>Monitoring complexity</li>
+</ul>
+<h2 id="7-distributed-tracing---debug-across-services">7. Distributed Tracing - Debug Across Services</h2>
+<h3 id="vấn-đề-debugging-microservices">Vấn Đề: Debugging Microservices</h3>
+<pre><code>User report: &quot;Checkout quá chậm&quot;
+
+Request flow:
+Frontend → API Gateway → Auth → Cart → Inventory 
+→ Payment → Order → Notification → Email
+
+Câu hỏi: Service nào chậm?
+</code></pre>
+<h3 id="traditional-logging-approach">Traditional Logging Approach</h3>
+<pre><code class="language-javascript">// Service A
+logger.info(&#x27;Calling Service B&#x27;)
+
+// Service B
+logger.info(&#x27;Processing request&#x27;)
+
+// Service C
+logger.info(&#x27;Query database&#x27;)
+
+// Problem: Không biết logs nào belong to cùng request
+</code></pre>
+<h3 id="distributed-tracing-solution">Distributed Tracing Solution</h3>
+<p><strong>Core concept: Track request journey across all services</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    A[Frontend] --&gt;|TraceId: abc123| B[API Gateway]
+    B --&gt;|TraceId: abc123| C[Auth]
+    B --&gt;|TraceId: abc123| D[Cart]
+    D --&gt;|TraceId: abc123| E[Payment]
+    D --&gt;|TraceId: abc123| F[Inventory]</code></pre>
+<p><strong>Mỗi request có:</strong></p>
+<ul>
+<li><strong>Trace ID</strong> - unique ID cho entire request</li>
+<li><strong>Span ID</strong> - ID cho mỗi operation trong trace</li>
+<li><strong>Parent Span ID</strong> - link spans with nhau</li>
+</ul>
+<pre><code>Trace: abc123
+├─ Span: frontend (5ms)
+├─ Span: api-gateway (150ms)
+│  ├─ Span: auth-service (20ms)
+│  └─ Span: cart-service (130ms)
+│     ├─ Span: inventory-check (50ms)
+│     └─ Span: payment-process (80ms) ← Bottleneck!
+└─ Span: notification (10ms)
+</code></pre>
+<h3 id="implementation-with-opentelemetry">Implementation With OpenTelemetry</h3>
+<pre><code class="language-javascript">const { trace } = require(&#x27;@opentelemetry/api&#x27;)
+const tracer = trace.getTracer(&#x27;cart-service&#x27;)
+
+async function processCheckout(request) {
+  // Start span
+  const span = tracer.startSpan(&#x27;checkout.process&#x27;)
+  
+  try {
+    // Add context
+    span.setAttribute(&#x27;user_id&#x27;, request.userId)
+    span.setAttribute(&#x27;cart_size&#x27;, request.items.length)
+    
+    // Call other services (trace propagates automatically)
+    const inventory = await checkInventory(request.items)
+    const payment = await processPayment(request)
+    
+    span.setStatus({ code: SpanStatusCode.OK })
+    return { success: true }
+  } catch (error) {
+    span.recordException(error)
+    span.setStatus({ code: SpanStatusCode.ERROR })
+    throw error
+  } finally {
+    span.end()
+  }
+}
+</code></pre>
+<h3 id="trace-context-propagation">Trace Context Propagation</h3>
+<pre><code class="language-javascript">// HTTP headers automatically include trace context
+const response = await fetch(&#x27;https://payment-service/charge&#x27;, {
+  headers: {
+    &#x27;traceparent&#x27;: &#x27;00-abc123-def456-01&#x27;,
+    &#x27;tracestate&#x27;: &#x27;vendor=value&#x27;
+  }
+})
+
+// Next service continues same trace
+</code></pre>
+<h3 id="distributed-tracing-tools">Distributed Tracing Tools</h3>
+<p><strong>Popular platforms:</strong></p>
+<ul>
+<li><strong>Jaeger</strong> - open-source, CNCF project</li>
+<li><strong>Zipkin</strong> - Twitter&#x27;s tracing system</li>
+<li><strong>Datadog APM</strong> - commercial, full-featured</li>
+<li><strong>New Relic</strong> - commercial, easy setup</li>
+<li><strong>Tempo</strong> - Grafana&#x27;s tracing backend</li>
+</ul>
+<h3 id="tracing--metrics--logs--observability">Tracing + Metrics + Logs = Observability</h3>
+<pre><code>Request chậm?
+
+1. Tracing → tìm span chậm nhất
+2. Metrics → check CPU, memory của service đó
+3. Logs → xem errors tại thời điểm đó
+
+→ Root cause: Database query không có index
+</code></pre>
+<h3 id="sampling-strategy">Sampling Strategy</h3>
+<p><strong>Problem: Trace mọi request = storage explosion</strong></p>
+<pre><code class="language-javascript">// Solution: Sample intelligently
+const sampler = {
+  // Always trace errors
+  shouldSample: (context) =&gt; {
+    if (context.hasError) return true
+    
+    // Sample 1% normal requests
+    if (Math.random() &lt; 0.01) return true
+    
+    // Always trace slow requests
+    if (context.duration &gt; 1000) return true
+    
+    return false
+  }
+}
+</code></pre>
+<h3 id="trade-offs-6">Trade-offs</h3>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Visualize request flow</li>
+<li>Identify bottlenecks instantly</li>
+<li>Debug cross-service issues</li>
+<li>Performance optimization data</li>
+</ul>
+<p><strong>Costs:</strong></p>
+<ul>
+<li>Overhead (latency + storage)</li>
+<li>Instrumentation effort</li>
+<li>Learning curve</li>
+<li>Cost của tracing platforms</li>
+</ul>
+<h2 id="8-observability-mindset---you-cannot-fix-what-you-cannot-see">8. Observability Mindset - You Cannot Fix What You Cannot See</h2>
+<h3 id="observability-vs-monitoring">Observability vs Monitoring</h3>
+<pre><code>Monitoring (traditional):
+- Know WHAT happened
+- Predefined metrics và dashboards
+- &quot;Is service up?&quot;
+- &quot;Is CPU &gt; 80%?&quot;
+
+Observability:
+- Know WHY it happened
+- Ask arbitrary questions
+- &quot;Why was this request slow?&quot;
+- &quot;What changed before incident?&quot;
+</code></pre>
+<h3 id="three-pillars-of-observability">Three Pillars of Observability</h3>
+<p><strong>1. Metrics (Aggregated Data)</strong></p>
+<pre><code class="language-javascript">// Counters
+requests_total{service=&quot;api&quot;, status=&quot;200&quot;} 1024
+requests_total{service=&quot;api&quot;, status=&quot;500&quot;} 12
+
+// Gauges
+active_connections{service=&quot;api&quot;} 45
+
+// Histograms
+request_duration_seconds{service=&quot;api&quot;, le=&quot;0.1&quot;} 800
+request_duration_seconds{service=&quot;api&quot;, le=&quot;1.0&quot;} 950
+</code></pre>
+<p><strong>2. Logs (Discrete Events)</strong></p>
+<pre><code class="language-json">{
+  &quot;timestamp&quot;: &quot;2024-01-15T10:30:00Z&quot;,
+  &quot;level&quot;: &quot;error&quot;,
+  &quot;service&quot;: &quot;payment&quot;,
+  &quot;trace_id&quot;: &quot;abc123&quot;,
+  &quot;message&quot;: &quot;Payment failed&quot;,
+  &quot;error&quot;: &quot;Insufficient funds&quot;,
+  &quot;user_id&quot;: &quot;user_456&quot;,
+  &quot;amount&quot;: 100
+}
+</code></pre>
+<p><strong>3. Traces (Request Journey)</strong></p>
+<pre><code>Request flow với timing:
+Frontend (5ms) 
+→ API Gateway (10ms)
+→ Auth (50ms)
+→ Database (200ms) ← bottleneck!
+</code></pre>
+<h3 id="structured-logging-best-practices">Structured Logging Best Practices</h3>
+<pre><code class="language-javascript">// Bad: Unstructured logs
+logger.info(&#x27;User user_123 purchased item_456 for $100&#x27;)
+
+// Good: Structured logs
+logger.info(&#x27;purchase_completed&#x27;, {
+  user_id: &#x27;user_123&#x27;,
+  item_id: &#x27;item_456&#x27;,
+  amount: 100,
+  currency: &#x27;USD&#x27;,
+  trace_id: context.traceId,
+  duration_ms: 250
+})
+
+// Query-able:
+// - All purchases by user_123
+// - All purchases &gt; $50
+// - All slow purchases (duration &gt; 1000ms)
+</code></pre>
+<h3 id="high-cardinality-data">High Cardinality Data</h3>
+<p><strong>Modern observability handles high cardinality:</strong></p>
+<pre><code>Old monitoring:
+- user_id? No, too many unique values!
+- Aggregate by service, endpoint only
+
+Modern observability:
+- user_id? Yes!
+- Request ID? Yes!
+- A/B test variant? Yes!
+- Customer segment? Yes!
+
+→ Ask ANY question about specific user journey
+</code></pre>
+<h3 id="observability-driven-development">Observability-Driven Development</h3>
+<pre><code class="language-javascript">// Instrument code với context
+async function processOrder(order) {
+  const span = tracer.startSpan(&#x27;process_order&#x27;)
+  
+  // Rich context
+  span.setAttributes({
+    &#x27;order.id&#x27;: order.id,
+    &#x27;order.value&#x27;: order.total,
+    &#x27;order.items_count&#x27;: order.items.length,
+    &#x27;user.tier&#x27;: order.user.tier,
+    &#x27;user.country&#x27;: order.user.country
+  })
+  
+  try {
+    // Business logic
+    const result = await processPayment(order)
+    
+    // Success metrics
+    metrics.increment(&#x27;orders.processed&#x27;, {
+      tier: order.user.tier,
+      payment_method: order.paymentMethod
+    })
+    
+    return result
+  } catch (error) {
+    // Error context
+    span.recordException(error)
+    logger.error(&#x27;order_processing_failed&#x27;, {
+      order_id: order.id,
+      error: error.message,
+      stack: error.stack
+    })
+    throw error
+  } finally {
+    span.end()
+  }
+}
+</code></pre>
+<h3 id="slis-slos-slas">SLIs, SLOs, SLAs</h3>
+<p><strong>Service Level Indicators (SLIs):</strong></p>
+<pre><code>Metrics đo lường service health:
+- Availability: 99.9% requests succeed
+- Latency: 95% requests &lt; 200ms
+- Throughput: 1000 req/s
+</code></pre>
+<p><strong>Service Level Objectives (SLOs):</strong></p>
+<pre><code>Internal targets:
+- API availability: 99.9% (43 minutes downtime/month)
+- P95 latency: &lt; 200ms
+- Error rate: &lt; 0.1%
+</code></pre>
+<p><strong>Service Level Agreements (SLAs):</strong></p>
+<pre><code>Customer commitments:
+- 99.9% uptime guaranteed
+- Penalty if not met
+- Public-facing promise
+</code></pre>
+<h3 id="error-budget">Error Budget</h3>
+<pre><code>SLO: 99.9% availability
+→ Error budget: 0.1% = 43 minutes downtime/month
+
+Use error budget for:
+- Deploy riskier features
+- Run chaos experiments
+- Maintenance windows
+
+If error budget consumed:
+→ Freeze deploys
+→ Focus on reliability
+</code></pre>
+<h3 id="alerting-best-practices">Alerting Best Practices</h3>
+<pre><code class="language-javascript">// Alert on symptoms, not causes
+alert: &quot;CPU &gt; 80%&quot;  // So what?
+
+// Alert on user impact
+alert: &quot;Error rate &gt; 1% for 5 minutes&quot;
+alert: &quot;P95 latency &gt; 1s for 5 minutes&quot;
+
+// Alert with context
+{
+  alert: &quot;High Error Rate&quot;,
+  severity: &quot;critical&quot;,
+  service: &quot;payment&quot;,
+  error_rate: &quot;5.2%&quot;,
+  affected_users: 1200,
+  trace_samples: [&quot;abc123&quot;, &quot;def456&quot;],
+  runbook: &quot;https://wiki/payment-errors&quot;
+}
+</code></pre>
+<h3 id="modern-observability-platforms">Modern Observability Platforms</h3>
+<ul>
+<li><strong>Datadog</strong> - all-in-one, expensive</li>
+<li><strong>New Relic</strong> - APM + observability</li>
+<li><strong>Grafana Stack</strong> - open-source (Loki + Tempo + Mimir)</li>
+<li><strong>Honeycomb</strong> - high-cardinality specialist</li>
+<li><strong>Lightstep</strong> - tracing-first approach</li>
+</ul>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<h3 id="khi-nào-cần-advanced-topics">Khi Nào Cần Advanced Topics?</h3>
+<p><strong>Event Sourcing + CQRS:</strong></p>
+<ul>
+<li>Financial systems cần full audit</li>
+<li>Complex domains với nhiều business rules</li>
+<li>Cần multiple projections từ same data</li>
+</ul>
+<p><strong>Service Mesh:</strong></p>
+<ul>
+<li>50+ microservices</li>
+<li>Security requirements cao (mTLS)</li>
+<li>Need unified observability</li>
+</ul>
+<p><strong>Chaos Engineering:</strong></p>
+<ul>
+<li>Production-critical systems</li>
+<li>Cost of downtime cao</li>
+<li>Already have mature monitoring</li>
+</ul>
+<p><strong>Idempotency:</strong></p>
+<ul>
+<li>Payment, order processing</li>
+<li>Any operation không muốn duplicate</li>
+<li>Distributed systems with retries</li>
+</ul>
+<p><strong>Circuit Breaker:</strong></p>
+<ul>
+<li>Microservices với dependencies</li>
+<li>Prevent cascading failures</li>
+<li>Need graceful degradation</li>
+</ul>
+<p><strong>Distributed Tracing:</strong></p>
+<ul>
+<li>
+<blockquote>
+<p>5 microservices</p>
+</blockquote>
+</li>
+<li>Debug cross-service issues</li>
+<li>Performance optimization critical</li>
+</ul>
+<p><strong>Observability:</strong></p>
+<ul>
+<li>ALWAYS - không thể debug distributed systems không có observability</li>
+<li>Start simple, evolve gradually</li>
+</ul>
+<h3 id="progression-path">Progression Path</h3>
+<pre><code>Junior → Senior:
+- Master system design patterns
+- Understand trade-offs
+- Design systems from scratch
+
+Senior → Staff:
+- Know khi nào patterns phức tạp justify cost
+- Evolve và maintain systems at scale
+- Build observability từ đầu
+- Think về failure scenarios
+- Balance complexity vs benefit
+</code></pre>
+<h3 id="practical-advice">Practical Advice</h3>
+<p><strong>1. Don&#x27;t over-engineer</strong></p>
+<ul>
+<li>Start simple, add complexity khi cần</li>
+<li>Measure before optimize</li>
+<li>Question if benefits &gt; costs</li>
+</ul>
+<p><strong>2. Observability first</strong></p>
+<ul>
+<li>Cannot debug what you cannot see</li>
+<li>Instrument từ ngày đầu</li>
+<li>Structured logging, tracing, metrics</li>
+</ul>
+<p><strong>3. Learn from failures</strong></p>
+<ul>
+<li>Post-mortems sau incidents</li>
+<li>Chaos engineering khi ready</li>
+<li>Build resilience gradually</li>
+</ul>
+<p><strong>4. Focus on user impact</strong></p>
+<ul>
+<li>Metrics phải relate to user experience</li>
+<li>SLOs based on user expectations</li>
+<li>Alert on symptoms user feel</li>
+</ul>
+<h3 id="final-thought">Final Thought</h3>
+<p>Advanced topics không phải để &quot;flex technical knowledge&quot;. Chúng là tools giải quyết real problems mà only production systems at scale mới gặp.</p>
+<p>Staff engineer khác senior ở chỗ: <strong>Biết khi nào dùng, khi nào không dùng, và lý do tại sao.</strong></p>
+<p>Don&#x27;t learn everything. Learn when you need them. Focus on fundamentals first.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-6/lesson/lesson-4-real-interview-strategy"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-6\",\"lesson\",\"lesson-5-advanced-architecture-topics\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-6\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-5-advanced-architecture-topics\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 6 — System Design Mastery\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability - kiến thức phân biệt senior và staff engineer\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-system-design-thinking-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-1-system-design-thinking-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\"}]]}]}],[\"$\",\"li\",\"lesson-2-snake-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-2-snake-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"SNAKE Framework - Methodology Để Ace System Design Interview\"}]]}]}],[\"$\",\"li\",\"lesson-3-trade-offs-and-architecture-decision-making\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\"}]]}]}],[\"$\",\"li\",\"lesson-4-real-interview-strategy\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-4-real-interview-strategy\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\"}]]}]}],[\"$\",\"li\",\"lesson-5-advanced-architecture-topics\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"}]]}]}],[\"$\",\"li\",\"lesson-6-architect-mindset-production-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}]]}]]}],\"$L26\"]}],\"$L27\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\"}]\n26:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"hover:text-ink\",\"children\":\"Phase 6 — System Design Mastery\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability - kiến thức phân biệt senior và staff engineer\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\",\"title\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\",\"description\":\"Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability - kiến thức phân biệt senior và staff engineer\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\",\"children\":\"$L29\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-4-real-interview-strategy\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2a:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"advanced-architecture-topics---kiến-thức-differentiate-senior-vs-staff-engineer\",\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Khi bạn đã master được system design fundamentals, patterns, và trade-off thinking, câu hỏi tiếp theo là: \",[\"$\",\"strong\",null,{\"children\":\"\\\"Điều gì tạo nên sự khác biệt giữa senior và staff engineer?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Câu trả lời không phải là học thêm patterns. Mà là \",[\"$\",\"strong\",null,{\"children\":\"hiểu sâu về những vấn đề mà chỉ distributed systems ở scale mới gặp phải\"}],\" - và biết cách giải quyết chúng một cách có hệ thống.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Lesson này không phải \\\"must-know\\\" để làm system design interview. Nhưng nó là \",[\"$\",\"strong\",null,{\"children\":\"kiến thức giúp bạn thinking ở level cao hơn\"}],\" - từ \\\"design một system\\\" sang \\\"evolve và maintain production systems at scale\\\".\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-các-topics-này-lại-advanced\",\"children\":\"Tại Sao Các Topics Này Lại \\\"Advanced\\\"?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"reality-check\",\"children\":\"Reality Check\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Hầu hết systems không cần event sourcing hay service mesh. Nhưng khi bạn gặp những problems này:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Audit trail không đầy đủ\"}],\" → cần replay toàn bộ history\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Read và write có requirement khác nhau hoàn toàn\"}],\" → CQRS\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Service communication phức tạp với 50+ microservices\"}],\" → Service Mesh\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Không tin hệ thống có thể handle failure\"}],\" → Chaos Engineering\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Duplicate requests gây data corruption\"}],\" → Idempotency\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Cascading failures lan như domino\"}],\" → Circuit Breaker\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Debug distributed systems như mò kim đáy bể\"}],\" → Distributed Tracing\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Lúc đó, bạn mới hiểu tại sao những concepts này tồn tại.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"1-event-sourcing---store-events-not-state\",\"children\":\"1. Event Sourcing - Store Events, Not State\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"vấn-đề-của-traditional-state-storage\",\"children\":\"Vấn Đề Của Traditional State Storage\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Traditional Database:\\nUser Balance: $1000 (current state only)\\n\\nMất hết history\\nKhông biết balance này từ đâu ra\\nKhông audit được\\nKhông replay được\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"event-sourcing-approach\",\"children\":\"Event Sourcing Approach\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core idea: Store every change as an event, derive state from events\"}]}],\"\\n\",[\"$\",\"$L2a\",null,{\"chart\":\"flowchart LR\\n    E1[Event: Deposit $500] --\u003e E2[Event: Withdraw $200]\\n    E2 --\u003e E3[Event: Deposit $700]\\n    E3 --\u003e State[Current State: $1000]\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Event Store:\\n1. UserCreated { userId: 123 }\\n2. MoneyDeposited { userId: 123, amount: 500 }\\n3. MoneyWithdrawn { userId: 123, amount: 200 }\\n4. MoneyDeposited { userId: 123, amount: 700 }\\n\\nCurrent State = Replay all events\\nBalance = 0 + 500 - 200 + 700 = $1000\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"tại-sao-event-sourcing\",\"children\":\"Tại Sao Event Sourcing?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Complete Audit Trail\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Biết chính xác điều gì đã xảy ra, khi nào, tại sao\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Compliance và regulatory requirements\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Time Travel\"}]}],\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\",\"\\n\",\"$Lc9\",\"\\n\",\"$Lca\",\"\\n\",\"$Lcb\",\"\\n\",\"$Lcc\",\"\\n\",\"$Lcd\",\"\\n\",\"$Lce\",\"\\n\",\"$Lcf\",\"\\n\",\"$Ld0\",\"\\n\",\"$Ld1\",\"\\n\",\"$Ld2\",\"\\n\",\"$Ld3\",\"\\n\",\"$Ld4\",\"\\n\",\"$Ld5\",\"\\n\",\"$Ld6\",\"\\n\",\"$Ld7\",\"\\n\",\"$Ld8\",\"\\n\",\"$Ld9\",\"\\n\",\"$Lda\",\"\\n\",\"$Ldb\",\"\\n\",\"$Ldc\",\"\\n\",\"$Ldd\",\"\\n\",\"$Lde\",\"\\n\",\"$Ldf\",\"\\n\",\"$Le0\",\"\\n\",\"$Le1\",\"\\n\",\"$Le2\",\"\\n\",\"$Le3\",\"\\n\",\"$Le4\",\"\\n\",\"$Le5\",\"\\n\",\"$Le6\",\"\\n\",\"$Le7\",\"\\n\",\"$Le8\",\"\\n\",\"$Le9\",\"\\n\",\"$Lea\",\"\\n\",\"$Leb\",\"\\n\",\"$Lec\",\"\\n\",\"$Led\",\"\\n\",\"$Lee\",\"\\n\",\"$Lef\",\"\\n\",\"$Lf0\",\"\\n\",\"$Lf1\",\"\\n\",\"$Lf2\",\"\\n\",\"$Lf3\",\"\\n\",\"$Lf4\",\"\\n\",\"$Lf5\",\"\\n\",\"$Lf6\",\"\\n\",\"$Lf7\",\"\\n\",\"$Lf8\",\"\\n\",\"$Lf9\",\"\\n\",\"$Lfa\",\"\\n\",\"$Lfb\",\"\\n\",\"$Lfc\",\"\\n\",\"$Lfd\",\"\\n\",\"$Lfe\",\"\\n\",\"$Lff\",\"\\n\",\"$L100\",\"\\n\",\"$L101\",\"\\n\",\"$L102\",\"\\n\",\"$L103\",\"\\n\",\"$L104\",\"\\n\",\"$L105\",\"\\n\",\"$L106\",\"\\n\",\"$L107\",\"\\n\",\"$L108\",\"\\n\",\"$L109\",\"\\n\",\"$L10a\",\"\\n\",\"$L10b\",\"\\n\",\"$L10c\",\"\\n\",\"$L10d\",\"\\n\",\"$L10e\",\"\\n\",\"$L10f\",\"\\n\",\"$L110\",\"\\n\",\"$L111\",\"\\n\",\"$L112\",\"\\n\",\"$L113\",\"\\n\",\"$L114\",\"\\n\",\"$L115\",\"\\n\",\"$L116\",\"\\n\",\"$L117\",\"\\n\",\"$L118\",\"\\n\",\"$L119\",\"\\n\",\"$L11a\",\"\\n\",\"$L11b\",\"\\n\",\"$L11c\",\"\\n\",\"$L11d\",\"\\n\",\"$L11e\",\"\\n\",\"$L11f\"]}]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Rebuild state tại bất kỳ thời điểm nào trong quá khứ\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Debug production issues by replaying events\"}],\"\\n\"]}]\n2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Multiple Projections\"}]}]\n2d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cùng một event stream → nhiều views khác nhau\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Analytics, reporting, real-time dashboards\"}],\"\\n\"]}]\n2e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Scalability\"}]}]\n2f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Events là append-only → cực kỳ nhanh\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Không cần locking, transactions phức tạp\"}],\"\\n\"]}]\n30:[\"$\",\"h3\",null,{\"id\":\"trade-offs\",\"children\":\"Trade-offs\"}]\n31:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n32:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Full history và audit trail\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Time travel capabilities\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Easy to add new projections\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Event replay cho debugging\"}],\"\\n\"]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n34:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complexity tăng đáng kể\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Event schema evolution khó\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Storage tăng (lưu mọi event)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Query current state phải replay events\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Learning curve cao\"}],\"\\n\"]}]\n35:[\"$\",\"h3\",null,{\"id\":\"khi-nào-dùng-event-sourcing\",\"children\":\"Khi Nào Dùng Event Sourcing?\"}]\n36:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Dùng khi:\"}]}]\n37:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Banking, financial systems (cần audit đầy đủ)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Domain phức tạp với nhiều business rules\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cần complete history và time travel\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Multiple projections từ cùng data\"}],\"\\n\"]}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không dùng khi:\"}]}]\n39:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple CRUD applications\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team chưa có experience\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Audit trail không critical\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complexity không justify benefits\"}],\"\\n\"]}]\n3a:[\"$\",\"h2\",null,{\"id\":\"2-cqrs---command-query-responsibility-segregation\",\"children\":\"2. CQRS - Command Query Responsibility Segregation\"}]\n3b:[\"$\",\"h3\",null,{\"id\":\"core-concept\",\"children\":\"Core Concept\"}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"CQRS = Tách riêng read và write models\"}]}]\n3d:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    Client[Client Request]\\n    Client --\u003e|Write: UpdateUser| WriteModel[Write Model\u003cbr/\u003eNormalized DB]\\n    Client --\u003e|Read: GetUserProfile| ReadModel[Read Model\u003cbr/\u003eDenormalized View]\\n    WriteModel --\u003e|Events/Sync| ReadModel\"}]\n3e:[\"$\",\"h3\",null,{\"id\":\"tại-sao-cqrs\",\"children\":\"Tại Sao CQRS?\"}]\n3f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Reality: Read và Write có requirements hoàn toàn khác nhau\"}]}]\n40:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Write Side:\\n- Validate business rules\\n- Ensure consistency\\n- Handle transactions\\n- Normalized data\\n\\nRead Side:\\n- Fast queries\\n- Complex joins\\n- Aggregations\\n- Denormalized views\\n\"}]}]\n41:[\"$\",\"h3\",null,{\"id\":\"example-e-commerce-product-page\",\"children\":\"Example: E-commerce Product Page\"}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Without CQRS (Single Model):\"}]}]\n43:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Mỗi lần load product page:\\nSELECT p.*, c.name as category_name, \\n       AVG(r.rating) as avg_rating,\\n       COUNT(r.id) as review_count,\\n       i.quan"])</script><script>self.__next_f.push([1,"tity as stock\\nFROM products p\\nJOIN categories c ON p.category_id = c.id\\nLEFT JOIN reviews r ON p.id = r.product_id\\nLEFT JOIN inventory i ON p.id = i.product_id\\nWHERE p.id = ?\\nGROUP BY p.id\\n\\n-- Slow vì phải join nhiều tables mỗi request\\n\"}]}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"With CQRS:\"}]}]\n45:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Write Side (normalized)\\nawait db.products.update({ id, name, price })\\nawait eventBus.publish('ProductUpdated', { id, name, price })\\n\\n// Read Side (denormalized view)\\nawait cache.set(`product:${id}`, {\\n  id, name, price,\\n  category: 'Electronics',\\n  avgRating: 4.5,\\n  reviewCount: 1203,\\n  stock: 50\\n})\\n\\n// Read cực nhanh - chỉ 1 cache lookup\\nconst product = await cache.get(`product:${id}`)\\n\"}]}]\n46:[\"$\",\"h3\",null,{\"id\":\"cqrs--event-sourcing-combo\",\"children\":\"CQRS + Event Sourcing Combo\"}]\n47:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Write Side: Event Store\\n↓\\nEvents: ProductCreated, PriceUpdated, ReviewAdded\\n↓\\nRead Side: Materialized Views\\n- Product Detail View (cache)\\n- Search Index (Elasticsearch)\\n- Analytics Dashboard (BigQuery)\\n\"}]}]\n48:[\"$\",\"h3\",null,{\"id\":\"trade-offs-1\",\"children\":\"Trade-offs\"}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n4a:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Optimize read và write độc lập\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Scale read và write riêng biệt\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Multiple read models cho use cases khác nhau\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Performance cải thiện đáng kể\"}],\"\\n\"]}]\n4b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n4c:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Eventual consistency giữa write và read\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complexity tăng (2 models thay vì 1)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Data sync phải reliable\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Harder để debug và maintain\"}],\"\\n\"]}]\n4d:[\"$\",\"h3\",null,{\"id\":\"khi-nào-dùng-cqrs\",\"children\":\"Khi Nào Dùng CQRS?\"}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Dùng khi:\"}]}]\n4f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read:Write ratio chênh lệch lớn (99:1)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read queries cực kỳ complex\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cần scale read và write khác nhau\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Multiple views từ cùng data\"}],\"\\n\"]}]\n50:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không dùng khi:\"}]}]\n51:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple CRUD với read/write balanced\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Strong consistency required\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team nhỏ, không đủ resource maintain\"}],\"\\n\"]}]\n52:[\"$\",\"h2\",null,{\"id\":\"3-service-mesh---infrastructure-layer-for-service-communication\",\"children\":\"3. Service Mesh - Infrastructure Layer For Service Communication\"}]\n53:[\"$\",\"h3\",null,{\"id\":\"vấn-đề-của-microservices-communication\",\"children\":\"Vấn Đề Của Microservices Communication\"}]\n54:[\"$\",\"p\",null,{\"children\":\"Khi bạn có 50+ microservices:\"}]\n55:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Service A call Service B:\\n- Retry logic?\\n- Circuit breaker?\\n- Load balancing?\\n- TLS encryption?\\n- Tracing?\\n- Metrics?\\n\\n→ Mỗi service phải implement lại tất cả\\n→ Code duplication\\n→ Inconsistent behavior\\n\"}]}]\n56:[\"$\",\"h3\",null,{\"id\":\"service-mesh-solution\",\"children\":\"Service Mesh Solution\"}]\n57:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core idea: Move network logic ra khỏi application code, vào infrastructure layer\"}]}]\n58:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart LR\\n    A[Service A] \u003c--\u003e PA[Sidecar Proxy]\\n    PB[Sidecar Proxy] \u003c--\u003e B[Service B]\\n    PA \u003c--\u003e PB\\n    PA --\u003e Control[Control Plane\u003cbr/\u003eRules \u0026 Config]\\n    PB --\u003e Control\"}]\n59:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"chil"])</script><script>self.__next_f.push([1,"dren\":\"Sidecar proxy\"}],\" (như Envoy) intercept tất cả traffic:\"]}]\n5a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Service A → Sidecar Proxy A → Sidecar Proxy B → Service B\\n\\nProxy handles:\\n- Load balancing\\n- Retries\\n- Circuit breaking\\n- TLS\\n- Metrics\\n- Tracing\\n\"}]}]\n5b:[\"$\",\"h3\",null,{\"id\":\"service-mesh-features\",\"children\":\"Service Mesh Features\"}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Traffic Management\"}]}]\n5d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Load balancing algorithms\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Circuit breakers tự động\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Retry và timeout policies\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Traffic splitting (canary, blue-green)\"}],\"\\n\"]}]\n5e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Security\"}]}]\n5f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Mutual TLS (mTLS) tự động\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Authentication giữa services\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Authorization policies\"}],\"\\n\"]}]\n60:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Observability\"}]}]\n61:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Distributed tracing tự động\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Metrics collection\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Service topology visualization\"}],\"\\n\"]}]\n62:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Resilience\"}]}]\n63:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Automatic retries\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Circuit breakers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fault injection để test\"}],\"\\n\"]}]\n64:[\"$\",\"h3\",null,{\"id\":\"popular-service-meshes\",\"children\":\"Popular Service Meshes\"}]\n65:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Istio\"}],\" - full-featured, complex\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Linkerd\"}],\" - simpler, lightweight\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Consul Connect\"}],\" - HashiCorp ecosystem\"]}],\"\\n\"]}]\n66:[\"$\",\"h3\",null,{\"id\":\"trade-offs-2\",\"children\":\"Trade-offs\"}]\n67:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n68:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Centralized configuration\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Consistent behavior across services\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Observability out-of-the-box\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Security features tự động\"}],\"\\n\"]}]\n69:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n6a:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complexity cao - thêm 1 layer infrastructure\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Performance overhead (proxy layer)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Learning curve steep\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Debugging khó hơn\"}],\"\\n\"]}]\n6b:[\"$\",\"h3\",null,{\"id\":\"khi-nào-cần-service-mesh\",\"children\":\"Khi Nào Cần Service Mesh?\"}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Dùng khi:\"}]}]\n6d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"50+ microservices\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Need consistent traffic management\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Security requirements cao (mTLS everywhere)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Observability critical\"}],\"\\n\"]}]\n6e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không dùng khi:\"}]}]\n6f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"\u003c 10 microservices\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Monolith hoặc simple architecture\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team chưa mature với Kubernetes\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Performance overhead không chấp nhận được\"}],\"\\n\"]}]\n70:[\"$\",\"h2\",null,{\"id\":\"4-chaos-engineering---break-things-on-purpose\",\"children\":\"4. Chaos Engineering - Break Things On Purpose\"}]\n71:[\"$\",\"h3\",null,{\"id\":\"core-philosophy\",\"children\":\"Core Philosophy\"}]\n72:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",nul"])</script><script>self.__next_f.push([1,"l,{\"children\":\"\\\"The best way to avoid failure is to fail constantly\\\"\"}]}]\n73:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Traditional Testing:\\nTest → Deploy → Hope nothing breaks\\n\\nChaos Engineering:\\nDeploy → Intentionally break things → Fix weaknesses → More resilient\\n\"}]}]\n74:[\"$\",\"h3\",null,{\"id\":\"netflixs-chaos-monkey\",\"children\":\"Netflix's Chaos Monkey\"}]\n75:[\"$\",\"p\",null,{\"children\":\"Netflix pioneer chaos engineering:\"}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Chaos Monkey randomly:\\n- Terminates production instances\\n- Kills services\\n- Adds latency\\n- Drops network packets\\n\\nGoal: Force systems to be resilient by design\\n\"}]}]\n77:[\"$\",\"h3\",null,{\"id\":\"chaos-engineering-principles\",\"children\":\"Chaos Engineering Principles\"}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Start With Hypothesis\"}]}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Hypothesis: \\\"If payment service fails, \\n            users can still browse products\\\"\\n\\nExperiment: Kill payment service in production\\nMeasure: Browse functionality still works?\\n\"}]}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Minimize Blast Radius\"}]}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Start small:\\n- 1 instance → 1 service → 1 region → global\\n\\nNot: Kill everything at once\\n\"}]}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Automate Experiments\"}]}]\n7d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Automated chaos experiment\\nconst experiment = {\\n  name: 'Database Failover',\\n  hypothesis: 'System handles DB failure gracefully',\\n  blast_radius: '10% traffic',\\n  \\n  fault: {\\n    type: 'database_failure',\\n    duration: '5 minutes'\\n  },\\n  \\n  steady_state: {\\n    metric: 'api_success_rate',\\n    threshold: '\u003e 99%'\\n  }\\n}\\n\\n// Run weekly tự động\\n\"}]}]\n7e:[\"$\",\"h3\",null,{\"id\":\"common-chaos-experiments\",\"children\":\"Common Chaos Experiments\"}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Service Failures\"}]}]\n80:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Random instance termination\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Service unavailable\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Dependency failures\"}],\"\\n\"]}]\n81:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Network Issues\"}]}]\n82:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Latency injection\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Packet loss\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Network partition\"}],\"\\n\"]}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Resource Exhaustion\"}]}]\n84:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"CPU spike\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Memory leak simulation\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Disk full\"}],\"\\n\"]}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. State Corruption\"}]}]\n86:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Clock skew\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Data corruption\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Zombie nodes\"}],\"\\n\"]}]\n87:[\"$\",\"h3\",null,{\"id\":\"tools\",\"children\":\"Tools\"}]\n88:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Chaos Monkey\"}],\" - Netflix's original\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Gremlin\"}],\" - commercial platform\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Chaos Mesh\"}],\" - Kubernetes native\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Litmus\"}],\" - CNCF project\"]}],\"\\n\"]}]\n89:[\"$\",\"h3\",null,{\"id\":\"trade-offs-3\",\"children\":\"Trade-offs\"}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\n8b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Uncover weaknesses trước khi production incident\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Build confidence in system resilience\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Force teams thinking về failure scenarios\"}],\"\\n\",["])</script><script>self.__next_f.push([1,"\"$\",\"li\",null,{\"children\":\"Reduce MTTR (Mean Time To Recovery)\"}],\"\\n\"]}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Challenges:\"}]}]\n8d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Rủi ro cause real outages\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cần mature monitoring và alerting\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cultural shift - accept breaking things\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Time investment lớn\"}],\"\\n\"]}]\n8e:[\"$\",\"h3\",null,{\"id\":\"khi-nào-áp-dụng-chaos-engineering\",\"children\":\"Khi Nào Áp Dụng Chaos Engineering?\"}]\n8f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Dùng khi:\"}]}]\n90:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Production systems critical\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Already have good monitoring\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team mature với distributed systems\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cost of downtime cao\"}],\"\\n\"]}]\n91:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Chưa dùng khi:\"}]}]\n92:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"System chưa stable\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Monitoring chưa tốt\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Đang fire-fighting incidents thường xuyên\"}],\"\\n\"]}]\n93:[\"$\",\"h2\",null,{\"id\":\"5-idempotency---handle-duplicate-requests-safely\",\"children\":\"5. Idempotency - Handle Duplicate Requests Safely\"}]\n94:[\"$\",\"h3\",null,{\"id\":\"vấn-đề-network-unreliable\",\"children\":\"Vấn Đề: Network Unreliable\"}]\n95:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Client → Server: Create Payment $100\\n\\nScenario 1:\\nClient sends → Server processes → Response lost\\nClient retries → Server charges $200 ❌\\n\\nScenario 2 (Idempotent):\\nClient sends with ID → Server processes\\nClient retries with same ID → Server returns cached result\\nTotal charged: $100 ✅\\n\"}]}]\n96:[\"$\",\"h3\",null,{\"id\":\"core-concept-1\",\"children\":\"Core Concept\"}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Idempotent operation: Calling multiple times = same result as calling once\"}]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Mathematical:\\nf(f(x)) = f(x)\\n\\nExample:\\nSET value = 10  → idempotent\\nvalue = value + 1  → NOT idempotent\\n\"}]}]\n99:[\"$\",\"h3\",null,{\"id\":\"implementation-strategies\",\"children\":\"Implementation Strategies\"}]\n9a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Idempotency Keys\"}]}]\n9b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Client generates unique key\\nconst idempotencyKey = uuidv4()\\n\\nawait api.post('/payments', {\\n  amount: 100,\\n  idempotency_key: idempotencyKey\\n})\\n\\n// Server side\\nasync function processPayment(request) {\\n  const { amount, idempotency_key } = request\\n  \\n  // Check if already processed\\n  const cached = await cache.get(idempotency_key)\\n  if (cached) {\\n    return cached.result  // Return previous result\\n  }\\n  \\n  // Process payment\\n  const result = await chargeCard(amount)\\n  \\n  // Cache result\\n  await cache.set(idempotency_key, { result }, { ttl: 86400 })\\n  \\n  return result\\n}\\n\"}]}]\n9c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Natural Idempotency\"}]}]\n9d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Idempotent by design\\nPUT /users/123\\n{\\n  \\\"name\\\": \\\"John\\\",\\n  \\\"email\\\": \\\"john@example.com\\\"\\n}\\n\\n// Calling nhiều lần → same state\\n\"}]}]\n9e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Database Constraints\"}]}]\n9f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"CREATE UNIQUE INDEX idx_payment_idempotency \\nON payments(idempotency_key);\\n\\n-- Duplicate insert sẽ fail → retry-safe\\n\"}]}]\na0:[\"$\",\"h3\",null,{\"id\":\"idempotency-levels\",\"children\":\"Idempotency Levels\"}]\na1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. HTTP Method Level\"}]}]\na2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"GET, PUT, DELETE → idempotent by spec\\nPOST → N"])</script><script>self.__next_f.push([1,"OT idempotent (need explicit handling)\\n\"}]}]\na3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Application Level\"}]}]\na4:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Check database state\\nconst existingOrder = await db.orders.findOne({ \\n  userId, productId \\n})\\n\\nif (existingOrder) {\\n  return existingOrder  // Already exists\\n}\\n\\n// Create new\\nreturn await db.orders.create({ userId, productId })\\n\"}]}]\na5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Distributed System Level\"}]}]\na6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Use distributed locks:\\n- Acquire lock with idempotency key\\n- Process if lock acquired\\n- Release lock\\n- Retry safe\\n\"}]}]\na7:[\"$\",\"h3\",null,{\"id\":\"real-world-examples\",\"children\":\"Real-World Examples\"}]\na8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Stripe Payments:\"}]}]\na9:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"await stripe.charges.create({\\n  amount: 1000,\\n  currency: 'usd',\\n  source: 'tok_visa',\\n  idempotency_key: '123e4567-e89b-12d3'\\n})\\n\\n// Retry with same key → returns original charge\\n\"}]}]\naa:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Message Processing:\"}]}]\nab:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Consumer with deduplication\\nasync function processMessage(message) {\\n  const messageId = message.id\\n  \\n  const processed = await db.processed_messages\\n    .findOne({ messageId })\\n  \\n  if (processed) {\\n    return  // Already processed\\n  }\\n  \\n  // Process message\\n  await handleMessage(message)\\n  \\n  // Mark as processed\\n  await db.processed_messages.insert({ \\n    messageId, \\n    processedAt: Date.now() \\n  })\\n}\\n\"}]}]\nac:[\"$\",\"h3\",null,{\"id\":\"trade-offs-4\",\"children\":\"Trade-offs\"}]\nad:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\nae:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Safe retries\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Avoid duplicate charges, orders, etc.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Better reliability\"}],\"\\n\"]}]\naf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Costs:\"}]}]\nb0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Extra storage (cache idempotency keys)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complexity in implementation\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"TTL management (keys expire khi nào?)\"}],\"\\n\"]}]\nb1:[\"$\",\"h2\",null,{\"id\":\"6-circuit-breaker---stop-cascading-failures\",\"children\":\"6. Circuit Breaker - Stop Cascading Failures\"}]\nb2:[\"$\",\"h3\",null,{\"id\":\"vấn-đề-cascading-failures\",\"children\":\"Vấn Đề: Cascading Failures\"}]\nb3:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    User --\u003e A[Service A]\\n    A --\u003e B[Service B - Slow]\\n    A --\u003e C[Service C - Slow]\\n    B --\u003e D[Database - Down]\\n    C --\u003e D\"}]\nb4:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Database down → Service B slow (waiting for timeout)\\n→ Service A threads blocked waiting for B\\n→ Service A down\\n→ All dependent services down\\n→ Entire system down\\n\"}]}]\nb5:[\"$\",\"h3\",null,{\"id\":\"circuit-breaker-pattern\",\"children\":\"Circuit Breaker Pattern\"}]\nb6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Idea: Stop calling failing services, fail fast\"}]}]\nb7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"States:\\n1. CLOSED → calls go through normally\\n2. OPEN → calls fail immediately (no wait)\\n3. HALF-OPEN → test if service recovered\\n\\nClosed → (failures \u003e threshold) → Open\\nOpen → (timeout) → Half-Open\\nHalf-Open → (success) → Closed\\nHalf-Open → (failure) → Open\\n\"}]}]\nb8:[\"$\",\"$L2a\",null,{\"chart\":\"stateDiagram-v2\\n    [*] --\u003e Closed\\n    Closed --\u003e Open: Failures \u003e threshold\\n    Open --\u003e HalfOpen: Timeout elapsed\\n    HalfOpen --\u003e Closed: Success\\n    HalfOpen --\u003e Open: Failure\"}]\nb9:[\"$\",\"h3\",null,{\"id\":\"implementation\",\"children\":\"Implementation\"}]\n120:T46f,class CircuitBreaker {\n  constructor(options) {\n    this.failureT"])</script><script>self.__next_f.push([1,"hreshold = options.failureThreshold || 5\n    this.timeout = options.timeout || 60000  // 1 minute\n    this.failures = 0\n    this.state = 'CLOSED'\n    this.nextAttempt = null\n  }\n  \n  async call(fn) {\n    if (this.state === 'OPEN') {\n      if (Date.now() \u003c this.nextAttempt) {\n        throw new Error('Circuit breaker OPEN')\n      }\n      // Try half-open\n      this.state = 'HALF-OPEN'\n    }\n    \n    try {\n      const result = await fn()\n      this.onSuccess()\n      return result\n    } catch (error) {\n      this.onFailure()\n      throw error\n    }\n  }\n  \n  onSuccess() {\n    this.failures = 0\n    this.state = 'CLOSED'\n  }\n  \n  onFailure() {\n    this.failures++\n    if (this.failures \u003e= this.failureThreshold) {\n      this.state = 'OPEN'\n      this.nextAttempt = Date.now() + this.timeout\n    }\n  }\n}\n\n// Usage\nconst breaker = new CircuitBreaker({ \n  failureThreshold: 5, \n  timeout: 60000 \n})\n\ntry {\n  const data = await breaker.call(() =\u003e \n    fetch('https://api.example.com/data')\n  )\n} catch (error) {\n  // Circuit open hoặc call failed\n  return fallbackData\n}\nba:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"$120\"}]}]\nbb:[\"$\",\"h3\",null,{\"id\":\"circuit-breaker--fallback\",\"children\":\"Circuit Breaker + Fallback\"}]\nbc:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"async function getUserProfile(userId) {\\n  try {\\n    return await circuitBreaker.call(() =\u003e \\n      userService.getProfile(userId)\\n    )\\n  } catch (error) {\\n    // Circuit open → use fallback\\n    return {\\n      id: userId,\\n      name: 'User',\\n      avatar: 'default-avatar.png',\\n      _fallback: true\\n    }\\n  }\\n}\\n\"}]}]\nbd:[\"$\",\"h3\",null,{\"id\":\"advanced-bulkhead-pattern\",\"children\":\"Advanced: Bulkhead Pattern\"}]\nbe:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Isolate failures với resource pools:\"}]}]\nbf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Separate thread pools cho từng service\\nconst paymentPool = createThreadPool({ size: 10 })\\nconst userPool = createThreadPool({ size: 20 })\\nconst searchPool = createThreadPool({ size: 30 })\\n\\n// Payment service down → only payment pool exhausted\\n// User và search services still working\\n\"}]}]\nc0:[\"$\",\"h3\",null,{\"id\":\"monitoring-circuit-breaker\",\"children\":\"Monitoring Circuit Breaker\"}]\nc1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Metrics quan trọng\\ncircuitBreaker.on('open', () =\u003e {\\n  metrics.increment('circuit_breaker.opened', {\\n    service: 'payment_service'\\n  })\\n  alert.send('Circuit breaker opened: payment_service')\\n})\\n\\ncircuitBreaker.on('half-open', () =\u003e {\\n  metrics.increment('circuit_breaker.half_open')\\n})\\n\\ncircuitBreaker.on('closed', () =\u003e {\\n  metrics.increment('circuit_breaker.closed')\\n})\\n\"}]}]\nc2:[\"$\",\"h3\",null,{\"id\":\"trade-offs-5\",\"children\":\"Trade-offs\"}]\nc3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\nc4:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Prevent cascading failures\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fail fast thay vì wait timeout\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Give failing service time to recover\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Better resource utilization\"}],\"\\n\"]}]\nc5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Challenges:\"}]}]\nc6:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"False positives (open khi không cần)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fallback logic cần maintain\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Tuning thresholds khó\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Monitoring complexity\"}],\"\\n\"]}]\nc7:[\"$\",\"h2\",null,{\"id\":\"7-distributed-tracing---debug-across-services\",\"children\":\"7. Distributed Tracing - Debug Across Services\"}]\nc8:[\"$\",\"h3\",null,{\"id\":\"vấn-đề-debugging-microservices\",\"children\":\"Vấn Đề: Debugging Microservices\"}]\nc9:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User report: \\\"Checkout quá chậm\\\"\\n\\nRequest flow:\\nFrontend → API Gat"])</script><script>self.__next_f.push([1,"eway → Auth → Cart → Inventory \\n→ Payment → Order → Notification → Email\\n\\nCâu hỏi: Service nào chậm?\\n\"}]}]\nca:[\"$\",\"h3\",null,{\"id\":\"traditional-logging-approach\",\"children\":\"Traditional Logging Approach\"}]\ncb:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Service A\\nlogger.info('Calling Service B')\\n\\n// Service B\\nlogger.info('Processing request')\\n\\n// Service C\\nlogger.info('Query database')\\n\\n// Problem: Không biết logs nào belong to cùng request\\n\"}]}]\ncc:[\"$\",\"h3\",null,{\"id\":\"distributed-tracing-solution\",\"children\":\"Distributed Tracing Solution\"}]\ncd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core concept: Track request journey across all services\"}]}]\nce:[\"$\",\"$L2a\",null,{\"chart\":\"graph LR\\n    A[Frontend] --\u003e|TraceId: abc123| B[API Gateway]\\n    B --\u003e|TraceId: abc123| C[Auth]\\n    B --\u003e|TraceId: abc123| D[Cart]\\n    D --\u003e|TraceId: abc123| E[Payment]\\n    D --\u003e|TraceId: abc123| F[Inventory]\"}]\ncf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mỗi request có:\"}]}]\nd0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Trace ID\"}],\" - unique ID cho entire request\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Span ID\"}],\" - ID cho mỗi operation trong trace\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Parent Span ID\"}],\" - link spans with nhau\"]}],\"\\n\"]}]\nd1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Trace: abc123\\n├─ Span: frontend (5ms)\\n├─ Span: api-gateway (150ms)\\n│  ├─ Span: auth-service (20ms)\\n│  └─ Span: cart-service (130ms)\\n│     ├─ Span: inventory-check (50ms)\\n│     └─ Span: payment-process (80ms) ← Bottleneck!\\n└─ Span: notification (10ms)\\n\"}]}]\nd2:[\"$\",\"h3\",null,{\"id\":\"implementation-with-opentelemetry\",\"children\":\"Implementation With OpenTelemetry\"}]\nd3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"const { trace } = require('@opentelemetry/api')\\nconst tracer = trace.getTracer('cart-service')\\n\\nasync function processCheckout(request) {\\n  // Start span\\n  const span = tracer.startSpan('checkout.process')\\n  \\n  try {\\n    // Add context\\n    span.setAttribute('user_id', request.userId)\\n    span.setAttribute('cart_size', request.items.length)\\n    \\n    // Call other services (trace propagates automatically)\\n    const inventory = await checkInventory(request.items)\\n    const payment = await processPayment(request)\\n    \\n    span.setStatus({ code: SpanStatusCode.OK })\\n    return { success: true }\\n  } catch (error) {\\n    span.recordException(error)\\n    span.setStatus({ code: SpanStatusCode.ERROR })\\n    throw error\\n  } finally {\\n    span.end()\\n  }\\n}\\n\"}]}]\nd4:[\"$\",\"h3\",null,{\"id\":\"trace-context-propagation\",\"children\":\"Trace Context Propagation\"}]\nd5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// HTTP headers automatically include trace context\\nconst response = await fetch('https://payment-service/charge', {\\n  headers: {\\n    'traceparent': '00-abc123-def456-01',\\n    'tracestate': 'vendor=value'\\n  }\\n})\\n\\n// Next service continues same trace\\n\"}]}]\nd6:[\"$\",\"h3\",null,{\"id\":\"distributed-tracing-tools\",\"children\":\"Distributed Tracing Tools\"}]\nd7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Popular platforms:\"}]}]\nd8:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Jaeger\"}],\" - open-source, CNCF project\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Zipkin\"}],\" - Twitter's tracing system\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Datadog APM\"}],\" - commercial, full-featured\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"New Relic\"}],\" - commercial, easy setup\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Tempo\"}],\" - Grafana's tracing backend\"]}],\"\\n\"]}]\nd9:[\"$\",\"h3\",null,{\"id\":\"tracing--metrics--logs--o"])</script><script>self.__next_f.push([1,"bservability\",\"children\":\"Tracing + Metrics + Logs = Observability\"}]\nda:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Request chậm?\\n\\n1. Tracing → tìm span chậm nhất\\n2. Metrics → check CPU, memory của service đó\\n3. Logs → xem errors tại thời điểm đó\\n\\n→ Root cause: Database query không có index\\n\"}]}]\ndb:[\"$\",\"h3\",null,{\"id\":\"sampling-strategy\",\"children\":\"Sampling Strategy\"}]\ndc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem: Trace mọi request = storage explosion\"}]}]\ndd:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Solution: Sample intelligently\\nconst sampler = {\\n  // Always trace errors\\n  shouldSample: (context) =\u003e {\\n    if (context.hasError) return true\\n    \\n    // Sample 1% normal requests\\n    if (Math.random() \u003c 0.01) return true\\n    \\n    // Always trace slow requests\\n    if (context.duration \u003e 1000) return true\\n    \\n    return false\\n  }\\n}\\n\"}]}]\nde:[\"$\",\"h3\",null,{\"id\":\"trade-offs-6\",\"children\":\"Trade-offs\"}]\ndf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\ne0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Visualize request flow\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Identify bottlenecks instantly\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Debug cross-service issues\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Performance optimization data\"}],\"\\n\"]}]\ne1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Costs:\"}]}]\ne2:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Overhead (latency + storage)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Instrumentation effort\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Learning curve\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cost của tracing platforms\"}],\"\\n\"]}]\ne3:[\"$\",\"h2\",null,{\"id\":\"8-observability-mindset---you-cannot-fix-what-you-cannot-see\",\"children\":\"8. Observability Mindset - You Cannot Fix What You Cannot See\"}]\ne4:[\"$\",\"h3\",null,{\"id\":\"observability-vs-monitoring\",\"children\":\"Observability vs Monitoring\"}]\ne5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Monitoring (traditional):\\n- Know WHAT happened\\n- Predefined metrics và dashboards\\n- \\\"Is service up?\\\"\\n- \\\"Is CPU \u003e 80%?\\\"\\n\\nObservability:\\n- Know WHY it happened\\n- Ask arbitrary questions\\n- \\\"Why was this request slow?\\\"\\n- \\\"What changed before incident?\\\"\\n\"}]}]\ne6:[\"$\",\"h3\",null,{\"id\":\"three-pillars-of-observability\",\"children\":\"Three Pillars of Observability\"}]\ne7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Metrics (Aggregated Data)\"}]}]\ne8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Counters\\nrequests_total{service=\\\"api\\\", status=\\\"200\\\"} 1024\\nrequests_total{service=\\\"api\\\", status=\\\"500\\\"} 12\\n\\n// Gauges\\nactive_connections{service=\\\"api\\\"} 45\\n\\n// Histograms\\nrequest_duration_seconds{service=\\\"api\\\", le=\\\"0.1\\\"} 800\\nrequest_duration_seconds{service=\\\"api\\\", le=\\\"1.0\\\"} 950\\n\"}]}]\ne9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Logs (Discrete Events)\"}]}]\nea:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-json\",\"children\":\"{\\n  \\\"timestamp\\\": \\\"2024-01-15T10:30:00Z\\\",\\n  \\\"level\\\": \\\"error\\\",\\n  \\\"service\\\": \\\"payment\\\",\\n  \\\"trace_id\\\": \\\"abc123\\\",\\n  \\\"message\\\": \\\"Payment failed\\\",\\n  \\\"error\\\": \\\"Insufficient funds\\\",\\n  \\\"user_id\\\": \\\"user_456\\\",\\n  \\\"amount\\\": 100\\n}\\n\"}]}]\neb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Traces (Request Journey)\"}]}]\nec:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Request flow với timing:\\nFrontend (5ms) \\n→ API Gateway (10ms)\\n→ Auth (50ms)\\n→ Database (200ms) ← bottleneck!\\n\"}]}]\ned:[\"$\",\"h3\",null,{\"id\":\"structured-logging-best-practices\",\"children\":\"Structured Logging Best Practices\"}]\nee:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Bad: Unstructured logs\\nlogger.info('User user_123 purchased item_456 for $100')\\n\\n// Good: Structured logs\\nlogger.info('purchase_completed', {\\n  user_id: 'user_123',\\n  it"])</script><script>self.__next_f.push([1,"em_id: 'item_456',\\n  amount: 100,\\n  currency: 'USD',\\n  trace_id: context.traceId,\\n  duration_ms: 250\\n})\\n\\n// Query-able:\\n// - All purchases by user_123\\n// - All purchases \u003e $50\\n// - All slow purchases (duration \u003e 1000ms)\\n\"}]}]\nef:[\"$\",\"h3\",null,{\"id\":\"high-cardinality-data\",\"children\":\"High Cardinality Data\"}]\nf0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Modern observability handles high cardinality:\"}]}]\nf1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Old monitoring:\\n- user_id? No, too many unique values!\\n- Aggregate by service, endpoint only\\n\\nModern observability:\\n- user_id? Yes!\\n- Request ID? Yes!\\n- A/B test variant? Yes!\\n- Customer segment? Yes!\\n\\n→ Ask ANY question about specific user journey\\n\"}]}]\nf2:[\"$\",\"h3\",null,{\"id\":\"observability-driven-development\",\"children\":\"Observability-Driven Development\"}]\nf3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Instrument code với context\\nasync function processOrder(order) {\\n  const span = tracer.startSpan('process_order')\\n  \\n  // Rich context\\n  span.setAttributes({\\n    'order.id': order.id,\\n    'order.value': order.total,\\n    'order.items_count': order.items.length,\\n    'user.tier': order.user.tier,\\n    'user.country': order.user.country\\n  })\\n  \\n  try {\\n    // Business logic\\n    const result = await processPayment(order)\\n    \\n    // Success metrics\\n    metrics.increment('orders.processed', {\\n      tier: order.user.tier,\\n      payment_method: order.paymentMethod\\n    })\\n    \\n    return result\\n  } catch (error) {\\n    // Error context\\n    span.recordException(error)\\n    logger.error('order_processing_failed', {\\n      order_id: order.id,\\n      error: error.message,\\n      stack: error.stack\\n    })\\n    throw error\\n  } finally {\\n    span.end()\\n  }\\n}\\n\"}]}]\nf4:[\"$\",\"h3\",null,{\"id\":\"slis-slos-slas\",\"children\":\"SLIs, SLOs, SLAs\"}]\nf5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Service Level Indicators (SLIs):\"}]}]\nf6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Metrics đo lường service health:\\n- Availability: 99.9% requests succeed\\n- Latency: 95% requests \u003c 200ms\\n- Throughput: 1000 req/s\\n\"}]}]\nf7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Service Level Objectives (SLOs):\"}]}]\nf8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Internal targets:\\n- API availability: 99.9% (43 minutes downtime/month)\\n- P95 latency: \u003c 200ms\\n- Error rate: \u003c 0.1%\\n\"}]}]\nf9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Service Level Agreements (SLAs):\"}]}]\nfa:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Customer commitments:\\n- 99.9% uptime guaranteed\\n- Penalty if not met\\n- Public-facing promise\\n\"}]}]\nfb:[\"$\",\"h3\",null,{\"id\":\"error-budget\",\"children\":\"Error Budget\"}]\nfc:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"SLO: 99.9% availability\\n→ Error budget: 0.1% = 43 minutes downtime/month\\n\\nUse error budget for:\\n- Deploy riskier features\\n- Run chaos experiments\\n- Maintenance windows\\n\\nIf error budget consumed:\\n→ Freeze deploys\\n→ Focus on reliability\\n\"}]}]\nfd:[\"$\",\"h3\",null,{\"id\":\"alerting-best-practices\",\"children\":\"Alerting Best Practices\"}]\nfe:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Alert on symptoms, not causes\\nalert: \\\"CPU \u003e 80%\\\"  // So what?\\n\\n// Alert on user impact\\nalert: \\\"Error rate \u003e 1% for 5 minutes\\\"\\nalert: \\\"P95 latency \u003e 1s for 5 minutes\\\"\\n\\n// Alert with context\\n{\\n  alert: \\\"High Error Rate\\\",\\n  severity: \\\"critical\\\",\\n  service: \\\"payment\\\",\\n  error_rate: \\\"5.2%\\\",\\n  affected_users: 1200,\\n  trace_samples: [\\\"abc123\\\", \\\"def456\\\"],\\n  runbook: \\\"https://wiki/payment-errors\\\"\\n}\\n\"}]}]\nff:[\"$\",\"h3\",null,{\"id\":\"modern-observability-platforms\",\"children\":\"Modern Observability Platforms\"}]\n100:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Datadog\"}],\" - all-in-one, expensive\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"child"])</script><script>self.__next_f.push([1,"ren\":\"New Relic\"}],\" - APM + observability\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Grafana Stack\"}],\" - open-source (Loki + Tempo + Mimir)\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Honeycomb\"}],\" - high-cardinality specialist\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Lightstep\"}],\" - tracing-first approach\"]}],\"\\n\"]}]\n101:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n102:[\"$\",\"h3\",null,{\"id\":\"khi-nào-cần-advanced-topics\",\"children\":\"Khi Nào Cần Advanced Topics?\"}]\n103:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Event Sourcing + CQRS:\"}]}]\n104:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Financial systems cần full audit\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complex domains với nhiều business rules\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cần multiple projections từ same data\"}],\"\\n\"]}]\n105:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Service Mesh:\"}]}]\n106:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"50+ microservices\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Security requirements cao (mTLS)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Need unified observability\"}],\"\\n\"]}]\n107:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Chaos Engineering:\"}]}]\n108:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Production-critical systems\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cost of downtime cao\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Already have mature monitoring\"}],\"\\n\"]}]\n109:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Idempotency:\"}]}]\n10a:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Payment, order processing\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Any operation không muốn duplicate\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Distributed systems with retries\"}],\"\\n\"]}]\n10b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Circuit Breaker:\"}]}]\n10c:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Microservices với dependencies\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Prevent cascading failures\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Need graceful degradation\"}],\"\\n\"]}]\n10d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Distributed Tracing:\"}]}]\n10e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"\\n\",[\"$\",\"blockquote\",null,{\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":\"5 microservices\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Debug cross-service issues\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Performance optimization critical\"}],\"\\n\"]}]\n10f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Observability:\"}]}]\n110:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"ALWAYS - không thể debug distributed systems không có observability\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Start simple, evolve gradually\"}],\"\\n\"]}]\n111:[\"$\",\"h3\",null,{\"id\":\"progression-path\",\"children\":\"Progression Path\"}]\n112:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Junior → Senior:\\n- Master system design patterns\\n- Understand trade-offs\\n- Design systems from scratch\\n\\nSenior → Staff:\\n- Know khi nào patterns phức tạp justify cost\\n- Evolve và maintain systems at scale\\n- Build observability từ đầu\\n- Think về failure scenarios\\n- Balance complexity vs benefit\\n\"}]}]\n113:[\"$\",\"h3\",null,{\"id\":\"practical-advice\",\"children\":\"Practical Advice\"}]\n114:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Don't over-engineer\"}]}]\n115:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Start simple, add complexity khi cần\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Measure before optimize\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Question if benefits \u003e costs\"}],\"\\n\"]}]\n116:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Observability first\"}]}]\n117:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cannot debug what you cannot see\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Instrument từ ngày đầu\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Structured logging, tracing, metr"])</script><script>self.__next_f.push([1,"ics\"}],\"\\n\"]}]\n118:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Learn from failures\"}]}]\n119:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Post-mortems sau incidents\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Chaos engineering khi ready\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Build resilience gradually\"}],\"\\n\"]}]\n11a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Focus on user impact\"}]}]\n11b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Metrics phải relate to user experience\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"SLOs based on user expectations\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Alert on symptoms user feel\"}],\"\\n\"]}]\n11c:[\"$\",\"h3\",null,{\"id\":\"final-thought\",\"children\":\"Final Thought\"}]\n11d:[\"$\",\"p\",null,{\"children\":\"Advanced topics không phải để \\\"flex technical knowledge\\\". Chúng là tools giải quyết real problems mà only production systems at scale mới gặp.\"}]\n11e:[\"$\",\"p\",null,{\"children\":[\"Staff engineer khác senior ở chỗ: \",[\"$\",\"strong\",null,{\"children\":\"Biết khi nào dùng, khi nào không dùng, và lý do tại sao.\"}]]}]\n11f:[\"$\",\"p\",null,{\"children\":\"Don't learn everything. Learn when you need them. Focus on fundamentals first.\"}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"121:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer | Phase 6 — System Design Mastery | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability k\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability k\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Deep dive vào các advanced concepts: Event Sourcing, CQRS, Service Mesh, Chaos Engineering, Idempotency, Circuit Breaker, Distributed Tracing và Observability k\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L121\",\"14\",{}]]\n"])</script></body></html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Consensus &amp; Leader Election - Distributed Agreement | Phase 3 — Distributed Systems Fundamentals | System Design Core</title><meta name="description" content="Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agr"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-3/lesson/lesson-3-consensus-leader-election"/><meta property="og:title" content="Consensus &amp; Leader Election - Distributed Agreement | Phase 3 — Distributed Systems Fundamentals"/><meta property="og:description" content="Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agr"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-3/lesson/lesson-3-consensus-leader-election"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Consensus &amp; Leader Election - Distributed Agreement | Phase 3 — Distributed Systems Fundamentals"/><meta name="twitter:description" content="Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agr"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 3 — Distributed Systems Fundamentals</p><p class="mt-3 text-xl font-semibold text-ink">Consensus &amp; Leader Election - Distributed Agreement</p><p class="mt-3 text-sm leading-7 text-ink-dim">Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agreement khi có failures.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Reality of Distributed Systems - Failure Models &amp; CAP Thinking</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Consistency Models - Strong vs Eventual Consistency</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-3/lesson/lesson-3-consensus-leader-election"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Consensus &amp; Leader Election - Distributed Agreement</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Time &amp; Event Ordering - Clock Problem Trong Distributed Systems</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-3">Phase 3 — Distributed Systems Fundamentals</a></li><li>/</li><li aria-current="page" class="text-ink">Consensus &amp; Leader Election - Distributed Agreement</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Consensus &amp; Leader Election - Distributed Agreement</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agreement khi có failures.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Consensus &amp; Leader Election - Distributed Agreement"><article class="prose-ui"><h1 id="consensus--leader-election-distributed-agreement">Consensus &amp; Leader Election: Distributed Agreement</h1>
+<p>Tôi còn nhớ lần đầu tiên debug một split brain bug.</p>
+<p>Production system với 5 servers. Network bị partition. 2 nhóm servers: Group A (3 servers) và Group B (2 servers).</p>
+<p>Cả hai groups đều nghĩ mình là leader. Cả hai đều nhận writes. Data conflict khắp nơi.</p>
+<p>Recovery mất 2 ngày. Data reconciliation mất 1 tuần.</p>
+<p>Senior architect nói: <em>&quot;Em chưa hiểu consensus. Distributed systems phải AGREE trước khi ACT.&quot;</em></p>
+<p>Đó là bài học đắt giá về consensus algorithms.</p>
+<h2 id="tại-sao-cần-consensus">Tại Sao Cần Consensus?</h2>
+<h3 id="the-fundamental-problem">The Fundamental Problem</h3>
+<p><strong>Single server system: Đơn giản</strong></p>
+<pre><code>Client → Server (make decision) → Execute
+</code></pre>
+<p>Chỉ có 1 decision maker. Không có disagreement.</p>
+<p><strong>Distributed system: Phức tạp</strong></p>
+<pre><code>Client → Server 1 (thinks it&#x27;s leader)
+      → Server 2 (thinks it&#x27;s leader)  
+      → Server 3 (thinks it&#x27;s leader)
+
+Ai quyết định? Ai là leader?
+</code></pre>
+<p>Nếu không có agreement mechanism → Chaos.</p>
+<h3 id="real-world-scenarios-cần-consensus">Real-World Scenarios Cần Consensus</h3>
+<p><strong>Scenario 1: Database Master Election</strong></p>
+<pre><code>Master database chết
+→ Cần elect master mới từ replicas
+→ Tất cả replicas phải agree master mới là ai
+→ Không được có 2 masters (split brain)
+</code></pre>
+<p><strong>Scenario 2: Distributed Lock</strong></p>
+<pre><code>2 services cần access cùng resource
+→ Chỉ 1 service được phép access tại 1 thời điểm
+→ Cần agree ai hold lock
+→ Không được cả 2 đều nghĩ mình có lock
+</code></pre>
+<p><strong>Scenario 3: Configuration Management</strong></p>
+<pre><code>Update configuration trong cluster
+→ Tất cả nodes phải see cùng config
+→ Không được có inconsistent configs
+→ Cần consensus trên config updates
+</code></pre>
+<p><strong>Key insight:</strong> Distributed systems cần mechanism để <strong>agree on state</strong> trước khi act.</p>
+<h2 id="distributed-agreement-problem">Distributed Agreement Problem</h2>
+<h3 id="the-challenge">The Challenge</h3>
+<p>Trong distributed system với network unreliability:</p>
+<pre><code>Problems:
+- Messages có thể lost
+- Messages có thể delayed
+- Servers có thể crash
+- Network có thể partition
+
+Question: Làm sao để tất cả servers agree?
+</code></pre>
+<h3 id="example-coordinating-3-servers">Example: Coordinating 3 Servers</h3>
+<pre><code>Goal: Decide giá trị cho variable X
+
+Server 1 proposes: X = 10
+Server 2 proposes: X = 20
+Server 3 proposes: X = 10
+
+Làm sao để tất cả agree trên 1 giá trị?
+</code></pre>
+<p><strong>Naive approach (DOESN&#x27;T WORK):</strong></p>
+<pre><code>1. Server 1 broadcasts: &quot;X = 10&quot;
+2. Wait for responses từ tất cả servers
+3. If majority agree → Commit
+
+Problem:
+- Server 2 crashes trước khi respond
+- Server 1 doesn&#x27;t know: Server 2 chết hay network slow?
+- Wait forever? Give up sau bao lâu?
+</code></pre>
+<p><strong>Need consensus algorithm để solve này.</strong></p>
+<h3 id="requirements-for-consensus">Requirements for Consensus</h3>
+<p>Một consensus algorithm phải guarantee:</p>
+<pre><code>1. Agreement: Tất cả correct servers decide cùng value
+
+2. Validity: Nếu server decides value V, 
+   thì V phải được proposed bởi some server
+
+3. Termination: Tất cả correct servers eventually decide
+
+4. Fault tolerance: Work even khi some servers fail
+</code></pre>
+<h2 id="raft-consensus-algorithm-dễ-hiểu">Raft: Consensus Algorithm Dễ Hiểu</h2>
+<h3 id="why-raft">Why Raft?</h3>
+<p>Trước Raft có Paxos (1989). Paxos nổi tiếng là extremely hard to understand.</p>
+<p>Raft (2014) được design với goal: <strong>Understandability</strong>.</p>
+<p>Tôi recommend học Raft trước. Nó đủ để hiểu consensus fundamentals.</p>
+<h3 id="raft-core-ideas">Raft Core Ideas</h3>
+<p>Raft chia problem thành 3 sub-problems:</p>
+<pre><code>1. Leader Election: Chọn 1 server làm leader
+2. Log Replication: Leader replicate commands đến followers  
+3. Safety: Ensure consistency khi có failures
+</code></pre>
+<p>Chúng ta focus vào Leader Election (quan trọng nhất).</p>
+<h3 id="server-states-trong-raft">Server States trong Raft</h3>
+<p>Mỗi server có thể ở 1 trong 3 states:</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>stateDiagram-v2
+    [*] --&gt; Follower
+    Follower --&gt; Candidate: Election timeout
+    Candidate --&gt; Leader: Receives majority votes
+    Candidate --&gt; Follower: Discovers leader
+    Leader --&gt; Follower: Discovers higher term
+    Follower --&gt; Follower: Receives heartbeat</code></pre>
+<p><em>Ba states trong Raft: Follower, Candidate, và Leader</em></p>
+<p><strong>Follower:</strong></p>
+<ul>
+<li>Passive state</li>
+<li>Receive và respond requests</li>
+<li>Không initiate requests</li>
+<li>Most servers ở state này</li>
+</ul>
+<p><strong>Candidate:</strong></p>
+<ul>
+<li>Transitional state</li>
+<li>Request votes từ other servers</li>
+<li>Try to become leader</li>
+</ul>
+<p><strong>Leader:</strong></p>
+<ul>
+<li>Handle tất cả client requests</li>
+<li>Replicate log đến followers</li>
+<li>Chỉ 1 leader tại 1 thời điểm</li>
+</ul>
+<h2 id="leader-election-step-by-step">Leader Election: Step by Step</h2>
+<h3 id="normal-operation">Normal Operation</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant L as Leader
+    participant F1 as Follower 1
+    participant F2 as Follower 2
+    participant F3 as Follower 3
+    
+    L-&gt;&gt;F1: Heartbeat
+    L-&gt;&gt;F2: Heartbeat
+    L-&gt;&gt;F3: Heartbeat
+    
+    Note over L,F3: Leader gửi heartbeats&lt;br/&gt;định kỳ để maintain authority</code></pre>
+<p><em>Leader gửi periodic heartbeats để báo &quot;tôi còn sống&quot;</em></p>
+<p><strong>Process:</strong></p>
+<pre><code>1. Leader gửi heartbeat messages định kỳ (mỗi 50-100ms)
+2. Followers receive heartbeats → Reset election timer
+3. Everyone happy, system stable
+</code></pre>
+<h3 id="leader-failure--election">Leader Failure &amp; Election</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant L as Leader (DEAD)
+    participant F1 as Follower 1
+    participant F2 as Follower 2
+    participant F3 as Follower 3
+    
+    Note over L: Leader crashes
+    
+    Note over F1: Timeout!&lt;br/&gt;Become Candidate
+    
+    F1-&gt;&gt;F2: Request Vote
+    F1-&gt;&gt;F3: Request Vote
+    
+    F2-&gt;&gt;F1: Vote Granted
+    F3-&gt;&gt;F1: Vote Granted
+    
+    Note over F1: Received majority!&lt;br/&gt;Become Leader
+    
+    F1-&gt;&gt;F2: I am Leader (heartbeat)
+    F1-&gt;&gt;F3: I am Leader (heartbeat)</code></pre>
+<p><em>Khi leader chết, election process bắt đầu</em></p>
+<p><strong>Detailed Process:</strong></p>
+<p><strong>Step 1: Follower timeout</strong></p>
+<pre><code>Follower 1 không nhận heartbeat trong 150-300ms (random)
+→ Assumes leader dead
+→ Transition to Candidate state
+→ Increment term number (term++)
+→ Vote for self
+</code></pre>
+<p><strong>Step 2: Request votes</strong></p>
+<pre><code>Candidate gửi RequestVote RPCs đến tất cả servers:
+
+RequestVote {
+    term: 5,           // Current term
+    candidateId: 1,    // My ID
+    lastLogIndex: 100, // My last log entry
+    lastLogTerm: 4     // Term của last log entry
+}
+</code></pre>
+<p><strong>Step 3: Followers vote</strong></p>
+<pre><code>Follower nhận RequestVote:
+
+if request.term &lt; my_term:
+    Reject (I know higher term)
+    
+if already_voted_this_term:
+    Reject (already gave my vote)
+    
+if my_log_is_more_updated:
+    Reject (candidate&#x27;s log outdated)
+    
+else:
+    Grant vote
+    Update my_term = request.term
+</code></pre>
+<p><strong>Step 4: Candidate counts votes</strong></p>
+<pre><code>Candidate collects votes:
+
+if votes_received &gt;= (num_servers / 2) + 1:
+    Become LEADER
+    Send heartbeats to all servers
+    
+elif another_server_became_leader:
+    Become FOLLOWER
+    
+elif election_timeout:
+    Start new election (increment term, try again)
+</code></pre>
+<h3 id="election-timeout-critical-design">Election Timeout: Critical Design</h3>
+<p><strong>Problem:</strong> Nếu 2 candidates start election cùng lúc?</p>
+<pre><code>Candidate 1 và Candidate 2 cùng request votes
+→ Mỗi candidate nhận 2 votes (bao gồm self)
+→ Không ai có majority
+→ Split vote!
+</code></pre>
+<p><strong>Solution: Randomized election timeouts</strong></p>
+<pre><code class="language-python"># Mỗi server có random timeout
+election_timeout = random(150ms, 300ms)
+
+# Server 1: 173ms
+# Server 2: 245ms  
+# Server 3: 198ms
+
+→ Server 1 timeout trước
+→ Start election trước
+→ Likely win before others timeout
+→ Avoid split votes
+</code></pre>
+<p><strong>Probability:</strong></p>
+<pre><code>Với randomized timeouts:
+- 90%+ elections elect leader trong 1 round
+- Split votes rare
+- System converge nhanh
+</code></pre>
+<h2 id="majority-quorum-the-magic-number">Majority Quorum: The Magic Number</h2>
+<h3 id="why-majority">Why Majority?</h3>
+<p><strong>Key question:</strong> Tại sao cần majority votes? Tại sao không phải unanimous (tất cả)?</p>
+<p><strong>Answer:</strong> Majority guarantees safety.</p>
+<h3 id="the-math">The Math</h3>
+<pre><code>Total servers: N
+Majority: floor(N/2) + 1
+
+Examples:
+N = 3 → Majority = 2
+N = 5 → Majority = 3
+N = 7 → Majority = 4
+</code></pre>
+<h3 id="guarantee-chỉ-1-leader">Guarantee: Chỉ 1 Leader</h3>
+<p><strong>Scenario: Network partition</strong></p>
+<pre><code>Total: 5 servers
+Partition thành 2 groups:
+
+Group A: 3 servers (majority!)
+Group B: 2 servers (minority)
+
+Group A có thể elect leader (3 votes &gt;= 3 needed)
+Group B KHÔNG thể elect leader (2 votes &lt; 3 needed)
+
+→ Chỉ có 1 leader!
+</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    subgraph &quot;Group A (3 servers)&quot;
+        A1[Server 1]
+        A2[Server 2]
+        A3[Server 3]
+        A1 -.-&gt;|Vote| A2
+        A2 -.-&gt;|Vote| A1
+        A3 -.-&gt;|Vote| A1
+    end
+    
+    subgraph &quot;Group B (2 servers)&quot;
+        B1[Server 4]
+        B2[Server 5]
+        B1 -.-&gt;|Vote| B2
+        B2 -.-&gt;|Vote| B1
+    end
+    
+    style A1 fill:#51cf66
+    style B1 fill:#ff6b6b
+    style B2 fill:#ff6b6b</code></pre>
+<p><em>Group A có majority, elect được leader. Group B không đủ votes.</em></p>
+<h3 id="overlap-property">Overlap Property</h3>
+<p><strong>Critical insight:</strong></p>
+<pre><code>Bất kỳ 2 majority quorums nào cũng MUST overlap
+
+N = 5, Majority = 3
+
+Quorum 1: {Server 1, Server 2, Server 3}
+Quorum 2: {Server 2, Server 4, Server 5}
+
+Overlap: Server 2
+
+→ Không thể có 2 disjoint majorities
+→ Không thể có 2 leaders cùng term
+</code></pre>
+<p><strong>Proof:</strong></p>
+<pre><code>N servers
+Majority = floor(N/2) + 1
+
+2 majorities:
+Quorum A: &gt;= floor(N/2) + 1 servers
+Quorum B: &gt;= floor(N/2) + 1 servers
+
+Total if disjoint:
+&gt;= 2 * (floor(N/2) + 1)
+&gt;= N + 2
+
+But chỉ có N servers available!
+→ Contradiction
+→ Must overlap
+</code></pre>
+<h3 id="why-odd-numbers">Why Odd Numbers?</h3>
+<pre><code>Fault tolerance:
+
+3 servers: Tolerate 1 failure
+4 servers: Tolerate 1 failure (same!)
+5 servers: Tolerate 2 failures
+6 servers: Tolerate 2 failures (same!)
+
+4 servers không tốt hơn 3 servers về fault tolerance
+6 servers không tốt hơn 5 servers
+
+→ Use odd numbers (3, 5, 7)
+→ Waste less resources
+</code></pre>
+<p><strong>Recommendation:</strong></p>
+<pre><code>Small cluster:     3 servers (tolerate 1 failure)
+Medium cluster:    5 servers (tolerate 2 failures)
+Large cluster:     7 servers (tolerate 3 failures)
+
+&gt; 7 servers: Rarely needed, too much coordination overhead
+</code></pre>
+<h2 id="split-brain-problem">Split Brain Problem</h2>
+<h3 id="what-is-split-brain">What is Split Brain?</h3>
+<p><strong>Split brain = Nhiều hơn 1 server nghĩ mình là leader</strong></p>
+<pre><code>Disaster scenario:
+Leader A processes writes
+Leader B processes writes (simultaneously!)
+
+→ Data diverges
+→ Conflicts everywhere
+→ Nightmare to recover
+</code></pre>
+<h3 id="how-split-brain-happens">How Split Brain Happens</h3>
+<p><strong>Scenario 1: Network partition</strong></p>
+<pre><code>Before partition:
+[Server 1 (Leader)] - [Server 2] - [Server 3]
+
+Network partition:
+[Server 1 (Leader)] | [Server 2] [Server 3]
+
+Server 2 &amp; 3 không see heartbeats từ Server 1
+→ Elect Server 2 as new leader
+→ Now have 2 leaders!
+</code></pre>
+<p><strong>Scenario 2: Slow heartbeats</strong></p>
+<pre><code>Server 1 (Leader) vẫn alive nhưng slow
+→ Heartbeats delayed vì network congestion
+→ Followers timeout, elect new leader
+→ Server 1 eventually send heartbeats
+→ Temporarily have 2 leaders
+</code></pre>
+<h3 id="how-raft-prevents-split-brain">How Raft Prevents Split Brain</h3>
+<p><strong>Mechanism 1: Majority quorum</strong></p>
+<pre><code>Partition thành 2 groups:
+Group A: 3 servers → Can elect leader (3 &gt;= 3)
+Group B: 2 servers → Cannot elect leader (2 &lt; 3)
+
+→ Chỉ 1 group có leader
+→ No split brain
+</code></pre>
+<p><strong>Mechanism 2: Term numbers</strong></p>
+<pre><code>Mỗi election có term number
+
+Old leader: term 5
+New leader elected: term 6
+
+Khi old leader recover:
+- Try to send commands với term 5
+- Followers reject (term 5 &lt; current term 6)
+- Old leader discovers higher term
+- Step down to follower
+
+→ Old leader không còn act as leader
+</code></pre>
+<p><strong>Mechanism 3: Leader lease</strong></p>
+<pre><code>Leader không chỉ cần majority votes
+Leader phải maintain &quot;lease&quot; bằng heartbeats
+
+Nếu leader không send heartbeats:
+→ Followers revoke implicit lease
+→ Leader cannot process requests anymore
+
+→ Leader tự động stop nếu isolated
+</code></pre>
+<h3 id="split-brain-recovery">Split Brain Recovery</h3>
+<p><strong>Nếu somehow xảy ra split brain:</strong></p>
+<pre><code>Detection:
+- 2 leaders discover each other
+- Compare term numbers
+
+Leader với lower term:
+→ Immediately step down
+→ Become follower
+→ Accept higher term leader
+
+Data reconciliation:
+→ Leader với higher term wins
+→ Uncommitted writes từ lower term leader = lost
+→ This is by design (safety &gt; liveness)
+</code></pre>
+<h2 id="raft-leader-election-complete-example">Raft Leader Election: Complete Example</h2>
+<h3 id="initial-state">Initial State</h3>
+<pre><code>5 servers, tất cả followers
+Current term: 3
+Leader: Server 1
+</code></pre>
+<pre><code>Server 1 (Leader, term 3)
+Server 2 (Follower, term 3)
+Server 3 (Follower, term 3)
+Server 4 (Follower, term 3)
+Server 5 (Follower, term 3)
+</code></pre>
+<h3 id="timeline">Timeline</h3>
+<p><strong>T=0: Leader crashes</strong></p>
+<pre><code>Server 1 DEAD
+Server 2, 3, 4, 5 đang chờ heartbeats
+</code></pre>
+<p><strong>T=200ms: Server 3 timeout</strong></p>
+<pre><code>Server 3 election timeout (random 150-300ms)
+→ Become Candidate
+→ Increment term: 3 → 4
+→ Vote for self (1 vote)
+→ Send RequestVote to all
+</code></pre>
+<p><strong>T=205ms: Servers respond</strong></p>
+<pre><code>Server 2 receives RequestVote:
+- Not voted yet in term 4
+- Grant vote to Server 3
+
+Server 4 receives RequestVote:
+- Not voted yet in term 4
+- Grant vote to Server 3
+
+Server 5 receives RequestVote:
+- Not voted yet in term 4
+- Grant vote to Server 3
+</code></pre>
+<p><strong>T=210ms: Server 3 counts votes</strong></p>
+<pre><code>Server 3:
+- Self vote: 1
+- Server 2: 1
+- Server 4: 1
+- Server 5: 1
+
+Total: 4 votes out of 5 servers
+Majority: 3 needed
+4 &gt;= 3 → WIN!
+
+→ Become LEADER for term 4
+</code></pre>
+<p><strong>T=215ms: New leader announces</strong></p>
+<pre><code>Server 3 (Leader):
+→ Send heartbeats to all servers
+→ &quot;I am leader for term 4&quot;
+
+Servers 2, 4, 5:
+→ Receive heartbeat
+→ Recognize Server 3 as leader
+→ Reset election timers
+→ Continue as followers
+</code></pre>
+<p><strong>T=220ms onwards: Normal operation</strong></p>
+<pre><code>Server 3 continues sending heartbeats every 50ms
+System stable với Server 3 as leader
+</code></pre>
+<h2 id="mental-model-distributed-agreement">Mental Model: Distributed Agreement</h2>
+<h3 id="core-principle">Core Principle</h3>
+<p><strong>&quot;Agree trước khi Act&quot;</strong></p>
+<pre><code>Single-server thinking:
+See request → Execute → Done
+
+Distributed thinking:
+See request → Ask others → Get consensus → Execute
+</code></pre>
+<h3 id="design-implications">Design Implications</h3>
+<p><strong>Implication 1: Latency increase</strong></p>
+<pre><code>Single server: 10ms
+Consensus (majority of 5): 50-100ms
+
+Trade-off:
+Consistency + fault tolerance vs Speed
+</code></pre>
+<p><strong>Implication 2: Need odd numbers</strong></p>
+<pre><code>3, 5, 7 servers optimal
+Even numbers waste resources
+</code></pre>
+<p><strong>Implication 3: Network partitions = availability loss</strong></p>
+<pre><code>Network partition: Minority partition cannot make progress
+Trade-off: Consistency over availability (CP in CAP)
+</code></pre>
+<h3 id="when-to-use-consensus">When to Use Consensus</h3>
+<p><strong>Use consensus algorithms khi:</strong></p>
+<pre><code>✓ Need strong consistency
+✓ Cannot tolerate split brain
+✓ Fault tolerance critical
+✓ Master election
+✓ Distributed locks
+✓ Configuration management
+</code></pre>
+<p><strong>Avoid consensus khi:</strong></p>
+<pre><code>✗ Eventual consistency acceptable
+✗ Cannot tolerate latency increase
+✗ Prefer availability over consistency (AP in CAP)
+</code></pre>
+<h3 id="systems-using-consensus">Systems Using Consensus</h3>
+<p><strong>etcd:</strong></p>
+<pre><code>Distributed key-value store
+Uses Raft for consensus
+Kubernetes lưu cluster state trong etcd
+</code></pre>
+<p><strong>Consul:</strong></p>
+<pre><code>Service discovery and configuration
+Uses Raft for leader election và data replication
+</code></pre>
+<p><strong>Zookeeper:</strong></p>
+<pre><code>Coordination service
+Uses Zab (similar to Raft/Paxos)
+Kafka, HBase rely on Zookeeper
+</code></pre>
+<p><strong>CockroachDB:</strong></p>
+<pre><code>Distributed SQL database
+Uses Raft for replication và consistency
+</code></pre>
+<h2 id="common-mistakes--how-to-avoid">Common Mistakes &amp; How to Avoid</h2>
+<h3 id="mistake-1-không-dùng-majority-quorum">Mistake 1: Không dùng majority quorum</h3>
+<pre><code>Bad: Wait for ALL servers respond
+Problem: 1 server die → Cannot make progress
+
+Good: Wait for majority
+Benefit: Can tolerate minority failures
+</code></pre>
+<h3 id="mistake-2-forget-về-split-brain">Mistake 2: Forget về split brain</h3>
+<pre><code>Bad: Assume chỉ có 1 leader
+Reality: Network partitions happen
+
+Good: Design với assumption multiple leaders possible
+Use term numbers, majority writes để prevent
+</code></pre>
+<h3 id="mistake-3-even-số-servers">Mistake 3: Even số servers</h3>
+<pre><code>Bad: 4 servers (tolerate 1 failure)
+Cost: 4 servers
+Benefit: Same as 3 servers
+
+Good: 3 servers (tolerate 1 failure)
+Cost: 3 servers  
+Benefit: Same fault tolerance, save 1 server
+</code></pre>
+<h3 id="mistake-4-không-hiểu-consistency-trade-off">Mistake 4: Không hiểu consistency trade-off</h3>
+<pre><code>Bad: Expect cả consistency và availability
+Reality: CAP theorem says pick 2
+
+Good: Consciously choose consistency (CP)
+Accept availability loss during partitions
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Consensus algorithms solve distributed agreement:</strong></p>
+<pre><code>Problem: Multiple servers cần agree trên state
+Solution: Majority voting với term numbers
+Result: Strong consistency + fault tolerance
+</code></pre>
+<p><strong>Raft fundamentals:</strong></p>
+<pre><code>1. Leader Election: 1 leader tại 1 thời điểm
+2. Majority Quorum: Prevent split brain
+3. Term Numbers: Detect stale leaders
+4. Randomized Timeouts: Avoid split votes
+</code></pre>
+<p><strong>Split brain prevention:</strong></p>
+<pre><code>- Majority quorum (không có 2 disjoint majorities)
+- Term numbers (higher term wins)
+- Leader lease (heartbeat timeout)
+</code></pre>
+<p><strong>Design principles:</strong></p>
+<pre><code>- Odd numbers (3, 5, 7 servers)
+- Majority = floor(N/2) + 1
+- Agree before act
+- Accept latency increase
+</code></pre>
+<p><strong>Trade-offs accepted:</strong></p>
+<pre><code>Gain: Strong consistency, fault tolerance
+Cost: Latency, complexity, availability during partitions
+</code></pre>
+<p><strong>Mental model:</strong></p>
+<blockquote>
+<p>&quot;Distributed systems phải AGREE trước khi ACT. Consensus là mechanism để agree. Majority voting prevents split brain. Term numbers detect staleness.&quot;</p>
+</blockquote>
+<p><strong>Self-check questions:</strong></p>
+<p>Trước khi implement distributed system với consensus:</p>
+<ol>
+<li><em>Tôi thực sự cần strong consistency không?</em></li>
+<li><em>Tôi có thể tolerate latency increase không?</em></li>
+<li><em>Tôi có thể trade availability cho consistency không?</em></li>
+<li><em>Tôi hiểu split brain và cách prevent chưa?</em></li>
+</ol>
+<p>Consensus là powerful nhưng expensive. Use khi benefits outweigh costs.</p>
+<p><strong>Câu nói tôi hay nhắc team:</strong></p>
+<blockquote>
+<p>&quot;If you don&#x27;t need strong consistency, don&#x27;t pay for it. But if you need it, pay the full price - implement consensus correctly.&quot;</p>
+</blockquote>
+<p>Consensus không phải là magic. Nó là carefully designed agreement mechanism với clear trade-offs.</p>
+<p>Hiểu trade-offs → Make better decisions.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Consistency Models - Strong vs Eventual Consistency</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity">Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-3\",\"lesson\",\"lesson-3-consensus-leader-election\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-3\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-3-consensus-leader-election\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Consensus \u0026 Leader Election - Distributed Agreement\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agreement khi có failures.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-reality-of-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\"}]]}]}],[\"$\",\"li\",\"lesson-2-consistency-models-strong-and-eventual-consistency\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consistency Models - Strong vs Eventual Consistency\"}]]}]}],[\"$\",\"li\",\"lesson-3-consensus-leader-election\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-3-consensus-leader-election\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consensus \u0026 Leader Election - Distributed Agreement\"}]]}]}],[\"$\",\"li\",\"lesson-4-distributed-transactions-data-integrity\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\"}]]}]}],[\"$\",\"li\",\"lesson-5-distributed-id-and-ordering\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\"}]]}]}],[\"$\",\"li\",\"lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}]]}]]}],\"$L26\"]}],\"$L27\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Time \u0026 Event Ordering - Clock Problem Trong Distributed Systems\"}]\n26:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"hover:text-ink\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Consensus \u0026 Leader Election - Distributed Agreement\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Consensus \u0026 Leader Election - Distributed Agreement\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agreement khi có failures.\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-3/lesson/lesson-3-consensus-leader-election\",\"title\":\"Consensus \u0026 Leader Election - Distributed Agreement\",\"description\":\"Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agreement khi có failures.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Consensus \u0026 Leader Election - Distributed Agreement\",\"children\":\"$L29\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Consistency Models - Strong vs Eventual Consistency\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"consensus--leader-election-distributed-agreement\",\"children\":\"Consensus \u0026 Leader Election: Distributed Agreement\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ lần đầu tiên debug một split brain bug.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Production system với 5 servers. Network bị partition. 2 nhóm servers: Group A (3 servers) và Group B (2 servers).\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Cả hai groups đều nghĩ mình là leader. Cả hai đều nhận writes. Data conflict khắp nơi.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Recovery mất 2 ngày. Data reconciliation mất 1 tuần.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior architect nói: \",[\"$\",\"em\",null,{\"children\":\"\\\"Em chưa hiểu consensus. Distributed systems phải AGREE trước khi ACT.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Đó là bài học đắt giá về consensus algorithms.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-cần-consensus\",\"children\":\"Tại Sao Cần Consensus?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-fundamental-problem\",\"children\":\"The Fundamental Problem\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Single server system: Đơn giản\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Client → Server (make decision) → Execute\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Chỉ có 1 decision maker. Không có disagreement.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Distributed system: Phức tạp\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Client → Server 1 (thinks it's leader)\\n      → Server 2 (thinks it's leader)  \\n      → Server 3 (thinks it's leader)\\n\\nAi quyết định? Ai là leader?\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Nếu không có agreement mechanism → Chaos.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"real-world-scenarios-cần-consensus\",\"children\":\"Real-World Scenarios Cần Consensus\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario 1: Database Master Election\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Master database chết\\n→ Cần elect master mới từ replicas\\n→ Tất cả replicas phải agree master mới là ai\\n→ Không được có 2 masters (split brain)\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario 2: Distributed Lock\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"2 services cần access cùng resource\\n→ Chỉ 1 service được phép access tại 1 thời điểm\\n→ Cần agree ai hold lock\\n→ Không được cả 2 đều nghĩ mình có lock\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario 3: Configuration Management\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Update configuration trong cluster\\n→ Tất cả nodes phải see cùng config\\n→ Không được có inconsistent configs\\n→ Cần consensus trên config updates\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key insight:\"}],\" Distributed systems cần mechanism để \",[\"$\",\"strong\",null,{\"children\":\"agree on state\"}],\" trước khi act.\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"distributed-agreement-problem\",\"children\":\"Distributed Agreement Problem\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-challenge\",\"children\":\"The Challenge\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Trong distributed system với network unreliability:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problems:\\n- Messages có thể lost\\n- Messages có thể delayed\\n- Servers có thể crash\\n- Network có thể partition\\n\\nQuestion: Làm sao để tất cả servers agree?\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"example-coordinating-3-servers\",\"children\":\"Example: Coordinating 3 Servers\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Goal: Decide giá trị cho variable X\\n\\nServer 1 proposes: X = 10\\nServer 2 proposes: X = 20\\nServer 3 proposes: X = 10\\n\\nLàm sao để tất cả agree trên 1 giá trị?\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Naive approach (DOESN'T WORK):\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Server 1 broadcasts: \\\"X = 10\\\"\\n2. Wait for responses từ tất cả servers\\n3. If majority agree → Commit\\n\\nProblem:\\n- Server 2 crashes trước khi respond\\n- Server 1 doesn't know: Server 2 chết hay network slow?\\n- Wait forever? Give up sau bao lâu?\\n\"}]}],\"\\n\",\"$L2a\",\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\"]}]\n"])</script><script>self.__next_f.push([1,"c9:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n2a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Need consensus algorithm để solve này.\"}]}]\n2b:[\"$\",\"h3\",null,{\"id\":\"requirements-for-consensus\",\"children\":\"Requirements for Consensus\"}]\n2c:[\"$\",\"p\",null,{\"children\":\"Một consensus algorithm phải guarantee:\"}]\n2d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Agreement: Tất cả correct servers decide cùng value\\n\\n2. Validity: Nếu server decides value V, \\n   thì V phải được proposed bởi some server\\n\\n3. Termination: Tất cả correct servers eventually decide\\n\\n4. Fault tolerance: Work even khi some servers fail\\n\"}]}]\n2e:[\"$\",\"h2\",null,{\"id\":\"raft-consensus-algorithm-dễ-hiểu\",\"children\":\"Raft: Consensus Algorithm Dễ Hiểu\"}]\n2f:[\"$\",\"h3\",null,{\"id\":\"why-raft\",\"children\":\"Why Raft?\"}]\n30:[\"$\",\"p\",null,{\"children\":\"Trước Raft có Paxos (1989). Paxos nổi tiếng là extremely hard to understand.\"}]\n31:[\"$\",\"p\",null,{\"children\":[\"Raft (2014) được design với goal: \",[\"$\",\"strong\",null,{\"children\":\"Understandability\"}],\".\"]}]\n32:[\"$\",\"p\",null,{\"children\":\"Tôi recommend học Raft trước. Nó đủ để hiểu consensus fundamentals.\"}]\n33:[\"$\",\"h3\",null,{\"id\":\"raft-core-ideas\",\"children\":\"Raft Core Ideas\"}]\n34:[\"$\",\"p\",null,{\"children\":\"Raft chia problem thành 3 sub-problems:\"}]\n35:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Leader Election: Chọn 1 server làm leader\\n2. Log Replication: Leader replicate commands đến followers  \\n3. Safety: Ensure consistency khi có failures\\n\"}]}]\n36:[\"$\",\"p\",null,{\"children\":\"Chúng ta focus vào Leader Election (quan trọng nhất).\"}]\n37:[\"$\",\"h3\",null,{\"id\":\"server-states-trong-raft\",\"children\":\"Server States trong Raft\"}]\n38:[\"$\",\"p\",null,{\"children\":\"Mỗi server có thể ở 1 trong 3 states:\"}]\n39:[\"$\",\"$Lc9\",null,{\"chart\":\"stateDiagram-v2\\n    [*] --\u003e Follower\\n    Follower --\u003e Candidate: Election timeout\\n    Candidate --\u003e Leader: Receives majority votes\\n    Candidate --\u003e Follower: Discovers leader\\n    Leader --\u003e Follower: Discovers higher term\\n    Follower --\u003e Follower: Receives heartbeat\"}]\n3a:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Ba states trong Raft: Follower, Candidate, và Leader\"}]}]\n3b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Follower:\"}]}]\n3c:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Passive state\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Receive và respond requests\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Không initiate requests\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Most servers ở state này\"}],\"\\n\"]}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Candidate:\"}]}]\n3e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Transitional state\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Request votes từ other servers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Try to become leader\"}],\"\\n\"]}]\n3f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Leader:\"}]}]\n40:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Handle tất cả client requests\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Replicate log đến followers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Chỉ 1 leader tại 1 thời điểm\"}],\"\\n\"]}]\n41:[\"$\",\"h2\",null,{\"id\":\"leader-election-step-by-step\",\"children\":\"Leader Election: Step by Step\"}]\n42:[\"$\",\"h3\",null,{\"id\":\"normal-operation\",\"children\":\"Normal Operation\"}]\n43:[\"$\",\"$Lc9\",null,{\"chart\":\"sequenceDiagram\\n    participant L as Leader\\n    participant F1 as Follower 1\\n    participant F2 as Follower 2\\n    participant F3 as Follower 3\\n    \\n    L-\u003e\u003eF1: Heartbea"])</script><script>self.__next_f.push([1,"t\\n    L-\u003e\u003eF2: Heartbeat\\n    L-\u003e\u003eF3: Heartbeat\\n    \\n    Note over L,F3: Leader gửi heartbeats\u003cbr/\u003eđịnh kỳ để maintain authority\"}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Leader gửi periodic heartbeats để báo \\\"tôi còn sống\\\"\"}]}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Process:\"}]}]\n46:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Leader gửi heartbeat messages định kỳ (mỗi 50-100ms)\\n2. Followers receive heartbeats → Reset election timer\\n3. Everyone happy, system stable\\n\"}]}]\n47:[\"$\",\"h3\",null,{\"id\":\"leader-failure--election\",\"children\":\"Leader Failure \u0026 Election\"}]\n48:[\"$\",\"$Lc9\",null,{\"chart\":\"sequenceDiagram\\n    participant L as Leader (DEAD)\\n    participant F1 as Follower 1\\n    participant F2 as Follower 2\\n    participant F3 as Follower 3\\n    \\n    Note over L: Leader crashes\\n    \\n    Note over F1: Timeout!\u003cbr/\u003eBecome Candidate\\n    \\n    F1-\u003e\u003eF2: Request Vote\\n    F1-\u003e\u003eF3: Request Vote\\n    \\n    F2-\u003e\u003eF1: Vote Granted\\n    F3-\u003e\u003eF1: Vote Granted\\n    \\n    Note over F1: Received majority!\u003cbr/\u003eBecome Leader\\n    \\n    F1-\u003e\u003eF2: I am Leader (heartbeat)\\n    F1-\u003e\u003eF3: I am Leader (heartbeat)\"}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Khi leader chết, election process bắt đầu\"}]}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Detailed Process:\"}]}]\n4b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Step 1: Follower timeout\"}]}]\n4c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Follower 1 không nhận heartbeat trong 150-300ms (random)\\n→ Assumes leader dead\\n→ Transition to Candidate state\\n→ Increment term number (term++)\\n→ Vote for self\\n\"}]}]\n4d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Step 2: Request votes\"}]}]\n4e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Candidate gửi RequestVote RPCs đến tất cả servers:\\n\\nRequestVote {\\n    term: 5,           // Current term\\n    candidateId: 1,    // My ID\\n    lastLogIndex: 100, // My last log entry\\n    lastLogTerm: 4     // Term của last log entry\\n}\\n\"}]}]\n4f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Step 3: Followers vote\"}]}]\n50:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Follower nhận RequestVote:\\n\\nif request.term \u003c my_term:\\n    Reject (I know higher term)\\n    \\nif already_voted_this_term:\\n    Reject (already gave my vote)\\n    \\nif my_log_is_more_updated:\\n    Reject (candidate's log outdated)\\n    \\nelse:\\n    Grant vote\\n    Update my_term = request.term\\n\"}]}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Step 4: Candidate counts votes\"}]}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Candidate collects votes:\\n\\nif votes_received \u003e= (num_servers / 2) + 1:\\n    Become LEADER\\n    Send heartbeats to all servers\\n    \\nelif another_server_became_leader:\\n    Become FOLLOWER\\n    \\nelif election_timeout:\\n    Start new election (increment term, try again)\\n\"}]}]\n53:[\"$\",\"h3\",null,{\"id\":\"election-timeout-critical-design\",\"children\":\"Election Timeout: Critical Design\"}]\n54:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Problem:\"}],\" Nếu 2 candidates start election cùng lúc?\"]}]\n55:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Candidate 1 và Candidate 2 cùng request votes\\n→ Mỗi candidate nhận 2 votes (bao gồm self)\\n→ Không ai có majority\\n→ Split vote!\\n\"}]}]\n56:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution: Randomized election timeouts\"}]}]\n57:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Mỗi server có random timeout\\nelection_timeout = random(150ms, 300ms)\\n\\n# Server 1: 173ms\\n# Server 2: 245ms  \\n# Server 3: 198ms\\n\\n→ Server 1 timeout trước\\n→ Start election trước\\n→ Likely win before others timeout\\n→ Avoid split votes\\n\"}]}]\n58:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Probability:\"}]}]\n59:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Với ra"])</script><script>self.__next_f.push([1,"ndomized timeouts:\\n- 90%+ elections elect leader trong 1 round\\n- Split votes rare\\n- System converge nhanh\\n\"}]}]\n5a:[\"$\",\"h2\",null,{\"id\":\"majority-quorum-the-magic-number\",\"children\":\"Majority Quorum: The Magic Number\"}]\n5b:[\"$\",\"h3\",null,{\"id\":\"why-majority\",\"children\":\"Why Majority?\"}]\n5c:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key question:\"}],\" Tại sao cần majority votes? Tại sao không phải unanimous (tất cả)?\"]}]\n5d:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Answer:\"}],\" Majority guarantees safety.\"]}]\n5e:[\"$\",\"h3\",null,{\"id\":\"the-math\",\"children\":\"The Math\"}]\n5f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Total servers: N\\nMajority: floor(N/2) + 1\\n\\nExamples:\\nN = 3 → Majority = 2\\nN = 5 → Majority = 3\\nN = 7 → Majority = 4\\n\"}]}]\n60:[\"$\",\"h3\",null,{\"id\":\"guarantee-chỉ-1-leader\",\"children\":\"Guarantee: Chỉ 1 Leader\"}]\n61:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario: Network partition\"}]}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Total: 5 servers\\nPartition thành 2 groups:\\n\\nGroup A: 3 servers (majority!)\\nGroup B: 2 servers (minority)\\n\\nGroup A có thể elect leader (3 votes \u003e= 3 needed)\\nGroup B KHÔNG thể elect leader (2 votes \u003c 3 needed)\\n\\n→ Chỉ có 1 leader!\\n\"}]}]\n63:[\"$\",\"$Lc9\",null,{\"chart\":\"graph TB\\n    subgraph \\\"Group A (3 servers)\\\"\\n        A1[Server 1]\\n        A2[Server 2]\\n        A3[Server 3]\\n        A1 -.-\u003e|Vote| A2\\n        A2 -.-\u003e|Vote| A1\\n        A3 -.-\u003e|Vote| A1\\n    end\\n    \\n    subgraph \\\"Group B (2 servers)\\\"\\n        B1[Server 4]\\n        B2[Server 5]\\n        B1 -.-\u003e|Vote| B2\\n        B2 -.-\u003e|Vote| B1\\n    end\\n    \\n    style A1 fill:#51cf66\\n    style B1 fill:#ff6b6b\\n    style B2 fill:#ff6b6b\"}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Group A có majority, elect được leader. Group B không đủ votes.\"}]}]\n65:[\"$\",\"h3\",null,{\"id\":\"overlap-property\",\"children\":\"Overlap Property\"}]\n66:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Critical insight:\"}]}]\n67:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bất kỳ 2 majority quorums nào cũng MUST overlap\\n\\nN = 5, Majority = 3\\n\\nQuorum 1: {Server 1, Server 2, Server 3}\\nQuorum 2: {Server 2, Server 4, Server 5}\\n\\nOverlap: Server 2\\n\\n→ Không thể có 2 disjoint majorities\\n→ Không thể có 2 leaders cùng term\\n\"}]}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Proof:\"}]}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"N servers\\nMajority = floor(N/2) + 1\\n\\n2 majorities:\\nQuorum A: \u003e= floor(N/2) + 1 servers\\nQuorum B: \u003e= floor(N/2) + 1 servers\\n\\nTotal if disjoint:\\n\u003e= 2 * (floor(N/2) + 1)\\n\u003e= N + 2\\n\\nBut chỉ có N servers available!\\n→ Contradiction\\n→ Must overlap\\n\"}]}]\n6a:[\"$\",\"h3\",null,{\"id\":\"why-odd-numbers\",\"children\":\"Why Odd Numbers?\"}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Fault tolerance:\\n\\n3 servers: Tolerate 1 failure\\n4 servers: Tolerate 1 failure (same!)\\n5 servers: Tolerate 2 failures\\n6 servers: Tolerate 2 failures (same!)\\n\\n4 servers không tốt hơn 3 servers về fault tolerance\\n6 servers không tốt hơn 5 servers\\n\\n→ Use odd numbers (3, 5, 7)\\n→ Waste less resources\\n\"}]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Recommendation:\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Small cluster:     3 servers (tolerate 1 failure)\\nMedium cluster:    5 servers (tolerate 2 failures)\\nLarge cluster:     7 servers (tolerate 3 failures)\\n\\n\u003e 7 servers: Rarely needed, too much coordination overhead\\n\"}]}]\n6e:[\"$\",\"h2\",null,{\"id\":\"split-brain-problem\",\"children\":\"Split Brain Problem\"}]\n6f:[\"$\",\"h3\",null,{\"id\":\"what-is-split-brain\",\"children\":\"What is Split Brain?\"}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Split brain = Nhiều hơn 1 server nghĩ mình là leader\"}]}]\n71:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Disaster scenario:\\nLeader A processes writes\\nLeader B processes writes (simultaneously!)\\"])</script><script>self.__next_f.push([1,"n\\n→ Data diverges\\n→ Conflicts everywhere\\n→ Nightmare to recover\\n\"}]}]\n72:[\"$\",\"h3\",null,{\"id\":\"how-split-brain-happens\",\"children\":\"How Split Brain Happens\"}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario 1: Network partition\"}]}]\n74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Before partition:\\n[Server 1 (Leader)] - [Server 2] - [Server 3]\\n\\nNetwork partition:\\n[Server 1 (Leader)] | [Server 2] [Server 3]\\n\\nServer 2 \u0026 3 không see heartbeats từ Server 1\\n→ Elect Server 2 as new leader\\n→ Now have 2 leaders!\\n\"}]}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario 2: Slow heartbeats\"}]}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server 1 (Leader) vẫn alive nhưng slow\\n→ Heartbeats delayed vì network congestion\\n→ Followers timeout, elect new leader\\n→ Server 1 eventually send heartbeats\\n→ Temporarily have 2 leaders\\n\"}]}]\n77:[\"$\",\"h3\",null,{\"id\":\"how-raft-prevents-split-brain\",\"children\":\"How Raft Prevents Split Brain\"}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mechanism 1: Majority quorum\"}]}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Partition thành 2 groups:\\nGroup A: 3 servers → Can elect leader (3 \u003e= 3)\\nGroup B: 2 servers → Cannot elect leader (2 \u003c 3)\\n\\n→ Chỉ 1 group có leader\\n→ No split brain\\n\"}]}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mechanism 2: Term numbers\"}]}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Mỗi election có term number\\n\\nOld leader: term 5\\nNew leader elected: term 6\\n\\nKhi old leader recover:\\n- Try to send commands với term 5\\n- Followers reject (term 5 \u003c current term 6)\\n- Old leader discovers higher term\\n- Step down to follower\\n\\n→ Old leader không còn act as leader\\n\"}]}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mechanism 3: Leader lease\"}]}]\n7d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Leader không chỉ cần majority votes\\nLeader phải maintain \\\"lease\\\" bằng heartbeats\\n\\nNếu leader không send heartbeats:\\n→ Followers revoke implicit lease\\n→ Leader cannot process requests anymore\\n\\n→ Leader tự động stop nếu isolated\\n\"}]}]\n7e:[\"$\",\"h3\",null,{\"id\":\"split-brain-recovery\",\"children\":\"Split Brain Recovery\"}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nếu somehow xảy ra split brain:\"}]}]\n80:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Detection:\\n- 2 leaders discover each other\\n- Compare term numbers\\n\\nLeader với lower term:\\n→ Immediately step down\\n→ Become follower\\n→ Accept higher term leader\\n\\nData reconciliation:\\n→ Leader với higher term wins\\n→ Uncommitted writes từ lower term leader = lost\\n→ This is by design (safety \u003e liveness)\\n\"}]}]\n81:[\"$\",\"h2\",null,{\"id\":\"raft-leader-election-complete-example\",\"children\":\"Raft Leader Election: Complete Example\"}]\n82:[\"$\",\"h3\",null,{\"id\":\"initial-state\",\"children\":\"Initial State\"}]\n83:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"5 servers, tất cả followers\\nCurrent term: 3\\nLeader: Server 1\\n\"}]}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server 1 (Leader, term 3)\\nServer 2 (Follower, term 3)\\nServer 3 (Follower, term 3)\\nServer 4 (Follower, term 3)\\nServer 5 (Follower, term 3)\\n\"}]}]\n85:[\"$\",\"h3\",null,{\"id\":\"timeline\",\"children\":\"Timeline\"}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"T=0: Leader crashes\"}]}]\n87:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server 1 DEAD\\nServer 2, 3, 4, 5 đang chờ heartbeats\\n\"}]}]\n88:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"T=200ms: Server 3 timeout\"}]}]\n89:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server 3 election timeout (random 150-300ms)\\n→ Become Candidate\\n→ Increment term: 3 → 4\\n→ Vote for self (1 vote)\\n→ Send RequestVote to all\\n\"}]}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"T=205ms: Servers respond\"}]}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",n"])</script><script>self.__next_f.push([1,"ull,{\"children\":\"Server 2 receives RequestVote:\\n- Not voted yet in term 4\\n- Grant vote to Server 3\\n\\nServer 4 receives RequestVote:\\n- Not voted yet in term 4\\n- Grant vote to Server 3\\n\\nServer 5 receives RequestVote:\\n- Not voted yet in term 4\\n- Grant vote to Server 3\\n\"}]}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"T=210ms: Server 3 counts votes\"}]}]\n8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server 3:\\n- Self vote: 1\\n- Server 2: 1\\n- Server 4: 1\\n- Server 5: 1\\n\\nTotal: 4 votes out of 5 servers\\nMajority: 3 needed\\n4 \u003e= 3 → WIN!\\n\\n→ Become LEADER for term 4\\n\"}]}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"T=215ms: New leader announces\"}]}]\n8f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server 3 (Leader):\\n→ Send heartbeats to all servers\\n→ \\\"I am leader for term 4\\\"\\n\\nServers 2, 4, 5:\\n→ Receive heartbeat\\n→ Recognize Server 3 as leader\\n→ Reset election timers\\n→ Continue as followers\\n\"}]}]\n90:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"T=220ms onwards: Normal operation\"}]}]\n91:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server 3 continues sending heartbeats every 50ms\\nSystem stable với Server 3 as leader\\n\"}]}]\n92:[\"$\",\"h2\",null,{\"id\":\"mental-model-distributed-agreement\",\"children\":\"Mental Model: Distributed Agreement\"}]\n93:[\"$\",\"h3\",null,{\"id\":\"core-principle\",\"children\":\"Core Principle\"}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"Agree trước khi Act\\\"\"}]}]\n95:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Single-server thinking:\\nSee request → Execute → Done\\n\\nDistributed thinking:\\nSee request → Ask others → Get consensus → Execute\\n\"}]}]\n96:[\"$\",\"h3\",null,{\"id\":\"design-implications\",\"children\":\"Design Implications\"}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implication 1: Latency increase\"}]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Single server: 10ms\\nConsensus (majority of 5): 50-100ms\\n\\nTrade-off:\\nConsistency + fault tolerance vs Speed\\n\"}]}]\n99:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implication 2: Need odd numbers\"}]}]\n9a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"3, 5, 7 servers optimal\\nEven numbers waste resources\\n\"}]}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implication 3: Network partitions = availability loss\"}]}]\n9c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Network partition: Minority partition cannot make progress\\nTrade-off: Consistency over availability (CP in CAP)\\n\"}]}]\n9d:[\"$\",\"h3\",null,{\"id\":\"when-to-use-consensus\",\"children\":\"When to Use Consensus\"}]\n9e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use consensus algorithms khi:\"}]}]\n9f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Need strong consistency\\n✓ Cannot tolerate split brain\\n✓ Fault tolerance critical\\n✓ Master election\\n✓ Distributed locks\\n✓ Configuration management\\n\"}]}]\na0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Avoid consensus khi:\"}]}]\na1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✗ Eventual consistency acceptable\\n✗ Cannot tolerate latency increase\\n✗ Prefer availability over consistency (AP in CAP)\\n\"}]}]\na2:[\"$\",\"h3\",null,{\"id\":\"systems-using-consensus\",\"children\":\"Systems Using Consensus\"}]\na3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"etcd:\"}]}]\na4:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Distributed key-value store\\nUses Raft for consensus\\nKubernetes lưu cluster state trong etcd\\n\"}]}]\na5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Consul:\"}]}]\na6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Service discovery and configuration\\nUses Raft for leader election và data replication\\n\"}]}]\na7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Zookeeper:\"}]}]\na8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Coordination service\\nUses Zab (similar to Raft/Paxos)\\nKafka, HBase rely on Zooke"])</script><script>self.__next_f.push([1,"eper\\n\"}]}]\na9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"CockroachDB:\"}]}]\naa:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Distributed SQL database\\nUses Raft for replication và consistency\\n\"}]}]\nab:[\"$\",\"h2\",null,{\"id\":\"common-mistakes--how-to-avoid\",\"children\":\"Common Mistakes \u0026 How to Avoid\"}]\nac:[\"$\",\"h3\",null,{\"id\":\"mistake-1-không-dùng-majority-quorum\",\"children\":\"Mistake 1: Không dùng majority quorum\"}]\nad:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad: Wait for ALL servers respond\\nProblem: 1 server die → Cannot make progress\\n\\nGood: Wait for majority\\nBenefit: Can tolerate minority failures\\n\"}]}]\nae:[\"$\",\"h3\",null,{\"id\":\"mistake-2-forget-về-split-brain\",\"children\":\"Mistake 2: Forget về split brain\"}]\naf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad: Assume chỉ có 1 leader\\nReality: Network partitions happen\\n\\nGood: Design với assumption multiple leaders possible\\nUse term numbers, majority writes để prevent\\n\"}]}]\nb0:[\"$\",\"h3\",null,{\"id\":\"mistake-3-even-số-servers\",\"children\":\"Mistake 3: Even số servers\"}]\nb1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad: 4 servers (tolerate 1 failure)\\nCost: 4 servers\\nBenefit: Same as 3 servers\\n\\nGood: 3 servers (tolerate 1 failure)\\nCost: 3 servers  \\nBenefit: Same fault tolerance, save 1 server\\n\"}]}]\nb2:[\"$\",\"h3\",null,{\"id\":\"mistake-4-không-hiểu-consistency-trade-off\",\"children\":\"Mistake 4: Không hiểu consistency trade-off\"}]\nb3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad: Expect cả consistency và availability\\nReality: CAP theorem says pick 2\\n\\nGood: Consciously choose consistency (CP)\\nAccept availability loss during partitions\\n\"}]}]\nb4:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\nb5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Consensus algorithms solve distributed agreement:\"}]}]\nb6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem: Multiple servers cần agree trên state\\nSolution: Majority voting với term numbers\\nResult: Strong consistency + fault tolerance\\n\"}]}]\nb7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Raft fundamentals:\"}]}]\nb8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Leader Election: 1 leader tại 1 thời điểm\\n2. Majority Quorum: Prevent split brain\\n3. Term Numbers: Detect stale leaders\\n4. Randomized Timeouts: Avoid split votes\\n\"}]}]\nb9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Split brain prevention:\"}]}]\nba:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- Majority quorum (không có 2 disjoint majorities)\\n- Term numbers (higher term wins)\\n- Leader lease (heartbeat timeout)\\n\"}]}]\nbb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Design principles:\"}]}]\nbc:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- Odd numbers (3, 5, 7 servers)\\n- Majority = floor(N/2) + 1\\n- Agree before act\\n- Accept latency increase\\n\"}]}]\nbd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs accepted:\"}]}]\nbe:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Gain: Strong consistency, fault tolerance\\nCost: Latency, complexity, availability during partitions\\n\"}]}]\nbf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mental model:\"}]}]\nc0:[\"$\",\"blockquote\",null,{\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":\"\\\"Distributed systems phải AGREE trước khi ACT. Consensus là mechanism để agree. Majority voting prevents split brain. Term numbers detect staleness.\\\"\"}],\"\\n\"]}]\nc1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Self-check questions:\"}]}]\nc2:[\"$\",\"p\",null,{\"children\":\"Trước khi implement distributed system với consensus:\"}]\nc3:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Tôi thực sự cần strong consistency không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Tôi có thể tolerate latency increase không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Tôi có"])</script><script>self.__next_f.push([1," thể trade availability cho consistency không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Tôi hiểu split brain và cách prevent chưa?\"}]}],\"\\n\"]}]\nc4:[\"$\",\"p\",null,{\"children\":\"Consensus là powerful nhưng expensive. Use khi benefits outweigh costs.\"}]\nc5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Câu nói tôi hay nhắc team:\"}]}]\nc6:[\"$\",\"blockquote\",null,{\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":\"\\\"If you don't need strong consistency, don't pay for it. But if you need it, pay the full price - implement consensus correctly.\\\"\"}],\"\\n\"]}]\nc7:[\"$\",\"p\",null,{\"children\":\"Consensus không phải là magic. Nó là carefully designed agreement mechanism với clear trade-offs.\"}]\nc8:[\"$\",\"p\",null,{\"children\":\"Hiểu trade-offs → Make better decisions.\"}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"ca:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Consensus \u0026 Leader Election - Distributed Agreement | Phase 3 — Distributed Systems Fundamentals | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agr\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-3-consensus-leader-election\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Consensus \u0026 Leader Election - Distributed Agreement | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agr\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-3-consensus-leader-election\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Consensus \u0026 Leader Election - Distributed Agreement | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Hiểu consensus algorithms và leader election trong distributed systems. Master Raft intuition, majority quorum, split brain problem và cách systems đạt được agr\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$Lca\",\"14\",{}]]\n"])</script></body></html>

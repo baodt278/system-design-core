@@ -1,0 +1,487 @@
+<article class="prose-ui"><h1 id="caching-performance-layer-quan-trọng-nhất">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<h2 id="tại-sao-cache-tồn-tại">§§SEG8§§</h2>
+<h3 id="the-fundamental-speed-gap">§§SEG9§§</h3>
+<pre><code>§§SEG10§§</code></pre>
+<p>§§SEG11§§</p>
+<p>§§SEG12§§</p>
+<h3 id="real-world-scenario">§§SEG13§§</h3>
+<p>§§SEG14§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG15§§</code></pre>
+<p>§§SEG16§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG17§§</code></pre>
+<h3 id="when-cache-makes-sense">§§SEG18§§</h3>
+<p>§§SEG19§§</p>
+<p>§§SEG20§§</p>
+<pre><code>§§SEG21§§</code></pre>
+<p>§§SEG22§§</p>
+<pre><code>§§SEG23§§</code></pre>
+<h2 id="cache-layers-từ-client-đến-database">§§SEG24§§</h2>
+<p>§§SEG25§§</p>
+<h3 id="layer-1-browser-cache">§§SEG26§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG27§§</code></pre>
+<p>§§SEG28§§</p>
+<pre><code class="language-http">HTTP/1.1 200 OK
+Cache-Control: public, max-age=31536000, immutable
+</code></pre>
+<p>§§SEG29§§</p>
+<pre><code>§§SEG30§§</code></pre>
+<p>§§SEG31§§</p>
+<pre><code>§§SEG32§§</code></pre>
+<h3 id="layer-2-cdn-cache">§§SEG33§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG34§§</code></pre>
+<p>§§SEG35§§</p>
+<pre><code>§§SEG36§§</code></pre>
+<p>§§SEG37§§</p>
+<pre><code class="language-javascript">// Cloudflare Workers example
+addEventListener('fetch', event =&gt; {
+  const cache = caches.default
+  const response = cache.match(event.request)
+  
+  if (response) {
+    return response  // Cache hit
+  }
+  
+  // Cache miss → fetch from origin → cache it
+  const originResponse = fetch(event.request)
+  event.waitUntil(
+    cache.put(event.request, originResponse.clone())
+  )
+  return originResponse
+})
+</code></pre>
+<p>§§SEG38§§</p>
+<pre><code>§§SEG39§§</code></pre>
+<h3 id="layer-3-application-cache-redismemcached">§§SEG40§§</h3>
+<p>§§SEG41§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG42§§</code></pre>
+<p>§§SEG43§§</p>
+<ul>
+<li>§§SEG44§§</li>
+<li>§§SEG45§§</li>
+<li>§§SEG46§§</li>
+<li>§§SEG47§§</li>
+<li>§§SEG48§§</li>
+</ul>
+<p>§§SEG49§§</p>
+<pre><code class="language-python">import redis
+
+cache = redis.Redis()
+
+def get_user(user_id):
+    # 1. Try cache first
+    cached = cache.get(f"user:{user_id}")
+    if cached:
+        return json.loads(cached)  # Cache hit!
+    
+    # 2. Cache miss → Query DB
+    user = db.query("SELECT * FROM users WHERE id = ?", user_id)
+    
+    # 3. Store in cache for next time
+    cache.setex(
+        f"user:{user_id}",
+        3600,  # TTL: 1 hour
+        json.dumps(user)
+    )
+    
+    return user
+</code></pre>
+<h3 id="layer-4-database-query-cache">§§SEG50§§</h3>
+<p>§§SEG51§§</p>
+<p>§§SEG52§§</p>
+<pre><code class="language-sql">-- First query: 300ms (cache miss)
+SELECT * FROM products WHERE category = 'electronics';
+
+-- Same query again: 5ms (cache hit)
+SELECT * FROM products WHERE category = 'electronics';
+</code></pre>
+<p>§§SEG53§§</p>
+<pre><code>§§SEG54§§</code></pre>
+<p>§§SEG55§§</p>
+<h2 id="cache-strategies-khi-nào-read-khi-nào-write">§§SEG56§§</h2>
+<h3 id="strategy-1-cache-aside-lazy-loading">§§SEG57§§</h3>
+<p>§§SEG58§§</p>
+<pre><code class="language-python">def get_product(product_id):
+    # Read path
+    product = cache.get(f"product:{product_id}")
+    if product:
+        return product  # Hit
+    
+    # Miss → Load from DB
+    product = db.get(product_id)
+    cache.set(f"product:{product_id}", product, ttl=3600)
+    return product
+
+def update_product(product_id, data):
+    # Write path
+    db.update(product_id, data)
+    cache.delete(f"product:{product_id}")  # Invalidate
+</code></pre>
+<p>§§SEG59§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG60§§</code></pre>
+<p>§§SEG61§§</p>
+<pre><code>§§SEG62§§</code></pre>
+<p>§§SEG63§§</p>
+<h3 id="strategy-2-write-through">§§SEG64§§</h3>
+<pre><code class="language-python">def update_product(product_id, data):
+    # Write to both DB and cache
+    db.update(product_id, data)
+    cache.set(f"product:{product_id}", data, ttl=3600)
+
+def get_product(product_id):
+    # Read from cache (always up-to-date)
+    return cache.get(f"product:{product_id}")
+</code></pre>
+<p>§§SEG65§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG66§§</code></pre>
+<p>§§SEG67§§</p>
+<pre><code>§§SEG68§§</code></pre>
+<p>§§SEG69§§</p>
+<h3 id="strategy-3-write-behind-write-back">§§SEG70§§</h3>
+<pre><code class="language-python">def update_product(product_id, data):
+    # Write to cache immediately
+    cache.set(f"product:{product_id}", data)
+    
+    # Queue DB write asynchronously
+    queue.add({
+        "type": "update_product",
+        "id": product_id,
+        "data": data
+    })
+    
+    return "Success"  # Return immediately!
+
+# Background worker
+def worker():
+    while True:
+        job = queue.pop()
+        db.update(job["id"], job["data"])
+</code></pre>
+<p>§§SEG71§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG72§§</code></pre>
+<p>§§SEG73§§</p>
+<pre><code>§§SEG74§§</code></pre>
+<p>§§SEG75§§</p>
+<h3 id="strategy-4-refresh-ahead">§§SEG76§§</h3>
+<pre><code class="language-python">def get_product(product_id):
+    product = cache.get(f"product:{product_id}")
+    ttl_remaining = cache.ttl(f"product:{product_id}")
+    
+    # Nếu sắp expire, refresh async
+    if ttl_remaining &lt; 300:  # &lt; 5 phút
+        background_refresh(product_id)
+    
+    return product
+
+def background_refresh(product_id):
+    fresh_data = db.get(product_id)
+    cache.set(f"product:{product_id}", fresh_data, ttl=3600)
+</code></pre>
+<p>§§SEG77§§</p>
+<pre><code>§§SEG78§§</code></pre>
+<p>§§SEG79§§</p>
+<h2 id="cache-invalidation-the-hard-problem">§§SEG80§§</h2>
+<p>§§SEG81§§</p>
+<h3 id="why-its-hard">§§SEG82§§</h3>
+<pre><code>§§SEG83§§</code></pre>
+<h3 id="solution-1-time-based-ttl">§§SEG84§§</h3>
+<pre><code class="language-python">cache.setex("user:123", 300, user_data)  # Expire after 5 min
+
+ Simple
+ Automatic cleanup
+ Stale data for up to TTL duration
+ Can't invalidate immediately
+</code></pre>
+<p>§§SEG85§§</p>
+<pre><code>§§SEG86§§</code></pre>
+<h3 id="solution-2-explicit-invalidation">§§SEG87§§</h3>
+<pre><code class="language-python">def update_user(user_id, data):
+    db.update(user_id, data)
+    cache.delete(f"user:{user_id}")  # Delete immediately
+    
+ Fresh data immediately
+ Full control
+ Must remember to invalidate everywhere
+ Easy to forget → stale data
+</code></pre>
+<p>§§SEG88§§</p>
+<pre><code class="language-python">#  BAD: Easy to miss invalidations
+def update_user_email(user_id, email):
+    db.update_email(user_id, email)
+    cache.delete(f"user:{user_id}")
+    # Forgot to invalidate: user:email:{email}
+    # Forgot to invalidate: user_list
+    # Forgot to invalidate: search results
+</code></pre>
+<p>§§SEG89§§</p>
+<pre><code class="language-python">class UserCache:
+    @staticmethod
+    def invalidate(user_id):
+        keys = [
+            f"user:{user_id}",
+            f"user:email:{user.email}",
+            "user_list",
+            "user_count"
+        ]
+        cache.delete_many(keys)
+
+def update_user(user_id, data):
+    db.update(user_id, data)
+    UserCache.invalidate(user_id)  # One call, all caches cleared
+</code></pre>
+<h3 id="solution-3-event-driven-invalidation">§§SEG90§§</h3>
+<p>§§SEG91§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG92§§</code></pre>
+<p>§§SEG93§§</p>
+<pre><code class="language-python"># User Service
+def update_user(user_id, data):
+    db.update(user_id, data)
+    event_bus.publish("user.updated", {
+        "user_id": user_id,
+        "fields": ["email", "name"]
+    })
+
+# Cache Service (separate service)
+@event_bus.subscribe("user.updated")
+def on_user_updated(event):
+    cache.delete(f"user:{event['user_id']}")
+
+# Notification Service
+@event_bus.subscribe("user.updated")
+def on_user_updated(event):
+    send_notification(event['user_id'])
+</code></pre>
+<p>§§SEG94§§</p>
+<pre><code>§§SEG95§§</code></pre>
+<h3 id="solution-4-cache-versioning">§§SEG96§§</h3>
+<p>§§SEG97§§</p>
+<pre><code class="language-python"># Version in key
+def get_user_avatar(user_id, version):
+    key = f"avatar:{user_id}:v{version}"
+    return cache.get(key)
+
+# Update creates new version
+def update_avatar(user_id, new_avatar):
+    version = db.increment_avatar_version(user_id)
+    cache.set(f"avatar:{user_id}:v{version}", new_avatar)
+    
+# Old versions auto-expire via TTL
+# No explicit invalidation needed!
+
+ No invalidation needed
+ Old versions still work (useful for CDN)
+ More storage (multiple versions)
+</code></pre>
+<h2 id="thundering-herd-problem-cache-stampede">§§SEG98§§</h2>
+<h3 id="the-problem">§§SEG99§§</h3>
+<pre><code>§§SEG100§§</code></pre>
+<p>§§SEG101§§</p>
+<p>§§SEG102§§</p>
+<h3 id="solution-1-lock-based">§§SEG103§§</h3>
+<pre><code class="language-python">def get_product(product_id):
+    product = cache.get(f"product:{product_id}")
+    if product:
+        return product
+    
+    # Try to acquire lock
+    lock_key = f"lock:product:{product_id}"
+    locked = cache.set(lock_key, "1", nx=True, ex=10)
+    
+    if locked:
+        # Only this request queries DB
+        product = db.get(product_id)
+        cache.set(f"product:{product_id}", product, ex=3600)
+        cache.delete(lock_key)
+        return product
+    else:
+        # Other requests wait
+        time.sleep(0.1)
+        return get_product(product_id)  # Retry
+</code></pre>
+<p>§§SEG104§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG105§§</code></pre>
+<p>§§SEG106§§</p>
+<pre><code>§§SEG107§§</code></pre>
+<h3 id="solution-2-probabilistic-early-expiration">§§SEG108§§</h3>
+<pre><code class="language-python">import random
+
+def get_product(product_id):
+    product = cache.get(f"product:{product_id}")
+    ttl = cache.ttl(f"product:{product_id}")
+    
+    # Probabilistically refresh before expiration
+    if ttl &lt; 300 and random.random() &lt; 0.1:
+        # 10% chance to refresh early
+        background_refresh(product_id)
+    
+    return product
+
+ Spreads DB load over time
+ No locks needed
+ Still possible (but rare) stampede
+</code></pre>
+<h3 id="solution-3-stale-while-revalidate">§§SEG109§§</h3>
+<pre><code class="language-python">def get_product(product_id):
+    product = cache.get(f"product:{product_id}")
+    ttl = cache.ttl(f"product:{product_id}")
+    
+    if ttl &lt; 0:  # Expired
+        # Return stale data immediately
+        stale = cache.get(f"product:{product_id}:stale")
+        
+        # Refresh async
+        background_refresh(product_id)
+        
+        return stale
+    
+    return product
+
+ No waiting
+ Stale data better than no data
+ Users might see slightly old data
+</code></pre>
+<p>§§SEG110§§</p>
+<h2 id="trade-offs-khi-nào-không-nên-cache">§§SEG111§§</h2>
+<h3 id="anti-pattern-1-caching-write-heavy-data">§§SEG112§§</h3>
+<pre><code class="language-python">#  BAD: Cache counter that updates constantly
+def increment_view_count(post_id):
+    count = cache.get(f"views:{post_id}") or 0
+    cache.set(f"views:{post_id}", count + 1)
+    
+Problem:
+- 1000 increments/second
+- Cache hiệu quả = 0% (mỗi read là miss)
+- Complexity tăng, benefit = 0
+
+ BETTER: Write directly to DB, aggregate periodically
+</code></pre>
+<h3 id="anti-pattern-2-caching-personalized-data">§§SEG113§§</h3>
+<pre><code class="language-python">#  BAD: Cache recommendations per user
+def get_recommendations(user_id):
+    recs = cache.get(f"recs:{user_id}")
+    if not recs:
+        recs = expensive_ml_model(user_id)
+        cache.set(f"recs:{user_id}", recs)
+    return recs
+
+Problem:
+- 1M users = 1M cache entries
+- Each user's recs accessed 1-2x/day
+- Hit rate low
+- Memory wasted
+
+ BETTER: Cache shared data (trending items), compute personal on-the-fly
+</code></pre>
+<h3 id="anti-pattern-3-over-caching">§§SEG114§§</h3>
+<pre><code class="language-python">#  BAD: Cache everything
+cache.set("user_count", db.count_users())
+cache.set("server_time", datetime.now())
+cache.set("config", load_config())
+
+Problem:
+- Adds complexity for minimal gain
+- Config thay đổi ít, DB query fast (&lt;10ms)
+- Not worth the invalidation headache
+
+Rule: Only cache if query &gt; 100ms hoặc called frequently (&gt;100x/sec)
+</code></pre>
+<h2 id="best-practices-from-10-years-experience">§§SEG115§§</h2>
+<h3 id="1-start-with-metrics">§§SEG116§§</h3>
+<pre><code class="language-python">#  Don't add cache blindly
+"Let's cache everything!"
+
+#  Measure first
+1. Log slow queries (&gt; 100ms)
+2. Identify hot paths (&gt;100 req/s)
+3. Cache those, not everything
+</code></pre>
+<h3 id="2-cache-keys-design">§§SEG117§§</h3>
+<pre><code class="language-python">#  BAD: Hard to invalidate
+cache.set("user", user)
+
+#  GOOD: Namespace and version
+cache.set("user:123:v2", user)
+
+Benefits:
+- Easy to invalidate: delete("user:123:*")
+- Easy to upgrade: v2 → v3, old cache auto-expires
+</code></pre>
+<h3 id="3-appropriate-ttl">§§SEG118§§</h3>
+<pre><code class="language-python">#  BAD: Same TTL cho everything
+cache.setex(key, 3600, data)  # Always 1 hour
+
+#  GOOD: TTL based on data characteristics
+product_catalog: 24 hours (thay đổi ít)
+user_session: 30 minutes (security)
+trending_posts: 5 minutes (freshness)
+stock_price: 5 seconds (real-time)
+</code></pre>
+<h3 id="4-graceful-degradation">§§SEG119§§</h3>
+<pre><code class="language-python">#  BAD: Cache down = system down
+def get_product(product_id):
+    return cache.get(f"product:{product_id}")  # Crash if cache down!
+
+#  GOOD: Cache down = slower, not broken
+def get_product(product_id):
+    try:
+        cached = cache.get(f"product:{product_id}")
+        if cached:
+            return cached
+    except CacheError:
+        logger.warning("Cache unavailable, falling back to DB")
+    
+    return db.get(product_id)  # Still works!
+</code></pre>
+<h3 id="5-monitor-cache-metrics">§§SEG120§§</h3>
+<pre><code class="language-python">metrics_to_track = {
+    "hit_rate": cache_hits / total_requests,  # Should be &gt; 80%
+    "miss_rate": cache_misses / total_requests,
+    "eviction_rate": evictions / total_writes,
+    "memory_usage": used / total,
+    "latency_p99": p99_latency  # Should be &lt; 5ms
+}
+
+if hit_rate &lt; 0.5:
+    # Cache không effective, review strategy
+</code></pre>
+<h2 id="key-takeaways">§§SEG121§§</h2>
+<p>§§SEG122§§</p>
+<ul>
+<li>§§SEG123§§</li>
+<li>§§SEG124§§</li>
+<li>§§SEG125§§</li>
+</ul>
+<p>§§SEG126§§</p>
+<ul>
+<li>§§SEG127§§</li>
+<li>§§SEG128§§</li>
+<li>§§SEG129§§</li>
+<li>§§SEG130§§</li>
+</ul>
+<p>§§SEG131§§</p>
+<ul>
+<li>§§SEG132§§</li>
+<li>§§SEG133§§</li>
+<li>§§SEG134§§</li>
+<li>§§SEG135§§</li>
+</ul>
+<p>§§SEG136§§</p>
+<ul>
+<li>§§SEG137§§</li>
+<li>§§SEG138§§</li>
+<li>§§SEG139§§</li>
+</ul>
+<p>§§SEG140§§</p>
+<ul>
+<li>§§SEG141§§</li>
+<li>§§SEG142§§</li>
+<li>§§SEG143§§</li>
+<li>§§SEG144§§</li>
+</ul>
+<p>§§SEG145§§</p></article>

@@ -1,0 +1,902 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống | Phase 2 — Core Building Blocks | System Design Core</title><meta name="description" content="Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade off"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking"/><meta property="og:title" content="Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống | Phase 2 — Core Building Blocks"/><meta property="og:description" content="Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade off"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống | Phase 2 — Core Building Blocks"/><meta name="twitter:description" content="Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade off"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 2 — Core Building Blocks</p><p class="mt-3 text-xl font-semibold text-ink">Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống</p><p class="mt-3 text-sm leading-7 text-ink-dim">Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade-offs trong system design thực tế.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-1-load-balancing"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Load Balancing: Traffic Distribution Trong Distributed Systems</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-2-caching"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Caching - Performance Layer Quan Trọng Nhất</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-3-database"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Database Scaling - Chiến Lược Scale Data Layer</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Message Queues &amp; Async Processing - Decoupling Services</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-2">Phase 2 — Core Building Blocks</a></li><li>/</li><li aria-current="page" class="text-ink">Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade-offs trong system design thực tế.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống"><article class="prose-ui"><h1 id="integration--trade-off-thinking-kết-hợp-components-thành-hệ-thống">Integration &amp; Trade-off Thinking: Kết Hợp Components Thành Hệ Thống</h1>
+<p>Đây là lesson mà 90% courses bỏ qua. Và đó là lý do tại sao nhiều engineers biết từng component nhưng không biết design hệ thống.</p>
+<p>Tôi còn nhớ lần đầu tiên phải thiết kế một hệ thống hoàn chỉnh. Tôi biết cache, biết database, biết message queue. Nhưng khi ngồi trước whiteboard, tôi hoàn toàn blank.</p>
+<p><em>&quot;Tôi dùng cái nào trước? Cache hay database? Queue đặt ở đâu? Load balancer connect với gì?&quot;</em></p>
+<p>Senior architect ngồi bên cạnh nói: <em>&quot;Em biết từng viên gạch, nhưng chưa biết xây nhà.&quot;</em></p>
+<p>Đó là lesson này. Không phải học thêm component mới. Mà học cách <strong>kết hợp chúng thành hệ thống hoàn chỉnh</strong>.</p>
+<h2 id="tại-sao-integration-thinking-quan-trọng-hơn-component-knowledge">Tại Sao Integration Thinking Quan Trọng Hơn Component Knowledge?</h2>
+<p><strong>Reality check:</strong></p>
+<pre><code>Biết cache:           ✅
+Biết database:        ✅
+Biết message queue:   ✅
+Biết load balancer:   ✅
+
+Design được hệ thống: ❌
+
+Why?
+</code></pre>
+<p>Vì <strong>system design không phải về components. Nó về interactions giữa components.</strong></p>
+<h3 id="the-integration-gap">The Integration Gap</h3>
+<p><strong>Gap 1: Component interactions</strong></p>
+<pre><code>Question: Cache nằm ở đâu trong flow?
+
+Wrong thinking:
+&quot;Tôi cần cache → Thêm Redis&quot;
+
+Right thinking:
+&quot;Cache nằm giữa app server và database
+→ App check cache first
+→ Cache miss → Query database
+→ Store in cache
+→ Next request hit cache&quot;
+</code></pre>
+<p><strong>Gap 2: Trade-off combinations</strong></p>
+<pre><code>Mỗi component có trade-offs riêng:
+- Cache: Fast nhưng stale data risk
+- Queue: Async nhưng eventual processing
+- DB replica: Scale reads nhưng replication lag
+
+Question: Khi combine chúng, trade-offs tương tác thế nào?
+</code></pre>
+<p><strong>Gap 3: Real constraints</strong></p>
+<pre><code>Textbook: &quot;Dùng cache cho performance&quot;
+
+Reality:
+- Budget: $500/month
+- Team: 2 developers
+- Maintenance: Ai monitor Redis?
+- Complexity: Team có experience không?
+
+→ Decision phức tạp hơn nhiều
+</code></pre>
+<p><strong>Key insight:</strong> Components là tools. Integration là craft.</p>
+<h2 id="thinking-framework-from-problem-to-architecture">Thinking Framework: From Problem to Architecture</h2>
+<p>Đây là framework tôi dùng cho mọi system design.</p>
+<h3 id="step-1-define-requirements-problem-first">Step 1: Define Requirements (Problem-First)</h3>
+<p><strong>Functional requirements:</strong></p>
+<pre><code>WHAT system phải làm:
+- User upload ảnh
+- System resize ảnh
+- User xem ảnh đã resize
+</code></pre>
+<p><strong>Non-functional requirements:</strong></p>
+<pre><code>HOW WELL system phải làm:
+- Upload: &lt; 5 seconds response
+- View: &lt; 500ms latency
+- Scale: 100K uploads/day
+- Availability: 99.9% uptime
+</code></pre>
+<p><strong>Constraints:</strong></p>
+<pre><code>- Budget: $1,000/month
+- Team: 3 developers
+- Timeline: Ship trong 2 tháng
+- Expertise: Team biết Node.js, PostgreSQL
+</code></pre>
+<h3 id="step-2-identify-core-components-needed">Step 2: Identify Core Components Needed</h3>
+<p><strong>Must-have components:</strong></p>
+<pre><code>Storage: Cần lưu ảnh → Object storage (S3)
+Database: Cần metadata → SQL hoặc NoSQL
+Compute: Cần resize ảnh → App servers
+</code></pre>
+<p><strong>Optional components (evaluate):</strong></p>
+<pre><code>Cache: Cần không? → Depends on read pattern
+Queue: Cần không? → Depends on processing time
+Load balancer: Cần không? → Depends on traffic
+CDN: Cần không? → Depends on global users
+</code></pre>
+<p><strong>Critical thinking:</strong></p>
+<pre><code>Đừng thêm component &quot;just in case&quot;
+Mỗi component = More complexity
+Only add khi có clear reason
+</code></pre>
+<h3 id="step-3-map-data-flow">Step 3: Map Data Flow</h3>
+<p><strong>Trace request từ client đến response:</strong></p>
+<pre><code>User upload ảnh:
+1. Client → API server
+2. API → Validate file
+3. API → Upload to S3
+4. API → Add job to queue
+5. API → Return &quot;processing&quot; response
+6. Worker → Process resize job
+7. Worker → Upload resized to S3
+8. Worker → Update database
+9. User poll API → Get status
+
+Identify:
+- Sync vs async boundaries
+- Where to add cache
+- Where failures happen
+</code></pre>
+<h3 id="step-4-apply-trade-off-thinking">Step 4: Apply Trade-off Thinking</h3>
+<p><strong>For each component, ask:</strong></p>
+<pre><code>1. What problem does it solve?
+2. What&#x27;s the cost? (complexity, money, maintenance)
+3. What are alternatives?
+4. Can we start simpler?
+</code></pre>
+<p><strong>Example decision tree:</strong></p>
+<pre><code>Need to process images:
+
+Option A: Synchronous
+- User waits for resize
+- Simple code
+- Bad UX if slow
+
+Option B: Queue + Workers
+- User gets immediate response
+- Complex infrastructure
+- Good UX
+
+Given constraints:
+- Resize takes 5 seconds
+- User can wait 5 seconds? NO
+→ Choose Option B
+</code></pre>
+<h3 id="step-5-start-simple-evolve">Step 5: Start Simple, Evolve</h3>
+<p><strong>Version 1 (MVP):</strong></p>
+<pre><code>Single server
+PostgreSQL
+No cache
+No queue (if processing fast enough)
+
+Ship in 2 weeks
+Learn from real usage
+</code></pre>
+<p><strong>Version 2 (After data):</strong></p>
+<pre><code>If slow:
+→ Add queue + workers
+
+If reads slow:
+→ Add cache
+
+If server overload:
+→ Add load balancer
+</code></pre>
+<p><strong>Principle: Build what you need NOW, not what you might need LATER.</strong></p>
+<h2 id="real-architecture-example-1-simple-blog-platform">Real Architecture Example 1: Simple Blog Platform</h2>
+<p>Let&#x27;s design từ zero.</p>
+<h3 id="requirements">Requirements</h3>
+<pre><code>Functional:
+- Users đọc blog posts
+- Admin viết/edit posts
+- Users comment
+
+Non-functional:
+- 10K daily active users
+- 1K posts total
+- 10K comments/day
+- Latency: &lt; 1 second
+
+Constraints:
+- Budget: $200/month
+- Team: 2 developers
+- Stack: Python/Django, PostgreSQL
+</code></pre>
+<h3 id="architecture-v1-monolith-simple">Architecture V1: Monolith Simple</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    USER[Users] --&gt; LB[Load Balancer&lt;br/&gt;Optional]
+    LB --&gt; APP[Django App&lt;br/&gt;Gunicorn]
+    APP --&gt; DB[(PostgreSQL&lt;br/&gt;Posts, Comments, Users)]
+    APP --&gt; S3[S3&lt;br/&gt;Images]
+    
+    style APP fill:#51cf66
+    style DB fill:#339af0
+    style S3 fill:#ff6b6b</code></pre>
+<p><em>Architecture V1: Simple monolith, không có cache hay queue</em></p>
+<p><strong>Decision rationale:</strong></p>
+<pre><code>No cache:
+✓ 10K users = Low traffic
+✓ 1K posts = DB handles easily
+✓ PostgreSQL fast enough with indexes
+✓ Save $50/month Redis cost
+✓ Less complexity
+
+No queue:
+✓ No heavy processing
+✓ Comments insert fast (&lt; 100ms)
+✓ Save infrastructure cost
+
+No CDN:
+✓ Regional users only
+✓ S3 already fast
+✓ Save $30/month CDN cost
+
+Load balancer: Optional
+✓ Nice to have cho zero-downtime deploy
+✓ 1 server handles 10K users fine
+✓ Add later if needed
+</code></pre>
+<p><strong>Total cost: $100/month (EC2 + RDS + S3)</strong></p>
+<h3 id="when-to-evolve-data-driven-decisions">When to Evolve: Data-Driven Decisions</h3>
+<p><strong>Trigger 1: Slow database queries</strong></p>
+<pre><code>Symptom:
+- Page load 3 seconds
+- PostgreSQL CPU 80%
+- Slow query logs showing repeated queries
+
+Solution:
+→ Add Redis cache
+</code></pre>
+<p><strong>Architecture V2: Add Cache Layer</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    USER[Users] --&gt; APP[Django App]
+    APP --&gt; CACHE[Redis Cache&lt;br/&gt;Posts &amp; Comments]
+    CACHE -.-&gt;|Cache Miss| DB[(PostgreSQL)]
+    APP --&gt; S3[S3]
+    
+    style CACHE fill:#ffd43b
+    style APP fill:#51cf66
+    style DB fill:#339af0</code></pre>
+<p><em>Architecture V2: Thêm Redis cache khi database queries chậm</em></p>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-python">def get_post(post_id):
+    # Try cache first
+    cache_key = f&quot;post:{post_id}&quot;
+    cached = redis.get(cache_key)
+    
+    if cached:
+        return json.loads(cached)  # Cache hit
+    
+    # Cache miss → Query database
+    post = db.query(&quot;SELECT * FROM posts WHERE id = ?&quot;, post_id)
+    
+    # Store in cache (TTL 1 hour)
+    redis.setex(cache_key, 3600, json.dumps(post))
+    
+    return post
+
+def create_comment(post_id, comment_data):
+    # Write to database
+    db.insert(&quot;comments&quot;, comment_data)
+    
+    # Invalidate post cache (has new comment)
+    redis.delete(f&quot;post:{post_id}&quot;)
+</code></pre>
+<p><strong>New cost: $150/month (+$50 Redis)</strong></p>
+<p><strong>Trigger 2: High traffic</strong></p>
+<pre><code>Symptom:
+- 100K daily users (10x growth)
+- Single server CPU 90%
+- Response time degrading
+
+Solution:
+→ Add load balancer + Scale horizontally
+</code></pre>
+<p><strong>Architecture V3: Horizontal Scaling</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    USER[Users] --&gt; LB[Load Balancer]
+    LB --&gt; APP1[App Server 1]
+    LB --&gt; APP2[App Server 2]
+    LB --&gt; APP3[App Server 3]
+    
+    APP1 --&gt; CACHE[Redis Cache]
+    APP2 --&gt; CACHE
+    APP3 --&gt; CACHE
+    
+    CACHE -.-&gt;|Cache Miss| DB[(PostgreSQL)]
+    
+    APP1 --&gt; S3[S3]
+    APP2 --&gt; S3
+    APP3 --&gt; S3
+    
+    style LB fill:#ff6b6b
+    style APP1 fill:#51cf66
+    style APP2 fill:#51cf66
+    style APP3 fill:#51cf66
+    style CACHE fill:#ffd43b</code></pre>
+<p><em>Architecture V3: Load balancer + Multiple servers khi traffic cao</em></p>
+<p><strong>New cost: $400/month (3 servers + LB + Redis + DB)</strong></p>
+<h3 id="key-lessons">Key Lessons</h3>
+<pre><code>1. Started simple (V1)
+   - No premature optimization
+   - Shipped in 2 weeks
+   - Learned from real data
+
+2. Evolved based on actual problems (V2, V3)
+   - Not predictions
+   - Not &quot;best practices&quot;
+   - Real metrics driving decisions
+
+3. Cost conscious
+   - V1: $100/month (10K users)
+   - V2: $150/month (50K users)
+   - V3: $400/month (100K users)
+   - Cost scales với value
+
+4. Complexity managed
+   - Added components one at a time
+   - Team learned incrementally
+   - Production stability maintained
+</code></pre>
+<h2 id="real-architecture-example-2-image-processing-service">Real Architecture Example 2: Image Processing Service</h2>
+<p>Một case phức tạp hơn với async processing.</p>
+<h3 id="requirements-1">Requirements</h3>
+<pre><code>Functional:
+- Users upload images
+- System resize to 3 sizes (thumbnail, medium, large)
+- Users view processed images
+
+Non-functional:
+- 50K uploads/day
+- Processing: 5-10 seconds/image
+- Upload response: &lt; 2 seconds
+- View latency: &lt; 500ms
+- 99% availability
+
+Constraints:
+- Budget: $2,000/month
+- Team: 4 developers
+- Need audit trail
+</code></pre>
+<h3 id="architecture-full-stack">Architecture: Full Stack</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    USER[Users] --&gt; CDN[CloudFront CDN]
+    CDN --&gt; LB[Load Balancer]
+    
+    LB --&gt; API1[API Server 1]
+    LB --&gt; API2[API Server 2]
+    
+    API1 --&gt; CACHE[Redis Cache&lt;br/&gt;Status &amp; Metadata]
+    API2 --&gt; CACHE
+    
+    API1 --&gt; QUEUE[SQS Queue&lt;br/&gt;Resize Jobs]
+    API2 --&gt; QUEUE
+    
+    QUEUE --&gt; W1[Worker 1]
+    QUEUE --&gt; W2[Worker 2]
+    QUEUE --&gt; W3[Worker 3]
+    
+    W1 --&gt; S3[S3&lt;br/&gt;Image Storage]
+    W2 --&gt; S3
+    W3 --&gt; S3
+    
+    API1 --&gt; DB[(PostgreSQL&lt;br/&gt;Metadata &amp; Audit)]
+    API2 --&gt; DB
+    W1 --&gt; DB
+    W2 --&gt; DB
+    W3 --&gt; DB
+    
+    style CDN fill:#fa5252
+    style LB fill:#ff6b6b
+    style API1 fill:#51cf66
+    style API2 fill:#51cf66
+    style CACHE fill:#ffd43b
+    style QUEUE fill:#ff922b
+    style W1 fill:#748ffc
+    style W2 fill:#748ffc
+    style W3 fill:#748ffc
+    style S3 fill:#e64980
+    style DB fill:#339af0</code></pre>
+<p><em>Architecture hoàn chỉnh với tất cả components: CDN, Load Balancer, Cache, Queue, Workers, Database</em></p>
+<h3 id="component-interactions--trade-offs">Component Interactions &amp; Trade-offs</h3>
+<p><strong>1. Upload Flow (Sync → Async Boundary)</strong></p>
+<pre><code class="language-python"># API Server
+@app.post(&quot;/upload&quot;)
+async def upload_image(file):
+    # 1. Validate file (sync)
+    if not is_valid_image(file):
+        return {&quot;error&quot;: &quot;Invalid image&quot;}, 400
+    
+    # 2. Upload original to S3 (sync, fast ~500ms)
+    original_url = s3.upload(file, bucket=&quot;originals&quot;)
+    
+    # 3. Create database record (sync, fast ~50ms)
+    image_id = db.insert(&quot;images&quot;, {
+        &quot;original_url&quot;: original_url,
+        &quot;status&quot;: &quot;processing&quot;,
+        &quot;user_id&quot;: current_user.id
+    })
+    
+    # 4. Add resize job to queue (async boundary)
+    queue.send({
+        &quot;image_id&quot;: image_id,
+        &quot;original_url&quot;: original_url,
+        &quot;sizes&quot;: [&quot;thumbnail&quot;, &quot;medium&quot;, &quot;large&quot;]
+    })
+    
+    # 5. Return immediately (&lt; 2 seconds)
+    return {
+        &quot;image_id&quot;: image_id,
+        &quot;status&quot;: &quot;processing&quot;,
+        &quot;message&quot;: &quot;Image is being processed&quot;
+    }, 202  # Accepted
+
+# User không đợi resize (5-10 giây)
+</code></pre>
+<p><strong>Trade-off:</strong></p>
+<pre><code>Fast user response (&lt; 2s)
+Handle traffic spikes (queue buffers)
+Workers scale independently
+Eventual processing (not immediate)
+More complex (queue infrastructure)
+Need polling mechanism for status
+</code></pre>
+<p><strong>2. Worker Processing (Async)</strong></p>
+<pre><code class="language-python"># Worker
+def process_resize_job(job):
+    image_id = job[&quot;image_id&quot;]
+    original_url = job[&quot;original_url&quot;]
+    
+    try:
+        # 1. Download original
+        original = s3.download(original_url)
+        
+        # 2. Resize to 3 sizes
+        for size in [&quot;thumbnail&quot;, &quot;medium&quot;, &quot;large&quot;]:
+            resized = resize_image(original, size)
+            
+            # Upload resized
+            resized_url = s3.upload(resized, bucket=f&quot;images-{size}&quot;)
+            
+            # Update database
+            db.update(&quot;images&quot;, image_id, {
+                f&quot;{size}_url&quot;: resized_url
+            })
+        
+        # 3. Update status
+        db.update(&quot;images&quot;, image_id, {&quot;status&quot;: &quot;completed&quot;})
+        
+        # 4. Invalidate cache
+        cache.delete(f&quot;image:{image_id}&quot;)
+        
+        # 5. Audit log
+        db.insert(&quot;audit_logs&quot;, {
+            &quot;image_id&quot;: image_id,
+            &quot;action&quot;: &quot;processed&quot;,
+            &quot;timestamp&quot;: now()
+        })
+        
+    except Exception as e:
+        # Error handling
+        db.update(&quot;images&quot;, image_id, {&quot;status&quot;: &quot;failed&quot;})
+        
+        # Retry logic (SQS auto-retry)
+        if job.retry_count &lt; 3:
+            raise  # Re-queue
+        else:
+            # Move to dead letter queue
+            dlq.send(job)
+</code></pre>
+<p><strong>Trade-off:</strong></p>
+<pre><code>Fault tolerant (retry logic)
+Scalable (add more workers)
+Audit trail (database logs)
+Complex error handling
+Must handle idempotency
+Monitoring overhead
+</code></pre>
+<p><strong>3. Status Polling (Read Path)</strong></p>
+<pre><code class="language-python"># API Server
+@app.get(&quot;/image/{image_id}/status&quot;)
+async def get_status(image_id):
+    # 1. Check cache first
+    cached = cache.get(f&quot;image:{image_id}&quot;)
+    if cached:
+        return json.loads(cached)
+    
+    # 2. Cache miss → Query database
+    image = db.query(&quot;SELECT * FROM images WHERE id = ?&quot;, image_id)
+    
+    # 3. Cache result (TTL 5 minutes)
+    cache.setex(f&quot;image:{image_id}&quot;, 300, json.dumps(image))
+    
+    return image
+</code></pre>
+<p><strong>Trade-off:</strong></p>
+<pre><code>Fast reads (cache)
+Reduce database load
+Cache invalidation complexity
+Possible stale status (max 5 min)
+</code></pre>
+<p><strong>4. View Images (CDN Layer)</strong></p>
+<pre><code class="language-python"># Image URLs include CDN
+image_url = f&quot;https://cdn.example.com/images/large/{image_id}.jpg&quot;
+
+# CDN behavior:
+- First request → CDN fetch từ S3 (origin) → Cache
+- Subsequent requests → Serve từ CDN cache
+- TTL: 1 year (images immutable)
+</code></pre>
+<p><strong>Trade-off:</strong></p>
+<pre><code>Extremely fast (edge locations)
+Reduce S3 costs (fewer requests)
+Global low latency
+CDN cost ($100-200/month)
+Cache invalidation hard (if image changed)
+</code></pre>
+<h3 id="total-architecture-trade-offs">Total Architecture Trade-offs</h3>
+<pre><code>Components:
+- CDN: $150/month
+- Load Balancer: $50/month
+- 2 API servers: $200/month
+- Redis: $100/month
+- SQS Queue: $20/month
+- 3 Workers: $300/month
+- PostgreSQL RDS: $200/month
+- S3: $100/month
+-----------------------
+Total: $1,120/month
+
+Handles:
+- 50K uploads/day
+- 150K processed images/day
+- 1M views/day
+- 99.9% availability
+
+Trade-offs accepted:
+Complexity → Gain scalability
+Cost → Gain reliability
+Eventual processing → Gain user experience
+</code></pre>
+<h3 id="what-if-budget-was-500month">What If Budget Was $500/month?</h3>
+<p><strong>Alternative architecture:</strong></p>
+<pre><code>Simplify:
+- No CDN → S3 direct (save $150)
+- 1 API server → Handle 50K uploads (save $100)
+- No dedicated workers → Lambda functions (save $250)
+- Smaller Redis → ElastiCache t3.micro (save $50)
+
+Total: $470/month
+
+Trade-offs:
+Slower global latency (no CDN)
+Less resilient (single API server)
+Still scalable (Lambda auto-scales)
+Still works
+</code></pre>
+<p><strong>Key lesson: Architecture adapts to constraints.</strong></p>
+<h2 id="component-interaction-patterns">Component Interaction Patterns</h2>
+<h3 id="pattern-1-cache-aside">Pattern 1: Cache-Aside</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+    
+    App-&gt;&gt;Cache: GET key
+    alt Cache Hit
+        Cache--&gt;&gt;App: Return data
+    else Cache Miss
+        Cache--&gt;&gt;App: null
+        App-&gt;&gt;DB: Query data
+        DB--&gt;&gt;App: Return data
+        App-&gt;&gt;Cache: SET key (TTL)
+    end</code></pre>
+<p><em>Cache-aside pattern: Application quản lý cache logic</em></p>
+<p><strong>When to use:</strong></p>
+<pre><code>✓ Read-heavy workload
+✓ Data không thay đổi thường xuyên
+✓ Application có thể handle cache logic
+</code></pre>
+<h3 id="pattern-2-write-through-cache">Pattern 2: Write-Through Cache</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+    
+    App-&gt;&gt;Cache: Write data
+    Cache-&gt;&gt;DB: Write data
+    DB--&gt;&gt;Cache: Acknowledge
+    Cache--&gt;&gt;App: Success</code></pre>
+<p><em>Write-through: Mọi write đi qua cache, cache update DB</em></p>
+<p><strong>When to use:</strong></p>
+<pre><code>✓ Data freshness critical
+✓ Read &gt;&gt; Write
+✓ Can accept slower writes
+</code></pre>
+<h3 id="pattern-3-queue-worker-pattern">Pattern 3: Queue-Worker Pattern</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    API[API Server] --&gt;|Enqueue Job| Q[Message Queue]
+    Q --&gt;|Dequeue| W1[Worker 1]
+    Q --&gt;|Dequeue| W2[Worker 2]
+    Q --&gt;|Dequeue| W3[Worker 3]
+    
+    W1 --&gt; DB[(Database)]
+    W2 --&gt; DB
+    W3 --&gt; DB
+    
+    style Q fill:#ff922b
+    style W1 fill:#748ffc
+    style W2 fill:#748ffc
+    style W3 fill:#748ffc</code></pre>
+<p><em>Queue-worker: Async processing với retry và scaling</em></p>
+<p><strong>When to use:</strong></p>
+<pre><code>✓ Processing takes &gt; 5 seconds
+✓ User doesn&#x27;t need immediate result
+✓ Need retry logic
+✓ Traffic spiky
+</code></pre>
+<h3 id="pattern-4-read-replica-pattern">Pattern 4: Read Replica Pattern</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    APP[Application]
+    APP --&gt;|Writes| MASTER[(Master DB)]
+    MASTER -.-&gt;|Replicate| SLAVE1[(Slave 1)]
+    MASTER -.-&gt;|Replicate| SLAVE2[(Slave 2)]
+    
+    APP --&gt;|Reads| SLAVE1
+    APP --&gt;|Reads| SLAVE2
+    
+    style MASTER fill:#ff6b6b
+    style SLAVE1 fill:#51cf66
+    style SLAVE2 fill:#51cf66</code></pre>
+<p><em>Read replicas: Writes đi master, reads từ slaves</em></p>
+<p><strong>When to use:</strong></p>
+<pre><code>✓ Read &gt;&gt; Write (70%+ reads)
+✓ Replication lag acceptable (&lt; 1s)
+✓ Single master can handle writes
+</code></pre>
+<h2 id="decision-framework-component-selection">Decision Framework: Component Selection</h2>
+<h3 id="framework-matrix">Framework Matrix</h3>
+<pre><code>For each component, evaluate:
+
+1. Problem it solves:
+   - Specific bottleneck
+   - Measurable impact
+   - Not &quot;nice to have&quot;
+
+2. Cost (total):
+   - Infrastructure ($)
+   - Development time
+   - Maintenance burden
+   - Operational complexity
+
+3. Alternatives:
+   - Simpler solutions?
+   - Can optimize existing?
+   - Must add now?
+
+4. Risk:
+   - New technology?
+   - Team expertise?
+   - Failure modes?
+
+Decision: Add chỉ khi Problem &gt; Cost + Risk
+</code></pre>
+<h3 id="example-decisions">Example Decisions</h3>
+<p><strong>Decision 1: Add cache hay không?</strong></p>
+<pre><code>Problem:
+- Database queries slow (500ms)
+- Read-heavy (90% reads)
+- 1000 req/s
+
+Solution evaluation:
+
+Option A: Add Redis cache
+Reduce query time 500ms → 10ms
+Reduce DB load 90%
+Cost $100/month
+Cache invalidation complexity
+One more thing to monitor
+
+Option B: Optimize queries + indexes
+Free
+No new infrastructure
+Permanent improvement
+Time investment (1 week)
+Might not be enough
+
+Decision: Try Option B first
+- If queries still &gt; 100ms after optimization
+→ Then add cache
+</code></pre>
+<p><strong>Decision 2: Queue hay Lambda?</strong></p>
+<pre><code>Problem:
+- Image processing takes 10 seconds
+- 1000 uploads/day
+- User can&#x27;t wait
+
+Solution evaluation:
+
+Option A: SQS + EC2 workers
+Full control
+Predictable cost
+Must manage servers
+$150/month base cost
+
+Option B: Lambda functions
+Auto-scale
+Pay per use (~$20/month for 1000 uploads)
+No server management
+15 minute timeout limit
+Cold start latency
+
+Given: 1000 uploads/day, 10 second processing
+
+Decision: Lambda
+- Cost 7.5x cheaper
+- Auto-scaling included
+- 10 seconds well under 15 min limit
+- Team doesn&#x27;t manage servers
+</code></pre>
+<p><strong>Decision 3: CDN hay không?</strong></p>
+<pre><code>Problem:
+- Images load slow for international users
+- 10K daily users
+- 50% US, 50% Asia
+
+Solution evaluation:
+
+Option A: Add CloudFront CDN
+Low latency globally
+Reduce S3 costs
+$100/month
+Setup complexity
+
+Option B: S3 Transfer Acceleration
+Faster than normal S3
+Only $5/month
+Not as fast as CDN
+Still origin latency
+
+Option C: Do nothing
+Free
+Poor UX for Asia users
+
+Metrics needed:
+- Measure actual latency: US vs Asia
+- If Asia &gt; 2 seconds → Add CDN
+- If Asia 500ms-1s → Transfer Acceleration
+- If Asia &lt; 500ms → Do nothing
+
+Decision: Data-driven, not assumption-driven
+</code></pre>
+<h2 id="common-integration-mistakes">Common Integration Mistakes</h2>
+<h3 id="mistake-1-adding-components-just-in-case">Mistake 1: Adding Components &quot;Just In Case&quot;</h3>
+<pre><code>Bad:
+&quot;Let&#x27;s add Redis cache from day 1&quot;
+&quot;We might need it later&quot;
+
+Good:
+&quot;Database queries average 50ms&quot;
+&quot;For 1000 users, this is fast enough&quot;
+&quot;Add cache when queries &gt; 200ms or traffic &gt; 10K users&quot;
+
+Principle: YAGNI (You Aren&#x27;t Gonna Need It)
+</code></pre>
+<h3 id="mistake-2-copy-pasting-netflix-architecture">Mistake 2: Copy-Pasting Netflix Architecture</h3>
+<pre><code>Bad:
+Startup with 100 users:
+- 50 microservices
+- Kubernetes cluster
+- Service mesh
+- Event sourcing
+- CQRS
+&quot;Netflix does it!&quot;
+
+Good:
+Startup with 100 users:
+- Monolith
+- PostgreSQL
+- 1 server
+- Ship fast
+
+Context matters. Netflix có 200M users, 500 teams.
+Bạn không phải Netflix.
+</code></pre>
+<h3 id="mistake-3-premature-optimization">Mistake 3: Premature Optimization</h3>
+<pre><code>Bad:
+&quot;Let&#x27;s shard database from day 1&quot;
+&quot;We&#x27;ll eventually need to scale&quot;
+
+Good:
+&quot;We have 1000 users&quot;
+&quot;Single PostgreSQL handles 100K users&quot;
+&quot;We&#x27;ll shard when we actually hit limits&quot;
+
+Principle: Optimize for NOW, not hypothetical future
+</code></pre>
+<h3 id="mistake-4-ignoring-operational-burden">Mistake 4: Ignoring Operational Burden</h3>
+<pre><code>Bad thinking:
+&quot;This architecture is technically perfect!&quot;
+
+Reality check:
+- 10 components to monitor
+- 5 different technologies
+- 3 person team
+- No one has experience với half the stack
+→ Production nightmares
+
+Good thinking:
+&quot;This architecture is simple enough cho team maintain&quot;
+&quot;We understand every component&quot;
+&quot;On-call won&#x27;t be hell&quot;
+</code></pre>
+<h3 id="mistake-5-not-measuring">Mistake 5: Not Measuring</h3>
+<pre><code>Bad:
+Add cache → &quot;It feels faster&quot;
+Add queue → &quot;Should help với spikes&quot;
+
+Good:
+Before cache:
+- Avg query time: 500ms
+- P95: 2 seconds
+- Database CPU: 80%
+
+After cache:
+- Avg query time: 50ms (10x faster)
+- P95: 150ms (13x faster)
+- Database CPU: 20% (4x reduction)
+- Cache hit rate: 85%
+
+Measure → Prove impact
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Integration thinking &gt; Component knowledge:</strong></p>
+<pre><code>Biết từng component: Necessary
+Biết combine components: Sufficient
+Biết trade-offs: Mastery
+</code></pre>
+<p><strong>Architecture là evolutionary:</strong></p>
+<pre><code>V1: Simple monolith
+    ↓ (when slow)
+V2: Add cache
+    ↓ (when traffic high)
+V3: Add load balancer
+    ↓ (when writes overload)
+V4: Add read replicas
+    ↓ (when need async)
+V5: Add queue + workers
+
+Each step là response to real problem
+Not predictions
+</code></pre>
+<p><strong>Component selection framework:</strong></p>
+<pre><code>1. What problem? (specific, measurable)
+2. What&#x27;s the cost? (money, complexity, maintenance)
+3. What&#x27;s alternative? (simpler solutions?)
+4. Can we wait? (add later when needed?)
+
+Add component chỉ khi: Problem &gt; Cost + Risk
+</code></pre>
+<p><strong>Real trade-offs matter:</strong></p>
+<pre><code>Technical trade-offs: Performance, consistency, availability
+Business trade-offs: Cost, time to market
+Team trade-offs: Expertise, maintenance burden
+User trade-offs: UX, reliability
+
+Good architect balances ALL
+Not just technical
+</code></pre>
+<p><strong>Start simple, evolve based on data:</strong></p>
+<pre><code>Don&#x27;t: Design for 1M users when you have 100
+Do: Design for current scale + 2-3x growth
+Do: Measure actual bottlenecks
+Do: Evolve architecture incrementally
+
+&quot;Premature optimization is the root of all evil&quot;
+- Donald Knuth
+</code></pre>
+<p><strong>Context is everything:</strong></p>
+<pre><code>Netflix architecture ≠ Your architecture
+Google&#x27;s scale ≠ Your scale
+Best practices ≠ Best for YOU
+
+Understand context:
+- Current scale
+- Growth rate
+- Team size
+- Budget
+- Timeline
+- Expertise
+
+Then design accordingly
+</code></pre>
+<p><strong>Checklist trước khi add component:</strong></p>
+<pre><code>☐ Có problem cụ thể với metrics không?
+☐ Đã thử optimize existing components chưa?
+☐ Component này solve problem đó không?
+☐ Cost (time + money + complexity) worth it không?
+☐ Team có expertise maintain không?
+☐ Có thể add sau được không?
+
+Nếu không pass checklist → Đừng add
+</code></pre>
+<p><strong>Final wisdom:</strong></p>
+<p>System design không phải về dùng technology mới nhất hay phức tạp nhất.</p>
+<p>Nó về <strong>solve real problems với appropriate solutions</strong>.</p>
+<p>Simple solutions cho simple problems.
+Complex solutions chỉ khi thực sự cần.</p>
+<p><strong>&quot;Make it work, make it right, make it fast - in that order.&quot;</strong></p>
+<p>Master integration thinking, và bạn sẽ design được systems scale millions users.</p>
+<hr/>
+<p><strong>Bài tiếp theo:</strong> Phase 3 - Distributed Systems Fundamentals: Consistency, Consensus, và Distributed Transactions.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Message Queues &amp; Async Processing - Decoupling Services</a></div><a class="inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-between bg-gradient-to-r from-brand to-[#5f7dff] px-6 shadow-[0_16px_34px_rgba(47,107,255,0.35)] hover:from-[#2659d6] hover:to-[#4f69dc]" href="/phase/phase-3"><span class="inline-flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-5 w-5"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Đi tới <!-- -->Phase 3 — Distributed Systems Fundamentals</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-5 w-5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-2\",\"lesson\",\"lesson-5-integration-trade-off-thinking\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-2\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-5-integration-trade-off-thinking\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 2 — Core Building Blocks\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade-offs trong system design thực tế.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-load-balancing\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-1-load-balancing\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Load Balancing: Traffic Distribution Trong Distributed Systems\"}]]}]}],[\"$\",\"li\",\"lesson-2-caching\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-2-caching\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Caching - Performance Layer Quan Trọng Nhất\"}]]}]}],[\"$\",\"li\",\"lesson-3-database\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-3-database\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Database Scaling - Chiến Lược Scale Data Layer\"}]]}]}],[\"$\",\"li\",\"lesson-4-message-queues-async-processing-decoupling-services\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Message Queues \u0026 Async Processing - Decoupling Services\"}]]}]}],[\"$\",\"li\",\"lesson-5-integration-trade-off-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[\"$L24\",\"Tổng quan phase\"]}]]}],\"$L25\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"26:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"25:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2\",\"className\":\"hover:text-ink\",\"children\":\"Phase 2 — Core Building Blocks\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade-offs trong system design thực tế.\"}]]}],[\"$\",\"$L26\",null,{\"path\":\"/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking\",\"title\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\",\"description\":\"Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade-offs trong system design thực tế.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\",\"children\":\"$L27\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Message Queues \u0026 Async Processing - Decoupling Services\"]}],null]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-between bg-gradient-to-r from-brand to-[#5f7dff] px-6 shadow-[0_16px_34px_rgba(47,107,255,0.35)] hover:from-[#2659d6] hover:to-[#4f69dc]\",\"children\":[[\"$\",\"span\",null,{\"className\":\"inline-flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-sparkles h-5 w-5\",\"children\":[[\"$\",\"path\",\"4pj2yx\",{\"d\":\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"}],\"$L28\",\"$L29\",\"$L2a\",\"$L2b\",\"$undefined\"]}],\"Đi tới \",\"Phase 3 — Distributed Systems Fundamentals\"]}],\"$L2c\"]}],null]}]]}]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"path\",\"1olli1\",{\"d\":\"M20 3v4\"}]\n29:[\"$\",\"path\",\"1gvqau\",{\"d\":\"M22 5h-4\"}]\n2a:[\"$\",\"path\",\"vumght\",{\"d\":\"M4 17v2\"}]\n2b:[\"$\",\"path\",\"zchphs\",{\"d\":\"M5 18H3\"}]\n2c:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-5 w-5\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"integration--trade-off-thinking-kết-hợp-components-thành-hệ-thống\",\"children\":\"Integration \u0026 Trade-off Thinking: Kết Hợp Components Thành Hệ Thống\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Đây là lesson mà 90% courses bỏ qua. Và đó là lý do tại sao nhiều engineers biết từng component nhưng không biết design hệ thống.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ lần đầu tiên phải thiết kế một hệ thống hoàn chỉnh. Tôi biết cache, biết database, biết message queue. Nhưng khi ngồi trước whiteboard, tôi hoàn toàn blank.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"\\\"Tôi dùng cái nào trước? Cache hay database? Queue đặt ở đâu? Load balancer connect với gì?\\\"\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior architect ngồi bên cạnh nói: \",[\"$\",\"em\",null,{\"children\":\"\\\"Em biết từng viên gạch, nhưng chưa biết xây nhà.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Đó là lesson này. Không phải học thêm component mới. Mà học cách \",[\"$\",\"strong\",null,{\"children\":\"kết hợp chúng thành hệ thống hoàn chỉnh\"}],\".\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-integration-thinking-quan-trọng-hơn-component-knowledge\",\"children\":\"Tại Sao Integration Thinking Quan Trọng Hơn Component Knowledge?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Reality check:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Biết cache:           ✅\\nBiết database:        ✅\\nBiết message queue:   ✅\\nBiết load balancer:   ✅\\n\\nDesign được hệ thống: ❌\\n\\nWhy?\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Vì \",[\"$\",\"strong\",null,{\"children\":\"system design không phải về components. Nó về interactions giữa components.\"}]]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-integration-gap\",\"children\":\"The Integration Gap\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Gap 1: Component interactions\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Question: Cache nằm ở đâu trong flow?\\n\\nWrong thinking:\\n\\\"Tôi cần cache → Thêm Redis\\\"\\n\\nRight thinking:\\n\\\"Cache nằm giữa app server và database\\n→ App check cache first\\n→ Cache miss → Query database\\n→ Store in cache\\n→ Next request hit cache\\\"\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Gap 2: Trade-off combinations\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Mỗi component có trade-offs riêng:\\n- Cache: Fast nhưng stale data risk\\n- Queue: Async nhưng eventual processing\\n- DB replica: Scale reads nhưng replication lag\\n\\nQuestion: Khi combine chúng, trade-offs tương tác thế nào?\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Gap 3: Real constraints\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Textbook: \\\"Dùng cache cho performance\\\"\\n\\nReality:\\n- Budget: $500/month\\n- Team: 2 developers\\n- Maintenance: Ai monitor Redis?\\n- Complexity: Team có experience không?\\n\\n→ Decision phức tạp hơn nhiều\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key insight:\"}],\" Components là tools. Integration là craft.\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"thinking-framework-from-problem-to-architecture\",\"children\":\"Thinking Framework: From Problem to Architecture\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Đây là framework tôi dùng cho mọi system design.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"step-1-define-requirements-problem-first\",\"children\":\"Step 1: Define Requirements (Problem-First)\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Functional requirements:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"WHAT system phải làm:\\n- User upload ảnh\\n- System resize ảnh\\n- User xem ảnh đã resize\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Non-functional requirements:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"HOW WELL system phải làm:\\n- Upload: \u003c 5 seconds response\\n- View: \u003c 500ms latency\\n- Scale: 100K uploads/day\\n- Availability: 99.9% uptime\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Constraints:\"}]}],\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\"]}]\n"])</script><script>self.__next_f.push([1,"bd:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n2d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- Budget: $1,000/month\\n- Team: 3 developers\\n- Timeline: Ship trong 2 tháng\\n- Expertise: Team biết Node.js, PostgreSQL\\n\"}]}]\n2e:[\"$\",\"h3\",null,{\"id\":\"step-2-identify-core-components-needed\",\"children\":\"Step 2: Identify Core Components Needed\"}]\n2f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Must-have components:\"}]}]\n30:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Storage: Cần lưu ảnh → Object storage (S3)\\nDatabase: Cần metadata → SQL hoặc NoSQL\\nCompute: Cần resize ảnh → App servers\\n\"}]}]\n31:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Optional components (evaluate):\"}]}]\n32:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Cache: Cần không? → Depends on read pattern\\nQueue: Cần không? → Depends on processing time\\nLoad balancer: Cần không? → Depends on traffic\\nCDN: Cần không? → Depends on global users\\n\"}]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Critical thinking:\"}]}]\n34:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Đừng thêm component \\\"just in case\\\"\\nMỗi component = More complexity\\nOnly add khi có clear reason\\n\"}]}]\n35:[\"$\",\"h3\",null,{\"id\":\"step-3-map-data-flow\",\"children\":\"Step 3: Map Data Flow\"}]\n36:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trace request từ client đến response:\"}]}]\n37:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User upload ảnh:\\n1. Client → API server\\n2. API → Validate file\\n3. API → Upload to S3\\n4. API → Add job to queue\\n5. API → Return \\\"processing\\\" response\\n6. Worker → Process resize job\\n7. Worker → Upload resized to S3\\n8. Worker → Update database\\n9. User poll API → Get status\\n\\nIdentify:\\n- Sync vs async boundaries\\n- Where to add cache\\n- Where failures happen\\n\"}]}]\n38:[\"$\",\"h3\",null,{\"id\":\"step-4-apply-trade-off-thinking\",\"children\":\"Step 4: Apply Trade-off Thinking\"}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"For each component, ask:\"}]}]\n3a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. What problem does it solve?\\n2. What's the cost? (complexity, money, maintenance)\\n3. What are alternatives?\\n4. Can we start simpler?\\n\"}]}]\n3b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example decision tree:\"}]}]\n3c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Need to process images:\\n\\nOption A: Synchronous\\n- User waits for resize\\n- Simple code\\n- Bad UX if slow\\n\\nOption B: Queue + Workers\\n- User gets immediate response\\n- Complex infrastructure\\n- Good UX\\n\\nGiven constraints:\\n- Resize takes 5 seconds\\n- User can wait 5 seconds? NO\\n→ Choose Option B\\n\"}]}]\n3d:[\"$\",\"h3\",null,{\"id\":\"step-5-start-simple-evolve\",\"children\":\"Step 5: Start Simple, Evolve\"}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Version 1 (MVP):\"}]}]\n3f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Single server\\nPostgreSQL\\nNo cache\\nNo queue (if processing fast enough)\\n\\nShip in 2 weeks\\nLearn from real usage\\n\"}]}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Version 2 (After data):\"}]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"If slow:\\n→ Add queue + workers\\n\\nIf reads slow:\\n→ Add cache\\n\\nIf server overload:\\n→ Add load balancer\\n\"}]}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Principle: Build what you need NOW, not what you might need LATER.\"}]}]\n43:[\"$\",\"h2\",null,{\"id\":\"real-architecture-example-1-simple-blog-plat"])</script><script>self.__next_f.push([1,"form\",\"children\":\"Real Architecture Example 1: Simple Blog Platform\"}]\n44:[\"$\",\"p\",null,{\"children\":\"Let's design từ zero.\"}]\n45:[\"$\",\"h3\",null,{\"id\":\"requirements\",\"children\":\"Requirements\"}]\n46:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Functional:\\n- Users đọc blog posts\\n- Admin viết/edit posts\\n- Users comment\\n\\nNon-functional:\\n- 10K daily active users\\n- 1K posts total\\n- 10K comments/day\\n- Latency: \u003c 1 second\\n\\nConstraints:\\n- Budget: $200/month\\n- Team: 2 developers\\n- Stack: Python/Django, PostgreSQL\\n\"}]}]\n47:[\"$\",\"h3\",null,{\"id\":\"architecture-v1-monolith-simple\",\"children\":\"Architecture V1: Monolith Simple\"}]\n48:[\"$\",\"$Lbd\",null,{\"chart\":\"flowchart TB\\n    USER[Users] --\u003e LB[Load Balancer\u003cbr/\u003eOptional]\\n    LB --\u003e APP[Django App\u003cbr/\u003eGunicorn]\\n    APP --\u003e DB[(PostgreSQL\u003cbr/\u003ePosts, Comments, Users)]\\n    APP --\u003e S3[S3\u003cbr/\u003eImages]\\n    \\n    style APP fill:#51cf66\\n    style DB fill:#339af0\\n    style S3 fill:#ff6b6b\"}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Architecture V1: Simple monolith, không có cache hay queue\"}]}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision rationale:\"}]}]\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"No cache:\\n✓ 10K users = Low traffic\\n✓ 1K posts = DB handles easily\\n✓ PostgreSQL fast enough with indexes\\n✓ Save $50/month Redis cost\\n✓ Less complexity\\n\\nNo queue:\\n✓ No heavy processing\\n✓ Comments insert fast (\u003c 100ms)\\n✓ Save infrastructure cost\\n\\nNo CDN:\\n✓ Regional users only\\n✓ S3 already fast\\n✓ Save $30/month CDN cost\\n\\nLoad balancer: Optional\\n✓ Nice to have cho zero-downtime deploy\\n✓ 1 server handles 10K users fine\\n✓ Add later if needed\\n\"}]}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Total cost: $100/month (EC2 + RDS + S3)\"}]}]\n4d:[\"$\",\"h3\",null,{\"id\":\"when-to-evolve-data-driven-decisions\",\"children\":\"When to Evolve: Data-Driven Decisions\"}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trigger 1: Slow database queries\"}]}]\n4f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Symptom:\\n- Page load 3 seconds\\n- PostgreSQL CPU 80%\\n- Slow query logs showing repeated queries\\n\\nSolution:\\n→ Add Redis cache\\n\"}]}]\n50:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architecture V2: Add Cache Layer\"}]}]\n51:[\"$\",\"$Lbd\",null,{\"chart\":\"flowchart TB\\n    USER[Users] --\u003e APP[Django App]\\n    APP --\u003e CACHE[Redis Cache\u003cbr/\u003ePosts \u0026 Comments]\\n    CACHE -.-\u003e|Cache Miss| DB[(PostgreSQL)]\\n    APP --\u003e S3[S3]\\n    \\n    style CACHE fill:#ffd43b\\n    style APP fill:#51cf66\\n    style DB fill:#339af0\"}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Architecture V2: Thêm Redis cache khi database queries chậm\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation:\"}]}]\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_post(post_id):\\n    # Try cache first\\n    cache_key = f\\\"post:{post_id}\\\"\\n    cached = redis.get(cache_key)\\n    \\n    if cached:\\n        return json.loads(cached)  # Cache hit\\n    \\n    # Cache miss → Query database\\n    post = db.query(\\\"SELECT * FROM posts WHERE id = ?\\\", post_id)\\n    \\n    # Store in cache (TTL 1 hour)\\n    redis.setex(cache_key, 3600, json.dumps(post))\\n    \\n    return post\\n\\ndef create_comment(post_id, comment_data):\\n    # Write to database\\n    db.insert(\\\"comments\\\", comment_data)\\n    \\n    # Invalidate post cache (has new comment)\\n    redis.delete(f\\\"post:{post_id}\\\")\\n\"}]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"New cost: $150/month (+$50 Redis)\"}]}]\n56:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trigger 2: High traffic\"}]}]\n57:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Symptom:\\n- 100K daily users (10x growth)\\n- Single server CPU 90%\\n- Response time degrading\\n\\nSolution:\\n→ Add load balancer + Scale horizontally\\n\"}]}]\n58:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architecture V3: Horizontal Scaling\"}]}]\n59:[\"$\",\"$Lbd"])</script><script>self.__next_f.push([1,"\",null,{\"chart\":\"flowchart TB\\n    USER[Users] --\u003e LB[Load Balancer]\\n    LB --\u003e APP1[App Server 1]\\n    LB --\u003e APP2[App Server 2]\\n    LB --\u003e APP3[App Server 3]\\n    \\n    APP1 --\u003e CACHE[Redis Cache]\\n    APP2 --\u003e CACHE\\n    APP3 --\u003e CACHE\\n    \\n    CACHE -.-\u003e|Cache Miss| DB[(PostgreSQL)]\\n    \\n    APP1 --\u003e S3[S3]\\n    APP2 --\u003e S3\\n    APP3 --\u003e S3\\n    \\n    style LB fill:#ff6b6b\\n    style APP1 fill:#51cf66\\n    style APP2 fill:#51cf66\\n    style APP3 fill:#51cf66\\n    style CACHE fill:#ffd43b\"}]\n5a:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Architecture V3: Load balancer + Multiple servers khi traffic cao\"}]}]\n5b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"New cost: $400/month (3 servers + LB + Redis + DB)\"}]}]\n5c:[\"$\",\"h3\",null,{\"id\":\"key-lessons\",\"children\":\"Key Lessons\"}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Started simple (V1)\\n   - No premature optimization\\n   - Shipped in 2 weeks\\n   - Learned from real data\\n\\n2. Evolved based on actual problems (V2, V3)\\n   - Not predictions\\n   - Not \\\"best practices\\\"\\n   - Real metrics driving decisions\\n\\n3. Cost conscious\\n   - V1: $100/month (10K users)\\n   - V2: $150/month (50K users)\\n   - V3: $400/month (100K users)\\n   - Cost scales với value\\n\\n4. Complexity managed\\n   - Added components one at a time\\n   - Team learned incrementally\\n   - Production stability maintained\\n\"}]}]\n5e:[\"$\",\"h2\",null,{\"id\":\"real-architecture-example-2-image-processing-service\",\"children\":\"Real Architecture Example 2: Image Processing Service\"}]\n5f:[\"$\",\"p\",null,{\"children\":\"Một case phức tạp hơn với async processing.\"}]\n60:[\"$\",\"h3\",null,{\"id\":\"requirements-1\",\"children\":\"Requirements\"}]\n61:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Functional:\\n- Users upload images\\n- System resize to 3 sizes (thumbnail, medium, large)\\n- Users view processed images\\n\\nNon-functional:\\n- 50K uploads/day\\n- Processing: 5-10 seconds/image\\n- Upload response: \u003c 2 seconds\\n- View latency: \u003c 500ms\\n- 99% availability\\n\\nConstraints:\\n- Budget: $2,000/month\\n- Team: 4 developers\\n- Need audit trail\\n\"}]}]\n62:[\"$\",\"h3\",null,{\"id\":\"architecture-full-stack\",\"children\":\"Architecture: Full Stack\"}]\n63:[\"$\",\"$Lbd\",null,{\"chart\":\"flowchart TB\\n    USER[Users] --\u003e CDN[CloudFront CDN]\\n    CDN --\u003e LB[Load Balancer]\\n    \\n    LB --\u003e API1[API Server 1]\\n    LB --\u003e API2[API Server 2]\\n    \\n    API1 --\u003e CACHE[Redis Cache\u003cbr/\u003eStatus \u0026 Metadata]\\n    API2 --\u003e CACHE\\n    \\n    API1 --\u003e QUEUE[SQS Queue\u003cbr/\u003eResize Jobs]\\n    API2 --\u003e QUEUE\\n    \\n    QUEUE --\u003e W1[Worker 1]\\n    QUEUE --\u003e W2[Worker 2]\\n    QUEUE --\u003e W3[Worker 3]\\n    \\n    W1 --\u003e S3[S3\u003cbr/\u003eImage Storage]\\n    W2 --\u003e S3\\n    W3 --\u003e S3\\n    \\n    API1 --\u003e DB[(PostgreSQL\u003cbr/\u003eMetadata \u0026 Audit)]\\n    API2 --\u003e DB\\n    W1 --\u003e DB\\n    W2 --\u003e DB\\n    W3 --\u003e DB\\n    \\n    style CDN fill:#fa5252\\n    style LB fill:#ff6b6b\\n    style API1 fill:#51cf66\\n    style API2 fill:#51cf66\\n    style CACHE fill:#ffd43b\\n    style QUEUE fill:#ff922b\\n    style W1 fill:#748ffc\\n    style W2 fill:#748ffc\\n    style W3 fill:#748ffc\\n    style S3 fill:#e64980\\n    style DB fill:#339af0\"}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Architecture hoàn chỉnh với tất cả components: CDN, Load Balancer, Cache, Queue, Workers, Database\"}]}]\n65:[\"$\",\"h3\",null,{\"id\":\"component-interactions--trade-offs\",\"children\":\"Component Interactions \u0026 Trade-offs\"}]\n66:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Upload Flow (Sync → Async Boundary)\"}]}]\n67:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# API Server\\n@app.post(\\\"/upload\\\")\\nasync def upload_image(file):\\n    # 1. Validate file (sync)\\n    if not is_valid_image(file):\\n        return {\\\"error\\\": \\\"Invalid image\\\"}, 400\\n    \\n    # 2. Upload original to S3 (sync, fast ~500ms)\\n    original_url = s3.upload(file, bucket=\\\"originals\\\")\\n    \\n    # 3. Create database record (sync, fast ~50ms)\\n    image_id = db.insert(\\\"images\\\", {\\n        \\\"original_url\\\": original_url,\\n        \\\"st"])</script><script>self.__next_f.push([1,"atus\\\": \\\"processing\\\",\\n        \\\"user_id\\\": current_user.id\\n    })\\n    \\n    # 4. Add resize job to queue (async boundary)\\n    queue.send({\\n        \\\"image_id\\\": image_id,\\n        \\\"original_url\\\": original_url,\\n        \\\"sizes\\\": [\\\"thumbnail\\\", \\\"medium\\\", \\\"large\\\"]\\n    })\\n    \\n    # 5. Return immediately (\u003c 2 seconds)\\n    return {\\n        \\\"image_id\\\": image_id,\\n        \\\"status\\\": \\\"processing\\\",\\n        \\\"message\\\": \\\"Image is being processed\\\"\\n    }, 202  # Accepted\\n\\n# User không đợi resize (5-10 giây)\\n\"}]}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off:\"}]}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Fast user response (\u003c 2s)\\nHandle traffic spikes (queue buffers)\\nWorkers scale independently\\nEventual processing (not immediate)\\nMore complex (queue infrastructure)\\nNeed polling mechanism for status\\n\"}]}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Worker Processing (Async)\"}]}]\nbe:T4f4,# Worker\ndef process_resize_job(job):\n    image_id = job[\"image_id\"]\n    original_url = job[\"original_url\"]\n    \n    try:\n        # 1. Download original\n        original = s3.download(original_url)\n        \n        # 2. Resize to 3 sizes\n        for size in [\"thumbnail\", \"medium\", \"large\"]:\n            resized = resize_image(original, size)\n            \n            # Upload resized\n            resized_url = s3.upload(resized, bucket=f\"images-{size}\")\n            \n            # Update database\n            db.update(\"images\", image_id, {\n                f\"{size}_url\": resized_url\n            })\n        \n        # 3. Update status\n        db.update(\"images\", image_id, {\"status\": \"completed\"})\n        \n        # 4. Invalidate cache\n        cache.delete(f\"image:{image_id}\")\n        \n        # 5. Audit log\n        db.insert(\"audit_logs\", {\n            \"image_id\": image_id,\n            \"action\": \"processed\",\n            \"timestamp\": now()\n        })\n        \n    except Exception as e:\n        # Error handling\n        db.update(\"images\", image_id, {\"status\": \"failed\"})\n        \n        # Retry logic (SQS auto-retry)\n        if job.retry_count \u003c 3:\n            raise  # Re-queue\n        else:\n            # Move to dead letter queue\n            dlq.send(job)\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$be\"}]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off:\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Fault tolerant (retry logic)\\nScalable (add more workers)\\nAudit trail (database logs)\\nComplex error handling\\nMust handle idempotency\\nMonitoring overhead\\n\"}]}]\n6e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Status Polling (Read Path)\"}]}]\n6f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# API Server\\n@app.get(\\\"/image/{image_id}/status\\\")\\nasync def get_status(image_id):\\n    # 1. Check cache first\\n    cached = cache.get(f\\\"image:{image_id}\\\")\\n    if cached:\\n        return json.loads(cached)\\n    \\n    # 2. Cache miss → Query database\\n    image = db.query(\\\"SELECT * FROM images WHERE id = ?\\\", image_id)\\n    \\n    # 3. Cache result (TTL 5 minutes)\\n    cache.setex(f\\\"image:{image_id}\\\", 300, json.dumps(image))\\n    \\n    return image\\n\"}]}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off:\"}]}]\n71:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Fast reads (cache)\\nReduce database load\\nCache invalidation complexity\\nPossible stale status (max 5 min)\\n\"}]}]\n72:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. View Images (CDN Layer)\"}]}]\n73:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Image URLs include CDN\\nimage_url = f\\\"https://cdn.example.com/images/large/{image_id}.jpg\\\"\\n\\n# CDN behavior:\\n- First request → CDN fetch từ S3 (origin) → Cache\\n- Subsequent requests → Serve từ CDN cache\\n- TTL: 1 year (images immutable)\\n\"}]}]\n74:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off:\"}]}]\n"])</script><script>self.__next_f.push([1,"75:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Extremely fast (edge locations)\\nReduce S3 costs (fewer requests)\\nGlobal low latency\\nCDN cost ($100-200/month)\\nCache invalidation hard (if image changed)\\n\"}]}]\n76:[\"$\",\"h3\",null,{\"id\":\"total-architecture-trade-offs\",\"children\":\"Total Architecture Trade-offs\"}]\n77:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Components:\\n- CDN: $150/month\\n- Load Balancer: $50/month\\n- 2 API servers: $200/month\\n- Redis: $100/month\\n- SQS Queue: $20/month\\n- 3 Workers: $300/month\\n- PostgreSQL RDS: $200/month\\n- S3: $100/month\\n-----------------------\\nTotal: $1,120/month\\n\\nHandles:\\n- 50K uploads/day\\n- 150K processed images/day\\n- 1M views/day\\n- 99.9% availability\\n\\nTrade-offs accepted:\\nComplexity → Gain scalability\\nCost → Gain reliability\\nEventual processing → Gain user experience\\n\"}]}]\n78:[\"$\",\"h3\",null,{\"id\":\"what-if-budget-was-500month\",\"children\":\"What If Budget Was $500/month?\"}]\n79:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Alternative architecture:\"}]}]\n7a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Simplify:\\n- No CDN → S3 direct (save $150)\\n- 1 API server → Handle 50K uploads (save $100)\\n- No dedicated workers → Lambda functions (save $250)\\n- Smaller Redis → ElastiCache t3.micro (save $50)\\n\\nTotal: $470/month\\n\\nTrade-offs:\\nSlower global latency (no CDN)\\nLess resilient (single API server)\\nStill scalable (Lambda auto-scales)\\nStill works\\n\"}]}]\n7b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key lesson: Architecture adapts to constraints.\"}]}]\n7c:[\"$\",\"h2\",null,{\"id\":\"component-interaction-patterns\",\"children\":\"Component Interaction Patterns\"}]\n7d:[\"$\",\"h3\",null,{\"id\":\"pattern-1-cache-aside\",\"children\":\"Pattern 1: Cache-Aside\"}]\n7e:[\"$\",\"$Lbd\",null,{\"chart\":\"sequenceDiagram\\n    participant App\\n    participant Cache\\n    participant DB\\n    \\n    App-\u003e\u003eCache: GET key\\n    alt Cache Hit\\n        Cache--\u003e\u003eApp: Return data\\n    else Cache Miss\\n        Cache--\u003e\u003eApp: null\\n        App-\u003e\u003eDB: Query data\\n        DB--\u003e\u003eApp: Return data\\n        App-\u003e\u003eCache: SET key (TTL)\\n    end\"}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Cache-aside pattern: Application quản lý cache logic\"}]}]\n80:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When to use:\"}]}]\n81:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Read-heavy workload\\n✓ Data không thay đổi thường xuyên\\n✓ Application có thể handle cache logic\\n\"}]}]\n82:[\"$\",\"h3\",null,{\"id\":\"pattern-2-write-through-cache\",\"children\":\"Pattern 2: Write-Through Cache\"}]\n83:[\"$\",\"$Lbd\",null,{\"chart\":\"sequenceDiagram\\n    participant App\\n    participant Cache\\n    participant DB\\n    \\n    App-\u003e\u003eCache: Write data\\n    Cache-\u003e\u003eDB: Write data\\n    DB--\u003e\u003eCache: Acknowledge\\n    Cache--\u003e\u003eApp: Success\"}]\n84:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Write-through: Mọi write đi qua cache, cache update DB\"}]}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When to use:\"}]}]\n86:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Data freshness critical\\n✓ Read \u003e\u003e Write\\n✓ Can accept slower writes\\n\"}]}]\n87:[\"$\",\"h3\",null,{\"id\":\"pattern-3-queue-worker-pattern\",\"children\":\"Pattern 3: Queue-Worker Pattern\"}]\n88:[\"$\",\"$Lbd\",null,{\"chart\":\"flowchart LR\\n    API[API Server] --\u003e|Enqueue Job| Q[Message Queue]\\n    Q --\u003e|Dequeue| W1[Worker 1]\\n    Q --\u003e|Dequeue| W2[Worker 2]\\n    Q --\u003e|Dequeue| W3[Worker 3]\\n    \\n    W1 --\u003e DB[(Database)]\\n    W2 --\u003e DB\\n    W3 --\u003e DB\\n    \\n    style Q fill:#ff922b\\n    style W1 fill:#748ffc\\n    style W2 fill:#748ffc\\n    style W3 fill:#748ffc\"}]\n89:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Queue-worker: Async processing với retry và scaling\"}]}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When to use:\"}]}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Processing takes \u003e 5 seconds\\n✓ User doesn't need immediate result\\n✓ Need retry logic\\n✓ Traffic spiky\\n\"}]}]\n8c:[\"$\",\"h3\",null,{\"id\":\""])</script><script>self.__next_f.push([1,"pattern-4-read-replica-pattern\",\"children\":\"Pattern 4: Read Replica Pattern\"}]\n8d:[\"$\",\"$Lbd\",null,{\"chart\":\"flowchart TB\\n    APP[Application]\\n    APP --\u003e|Writes| MASTER[(Master DB)]\\n    MASTER -.-\u003e|Replicate| SLAVE1[(Slave 1)]\\n    MASTER -.-\u003e|Replicate| SLAVE2[(Slave 2)]\\n    \\n    APP --\u003e|Reads| SLAVE1\\n    APP --\u003e|Reads| SLAVE2\\n    \\n    style MASTER fill:#ff6b6b\\n    style SLAVE1 fill:#51cf66\\n    style SLAVE2 fill:#51cf66\"}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Read replicas: Writes đi master, reads từ slaves\"}]}]\n8f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When to use:\"}]}]\n90:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Read \u003e\u003e Write (70%+ reads)\\n✓ Replication lag acceptable (\u003c 1s)\\n✓ Single master can handle writes\\n\"}]}]\n91:[\"$\",\"h2\",null,{\"id\":\"decision-framework-component-selection\",\"children\":\"Decision Framework: Component Selection\"}]\n92:[\"$\",\"h3\",null,{\"id\":\"framework-matrix\",\"children\":\"Framework Matrix\"}]\n93:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"For each component, evaluate:\\n\\n1. Problem it solves:\\n   - Specific bottleneck\\n   - Measurable impact\\n   - Not \\\"nice to have\\\"\\n\\n2. Cost (total):\\n   - Infrastructure ($)\\n   - Development time\\n   - Maintenance burden\\n   - Operational complexity\\n\\n3. Alternatives:\\n   - Simpler solutions?\\n   - Can optimize existing?\\n   - Must add now?\\n\\n4. Risk:\\n   - New technology?\\n   - Team expertise?\\n   - Failure modes?\\n\\nDecision: Add chỉ khi Problem \u003e Cost + Risk\\n\"}]}]\n94:[\"$\",\"h3\",null,{\"id\":\"example-decisions\",\"children\":\"Example Decisions\"}]\n95:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision 1: Add cache hay không?\"}]}]\n96:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem:\\n- Database queries slow (500ms)\\n- Read-heavy (90% reads)\\n- 1000 req/s\\n\\nSolution evaluation:\\n\\nOption A: Add Redis cache\\nReduce query time 500ms → 10ms\\nReduce DB load 90%\\nCost $100/month\\nCache invalidation complexity\\nOne more thing to monitor\\n\\nOption B: Optimize queries + indexes\\nFree\\nNo new infrastructure\\nPermanent improvement\\nTime investment (1 week)\\nMight not be enough\\n\\nDecision: Try Option B first\\n- If queries still \u003e 100ms after optimization\\n→ Then add cache\\n\"}]}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision 2: Queue hay Lambda?\"}]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem:\\n- Image processing takes 10 seconds\\n- 1000 uploads/day\\n- User can't wait\\n\\nSolution evaluation:\\n\\nOption A: SQS + EC2 workers\\nFull control\\nPredictable cost\\nMust manage servers\\n$150/month base cost\\n\\nOption B: Lambda functions\\nAuto-scale\\nPay per use (~$20/month for 1000 uploads)\\nNo server management\\n15 minute timeout limit\\nCold start latency\\n\\nGiven: 1000 uploads/day, 10 second processing\\n\\nDecision: Lambda\\n- Cost 7.5x cheaper\\n- Auto-scaling included\\n- 10 seconds well under 15 min limit\\n- Team doesn't manage servers\\n\"}]}]\n99:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision 3: CDN hay không?\"}]}]\n9a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem:\\n- Images load slow for international users\\n- 10K daily users\\n- 50% US, 50% Asia\\n\\nSolution evaluation:\\n\\nOption A: Add CloudFront CDN\\nLow latency globally\\nReduce S3 costs\\n$100/month\\nSetup complexity\\n\\nOption B: S3 Transfer Acceleration\\nFaster than normal S3\\nOnly $5/month\\nNot as fast as CDN\\nStill origin latency\\n\\nOption C: Do nothing\\nFree\\nPoor UX for Asia users\\n\\nMetrics needed:\\n- Measure actual latency: US vs Asia\\n- If Asia \u003e 2 seconds → Add CDN\\n- If Asia 500ms-1s → Transfer Acceleration\\n- If Asia \u003c 500ms → Do nothing\\n\\nDecision: Data-driven, not assumption-driven\\n\"}]}]\n9b:[\"$\",\"h2\",null,{\"id\":\"common-integration-mistakes\",\"children\":\"Common Integration Mistakes\"}]\n9c:[\"$\",\"h3\",null,{\"id\":\"mistake-1-adding-components-just-in-case\",\"children\":\"Mistake 1: Adding Components \\\"Just In Case\\\"\"}]\n9d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad:\\n\\\"Let's add Redis cache fro"])</script><script>self.__next_f.push([1,"m day 1\\\"\\n\\\"We might need it later\\\"\\n\\nGood:\\n\\\"Database queries average 50ms\\\"\\n\\\"For 1000 users, this is fast enough\\\"\\n\\\"Add cache when queries \u003e 200ms or traffic \u003e 10K users\\\"\\n\\nPrinciple: YAGNI (You Aren't Gonna Need It)\\n\"}]}]\n9e:[\"$\",\"h3\",null,{\"id\":\"mistake-2-copy-pasting-netflix-architecture\",\"children\":\"Mistake 2: Copy-Pasting Netflix Architecture\"}]\n9f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad:\\nStartup with 100 users:\\n- 50 microservices\\n- Kubernetes cluster\\n- Service mesh\\n- Event sourcing\\n- CQRS\\n\\\"Netflix does it!\\\"\\n\\nGood:\\nStartup with 100 users:\\n- Monolith\\n- PostgreSQL\\n- 1 server\\n- Ship fast\\n\\nContext matters. Netflix có 200M users, 500 teams.\\nBạn không phải Netflix.\\n\"}]}]\na0:[\"$\",\"h3\",null,{\"id\":\"mistake-3-premature-optimization\",\"children\":\"Mistake 3: Premature Optimization\"}]\na1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad:\\n\\\"Let's shard database from day 1\\\"\\n\\\"We'll eventually need to scale\\\"\\n\\nGood:\\n\\\"We have 1000 users\\\"\\n\\\"Single PostgreSQL handles 100K users\\\"\\n\\\"We'll shard when we actually hit limits\\\"\\n\\nPrinciple: Optimize for NOW, not hypothetical future\\n\"}]}]\na2:[\"$\",\"h3\",null,{\"id\":\"mistake-4-ignoring-operational-burden\",\"children\":\"Mistake 4: Ignoring Operational Burden\"}]\na3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad thinking:\\n\\\"This architecture is technically perfect!\\\"\\n\\nReality check:\\n- 10 components to monitor\\n- 5 different technologies\\n- 3 person team\\n- No one has experience với half the stack\\n→ Production nightmares\\n\\nGood thinking:\\n\\\"This architecture is simple enough cho team maintain\\\"\\n\\\"We understand every component\\\"\\n\\\"On-call won't be hell\\\"\\n\"}]}]\na4:[\"$\",\"h3\",null,{\"id\":\"mistake-5-not-measuring\",\"children\":\"Mistake 5: Not Measuring\"}]\na5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad:\\nAdd cache → \\\"It feels faster\\\"\\nAdd queue → \\\"Should help với spikes\\\"\\n\\nGood:\\nBefore cache:\\n- Avg query time: 500ms\\n- P95: 2 seconds\\n- Database CPU: 80%\\n\\nAfter cache:\\n- Avg query time: 50ms (10x faster)\\n- P95: 150ms (13x faster)\\n- Database CPU: 20% (4x reduction)\\n- Cache hit rate: 85%\\n\\nMeasure → Prove impact\\n\"}]}]\na6:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\na7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Integration thinking \u003e Component knowledge:\"}]}]\na8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Biết từng component: Necessary\\nBiết combine components: Sufficient\\nBiết trade-offs: Mastery\\n\"}]}]\na9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architecture là evolutionary:\"}]}]\naa:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"V1: Simple monolith\\n    ↓ (when slow)\\nV2: Add cache\\n    ↓ (when traffic high)\\nV3: Add load balancer\\n    ↓ (when writes overload)\\nV4: Add read replicas\\n    ↓ (when need async)\\nV5: Add queue + workers\\n\\nEach step là response to real problem\\nNot predictions\\n\"}]}]\nab:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Component selection framework:\"}]}]\nac:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. What problem? (specific, measurable)\\n2. What's the cost? (money, complexity, maintenance)\\n3. What's alternative? (simpler solutions?)\\n4. Can we wait? (add later when needed?)\\n\\nAdd component chỉ khi: Problem \u003e Cost + Risk\\n\"}]}]\nad:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real trade-offs matter:\"}]}]\nae:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Technical trade-offs: Performance, consistency, availability\\nBusiness trade-offs: Cost, time to market\\nTeam trade-offs: Expertise, maintenance burden\\nUser trade-offs: UX, reliability\\n\\nGood architect balances ALL\\nNot just technical\\n\"}]}]\naf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Start simple, evolve based on data:\"}]}]\nb0:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Don't: Design for 1M users when you have 100\\nDo: Design for current scale + 2-3x growth\\nDo: Measure actual bottlenecks\\nDo: Evolve archi"])</script><script>self.__next_f.push([1,"tecture incrementally\\n\\n\\\"Premature optimization is the root of all evil\\\"\\n- Donald Knuth\\n\"}]}]\nb1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Context is everything:\"}]}]\nb2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Netflix architecture ≠ Your architecture\\nGoogle's scale ≠ Your scale\\nBest practices ≠ Best for YOU\\n\\nUnderstand context:\\n- Current scale\\n- Growth rate\\n- Team size\\n- Budget\\n- Timeline\\n- Expertise\\n\\nThen design accordingly\\n\"}]}]\nb3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Checklist trước khi add component:\"}]}]\nb4:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"☐ Có problem cụ thể với metrics không?\\n☐ Đã thử optimize existing components chưa?\\n☐ Component này solve problem đó không?\\n☐ Cost (time + money + complexity) worth it không?\\n☐ Team có expertise maintain không?\\n☐ Có thể add sau được không?\\n\\nNếu không pass checklist → Đừng add\\n\"}]}]\nb5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Final wisdom:\"}]}]\nb6:[\"$\",\"p\",null,{\"children\":\"System design không phải về dùng technology mới nhất hay phức tạp nhất.\"}]\nb7:[\"$\",\"p\",null,{\"children\":[\"Nó về \",[\"$\",\"strong\",null,{\"children\":\"solve real problems với appropriate solutions\"}],\".\"]}]\nb8:[\"$\",\"p\",null,{\"children\":\"Simple solutions cho simple problems.\\nComplex solutions chỉ khi thực sự cần.\"}]\nb9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"Make it work, make it right, make it fast - in that order.\\\"\"}]}]\nba:[\"$\",\"p\",null,{\"children\":\"Master integration thinking, và bạn sẽ design được systems scale millions users.\"}]\nbb:[\"$\",\"hr\",null,{}]\nbc:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Bài tiếp theo:\"}],\" Phase 3 - Distributed Systems Fundamentals: Consistency, Consensus, và Distributed Transactions.\"]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"bf:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống | Phase 2 — Core Building Blocks | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade off\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống | Phase 2 — Core Building Blocks\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade off\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống | Phase 2 — Core Building Blocks\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Master nghệ thuật kết hợp cache, database, queue, load balancer thành kiến trúc hoàn chỉnh. Học real architecture decisions, component interactions và trade off\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$Lbf\",\"14\",{}]]\n"])</script></body></html>

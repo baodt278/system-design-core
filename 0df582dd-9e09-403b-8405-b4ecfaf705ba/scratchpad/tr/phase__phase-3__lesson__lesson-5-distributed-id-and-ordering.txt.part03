@@ -1,0 +1,268 @@
+@83
+**⟦Khung ra quyết định|Decision framework⟧:**
+@84
+Vấn Đề ⟦Thứ Tự Sự Kiện|Event Ordering⟧
+@85
+Việc sinh ID giải quyết được tính duy nhất. Nhưng còn ⟦thứ tự|ordering⟧ thì sao?
+@86
+Phát Biểu Vấn Đề
+@87
+Dịch vụ A (Máy 1):
+- Sự kiện 1 xảy ra lúc 10:00:00.000 → Sinh ID = 100
+- Sự kiện 2 xảy ra lúc 10:00:00.001 → Sinh ID = 101
+
+Dịch vụ B (Máy 2, đồng hồ nhanh hơn 5ms):
+- Sự kiện 3 xảy ra lúc 10:00:00.003 → Sinh ID = 108
+
+Dòng thời gian:
+Sự kiện 1 (10:00:00.000) → ID = 100
+Sự kiện 2 (10:00:00.001) → ID = 101
+Sự kiện 3 (10:00:00.003) → ID = 108
+
+Sắp xếp theo ID:
+100 < 101 < 108 ✓ Đúng thứ tự
+
+Nhưng nếu đồng hồ Máy 2 bị lệch:
+Sự kiện 1 (10:00:00.000) → ID = 100
+Sự kiện 3 (10:00:00.003) → ID = 95  (đồng hồ Máy 2 chạy chậm!)
+Sự kiện 2 (10:00:00.001) → ID = 101
+
+Sắp xếp theo ID:
+95 < 100 < 101 ✗ Sai thứ tự! (Sự kiện 3 phải ở cuối)
+
+@88
+Tại Sao ⟦Thứ Tự|Ordering⟧ Quan Trọng
+@89
+**Ví dụ 1: Giao dịch ngân hàng**
+@90
+Sự kiện 1: Nạp $100  (số dư = $100)
+Sự kiện 2: Rút $50   (số dư = $50)
+Sự kiện 3: Rút $40   (số dư = $10)
+
+Đúng thứ tự: $0 → $100 → $50 → $10 ✓
+
+Sai thứ tự:
+Sự kiện 2 trước → Không đủ số dư! ✗
+Sự kiện 3 trước → Không đủ số dư! ✗
+
+@91
+**Ví dụ 2: Mạng xã hội**
+@92
+Bài đăng của người dùng:
+Bài 1: "Giới thiệu dự án"
+Bài 2: "Cập nhật tiến độ"
+Bài 3: "Kết quả cuối cùng"
+
+Đúng thứ tự: Mạch nội dung hợp lý ✓
+
+Sai thứ tự: "Kết quả" xuất hiện trước "Giới thiệu" ✗
+→ Người đọc bối rối
+
+@93
+Các Giải Pháp Cho Bài Toán ⟦Thứ Tự|Ordering⟧
+@94
+**Giải pháp 1: Lamport Timestamps (dấu thời gian Lamport)**
+@95
+**Đặc tính:**
+@96
+Bảo toàn quan hệ xảy-ra-trước (happened-before)
+Không cần đồng hồ thực
+Thuật toán đơn giản
+
+Không biết thời gian tuyệt đối
+Không phát hiện được các sự kiện đồng thời
+Cần truyền thông điệp
+
+@97
+**Giải pháp 2: Vector Clocks (đồng hồ vector)**
+@98
+**Giải pháp 3: Hybrid Logical Clocks - HLC (đồng hồ logic lai)**
+@99
+Kết hợp ưu điểm của cả hai: Thời gian vật lý + Bộ đếm logic
+@100
+**⟦Sự đánh đổi|Trade-offs⟧:**
+@101
+Lamport:
+Đơn giản
+Thứ tự từng phần
+Không phát hiện được tính đồng thời
+
+Vector:
+Phát hiện được tính đồng thời
+Đầy đủ quan hệ nhân quả
+Lưu trữ O(N) (N = số tiến trình)
+Phức tạp
+
+HLC:
+Gần với thời gian vật lý
+Thứ tự toàn phần
+Gọn nhẹ (2 con số)
+Vẫn cần đồng bộ đồng hồ (ở mức lỏng)
+
+@102
+Đánh Đổi Giữa ⟦Thứ Tự|Ordering⟧ Và Tính Duy Nhất
+@103
+**Mâu thuẫn cốt lõi:**
+@104
+Tính duy nhất: Các ID không xung đột
+Thứ tự:       Các ID phản ánh đúng trình tự thời gian thực
+
+Không thể hoàn hảo cả hai với cách sinh ID phi tập trung
+
+@105
+**Các phương án:**
+@106
+1. Duy nhất hoàn hảo, không có thứ tự
+   → UUID v4
+   → Hoàn toàn ngẫu nhiên
+   → Không cần phối hợp
+
+2. Duy nhất tốt, thứ tự gần đúng
+   → Snowflake
+   → Sắp theo thời gian (khi đồng hồ được đồng bộ)
+   → Machine ID ngăn xung đột
+
+3. Thứ tự hoàn hảo, bắt buộc phải phối hợp
+   → Máy chủ sinh ID tập trung
+   → Điểm lỗi duy nhất
+   → Điểm nghẽn
+   → Không mở rộng được
+
+Lựa chọn dựa trên thứ tự ưu tiên
+
+@107
+Khuyến Nghị Thực Tế
+@108
+Cho Hầu Hết Các Ứng Dụng
+@109
+**Bắt đầu với UUID v7** (UUID sắp theo dấu thời gian)
+@110
+Cho Các Hệ Thống ⟦Quy Mô|Scale⟧ Lớn
+@111
+**Dùng Snowflake** nếu:
+@112
+✓ Sinh > 100K ID/giây
+✓ Có thể quản lý Machine ID
+✓ Có thể đồng bộ đồng hồ (NTP)
+✓ Cần ID 64 bit gọn nhẹ
+✓ Cần trích xuất siêu dữ liệu (dấu thời gian, máy)
+
+@113
+Cho Các Yêu Cầu Nghiêm Ngặt Về ⟦Thứ Tự|Ordering⟧
+@114
+**Dùng Hybrid Logical Clocks** nếu:
+@115
+✓ Thứ tự là yếu tố sống còn (tài chính, log kiểm toán)
+✓ Chấp nhận được độ phức tạp
+✓ Cần phát hiện quan hệ nhân quả
+✓ Sự kiện phân tán trên nhiều dịch vụ
+
+@116
+Các ⟦Phản Mẫu|Anti-Patterns⟧ Cần Tránh
+@117
+ĐỪNG dùng tự tăng trong hệ thống phân tán
+ĐỪNG dựa vào đồng hồ thực để xác định thứ tự
+ĐỪNG sinh ID tập trung (điểm nghẽn)
+ĐỪNG bỏ qua vấn đề lệch đồng hồ
+ĐỪNG chỉ dùng dấu thời gian làm ID (không duy nhất)
+
+@118
+Ví Dụ Thực Tế
+@119
+**Twitter:**
+@120
+Dùng Snowflake cho ID của tweet
+- 64 bit
+- Sắp theo thời gian
+- Hơn 200,000 tweet/giây
+- Có thể trích xuất dấu thời gian từ ID
+
+@121
+**Instagram:**
+@122
+Snowflake đã được tuỳ biến
+- 41 bit: dấu thời gian
+- 13 bit: shard ID
+- 10 bit: số thứ tự
+- Lưu ảnh trên hơn 1000 mảnh
+
+@123
+**Discord:**
+@124
+Dựa trên Snowflake
+- 64 bit
+- Trích xuất dấu thời gian để hiển thị "X phút trước"
+- Gỡ lỗi hiệu năng theo các khoảng ID
+
+@125
+**MongoDB:**
+@126
+ObjectID (96 bit)
+- 4 byte: dấu thời gian
+- 5 byte: giá trị ngẫu nhiên
+- 3 byte: bộ đếm
+- Ý tưởng tương tự Snowflake
+
+@127
+Những Điểm Cốt Lõi
+@128
+**⟦Tự tăng|Auto-increment⟧ thất bại trong ⟦hệ thống phân tán|distributed systems⟧:**
+@129
+Một cơ sở dữ liệu: ✓ Hoạt động
+Nhiều cơ sở dữ liệu: ✗ Xung đột
+Nhiều dịch vụ: ✗ Xung đột
+
+Cần chiến lược sinh ID phân tán
+
+@130
+**Các chiến lược sinh ID:**
+@131
+UUID:
+- Đơn giản nhất
+- 128 bit
+- Ngẫu nhiên
+- Không có thứ tự
+- Lựa chọn mặc định
+
+Snowflake:
+- 64 bit
+- Sắp theo thời gian
+- Cần Machine ID
+- Hiệu năng cao
+- Tiêu chuẩn của ngành
+
+HLC:
+- Thứ tự tốt nhất
+- Theo dõi quan hệ nhân quả
+- Phức tạp nhất
+- Dành cho tình huống chuyên biệt
+
+@132
+**Đánh đổi về ⟦thứ tự|ordering⟧:**
+@133
+Không phối hợp:     Thứ tự gần đúng
+Phối hợp một phần:  Thứ tự tốt
+Phối hợp hoàn toàn: Thứ tự hoàn hảo (không mở rộng được)
+
+Lựa chọn dựa trên yêu cầu
+
+@134
+**⟦Khung ra quyết định|Decision framework⟧:**
+@136
+**Các quy tắc vàng:**
+@137
+**Không bao giờ dùng ⟦tự tăng|auto-increment⟧ trong ⟦hệ thống phân tán|distributed systems⟧**
+@138
+**UUID v7 là lựa chọn mặc định an toàn cho hầu hết các trường hợp**
+@139
+**Snowflake cho các nhu cầu ⟦quy mô|scale⟧ lớn, cần sắp theo thời gian**
+@140
+**⟦Thứ tự|Ordering⟧ hoàn hảo đòi hỏi phải phối hợp (không miễn phí)**
+@141
+**Luôn kiểm thử các ⟦kịch bản|scenarios⟧ ⟦lệch đồng hồ|clock skew⟧**
+@142
+⟦Sinh ID phân tán|Distributed ID generation⟧ là một trong những vấn đề trông thì đơn giản nhưng ẩn chứa độ phức tạp tinh vi.
+@143
+Hiểu rõ các ⟦sự đánh đổi|trade-offs⟧. Lựa chọn phù hợp. Kiểm thử kỹ lưỡng.
+@144
+**ID là nền móng của hệ thống. Làm sai = khổ về sau.**

@@ -1,0 +1,549 @@
+@0 h1
+Components Trong Một Hệ Thống Web
+@1 p
+Chào mừng đến Phase 1 - Foundation: Thinking in Systems.
+@2 p
+Sau Phase 0, bạn đã thay đổi mindset. Giờ là lúc build foundation thực sự: **Hiểu các building blocks của mọi hệ thống.**
+@3 p
+Tôi còn nhớ lần đầu debug production issue. API chậm. Nhưng chậm ở đâu?
+@4 p
+Senior architect vẽ diagram:
+@5 pre
+Client → Load Balancer → App Server → Cache → Database
+
+@6 p
+Rồi hỏi: *"Request đi qua bao nhiêu bước? Mỗi bước mất bao lâu?"*
+@7 p
+Đó là lần đầu tôi hiểu: **Hệ thống là tập hợp components tương tác.** Hiểu từng component = hiểu cả hệ thống.
+@8 h2
+Tại Sao Phải Học Components?
+@9 p
+**Code-level view:**
+@10 p
+Bạn thấy function. Nhưng architect thấy:
+@11 p
+**System-level view:**
+@12 pre
+Client (50ms)
+  ↓
+Load Balancer (10ms)
+  ↓
+Application Server (20ms)
+  ↓
+Database Query (500ms) ← BOTTLENECK
+  ↓
+Total: 580ms
+
+@13 p
+System-level thinking giúp bạn:
+@14 li
+**Identify bottlenecks** nhanh chóng
+@15 li
+**Design for scale** từ đầu
+@16 li
+**Debug production** hiệu quả
+@17 li
+**Communicate** rõ ràng với team
+@18 p
+Bạn không thể optimize cái bạn không hiểu.
+@19 h2
+Component 1: Client (Browser/Mobile App)
+@20 h3
+Vai Trò
+@21 p
+Client là presentation layer. Nơi user tương tác với hệ thống.
+@22 p
+**Đặc điểm:**
+@23 li
+Không đáng tin (user có thể modify code)
+@24 li
+Không kiểm soát được environment (device, network)
+@25 li
+Stateful (có thể lưu data locally)
+@26 h3
+Critical Rules
+@27 p
+**Rule 1: NEVER trust client**
+@28 p
+**Why?** Tôi từng thấy hacker modify JavaScript, đổi giá từ $100 → $1, submit. Server tin client → Company mất tiền.
+@29 p
+**Rule 2: Client validation chỉ là UX enhancement**
+@30 h3
+Trade-offs
+@31 pre
+ Advantages:
+- Rich interactions
+- Offline capability
+- Reduce server load (client-side rendering)
+
+ Disadvantages:
+- Security risk
+- Inconsistent environments
+- Hard to update (users don't refresh)
+
+@32 h3
+Khi Nào Optimize Client?
+@33 p
+**Optimize khi:**
+@34 li
+Bundle size lớn (> 1MB)
+@35 li
+First paint chậm (> 3s)
+@36 li
+User có slow devices/networks
+@37 p
+**Techniques:**
+@38 li
+Code splitting
+@39 li
+Lazy loading
+@40 li
+Service workers (caching)
+@41 li
+CDN cho static assets
+@42 h2
+Component 2: Load Balancer
+@43 h3
+Vai Trò
+@44 p
+Phân phối traffic đều giữa multiple servers.
+@45 h3
+Khi Nào Cần?
+@46 pre
+Scenario 1: Single Server
+1 server handles 1,000 req/s
+Traffic grows to 5,000 req/s
+→ Server overload → Slow/crashes
+
+Scenario 2: Multiple Servers + Load Balancer
+5 servers, each handles 1,000 req/s
+Load Balancer distributes evenly
+→ System handles 5,000 req/s smoothly
+
+@47 p
+**Cần load balancer khi:**
+@48 li
+1 server không đủ capacity
+@49 li
+Cần high availability (1 server dies, others take over)
+@50 li
+Rolling deployments (update servers từng cái)
+@51 h3
+Khi Nào KHÔNG Cần?
+@52 pre
+ Don't need khi:
+- < 1,000 users
+- Internal tools
+- MVP/Prototypes
+- Budget constraints
+
+Start simple. Add LB when proven necessary.
+
+@53 h3
+Core Algorithms
+@54 p
+**Round Robin:**
+@55 pre
+Request 1 → Server A
+Request 2 → Server B
+Request 3 → Server C
+Request 4 → Server A (repeat)
+
+ Simple, even distribution
+ Doesn't consider server load
+
+@56 p
+**Least Connections:**
+@57 pre
+Server A: 50 connections
+Server B: 20 connections ← Choose this
+Server C: 35 connections
+
+ Better load balancing
+ More complex, need to track state
+
+@58 p
+**Weighted Round Robin:**
+@59 pre
+Server A (16GB RAM): weight 2
+Server B (8GB RAM): weight 1
+
+A gets 2 requests for every 1 to B
+
+ Utilize powerful servers more
+ Need to configure weights
+
+@60 h3
+Trade-offs
+@61 pre
+ Gains:
+- Increased capacity
+- High availability
+- Zero-downtime deployments
+
+ Costs:
+- Additional complexity
+- Potential single point of failure (LB itself)
+- Network latency (+10-50ms)
+
+@62 h3
+Personal Recommendation
+@63 p
+Start với Round Robin. Simple và works cho 80% cases.
+@64 p
+Chỉ dùng Least Connections khi requests có execution time rất khác nhau (WebSocket, file uploads).
+@65 h2
+Component 3: Application Server
+@66 h3
+Vai Trò
+@67 p
+Business logic layer. Process requests, orchestrate data flow.
+@68 h3
+Critical Decision: Stateless vs Stateful
+@69 p
+**Stateless Server:**
+@70 p
+**Stateful Server:**
+@71 h3
+Trade-off Analysis
+@72 pre
+Stateless:
+ Easy horizontal scaling
+ Any server handles any request
+ Cloud-friendly (servers can die)
+ Extra DB call for user data
+
+Stateful:
+ Low latency (no DB roundtrip)
+ Can cache user-specific data
+ Hard to scale (need sticky sessions)
+ Lose sessions khi server restart
+
+@73 h3
+My Strong Opinion
+@74 p
+**Default to stateless.** Stateful chỉ khi có lý do rất tốt (WebSocket connections, gaming servers).
+@75 p
+Modern systems với microservices? Stateless là must.
+@76 h3
+Server Configuration
+@77 p
+**Concurrency model matters:**
+@78 pre
+Thread-based (Java, traditional):
+- 1 thread per request
+- Limited by thread pool size
+- Good: Familiar model
+- Bad: Memory overhead
+
+Event-loop (Node.js, Python asyncio):
+- 1 thread handles many requests
+- Non-blocking I/O
+- Good: High concurrency
+- Bad: CPU-heavy tasks block everything
+
+Worker-based (Gunicorn, uWSGI):
+- Pre-fork workers
+- Each worker handles requests
+- Good: Isolate failures
+- Bad: More memory
+
+@79 p
+**Choose based on workload:**
+@80 li
+I/O heavy (API calls, DB queries) → Event-loop
+@81 li
+CPU heavy (image processing) → Worker-based
+@82 li
+Mixed → Worker-based với async inside
+@83 h2
+Component 4: Cache Layer
+@84 h3
+Vai Trò
+@85 p
+Store frequently accessed data in-memory để giảm DB load.
+@86 h3
+The Fundamental Question
+@87 p
+**Có nên cache không?**
+@88 p
+Answer bằng flowchart:
+@89 pre
+Is it read-heavy? (read:write > 10:1)
+  ↓ YES
+Data thay đổi thường xuyên không?
+  ↓ NO
+Query expensive? (> 100ms)
+  ↓ YES
+→ USE CACHE
+
+Any NO → Consider carefully
+
+@90 h3
+Cache Strategies
+@91 p
+**Strategy 1: Cache-Aside (Lazy Loading)**
+@92 p
+**Strategy 2: Write-Through**
+@93 p
+**Strategy 3: Write-Behind**
+@94 h3
+Cache Invalidation - The Hard Problem
+@95 p
+Phil Karlton: *"There are only two hard things in Computer Science: cache invalidation and naming things."*
+@96 p
+**Problem:**
+@97 pre
+1. User updates profile → DB updated
+2. Cache still has old data
+3. User refresh → Sees old data (cache hit)
+4. User confused
+
+@98 p
+**Solutions:**
+@99 p
+**Option 1: TTL (Time To Live)**
+@100 p
+**Option 2: Active Invalidation**
+@101 p
+**Option 3: Event-Driven**
+@102 h3
+Personal Rule
+@103 p
+Start với TTL. Simple và works.
+@104 p
+Add active invalidation khi data freshness critical.
+@105 p
+Event-driven chỉ khi có nhiều services cần react.
+@106 h3
+When NOT to Cache
+@107 pre
+ Don't cache:
+- Write-heavy data (inventory counts thay đổi liên tục)
+- Real-time data (stock prices)
+- Personalized data (different per user, low hit rate)
+- Small datasets (< 1000 records, DB fast enough)
+
+@108 h2
+Component 5: Database
+@109 h3
+Vai Trò
+@110 p
+Persistent storage. Source of truth.
+@111 h3
+Why Database is Often the Bottleneck
+@112 pre
+Memory read:  100 nanoseconds
+SSD read:     150 microseconds  (1,500x slower)
+HDD read:     10 milliseconds   (100,000x slower)
+
+Database phải:
+- Read from disk
+- Parse query
+- Execute plan
+- Return results
+
+→ Inherently slow compared to memory
+
+@113 h3
+Optimization Hierarchy
+@114 p
+**Level 1: Query Optimization (Do this first)**
+@115 p
+**Level 2: Connection Pooling**
+@116 p
+**Level 3: Read Replicas**
+@117 pre
+Master (Write)
+  ↓ replicate
+Slave 1, Slave 2, Slave 3 (Read)
+
+Writes → Master
+Reads → Load balance across Slaves
+
+ Scale reads easily
+ Eventual consistency (replication lag)
+
+@118 p
+**Level 4: Sharding (Last resort)**
+@119 pre
+Only khi:
+- Single DB can't handle load
+- Vertical scaling maxed out
+- Data too large for 1 machine
+
+Cost:
+- Very complex
+- Cross-shard queries hard
+- Resharding nightmare
+
+@120 h3
+Trade-offs: SQL vs NoSQL
+@121 pre
+SQL (PostgreSQL, MySQL):
+ ACID transactions
+ Rich queries (JOIN, aggregations)
+ Data integrity
+ Harder to scale horizontally
+ Schema changes expensive
+
+NoSQL (MongoDB, DynamoDB):
+ Easy horizontal scaling
+ Flexible schema
+ High write throughput
+ No JOIN (application-level)
+ Eventual consistency
+ Less query power
+
+@122 p
+**Decision framework:**
+@123 pre
+Choose SQL khi:
+- Need transactions (banking, e-commerce)
+- Complex relationships
+- Ad-hoc queries
+- Data integrity critical
+
+Choose NoSQL khi:
+- Need massive scale
+- Write-heavy workload
+- Flexible schema
+- Simple queries (key-value lookups)
+
+@124 h3
+My Opinion
+@125 p
+**Start với SQL (PostgreSQL).**
+@126 p
+Nó handle được 99% use cases. JSONB column cho flexibility. Scale vertically first, add read replicas second.
+@127 p
+Chỉ switch sang NoSQL khi proven SQL can't handle load.
+@128 h2
+Putting It All Together: Request Flow
+@129 p
+Hãy trace một request từ đầu đến cuối:
+@130 h3
+Example: User loads homepage
+@131 pre
+1. Browser → DNS lookup
+   Time: 20ms
+
+2. Browser → HTTPS to Load Balancer
+   Time: 50ms (TCP + TLS)
+
+3. Load Balancer → Choose App Server (Round Robin)
+   Time: 5ms
+
+4. App Server → Check Cache for homepage data
+   Time: 2ms
+   Result: Cache HIT
+
+5. App Server → Return HTML to LB
+   Time: 5ms
+
+6. LB → Return to Browser
+   Time: 10ms
+
+7. Browser → Parse and render
+   Time: 200ms
+
+Total: ~292ms
+Bottleneck: Browser rendering (200ms)
+
+@132 h3
+If Cache MISS:
+@133 pre
+4. App Server → Check Cache
+   Result: MISS
+
+5. App Server → Query Database
+   Time: 300ms ← NEW BOTTLENECK
+
+6. App Server → Store in Cache
+   Time: 2ms
+
+7. App Server → Return HTML
+   Time: 5ms
+
+Total: ~594ms (2x slower)
+
+@134 h3
+Optimization Strategy
+@135 pre
+Current bottleneck: Database (300ms)
+
+Options:
+A. Add indexes → 300ms → 50ms (6x faster, low effort)
+B. Query optimization → 50ms → 20ms (2.5x, medium effort)
+C. Add more caching → Reduce DB hits to near zero
+
+Action: Do A first (high ROI), then monitor.
+
+@136 h2
+Mental Model: Everything Is A System
+@137 p
+Apply component thinking everywhere:
+@138 p
+**Restaurant:**
+@139 li
+Client: Customer
+@140 li
+Load Balancer: Host
+@141 li
+Servers: Waiters
+@142 li
+Cache: Menu knowledge
+@143 li
+Database: Kitchen
+@144 p
+**Bottleneck?** Kitchen (20 min prepare time)
+@145 p
+**Solution?** Add more chefs (horizontal scaling) or better equipment (vertical scaling).
+@146 p
+**Coffee shop:**
+@147 li
+Bottleneck: 1 barista, 10 customers
+@148 li
+Solution: Add baristas hoặc self-service kiosks
+@149 p
+Khi bạn see patterns này, bạn understand systems deeply.
+@150 h2
+Key Takeaways
+@151 p
+**Mọi web system có 5 components cơ bản:**
+@152 li
+**Client** - Presentation, không tin cậy
+@153 li
+**Load Balancer** - Distribute traffic
+@154 li
+**Application Server** - Business logic, stateless preferred
+@155 li
+**Cache** - Fast reads, invalidation is hard
+@156 li
+**Database** - Source of truth, often bottleneck
+@157 p
+**Design principles:**
+@158 li
+**Start simple** - Don't over-engineer
+@159 li
+**Measure first** - Find real bottlenecks
+@160 li
+**Optimize bottlenecks** - Not everything
+@161 li
+**Scale gradually** - Vertical → Horizontal
+@162 p
+**Trade-off awareness:**
+@163 li
+Stateless vs Stateful servers
+@164 li
+Cache complexity vs Performance
+@165 li
+SQL consistency vs NoSQL scale
+@166 li
+Simple monolith vs Complex distributed
+@167 p
+**Next steps:**
+@168 p
+Practice với real system. Trace requests. Identify components. Measure latency. Find bottlenecks.
+@169 p
+Component thinking là foundation. Master này trước khi học patterns phức tạp hơn.

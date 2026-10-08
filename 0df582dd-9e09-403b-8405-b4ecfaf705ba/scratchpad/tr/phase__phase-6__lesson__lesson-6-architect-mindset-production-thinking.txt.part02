@@ -1,0 +1,716 @@
+@63
+4. ⟦Hoạch Định Năng Lực|Capacity Planning⟧ - Mở Rộng Trước Khi Cần Đến
+@64
+Dự Phóng Tăng Trưởng
+@65
+Ma Trận Hoạch Định Tài Nguyên
+@66
+# Kế hoạch năng lực - 6 tháng tới
+
+## Năng lực hiện tại
+- Máy chủ API: 10 instance, CPU trung bình 60%
+- Cơ sở dữ liệu: 1 máy chủ chính + 2 bản sao, dùng 70% kết nối
+- Bộ nhớ đệm: Redis 50GB, dùng 40% bộ nhớ
+- Năng lực tối đa: ~1500 RPS trước khi bắt đầu suy giảm
+
+## Dự phóng 6 tháng
+- Tải dự kiến: 3000 RPS (gấp 2 lần mức tối đa hiện tại)
+- Lưu lượng đỉnh: 4500 RPS (mùa lễ hội)
+
+## Kế hoạch hành động
+| Thời gian | Hành động | Chi phí | Phụ trách |
+|----------|--------|------|-------|
+| Tháng 1 | Thêm 10 instance API | +$2k/tháng | DevOps |
+| Tháng 2 | Bản sao chỉ đọc của CSDL (2 → 4) | +$3k/tháng | DBA |
+| Tháng 2 | Nâng cấp cụm Redis (50GB → 100GB) | +$1k/tháng | DevOps |
+| Tháng 3 | Chuẩn bị phân mảnh CSDL | $0 | Backend |
+| Tháng 4 | Triển khai phân mảnh CSDL | $0 | Backend |
+| Tháng 5 | Nâng cấp CDN cho tài nguyên tĩnh | +$1k/tháng | Frontend |
+| Tháng 6 | Kiểm thử tải ở mức 5000 RPS | $0 | QA |
+
+## Đánh giá rủi ro
+- ⚠️ Phân mảnh CSDL phức tạp, dành ra 2 tháng
+- ⚠️ Cần môi trường kiểm thử tải
+- Mở rộng API thì đơn giản
+
+@67
+Chiến Lược ⟦Kiểm Thử Tải|Load Testing⟧
+@68
+Ngân Sách Cho Tăng Trưởng
+@69
+Quy tắc kinh nghiệm: Chi phí hạ tầng = 5-10% doanh thu
+
+Ví dụ:
+- Doanh thu hằng tháng: $1M
+- Chi phí hạ tầng chấp nhận được: $50k-$100k
+- Chi phí hiện tại: $30k
+- Dư địa tăng trưởng: $20k-$70k
+
+Chiến lược:
+- Tối ưu trước khi mở rộng (giảm 20% chi phí)
+- Lên kế hoạch tăng dần
+- Dành sẵn ngân sách cho sự cố
+
+@70
+5. Chiến Lược ⟦Chuyển Đổi|Migration⟧ - Thay Đổi Môi Trường Thực Tế Một Cách An Toàn
+@71
+Những Thách Thức Khi ⟦Chuyển Đổi|Migration⟧
+@72
+Vì sao chuyển đổi lại rủi ro:
+- Yêu cầu không có thời gian ngừng hoạt động
+- Khối lượng dữ liệu lớn
+- Không dễ hoàn tác
+- Người dùng bị ảnh hưởng nếu thất bại
+- Áp lực kinh doanh (doanh thu)
+
+Kịch bản ví dụ:
+- Chuyển đổi cơ sở dữ liệu (PostgreSQL → MySQL)
+- Chuyển đổi đám mây (AWS → GCP)
+- Thay đổi kiến trúc (nguyên khối → vi dịch vụ)
+- Thay đổi mô hình dữ liệu (tiến hoá lược đồ)
+
+@73
+Strangler Fig Pattern (mẫu cây đa bóp nghẹt)
+@74
+**Thay thế dần hệ thống cũ bằng hệ thống mới:**
+@75
+flowchart LR
+    Users[Người dùng] --> Router{Bộ định tuyến}
+    Router -->|Tính năng cũ| Old[Hệ thống cũ]
+    Router -->|Tính năng mới| New[Hệ thống mới]
+    Old -.Đồng bộ dữ liệu.-> New
+@76
+Giai đoạn 1: Xây hệ thống mới chạy song song với hệ thống cũ
+Giai đoạn 2: Định tuyến lưu lượng mới sang hệ thống mới
+Giai đoạn 3: Chuyển dần dữ liệu cũ
+Giai đoạn 4: Chuyển hướng thêm lưu lượng sang hệ thống mới
+Giai đoạn 5: Ngừng sử dụng hệ thống cũ
+
+Thời gian: Từ vài tháng đến vài năm, không phải chuyển một lần (big-bang)
+
+@77
+Ví Dụ ⟦Chuyển Đổi Cơ Sở Dữ Liệu|Database Migration⟧
+@78
+⟦Cờ Tính Năng|Feature Flag⟧ Cho ⟦Chuyển Đổi|Migration⟧
+@79
+Danh Sách Kiểm Tra Khi ⟦Chuyển Đổi|Migration⟧
+@80
+# Danh sách kiểm tra chuyển đổi
+
+## Trước khi chuyển đổi
+[ ] Kiểm thử tải hệ thống mới ở mức lưu lượng dự kiến
+[ ] Đã cài đặt cờ tính năng (feature flag)
+[ ] Đã viết tài liệu kế hoạch hoàn tác
+[ ] Script kiểm tra dữ liệu đã sẵn sàng
+[ ] Bảng điều khiển giám sát đã chuẩn bị
+[ ] Nhóm trực sự cố đã được phổ biến
+[ ] Các bên liên quan đã được thông báo
+[ ] Đã lên lịch khung giờ bảo trì (nếu cần)
+
+## Trong khi chuyển đổi
+[ ] Bắt đầu với 1% lưu lượng
+[ ] Theo dõi sát tỷ lệ lỗi
+[ ] Kiểm tra tính nhất quán dữ liệu mỗi giờ
+[ ] Phát hành dần: 1% → 5% → 10% → 25% → 50% → 100%
+[ ] Mỗi bước: theo dõi 24-48 giờ trước khi sang bước tiếp
+[ ] Ghi lại mọi vấn đề gặp phải
+
+## Sau khi chuyển đổi
+[ ] Giám sát đầy đủ trong 1 tuần
+[ ] Báo cáo kiểm tra dữ liệu
+[ ] So sánh hiệu năng (cũ và mới)
+[ ] Họp rút kinh nghiệm sau sự kiện (post-mortem)
+[ ] Ghi lại bài học kinh nghiệm
+[ ] Lên kế hoạch ngừng sử dụng hệ thống cũ
+
+@81
+6. Lãnh Đạo Kỹ Thuật - Tạo Ảnh Hưởng Mà Không Cần Quyền Hạn
+@82
+Kiến Trúc Sư Với Vai Trò Người Dẫn Dắt
+@83
+Lãnh đạo kỹ thuật ≠ Quản lý
+
+Bạn không có quyền:
+- Giao việc
+- Sa thải người khác
+- Duyệt ngân sách
+
+Nhưng bạn CÓ sức ảnh hưởng thông qua:
+- Chuyên môn kỹ thuật
+- Niềm tin đã giành được
+- Giao tiếp rõ ràng
+- Thành tích ra quyết định đúng
+
+@84
+Xây Dựng Niềm Tin Qua Kết Quả Thực Tế
+@85
+Làm sao để giành được niềm tin với vai trò kiến trúc sư:
+
+Mang lại kết quả:
+- Thiết kế thực sự chạy tốt trên môi trường thực tế
+- Giải pháp mở rộng được khi cần
+- Chuyển đổi suôn sẻ, không sự cố
+
+Đáng tin cậy:
+- Có mặt khi có sự cố
+- Làm đến nơi đến chốn những gì đã cam kết
+- Trả lời câu hỏi nhanh chóng
+
+Thừa nhận sai lầm:
+- "Tôi đã sai về X"
+- "Cách tiếp cận tốt hơn là Y"
+- Học hỏi một cách công khai
+
+Ghi nhận công lao:
+- "Ý tưởng dùng bộ nhớ đệm của Sarah đã cứu chúng ta"
+- Làm nổi bật đóng góp của nhóm
+- Chia sẻ thành công
+
+@86
+Ra Quyết Định Kỹ Thuật
+@87
+**⟦Khung tư duy|Framework⟧ cho các quyết định kiến trúc:**
+@88
+# Hồ sơ quyết định kiến trúc (Architecture Decision Record - ADR)
+
+## Bối cảnh
+Chúng ta cần thiết kế lại hệ thống thông báo.
+Hệ thống hiện tại:
+- Gửi 1 triệu thông báo/ngày
+- Tăng 50% mỗi quý
+- Thường xuyên bị trễ và lỗi
+
+## Quyết định
+Áp dụng kiến trúc hướng sự kiện với Kafka
+
+## Các phương án đã cân nhắc
+1. **RabbitMQ + worker**
+   - Ưu điểm: Nhóm đã quen, đơn giản hơn
+   - Nhược điểm: Hạn chế về mở rộng, không phát lại (replay) được
+
+2. **AWS SNS/SQS**
+   - Ưu điểm: Dịch vụ được quản lý sẵn, tin cậy
+   - Nhược điểm: Phụ thuộc nhà cung cấp, tốn kém khi quy mô lớn
+
+3. **Kafka** (ĐÃ CHỌN)
+   - Ưu điểm: Thông lượng cao, phát lại được, hệ sinh thái mạnh
+   - Nhược điểm: Phức tạp khi vận hành, phải mất thời gian học
+
+## Hệ quả
+Tích cực:
+- Xử lý được hơn 10 triệu thông báo/ngày
+- Phát lại thông điệp để gỡ lỗi
+- Có thể phân tích thời gian thực
+
+Tiêu cực:
+- Nhóm cần được đào tạo về Kafka
+- Thêm chi phí phụ cho vận hành
+- Chuyển đổi mất 3 tháng
+
+## Lộ trình
+- Tháng 1: Cài đặt Kafka + đào tạo
+- Tháng 2: Xây dựng dịch vụ thông báo mới
+- Tháng 3: Chuyển đổi dần
+
+@89
+Tạo Ảnh Hưởng Bằng Dữ Liệu
+@90
+Kỹ Năng Giao Tiếp
+@91
+**Giải thích chuyện kỹ thuật cho người không làm kỹ thuật:**
+@92
+Biệt ngữ kỹ thuật:
+"Chúng ta cần triển khai horizontal pod autoscaling
+bằng Kubernetes HPA dựa trên custom metrics từ
+Prometheus để xử lý lưu lượng tăng đột biến"
+
+Ngôn ngữ kinh doanh:
+"Hiện tại, lưu lượng tăng đột biến làm sập trang web.
+Điều này gây mất doanh thu.
+Giải pháp: Tự động thêm máy chủ khi hệ thống bận.
+Chi phí: $5k/tháng
+Lợi ích: Không còn sập, bảo vệ $50k doanh thu mỗi giờ"
+
+@93
+**Viết tài liệu kỹ thuật rõ ràng:**
+@94
+# Tài liệu tồi
+Dùng Redis để lưu đệm. Cấu hình TTL cho phù hợp.
+
+# Tài liệu tốt
+## Chiến lược lưu đệm
+
+Chúng ta dùng Redis để lưu đệm phản hồi API, giảm 80% tải cho cơ sở dữ liệu.
+
+### Khi nào nên lưu đệm
+- Nên lưu đệm: Hồ sơ người dùng, danh sách sản phẩm (hiếm khi thay đổi)
+- Không lưu đệm: Tồn kho thời gian thực, giá (thay đổi thường xuyên)
+
+### Hướng dẫn đặt TTL
+- Hồ sơ người dùng: 1 giờ (hơi cũ một chút cũng không sao)
+- Danh sách sản phẩm: 5 phút (cập nhật đều đặn)
+- Kết quả tìm kiếm: 30 giây (cân bằng giữa độ mới và hiệu năng)
+
+### Ví dụ
+```javascript
+await redis.set(`user:${id}`, data, { ttl: 3600 })
+```
+
+### Giám sát
+- Tỷ lệ trúng bộ nhớ đệm: https://dashboard/redis
+- Cảnh báo nếu tỷ lệ trúng < 80%
+
+@95
+Review Mã Một Cách Xuất Sắc
+@96
+Kèm Cặp Các Kỹ Sư
+@97
+Kỹ sư mới vào nghề: "Em nên dùng MongoDB hay PostgreSQL?"
+
+Câu trả lời tồi:
+"Dùng PostgreSQL đi, nó tốt hơn."
+
+Câu trả lời tốt:
+"Câu hỏi hay đấy! Cùng nghĩ qua các đánh đổi nhé:
+
+Dữ liệu của em trông thế nào?
+- Có cấu trúc, có quan hệ? → PostgreSQL
+- Phi cấu trúc, lược đồ linh hoạt? → MongoDB
+
+Những thao tác nào?
+- Truy vấn phức tạp, phép join? → PostgreSQL
+- CRUD đơn giản, ghi nhanh? → MongoDB
+
+Nhóm của em quen với cái gì?
+- Có kinh nghiệm SQL? → PostgreSQL dễ hơn
+
+Với tình huống của em (hồ sơ người dùng có quan hệ),
+anh khuyên dùng PostgreSQL vì:
+1. Em có dữ liệu có cấu trúc
+2. Cần truy vấn join (users + orders)
+3. Nhóm đã biết SQL
+
+Nhưng cái nào cũng có thể dùng được. Em muốn làm thử nguyên mẫu cả hai không?"
+
+@98
+7. Quy Trình Review Kiến Trúc - Ngăn Vấn Đề Từ Sớm
+@99
+Khi Nào Cần Review
+@100
+Khi nào bắt buộc review kiến trúc:
+
+Luôn review:
+- Dịch vụ/hệ thống mới
+- Tái cấu trúc lớn
+- Thay đổi lược đồ cơ sở dữ liệu
+- Áp dụng công nghệ mới
+- Thay đổi nhạy cảm về bảo mật
+- Phụ thuộc liên nhóm
+
+⚠️ Cân nhắc review:
+- Luồng xử lý quan trọng về hiệu năng
+- Thuật toán phức tạp
+- Tích hợp API bên ngoài
+
+Không cần review:
+- Sửa lỗi
+- Thay đổi giao diện
+- Cập nhật nội dung chữ
+- Tái cấu trúc nhỏ
+
+@101
+Mẫu Review
+@102
+# Review kiến trúc: Thiết kế lại dịch vụ thanh toán
+
+## Người đề xuất
+Sarah Chen, Trưởng nhóm Backend
+
+## Tổng quan
+Thiết kế lại dịch vụ thanh toán để hỗ trợ thanh toán quốc tế
+
+## Hệ thống hiện tại
+- Một nhà cung cấp thanh toán duy nhất (Stripe)
+- Chỉ USD
+- Xử lý đồng bộ
+- ~1000 giao dịch/ngày
+
+## Hệ thống đề xuất
+- Nhiều nhà cung cấp thanh toán (Stripe, PayPal, Adyen)
+- Hỗ trợ đa tiền tệ
+- Xử lý bất đồng bộ qua Kafka
+- Dự kiến 10k giao dịch/ngày
+
+## Sơ đồ kiến trúc
+[Chèn sơ đồ]
+
+## Các quyết định thiết kế chính
+
+### 1. Nhiều nhà cung cấp thanh toán
+Quyết định: Hỗ trợ từ 3 nhà cung cấp trở lên
+Lý do: Ưu tiên theo khu vực, dự phòng
+Đánh đổi: Độ phức tạp và tính linh hoạt
+
+### 2. Xử lý bất đồng bộ
+Quyết định: Dùng Kafka cho các sự kiện thanh toán
+Lý do: Tách rời, chịu được tăng đột biến, thử lại
+Đánh đổi: Nhất quán cuối cùng
+
+### 3. Trừu tượng hoá nhà cung cấp
+Quyết định: Ẩn nhà cung cấp sau một interface
+Lý do: Dễ thêm/bớt nhà cung cấp
+Đánh đổi: Thêm một lớp trừu tượng
+
+## Mối lo ngại & rủi ro
+1. **Quy đổi tiền tệ**
+   - Rủi ro: Tỷ giá thay đổi trong lúc xử lý
+   - Giảm thiểu: Chốt tỷ giá lúc thanh toán
+
+2. **Chuyển đổi dự phòng nhà cung cấp**
+   - Rủi ro: Nhà cung cấp chính bị sập
+   - Giảm thiểu: Tự động chuyển sang nhà cung cấp phụ
+
+3. **Tính nhất quán dữ liệu**
+   - Rủi ro: Mất sự kiện trong Kafka
+   - Giảm thiểu: Gửi ít nhất một lần (at-least-once), tính lũy đẳng
+
+## Cân nhắc về quy mô
+- Hiện tại: 1k giao dịch/ngày
+- 1 năm tới: 50k giao dịch/ngày (gấp 50 lần)
+- Thiết kế chịu được: 100k giao dịch/ngày
+
+## Bảo mật
+- Duy trì tuân thủ PCI
+- Không lưu dữ liệu thẻ
+- Mã hoá token của nhà cung cấp
+- Ghi log kiểm toán
+
+## Giám sát
+- Tỷ lệ giao dịch thành công theo từng nhà cung cấp
+- Độ trễ p95, p99
+- Độ chính xác của quy đổi tiền tệ
+- Cảnh báo thanh toán thất bại
+
+## Lộ trình
+- Tuần 1-2: Xây lớp trừu tượng nhà cung cấp
+- Tuần 3-4: Tích hợp các nhà cung cấp
+- Tuần 5-6: Cài đặt Kafka + bộ xử lý sự kiện
+- Tuần 7-8: Chuyển đổi + kiểm thử
+- Tuần 9: Phát hành dần
+
+## Câu hỏi cho người review
+1. Lớp trừu tượng nhà cung cấp có quá phức tạp không?
+2. Kafka có quá tay so với quy mô hiện tại không?
+3. Có bỏ sót kịch bản sự cố nào không?
+
+## Người review
+- @architect-alice (hạ tầng)
+- @architect-bob (bảo mật)
+- @devops-lead (vận hành)
+
+@103
+Hướng Dẫn Review
+@104
+**Dành cho người review:**
+@105
+Tập trung vào:
+- Có bỏ sót kịch bản sự cố?
+- Đã cân nhắc về quy mô?
+- Vấn đề bảo mật?
+- Độ phức tạp khi vận hành?
+- Có phương án tốt hơn?
+
+Tránh:
+- Sa đà vào tiểu tiết (bikeshedding: đặt tên, định dạng)
+- "Tôi sẽ làm khác" mà không có lý lẽ
+- Cầu toàn ("Cái này chưa tối ưu")
+
+🎯 Mục tiêu:
+Giúp cải thiện thiết kế, không phải cản trở tiến độ
+
+@106
+**Dành cho tác giả thiết kế:**
+@107
+Hãy cởi mở với:
+- Phản hồi mang tính phản biện
+- Các cách tiếp cận khác
+- Giải pháp đơn giản hơn
+
+Tránh:
+- Phản ứng phòng thủ
+- "Cứ tin tôi, nó sẽ chạy"
+- Gạt bỏ các mối lo ngại
+
+🎯 Mục tiêu:
+Học hỏi, cải thiện thiết kế, xây dựng đồng thuận
+
+@108
+Tiêu Chí Phê Duyệt
+@109
+## Thế nào là được phê duyệt
+
+Thiết kế có thể được phê duyệt khi:
+- [ ] Các kịch bản sự cố đã được xác định và có biện pháp giảm thiểu
+- [ ] Các cân nhắc về quy mô đã được giải quyết
+- [ ] Đã review bảo mật
+- [ ] Đã hiểu rõ tác động vận hành
+- [ ] Đã xác định chiến lược giám sát
+- [ ] Có kế hoạch hoàn tác
+- [ ] Từ 2 kiến trúc sư trở lên đã phê duyệt
+- [ ] Không còn mối lo ngại mang tính chặn
+
+⚠️ Phê duyệt có điều kiện:
+- Các mối lo ngại nhỏ cần xử lý trong lúc hiện thực
+- Đã lên lịch các buổi review tiếp theo
+
+Không phê duyệt:
+- Rủi ro lớn chưa được giảm thiểu
+- Các mối lo ngại về quy mô chưa được giải quyết
+- Vấn đề bảo mật mang tính chặn
+
+@110
+8. Tư Duy Sau Cùng - Bạn Làm Chủ Hệ Thống
+@111
+Các Nguyên Tắc Làm Chủ Môi Trường Thực Tế
+@112
+**1. Nghĩ Dài Hạn**
+@113
+Đoạn mã bạn viết hôm nay:
+- Bạn sẽ phải bảo trì trong nhiều năm
+- Người khác sẽ mở rộng nó
+- Sẽ chạy ở quy mô gấp 10 lần
+- Rồi sẽ có lúc hỏng
+
+Hãy viết mã mà bạn tự hào được làm chủ.
+
+@114
+**2. Thấu Cảm Với Người ⟦Trực Sự Cố|Oncall⟧**
+@115
+Trước khi merge:
+"Cái này có đánh thức ai đó lúc 3 giờ sáng không?"
+"Cái này có gỡ lỗi được không?"
+"Có hoàn tác được không?"
+"Thông báo lỗi có chỉ ra được việc cần làm không?"
+
+Nếu câu trả lời là "có lẽ" → hãy cải thiện thiết kế.
+
+@116
+**3. Tài Liệu Như Một Bức Thư Tình**
+@117
+Viết tài liệu cho chính bạn trong tương lai (6 tháng sau):
+- Vì sao lại thiết kế thế này?
+- Những đánh đổi là gì?
+- Gỡ lỗi thế nào?
+- Mở rộng thế nào?
+
+Bạn sẽ thầm cảm ơn chính mình.
+
+@118
+**4. Đo Lường Mọi Thứ**
+@119
+"Chúng ta tin vào Chúa. Còn lại, ai cũng phải mang dữ liệu đến."
+- W. Edwards Deming
+
+Không có chỉ số = Không nhìn thấy gì = Không thể cải thiện
+
+Thêm chỉ số trước, tối ưu sau.
+
+@120
+**5. Tự Động Hoá ⟦Việc Lặp Lại Nhàm Chán|Toil⟧**
+@121
+Các tác vụ lặp đi lặp lại:
+- Triển khai
+- Hoàn tác
+- Mở rộng
+- Thiết lập giám sát
+- Ứng phó sự cố
+
+Tự động hoá một lần, hưởng lợi mãi mãi.
+
+@122
+Lộ Trình Phát Triển Sự Nghiệp
+@123
+flowchart TB
+    Junior[Kỹ sư mới vào nghề<br/>Viết mã] --> Mid[Kỹ sư trung cấp<br/>Làm chủ tính năng]
+    Mid --> Senior[Kỹ sư lâu năm<br/>Thiết kế hệ thống]
+    Senior --> Staff[Staff Engineer<br/>Ảnh hưởng liên nhóm]
+    Staff --> Principal[Principal Engineer<br/>Chiến lược toàn công ty]
+@124
+**Ở mỗi cấp độ:**
+@125
+Mới vào nghề → Trung cấp:
+- Chất lượng mã
+- Làm chủ tính năng
+- Học thiết kế hệ thống
+
+Trung cấp → Lâu năm:
+- Thiết kế hệ thống
+- Tư duy đánh đổi
+- Kèm cặp người khác
+
+Lâu năm → Staff:
+- Ảnh hưởng liên nhóm
+- Tư duy vận hành thực tế
+- Chiến lược kỹ thuật
+
+Staff → Principal:
+- Kiến trúc toàn công ty
+- Tuyển dụng & xây dựng nhóm
+- Định hướng kỹ thuật
+
+@126
+Điều Gì Làm Nên Những Kiến Trúc Sư Xuất Sắc
+@127
+Kiến trúc sư trung bình:
+- Biết các mẫu thiết kế
+- Làm theo thực hành tốt nhất
+- Thiết kế hệ thống
+
+Kiến trúc sư xuất sắc:
+- Nghĩ đến sự cố
+- Đơn giản hoá sự phức tạp
+- Giúp người khác làm được việc
+- Làm chủ môi trường thực tế
+- Giao tiếp rõ ràng
+- Giành được niềm tin
+- Mang lại kết quả
+
+@128
+10 Điều Răn Của Hệ Thống Vận Hành Thực Tế
+@129
+1. **Giám sát mọi thứ** - Bạn không thể cải thiện điều mình không đo được
+
+2. **Thiết kế để chịu được sự cố** - Mọi thứ đều sẽ hỏng. Hãy lên kế hoạch cho điều đó.
+
+3. **Bắt đầu đơn giản** - Chỉ thêm độ phức tạp khi cần
+
+4. **Tư duy theo đánh đổi** - Không có giải pháp hoàn hảo. Hãy chọn khôn ngoan.
+
+5. **Ghi lại các quyết định** - Bạn của tương lai sẽ hỏi "Tại sao?"
+
+6. **Tự động hoá việc lặp lại** - Con người để suy nghĩ, máy móc để lặp lại
+
+7. **Bảo mật mặc định** - Nới lỏng dễ hơn siết chặt về sau
+
+8. **Kiểm thử ở quy mô lớn** - Hãy kiểm thử tải trước khi người dùng làm điều đó thay bạn
+
+9. **Phát hành dần dần** - Triển khai một lần (big bang) = sự cố một lần cực lớn
+
+10. **Làm chủ mã của bạn** - Bạn xây nó, bạn vận hành nó
+
+@130
+Những Điểm Cốt Lõi
+@131
+Những Chuyển Dịch Tư Duy Từ Kỹ Sư → Kiến Trúc Sư
+@132
+**1. Từ Mã → Hệ Thống**
+@133
+Kỹ sư: "Tính năng chạy được trên máy của tôi"
+@134
+Kiến trúc sư: "Hệ thống chạy được ở quy mô lớn trên ⟦môi trường thực tế|production⟧"
+@135
+**2. Từ ⟦Kịch Bản Suôn Sẻ|Happy Path⟧ → Các Kịch Bản Sự Cố**
+@136
+Kỹ sư: "Nếu mọi thứ đều chạy..."
+@137
+Kiến trúc sư: "Khi mọi thứ hỏng..."
+@138
+**3. Từ Một Mình → Cả Nhóm**
+@139
+Kỹ sư: Viết mã một mình
+@140
+Kiến trúc sư: Giúp cả nhóm thành công
+@141
+**4. Từ Xây Dựng → Làm Chủ**
+@142
+Kỹ sư: Giao xong rồi chuyển sang việc khác
+@143
+Kiến trúc sư: Làm chủ nó trên ⟦môi trường thực tế|production⟧
+@144
+**5. Từ Kỹ Thuật → Kinh Doanh**
+@145
+Kỹ sư: "Cái này tốt hơn về mặt kỹ thuật"
+@146
+Kiến trúc sư: "Cái này mang lại giá trị kinh doanh"
+@147
+Danh Sách Kiểm Tra Tư Duy Vận Hành Thực Tế
+@148
+Trước khi đưa lên môi trường thực tế:
+
+[ ] Bán kính ảnh hưởng là bao nhiêu nếu cái này hỏng?
+[ ] Có hoàn tác được trong dưới 5 phút không?
+[ ] Đã có giám sát cho cái này chưa?
+[ ] Thông báo lỗi có chỉ ra được việc cần làm không?
+[ ] Đã kiểm thử tải ở mức gấp 2 lưu lượng dự kiến chưa?
+[ ] Có sổ tay xử lý (runbook) cho các sự cố thường gặp không?
+[ ] Kỹ sư trực sự cố có gỡ lỗi được cái này lúc 3 giờ sáng không?
+[ ] Tác động là gì nếu dịch vụ này sập?
+[ ] Có kế hoạch phát hành dần không?
+[ ] Đã cân nhắc hết các kiểu sự cố chưa?
+
+@149
+Các Nguyên Tắc Lãnh Đạo Kỹ Thuật
+@150
+**Giao tiếp:**
+@151
+Giải thích chuyện kỹ thuật bằng ngôn ngữ kinh doanh
+@152
+Viết tài liệu mà người khác hiểu được
+@153
+Giao tiếp nhiều hơn mức cần thiết khi có ⟦sự cố|incidents⟧
+@154
+**Ra quyết định:**
+@155
+Dùng dữ liệu, không dùng ý kiến chủ quan
+@156
+Ghi lại các ⟦đánh đổi|trade-offs⟧
+@157
+Để nhóm cùng tham gia ra quyết định
+@158
+**Tạo ảnh hưởng:**
+@159
+Xây dựng niềm tin bằng kết quả thực tế
+@160
+Ghi nhận công lao cho người khác, nhận trách nhiệm về mình
+@161
+Kèm cặp một cách hào phóng
+@162
+**Làm chủ:**
+@163
+Có mặt khi có ⟦sự cố|incidents⟧
+@164
+Làm đến nơi đến chốn những gì đã cam kết
+@165
+Nghĩ dài hạn
+@166
+Lời Kết
+@167
+**Hành trình từ kỹ sư đến kiến trúc sư không phải là học thêm nhiều ⟦mẫu thiết kế|patterns⟧. Mà là dám nhận lấy trách nhiệm làm chủ.**
+@168
+Bạn không cần biết mọi công nghệ. Bạn cần:
+@169
+Tư duy theo ⟦đánh đổi|trade-offs⟧
+@170
+Thiết kế để chịu được ⟦sự cố|failure⟧
+@171
+Làm chủ ⟦môi trường thực tế|production⟧
+@172
+Giúp nhóm của bạn làm được việc
+@173
+Giao tiếp rõ ràng
+@174
+Mang lại kết quả
+@175
+**Kiến trúc sư xuất sắc không được tạo nên trong một ngày. Họ được tôi luyện qua:**
+@176
+Ứng phó các ⟦sự cố|incidents⟧ trên ⟦môi trường thực tế|production⟧
+@177
+Mắc sai lầm và học hỏi
+@178
+Giành được niềm tin theo thời gian
+@179
+Đưa vào vận hành những hệ thống mở rộng được
+@180
+Giúp người khác thành công
+@181
+**Bạn đã sẵn sàng khi nhận ra: Hệ thống là của bạn. Hãy làm chủ nó.**

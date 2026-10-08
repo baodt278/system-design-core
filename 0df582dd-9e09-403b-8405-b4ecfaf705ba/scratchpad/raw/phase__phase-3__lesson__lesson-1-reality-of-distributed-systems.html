@@ -1,0 +1,706 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Reality of Distributed Systems - Failure Models &amp; CAP Thinking | Phase 3 — Distributed Systems Fundamentals | System Design Core</title><meta name="description" content="Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade off thinking để thiết k"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems"/><meta property="og:title" content="Reality of Distributed Systems - Failure Models &amp; CAP Thinking | Phase 3 — Distributed Systems Fundamentals"/><meta property="og:description" content="Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade off thinking để thiết k"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Reality of Distributed Systems - Failure Models &amp; CAP Thinking | Phase 3 — Distributed Systems Fundamentals"/><meta name="twitter:description" content="Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade off thinking để thiết k"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 3 — Distributed Systems Fundamentals</p><p class="mt-3 text-xl font-semibold text-ink">Reality of Distributed Systems - Failure Models &amp; CAP Thinking</p><p class="mt-3 text-sm leading-7 text-ink-dim">Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade-off thinking để thiết kế hệ thống resilient.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Reality of Distributed Systems - Failure Models &amp; CAP Thinking</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Consistency Models - Strong vs Eventual Consistency</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-3-consensus-leader-election"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Consensus &amp; Leader Election - Distributed Agreement</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Time &amp; Event Ordering - Clock Problem Trong Distributed Systems</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-3">Phase 3 — Distributed Systems Fundamentals</a></li><li>/</li><li aria-current="page" class="text-ink">Reality of Distributed Systems - Failure Models &amp; CAP Thinking</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Reality of Distributed Systems - Failure Models &amp; CAP Thinking</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade-off thinking để thiết kế hệ thống resilient.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Reality of Distributed Systems - Failure Models &amp; CAP Thinking"><article class="prose-ui"><h1 id="reality-of-distributed-systems-failure-models--cap-thinking">Reality of Distributed Systems: Failure Models &amp; CAP Thinking</h1>
+<p>Tôi còn nhớ lần đầu tiên production system của tôi bị network partition.</p>
+<p>2 giờ sáng. Monitoring alert nổ inh ỏi. Một phần users ở US không login được. Một phần users ở EU login bình thường. Database vẫn healthy. Application servers vẫn running.</p>
+<p>Tôi hoang mang total. Kiểm tra logs, không thấy errors. Kiểm tra CPU, memory, tất cả normal.</p>
+<p>Senior architect online: <em>&quot;Check network connectivity giữa US và EU datacenters.&quot;</em></p>
+<p>Bingo. AWS có network issue. US datacenter không connect được EU datacenter. Hệ thống đang ở trạng thái <strong>network partition</strong>.</p>
+<p>Đó là lúc tôi học bài học đắt giá nhất: <strong>Distributed systems thì luôn luôn fail. Không phải &quot;if&quot;, mà là &quot;when&quot;.</strong></p>
+<h2 id="tại-sao-distributed-systems-khác-biệt">Tại Sao Distributed Systems Khác Biệt?</h2>
+<h3 id="single-machine-vs-distributed-assumptions-bị-phá-vỡ">Single Machine vs Distributed: Assumptions Bị Phá Vỡ</h3>
+<p><strong>Single machine (local code):</strong></p>
+<pre><code class="language-python"># Local function call
+result = calculate_total(items)
+
+Assumptions:
+Function luôn return (hoặc throw exception)
+Execution time predictable
+Data consistent
+Either success or fail (no in-between)
+</code></pre>
+<p><strong>Distributed system (network call):</strong></p>
+<pre><code class="language-python"># Remote API call
+result = api.calculate_total(items)
+
+Reality:
+Request có thể lost (no response)
+Response có thể timeout (slow network)
+Request có thể duplicate (retry)
+Partial success/failure possible
+Data có thể inconsistent across nodes
+</code></pre>
+<p><strong>Key insight:</strong> Khi move từ single machine sang distributed, mọi assumption bạn từng biết đều sai.</p>
+<h3 id="the-fallacies-of-distributed-computing">The Fallacies of Distributed Computing</h3>
+<p>Peter Deutsch và James Gosling đã tổng kết 8 giả định sai lầm mà developers thường mắc phải:</p>
+<pre><code>1. The network is reliable
+   → Reality: Packets drop, connections fail
+
+2. Latency is zero  
+   → Reality: Network calls take 10-1000ms
+
+3. Bandwidth is infinite
+   → Reality: Network có giới hạn throughput
+
+4. The network is secure
+   → Reality: Data có thể bị intercept
+
+5. Topology doesn&#x27;t change
+   → Reality: Servers die, networks reconfigure
+
+6. There is one administrator
+   → Reality: Multiple teams, multiple configs
+
+7. Transport cost is zero
+   → Reality: Serialization, network transfer cost
+
+8. The network is homogeneous
+   → Reality: Different protocols, versions
+</code></pre>
+<p><strong>Lesson:</strong> Thiết kế distributed system = Thiết kế cho failure.</p>
+<h2 id="murphys-law-in-distributed-systems">Murphy&#x27;s Law in Distributed Systems</h2>
+<p><strong>Murphy&#x27;s Law:</strong> <em>&quot;Anything that can go wrong, will go wrong.&quot;</em></p>
+<p>Trong distributed systems, law này được amplified:</p>
+<p><strong>&quot;Everything that can go wrong, WILL go wrong. Simultaneously. At 3am. On Black Friday.&quot;</strong></p>
+<h3 id="real-production-failures-tôi-đã-trải-qua">Real Production Failures Tôi Đã Trải Qua</h3>
+<p><strong>Failure 1: The Silent Data Corruption</strong></p>
+<pre><code>Scenario:
+- Database replicate Master → Slave
+- Network packet corruption (1 in 10 million)
+- Slave nhận corrupted data
+- Application read từ Slave
+- Return sai data cho users (subtle bugs)
+
+Impact: 3 days để detect, 1 week để fix
+</code></pre>
+<p><strong>Failure 2: The Cascading Timeout</strong></p>
+<pre><code>Scenario:
+- Service A call Service B (timeout 30s)
+- Service B bị slow (disk issue)
+- Service A đợi 30s per request
+- Requests queue up
+- Service A memory exhausted
+- Service A crashes
+- Services depend on A also fail
+
+Impact: Entire system down 2 hours
+</code></pre>
+<p><strong>Failure 3: The Clock Skew</strong></p>
+<pre><code>Scenario:  
+- Server 1 clock: 10:00:00
+- Server 2 clock: 09:59:30 (30s behind)
+- Event A happens on Server 1 at 10:00:00
+- Event B happens on Server 2 at 09:59:45
+- System thinks B happened before A (wrong!)
+
+Impact: Transaction ordering corrupted
+</code></pre>
+<p><strong>Takeaway:</strong> Không có failure scenario nào &quot;too weird&quot;. Tất cả đều xảy ra trong production.</p>
+<h2 id="types-of-failures-in-distributed-systems">Types of Failures in Distributed Systems</h2>
+<h3 id="failure-type-1-network-partition">Failure Type 1: Network Partition</h3>
+<p><strong>Định nghĩa:</strong> Một phần hệ thống không communicate được với phần khác, nhưng cả hai vẫn running.</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    subgraph &quot;US Datacenter&quot;
+        US1[Server US-1]
+        US2[Server US-2]
+    end
+    
+    subgraph &quot;EU Datacenter&quot;
+        EU1[Server EU-1]
+        EU2[Server EU-2]
+    end
+    
+    US1 &lt;--&gt; US2
+    EU1 &lt;--&gt; EU2
+    US1 -.X Network Partition X.-&gt; EU1
+    US2 -.X Network Partition X.-&gt; EU2
+    
+    style US1 fill:#51cf66
+    style US2 fill:#51cf66
+    style EU1 fill:#51cf66
+    style EU2 fill:#51cf66</code></pre>
+<p><em>Network partition: US và EU datacenters không connect được nhau, nhưng servers trong mỗi datacenter vẫn hoạt động bình thường</em></p>
+<p><strong>Scenario thực tế:</strong></p>
+<pre><code>Timeline:
+10:00:00 - Network partition xảy ra
+10:00:01 - User A (US) updates profile
+10:00:02 - User B (EU) reads profile → Sees old data
+10:00:30 - Network heals
+10:00:31 - EU datacenter receives update
+10:00:32 - User B reads again → Sees new data
+
+Problem: 30 giây inconsistency
+</code></pre>
+<p><strong>Tại sao partition xảy ra?</strong></p>
+<pre><code>Common causes:
+- Network equipment failure (switch, router)
+- Fiber optic cable cut
+- AWS/GCP regional issues
+- DDoS attacks
+- Misconfiguration
+- Too much traffic (congestion)
+</code></pre>
+<p><strong>Không thể prevent, chỉ có thể handle:</strong></p>
+<pre><code class="language-python"># Assume network luôn available
+def update_user(user_id, data):
+    primary_db.write(data)
+    replica_db.write(data)  # Assume này luôn succeed
+
+# Handle partition
+def update_user(user_id, data):
+    try:
+        primary_db.write(data)
+    except WriteError:
+        log_error(&quot;Primary DB unavailable&quot;)
+        queue_for_retry(data)
+    
+    try:
+        replica_db.write(data)
+    except WriteError:
+        # Replica unavailable, but primary succeeded
+        # System vẫn functional (eventual consistency)
+        log_warning(&quot;Replica unavailable, will retry&quot;)
+</code></pre>
+<h3 id="failure-type-2-high-latency">Failure Type 2: High Latency</h3>
+<p><strong>Định nghĩa:</strong> Network call chậm hơn expected, nhưng eventually complete.</p>
+<p><strong>Problem:</strong> Slow ≠ Down. System vẫn hoạt động nhưng UX terrible.</p>
+<pre><code>Normal latency: 50ms
+High latency:   5000ms (100x slower)
+
+User experience:
+- Click button
+- Wait 5 seconds
+- Still loading...
+- Click again (duplicate request!)
+- Wait more...
+- Give up, close tab
+</code></pre>
+<p><strong>Cascading effect:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant API
+    participant Service
+    participant DB
+    
+    User-&gt;&gt;API: Request (timeout 10s)
+    API-&gt;&gt;Service: Call service (timeout 8s)
+    Service-&gt;&gt;DB: Query (slow, takes 9s)
+    
+    Note over Service,DB: DB slow due to load
+    Note over API,Service: Service timeout!
+    Service--xAPI: Timeout error
+    API--xUser: 500 error
+    
+    Note over User: User retries
+    User-&gt;&gt;API: Retry request
+    Note over API,DB: More load, slower</code></pre>
+<p><em>High latency gây timeout, timeout gây retry, retry gây more load, more load gây slower → Death spiral</em></p>
+<p><strong>Solutions:</strong></p>
+<pre><code class="language-python"># Solution 1: Timeouts với reasonable values
+response = requests.get(url, timeout=2)  # Fail fast
+
+# Solution 2: Circuit breaker
+class CircuitBreaker:
+    def call(self, func):
+        if self.failure_rate &gt; threshold:
+            raise CircuitOpenError(&quot;Too many failures&quot;)
+        
+        try:
+            return func()
+        except TimeoutError:
+            self.record_failure()
+
+# Solution 3: Bulkhead pattern (isolate resources)
+thread_pool_for_service_a = ThreadPool(10)
+thread_pool_for_service_b = ThreadPool(10)
+# Service A slow không ảnh hưởng Service B
+</code></pre>
+<h3 id="failure-type-3-packet-loss">Failure Type 3: Packet Loss</h3>
+<p><strong>Định nghĩa:</strong> Network packets không đến destination.</p>
+<pre><code>Send:     [Packet 1] [Packet 2] [Packet 3] [Packet 4]
+Receive:  [Packet 1] [        ] [Packet 3] [Packet 4]
+                     ↑ Lost!
+</code></pre>
+<p><strong>Typical packet loss rates:</strong></p>
+<pre><code>LAN (local network):    0.01% - 0.1%
+WiFi:                   1% - 5%
+Internet (good):        0.1% - 1%
+Internet (poor):        5% - 20%
+</code></pre>
+<p><strong>Impact:</strong></p>
+<pre><code class="language-python"># Request bị lost
+client.send(request)
+# ... no response ...
+# Client không biết: request lost? or response lost?
+
+# TCP retransmit automatically (but slow)
+# UDP không retry (faster but unreliable)
+</code></pre>
+<p><strong>Application-level handling:</strong></p>
+<pre><code class="language-python"># Idempotent operations
+def create_user(user_id, data):
+    # Use user_id (client-generated UUID)
+    # Retry-safe: create twice = same result
+    db.insert_or_update(user_id, data)
+
+# Non-idempotent (dangerous)
+def increment_counter():
+    counter += 1
+    # Retry = wrong result!
+</code></pre>
+<h3 id="failure-type-4-message-duplication">Failure Type 4: Message Duplication</h3>
+<p><strong>Định nghĩa:</strong> Same message delivered multiple times.</p>
+<p><strong>Scenario:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant Client
+    participant Server
+    participant DB
+    
+    Client-&gt;&gt;Server: Create order
+    Server-&gt;&gt;DB: INSERT order
+    DB--&gt;&gt;Server: Success
+    
+    Note over Server,Client: Response packet lost!
+    Server--xClient: (no response received)
+    
+    Note over Client: Client timeout, retry
+    Client-&gt;&gt;Server: Create order (again)
+    Server-&gt;&gt;DB: INSERT order (duplicate!)
+    DB--&gt;&gt;Server: Success
+    Server--&gt;&gt;Client: Success
+    
+    Note over DB: Now have 2 orders!</code></pre>
+<p><em>Network packet loss gây duplicate messages khi client retry</em></p>
+<p><strong>Real-world impact:</strong></p>
+<pre><code>Scenario: Payment processing
+1. User click &quot;Pay $100&quot;
+2. Request timeout
+3. User click again
+4. Both requests succeed
+5. User charged $200!
+
+💸 Company lawsuit, refunds, bad press
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<pre><code class="language-python"># Solution 1: Idempotency key
+def process_payment(amount, idempotency_key):
+    if cache.exists(idempotency_key):
+        return cache.get(idempotency_key)  # Return cached result
+    
+    result = charge_card(amount)
+    cache.set(idempotency_key, result, ttl=86400)
+    return result
+
+# Client
+idempotency_key = uuid.generate()
+process_payment(100, idempotency_key)
+# Retry với same key → No duplicate charge
+
+# Solution 2: Database constraints
+CREATE TABLE orders (
+    order_id UUID PRIMARY KEY,  -- Client-generated
+    user_id INT,
+    amount DECIMAL
+);
+-- Duplicate INSERT fails due to PK constraint
+</code></pre>
+<h3 id="failure-type-5-partial-failure">Failure Type 5: Partial Failure</h3>
+<p><strong>Định nghĩa:</strong> Một phần hệ thống fail, phần khác vẫn hoạt động.</p>
+<p><strong>Đây là failure type nguy hiểm nhất.</strong></p>
+<pre><code>Scenario: E-commerce checkout
+
+Step 1: Charge credit card     → Success
+Step 2: Create order in DB     → Success  
+Step 3: Send confirmation email → Email service down
+Step 4: Update inventory        → Inventory service slow, timeout
+
+Result:
+- User charged
+- Order created
+- No email (user confused)
+- Inventory not updated (oversell risk)
+
+Partial success = Inconsistent state
+</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    A[Checkout Request] --&gt; B[Payment Service]
+    B --&gt; C[Order Service]
+    C --&gt; D[Email Service]
+    C --&gt; E[Inventory Service]
+    
+    B -.Success.-&gt; B
+    C -.Success.-&gt; C
+    D -.Failed X.-&gt; D
+    E -.Timeout X.-&gt; E
+    
+    style B fill:#51cf66
+    style C fill:#51cf66
+    style D fill:#ff6b6b
+    style E fill:#ff6b6b</code></pre>
+<p><em>Partial failure: Một số services succeed, một số fail, dẫn đến inconsistent state</em></p>
+<p><strong>Solutions:</strong></p>
+<pre><code class="language-python"># Solution 1: Saga pattern (compensating transactions)
+def checkout_saga(order):
+    try:
+        # Step 1: Charge
+        payment_id = payment_service.charge(order.amount)
+        
+        # Step 2: Create order
+        order_id = order_service.create(order)
+        
+        # Step 3: Send email
+        email_service.send(order.email)
+        
+        # Step 4: Update inventory
+        inventory_service.decrease(order.items)
+        
+        return Success(order_id)
+        
+    except EmailServiceError:
+        # Email failed, compensate
+        order_service.mark_no_email(order_id)
+        queue.retry_email(order)  # Retry later
+        return PartialSuccess(order_id)
+        
+    except InventoryServiceError:
+        # Critical failure, rollback
+        payment_service.refund(payment_id)
+        order_service.cancel(order_id)
+        return Failure(&quot;Inventory unavailable&quot;)
+
+# Solution 2: Event sourcing
+# Log all events, replay để achieve consistency
+events = [
+    {type: &quot;payment_charged&quot;, amount: 100},
+    {type: &quot;order_created&quot;, order_id: 123},
+    {type: &quot;email_failed&quot;, retry_at: &quot;10:00&quot;},
+    {type: &quot;inventory_timeout&quot;, retry_at: &quot;10:01&quot;}
+]
+# Background job process failures
+</code></pre>
+<h2 id="cap-theorem-the-fundamental-trade-off">CAP Theorem: The Fundamental Trade-off</h2>
+<h3 id="định-nghĩa-cap">Định Nghĩa CAP</h3>
+<p>Trong distributed database với network partition, chỉ có thể chọn 2 trong 3:</p>
+<pre><code>C (Consistency):
+    Mọi read nhận được latest write
+    Mọi node thấy cùng data cùng lúc
+
+A (Availability):  
+    Mọi request nhận được response (non-error)
+    System luôn hoạt động
+
+P (Partition Tolerance):
+    System tiếp tục hoạt động khi có network partition
+    Nodes không communicate được nhau
+</code></pre>
+<p><strong>Reality:</strong> Network partition LUÔN xảy ra (P là mandatory).</p>
+<p>→ <strong>Phải chọn giữa C hoặc A.</strong></p>
+<h3 id="cap-intuition-qua-ví-dụ-thực-tế">CAP Intuition Qua Ví Dụ Thực Tế</h3>
+<p><strong>Scenario: Banking App với 2 Datacenters</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    subgraph &quot;US Datacenter&quot;
+        US_DB[(Database&lt;br/&gt;Balance: $100)]
+    end
+    
+    subgraph &quot;EU Datacenter&quot;
+        EU_DB[(Database&lt;br/&gt;Balance: $100)]
+    end
+    
+    US_DB -.X Network Partition.-&gt; EU_DB
+    
+    USER_A[User A&lt;br/&gt;US] --&gt; US_DB
+    USER_B[User B&lt;br/&gt;EU] --&gt; EU_DB</code></pre>
+<p><strong>Network partition happens. What to do?</strong></p>
+<h3 id="choice-1-cp-consistency--partition-tolerance">Choice 1: CP (Consistency + Partition Tolerance)</h3>
+<p><strong>Strategy:</strong> Sacrifice availability để đảm bảo consistency.</p>
+<pre><code class="language-python"># CP system behavior
+def withdraw(amount):
+    if not can_reach_all_replicas():
+        raise ServiceUnavailableError(&quot;System temporarily unavailable&quot;)
+    
+    # Only proceed nếu có thể sync all replicas
+    for replica in all_replicas:
+        replica.withdraw(amount)
+    
+    return Success()
+
+Timeline khi partition:
+10:00:00 - Network partition
+10:00:01 - User A (US) withdraw $50
+           → US DB: &quot;Cannot reach EU, refuse request&quot;
+           → User sees error (unavailable)
+10:00:02 - User B (EU) withdraw $30  
+           → EU DB: &quot;Cannot reach US, refuse request&quot;
+           → User sees error (unavailable)
+
+Result:
+System unavailable (bad UX)
+No inconsistency (data safe)
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code>Data luôn consistent
+No risk of conflicting updates
+Good cho: Banking, payments, inventory
+
+System down khi partition
+Bad UX
+Lost transactions
+</code></pre>
+<h3 id="choice-2-ap-availability--partition-tolerance">Choice 2: AP (Availability + Partition Tolerance)</h3>
+<p><strong>Strategy:</strong> Sacrifice consistency để đảm bảo availability.</p>
+<pre><code class="language-python"># AP system behavior
+def withdraw(amount):
+    # Proceed with local replica, sync later
+    local_db.withdraw(amount)
+    
+    queue_sync_to_other_replicas(amount)
+    
+    return Success()
+
+Timeline khi partition:
+10:00:00 - Network partition
+10:00:01 - User A (US) withdraw $50
+           → US DB: $100 - $50 = $50
+           → Success (local write)
+10:00:02 - User B (EU) withdraw $30
+           → EU DB: $100 - $30 = $70  
+           → Success (local write)
+10:01:00 - Network heals
+10:01:01 - Replicas sync
+           → Conflict! US says $50, EU says $70
+
+Result:
+System available (good UX)
+Data inconsistent (problem!)
+</code></pre>
+<p><strong>Conflict resolution strategies:</strong></p>
+<pre><code class="language-python"># Strategy 1: Last-Write-Wins (timestamp)
+us_balance = {&quot;value&quot;: 50, &quot;timestamp&quot;: &quot;10:00:01&quot;}
+eu_balance = {&quot;value&quot;: 70, &quot;timestamp&quot;: &quot;10:00:02&quot;}
+# EU timestamp later → Balance = $70
+# Lost US transaction!
+
+# Strategy 2: Vector clocks (keep both)
+us_balance = {&quot;value&quot;: 50, &quot;version&quot;: [1, 0]}
+eu_balance = {&quot;value&quot;: 70, &quot;version&quot;: [0, 1]}
+# Both are concurrent → Flag for manual resolution
+# No data loss, but need human intervention
+
+# Strategy 3: Application-specific merge
+# Banking: Merge = apply both withdrawals
+# Balance = $100 - $50 - $30 = $20
+# Correct final state
+# But requires domain knowledge
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code>System luôn available
+Good UX
+Good cho: Social media, recommendations, analytics
+
+Data có thể inconsistent
+Need conflict resolution
+Eventual consistency (not immediate)
+</code></pre>
+<h3 id="so-sánh-cp-vs-ap">So Sánh CP vs AP</h3>
+<pre><code>Banking App:
+Choice: CP
+Why? Data accuracy &gt; Availability
+User có thể đợi, không thể accept wrong balance
+
+Social Media Feed:
+Choice: AP  
+Why? Availability &gt; Strict consistency
+User see slightly stale likes là OK
+
+E-commerce Inventory:
+Choice: CP
+Why? Cannot oversell products
+Better show &quot;unavailable&quot; than sell đã hết
+</code></pre>
+<h2 id="trade-off-thinking-framework">Trade-off Thinking Framework</h2>
+<h3 id="step-1-identify-requirements">Step 1: Identify Requirements</h3>
+<pre><code>Tự hỏi:
+1. Consistency critical không?
+   - Wrong data = big problem? (Banking: YES)
+   - Stale data acceptable? (Social feed: YES)
+
+2. Availability critical không?
+   - Downtime acceptable? (Internal tool: YES)
+   - Must always work? (Public API: YES)
+
+3. Partition frequency?
+   - Single datacenter: Rare
+   - Multi-region: Common
+</code></pre>
+<h3 id="step-2-analyze-trade-offs">Step 2: Analyze Trade-offs</h3>
+<pre><code>CP System:
+When: Financial transactions, inventory, bookings
+Accept: Downtime during partitions
+Gain: Data accuracy
+
+AP System:
+When: Social features, analytics, recommendations  
+Accept: Eventual consistency
+Gain: Always available
+
+CA System:
+Impossible in distributed systems
+   (Network partition luôn happen)
+</code></pre>
+<h3 id="step-3-hybrid-approaches">Step 3: Hybrid Approaches</h3>
+<p><strong>Reality:</strong> Không phải all-or-nothing. Có thể mix.</p>
+<pre><code class="language-python"># Different consistency cho different data
+class UserService:
+    def update_profile(self, user_id, data):
+        # Profile updates: AP (eventual consistency OK)
+        local_db.write(data)
+        async_replicate(data)
+    
+    def update_balance(self, user_id, amount):
+        # Balance updates: CP (strong consistency required)
+        if not all_replicas_reachable():
+            raise UnavailableError()
+        
+        for replica in all_replicas:
+            replica.write(amount)
+
+# Per-feature consistency choice
+features = {
+    &quot;user_profile&quot;: &quot;AP&quot;,      # Stale OK
+    &quot;account_balance&quot;: &quot;CP&quot;,   # Must be accurate
+    &quot;friend_list&quot;: &quot;AP&quot;,       # Stale OK
+    &quot;purchase_history&quot;: &quot;CP&quot;   # Must be accurate
+}
+</code></pre>
+<h2 id="practical-design-principles">Practical Design Principles</h2>
+<h3 id="principle-1-design-for-failure">Principle 1: Design for Failure</h3>
+<p><strong>Assume everything fails.</strong></p>
+<pre><code class="language-python"># Optimistic (dangerous)
+def call_service():
+    return service.request()
+
+# Pessimistic (safe)
+def call_service():
+    try:
+        return service.request(timeout=2)
+    except TimeoutError:
+        log_error(&quot;Service timeout&quot;)
+        return fallback_value()
+    except ConnectionError:
+        log_error(&quot;Service unreachable&quot;)
+        return cached_value()
+    except Exception as e:
+        log_error(f&quot;Unexpected error: {e}&quot;)
+        return default_value()
+</code></pre>
+<h3 id="principle-2-fail-fast">Principle 2: Fail Fast</h3>
+<p><strong>Don&#x27;t wait forever. Fail quickly và retry.</strong></p>
+<pre><code class="language-python"># Slow failure (30s timeout)
+response = requests.get(url, timeout=30)
+
+# Fast failure (2s timeout)
+response = requests.get(url, timeout=2)
+
+# Exponential backoff retry
+for attempt in range(max_retries):
+    try:
+        return requests.get(url, timeout=2)
+    except TimeoutError:
+        if attempt &lt; max_retries - 1:
+            time.sleep(2 ** attempt)  # 1s, 2s, 4s, 8s
+        else:
+            raise
+</code></pre>
+<h3 id="principle-3-idempotency">Principle 3: Idempotency</h3>
+<p><strong>Operations phải safe để retry.</strong></p>
+<pre><code class="language-python"># Not idempotent
+def process_order(order):
+    send_email(order.email)  # Retry = duplicate emails!
+    charge_card(order.amount)  # Retry = double charge!
+
+# Idempotent
+def process_order(order, idempotency_key):
+    if already_processed(idempotency_key):
+        return get_cached_result(idempotency_key)
+    
+    result = {
+        &quot;email_sent&quot;: send_email_once(order.email, idempotency_key),
+        &quot;payment&quot;: charge_card_once(order.amount, idempotency_key)
+    }
+    
+    cache_result(idempotency_key, result)
+    return result
+</code></pre>
+<h3 id="principle-4-eventual-consistency-là-ok">Principle 4: Eventual Consistency Là OK</h3>
+<p><strong>Không phải mọi thứ cần immediate consistency.</strong></p>
+<pre><code class="language-python"># Strong consistency (expensive)
+def like_post(post_id):
+    db.transaction:
+        count = db.get_like_count(post_id)
+        db.set_like_count(post_id, count + 1)
+    # Every like requires DB write
+
+# Eventual consistency (cheap)
+def like_post(post_id):
+    cache.increment(f&quot;likes:{post_id}&quot;)
+    queue.add({&quot;action&quot;: &quot;like&quot;, &quot;post_id&quot;: post_id})
+    # Batch update DB every 10 seconds
+
+# User sees: 1000 likes
+# Reality: 1002 likes (2 second lag)
+# Acceptable? YES for social features
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Distributed systems failures:</strong></p>
+<pre><code>1. Network partition: Nodes không communicate
+2. High latency: Slow ≠ Down  
+3. Packet loss: Messages disappear
+4. Message duplication: Same message nhiều lần
+5. Partial failure: Some succeed, some fail
+</code></pre>
+<p><strong>CAP theorem:</strong></p>
+<pre><code>Cannot have all 3: Consistency, Availability, Partition Tolerance
+
+Partition tolerance là mandatory (network luôn fail)
+
+→ Choose CP (consistency) or AP (availability)
+
+CP: Banking, payments, inventory
+AP: Social media, analytics, recommendations
+</code></pre>
+<p><strong>Design principles:</strong></p>
+<pre><code>1. Design for failure (assume everything fails)
+2. Fail fast (short timeouts, quick retries)
+3. Idempotency (safe to retry)
+4. Eventual consistency (acceptable cho nhiều cases)
+</code></pre>
+<p><strong>Trade-off thinking:</strong></p>
+<pre><code>No perfect solution.
+
+Every choice sacrifices something:
+- CP sacrifices availability
+- AP sacrifices consistency
+- Idempotency sacrifices simplicity
+- Retries sacrifice latency
+
+Choose based on business requirements, không phải technical preference.
+</code></pre>
+<p><strong>Murphy&#x27;s Law is real:</strong></p>
+<pre><code>&quot;If it can fail, it will fail.&quot;
+
+Trong distributed systems:
+&quot;Everything will fail. Simultaneously. At worst time.&quot;
+
+Design accordingly.
+</code></pre>
+<p><strong>Câu hỏi tự kiểm tra:</strong></p>
+<p>Khi design distributed system, tự hỏi:</p>
+<ol>
+<li><em>Feature này cần consistency hay availability hơn?</em></li>
+<li><em>Operations có idempotent không?</em></li>
+<li><em>Timeout values có reasonable không?</em></li>
+<li><em>System handle network partition thế nào?</em></li>
+<li><em>Có fallback cho mọi external call không?</em></li>
+</ol>
+<p>Nếu không trả lời được → Chưa ready cho production.</p>
+<p>Distributed systems khó. Nhưng với đúng mindset (design for failure) và đúng patterns (timeouts, retries, idempotency), bạn có thể build systems resilient và reliable.</p>
+<p><strong>Fail gracefully &gt; Never fail.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency">Consistency Models - Strong vs Eventual Consistency<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-3\",\"lesson\",\"lesson-1-reality-of-distributed-systems\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-3\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-1-reality-of-distributed-systems\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade-off thinking để thiết kế hệ thống resilient.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-reality-of-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\"}]]}]}],[\"$\",\"li\",\"lesson-2-consistency-models-strong-and-eventual-consistency\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consistency Models - Strong vs Eventual Consistency\"}]]}]}],[\"$\",\"li\",\"lesson-3-consensus-leader-election\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-3-consensus-leader-election\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consensus \u0026 Leader Election - Distributed Agreement\"}]]}]}],[\"$\",\"li\",\"lesson-4-distributed-transactions-data-integrity\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\"}]]}]}],[\"$\",\"li\",\"lesson-5-distributed-id-and-ordering\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\"}]]}]}],[\"$\",\"li\",\"lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}]]}]]}],\"$L26\"]}],\"$L27\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Time \u0026 Event Ordering - Clock Problem Trong Distributed Systems\"}]\n26:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"hover:text-ink\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade-off thinking để thiết kế hệ thống resilient.\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems\",\"title\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\",\"description\":\"Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade-off thinking để thiết kế hệ thống resilient.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\",\"children\":\"$L29\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[null,[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Consistency Models - Strong vs Eventual Consistency\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"reality-of-distributed-systems-failure-models--cap-thinking\",\"children\":\"Reality of Distributed Systems: Failure Models \u0026 CAP Thinking\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ lần đầu tiên production system của tôi bị network partition.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"2 giờ sáng. Monitoring alert nổ inh ỏi. Một phần users ở US không login được. Một phần users ở EU login bình thường. Database vẫn healthy. Application servers vẫn running.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi hoang mang total. Kiểm tra logs, không thấy errors. Kiểm tra CPU, memory, tất cả normal.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior architect online: \",[\"$\",\"em\",null,{\"children\":\"\\\"Check network connectivity giữa US và EU datacenters.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Bingo. AWS có network issue. US datacenter không connect được EU datacenter. Hệ thống đang ở trạng thái \",[\"$\",\"strong\",null,{\"children\":\"network partition\"}],\".\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Đó là lúc tôi học bài học đắt giá nhất: \",[\"$\",\"strong\",null,{\"children\":\"Distributed systems thì luôn luôn fail. Không phải \\\"if\\\", mà là \\\"when\\\".\"}]]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-distributed-systems-khác-biệt\",\"children\":\"Tại Sao Distributed Systems Khác Biệt?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"single-machine-vs-distributed-assumptions-bị-phá-vỡ\",\"children\":\"Single Machine vs Distributed: Assumptions Bị Phá Vỡ\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Single machine (local code):\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Local function call\\nresult = calculate_total(items)\\n\\nAssumptions:\\nFunction luôn return (hoặc throw exception)\\nExecution time predictable\\nData consistent\\nEither success or fail (no in-between)\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Distributed system (network call):\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Remote API call\\nresult = api.calculate_total(items)\\n\\nReality:\\nRequest có thể lost (no response)\\nResponse có thể timeout (slow network)\\nRequest có thể duplicate (retry)\\nPartial success/failure possible\\nData có thể inconsistent across nodes\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key insight:\"}],\" Khi move từ single machine sang distributed, mọi assumption bạn từng biết đều sai.\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-fallacies-of-distributed-computing\",\"children\":\"The Fallacies of Distributed Computing\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Peter Deutsch và James Gosling đã tổng kết 8 giả định sai lầm mà developers thường mắc phải:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. The network is reliable\\n   → Reality: Packets drop, connections fail\\n\\n2. Latency is zero  \\n   → Reality: Network calls take 10-1000ms\\n\\n3. Bandwidth is infinite\\n   → Reality: Network có giới hạn throughput\\n\\n4. The network is secure\\n   → Reality: Data có thể bị intercept\\n\\n5. Topology doesn't change\\n   → Reality: Servers die, networks reconfigure\\n\\n6. There is one administrator\\n   → Reality: Multiple teams, multiple configs\\n\\n7. Transport cost is zero\\n   → Reality: Serialization, network transfer cost\\n\\n8. The network is homogeneous\\n   → Reality: Different protocols, versions\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Lesson:\"}],\" Thiết kế distributed system = Thiết kế cho failure.\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"murphys-law-in-distributed-systems\",\"children\":\"Murphy's Law in Distributed Systems\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Murphy's Law:\"}],\" \",[\"$\",\"em\",null,{\"children\":\"\\\"Anything that can go wrong, will go wrong.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Trong distributed systems, law này được amplified:\"}],\"\\n\",\"$L2a\",\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\"]}]\n"])</script><script>self.__next_f.push([1,"9f:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n2a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"Everything that can go wrong, WILL go wrong. Simultaneously. At 3am. On Black Friday.\\\"\"}]}]\n2b:[\"$\",\"h3\",null,{\"id\":\"real-production-failures-tôi-đã-trải-qua\",\"children\":\"Real Production Failures Tôi Đã Trải Qua\"}]\n2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Failure 1: The Silent Data Corruption\"}]}]\n2d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario:\\n- Database replicate Master → Slave\\n- Network packet corruption (1 in 10 million)\\n- Slave nhận corrupted data\\n- Application read từ Slave\\n- Return sai data cho users (subtle bugs)\\n\\nImpact: 3 days để detect, 1 week để fix\\n\"}]}]\n2e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Failure 2: The Cascading Timeout\"}]}]\n2f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario:\\n- Service A call Service B (timeout 30s)\\n- Service B bị slow (disk issue)\\n- Service A đợi 30s per request\\n- Requests queue up\\n- Service A memory exhausted\\n- Service A crashes\\n- Services depend on A also fail\\n\\nImpact: Entire system down 2 hours\\n\"}]}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Failure 3: The Clock Skew\"}]}]\n31:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario:  \\n- Server 1 clock: 10:00:00\\n- Server 2 clock: 09:59:30 (30s behind)\\n- Event A happens on Server 1 at 10:00:00\\n- Event B happens on Server 2 at 09:59:45\\n- System thinks B happened before A (wrong!)\\n\\nImpact: Transaction ordering corrupted\\n\"}]}]\n32:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Takeaway:\"}],\" Không có failure scenario nào \\\"too weird\\\". Tất cả đều xảy ra trong production.\"]}]\n33:[\"$\",\"h2\",null,{\"id\":\"types-of-failures-in-distributed-systems\",\"children\":\"Types of Failures in Distributed Systems\"}]\n34:[\"$\",\"h3\",null,{\"id\":\"failure-type-1-network-partition\",\"children\":\"Failure Type 1: Network Partition\"}]\n35:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Định nghĩa:\"}],\" Một phần hệ thống không communicate được với phần khác, nhưng cả hai vẫn running.\"]}]\n36:[\"$\",\"$L9f\",null,{\"chart\":\"graph TB\\n    subgraph \\\"US Datacenter\\\"\\n        US1[Server US-1]\\n        US2[Server US-2]\\n    end\\n    \\n    subgraph \\\"EU Datacenter\\\"\\n        EU1[Server EU-1]\\n        EU2[Server EU-2]\\n    end\\n    \\n    US1 \u003c--\u003e US2\\n    EU1 \u003c--\u003e EU2\\n    US1 -.X Network Partition X.-\u003e EU1\\n    US2 -.X Network Partition X.-\u003e EU2\\n    \\n    style US1 fill:#51cf66\\n    style US2 fill:#51cf66\\n    style EU1 fill:#51cf66\\n    style EU2 fill:#51cf66\"}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Network partition: US và EU datacenters không connect được nhau, nhưng servers trong mỗi datacenter vẫn hoạt động bình thường\"}]}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario thực tế:\"}]}]\n39:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Timeline:\\n10:00:00 - Network partition xảy ra\\n10:00:01 - User A (US) updates profile\\n10:00:02 - User B (EU) reads profile → Sees old data\\n10:00:30 - Network heals\\n10:00:31 - EU datacenter receives update\\n10:00:32 - User B reads again → Sees new data\\n\\nProblem: 30 giây inconsistency\\n\"}]}]\n3a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tại sao partition xảy ra?\"}]}]\n3b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Common causes:\\n- Network equipment failure (switch, router)\\n- Fiber optic cable cut\\n- AWS/GCP regional issues\\n- DDoS attacks\\n- Misconfigu"])</script><script>self.__next_f.push([1,"ration\\n- Too much traffic (congestion)\\n\"}]}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không thể prevent, chỉ có thể handle:\"}]}]\n3d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Assume network luôn available\\ndef update_user(user_id, data):\\n    primary_db.write(data)\\n    replica_db.write(data)  # Assume này luôn succeed\\n\\n# Handle partition\\ndef update_user(user_id, data):\\n    try:\\n        primary_db.write(data)\\n    except WriteError:\\n        log_error(\\\"Primary DB unavailable\\\")\\n        queue_for_retry(data)\\n    \\n    try:\\n        replica_db.write(data)\\n    except WriteError:\\n        # Replica unavailable, but primary succeeded\\n        # System vẫn functional (eventual consistency)\\n        log_warning(\\\"Replica unavailable, will retry\\\")\\n\"}]}]\n3e:[\"$\",\"h3\",null,{\"id\":\"failure-type-2-high-latency\",\"children\":\"Failure Type 2: High Latency\"}]\n3f:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Định nghĩa:\"}],\" Network call chậm hơn expected, nhưng eventually complete.\"]}]\n40:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Problem:\"}],\" Slow ≠ Down. System vẫn hoạt động nhưng UX terrible.\"]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Normal latency: 50ms\\nHigh latency:   5000ms (100x slower)\\n\\nUser experience:\\n- Click button\\n- Wait 5 seconds\\n- Still loading...\\n- Click again (duplicate request!)\\n- Wait more...\\n- Give up, close tab\\n\"}]}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cascading effect:\"}]}]\n43:[\"$\",\"$L9f\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant API\\n    participant Service\\n    participant DB\\n    \\n    User-\u003e\u003eAPI: Request (timeout 10s)\\n    API-\u003e\u003eService: Call service (timeout 8s)\\n    Service-\u003e\u003eDB: Query (slow, takes 9s)\\n    \\n    Note over Service,DB: DB slow due to load\\n    Note over API,Service: Service timeout!\\n    Service--xAPI: Timeout error\\n    API--xUser: 500 error\\n    \\n    Note over User: User retries\\n    User-\u003e\u003eAPI: Retry request\\n    Note over API,DB: More load, slower\"}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"High latency gây timeout, timeout gây retry, retry gây more load, more load gây slower → Death spiral\"}]}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\n46:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Solution 1: Timeouts với reasonable values\\nresponse = requests.get(url, timeout=2)  # Fail fast\\n\\n# Solution 2: Circuit breaker\\nclass CircuitBreaker:\\n    def call(self, func):\\n        if self.failure_rate \u003e threshold:\\n            raise CircuitOpenError(\\\"Too many failures\\\")\\n        \\n        try:\\n            return func()\\n        except TimeoutError:\\n            self.record_failure()\\n\\n# Solution 3: Bulkhead pattern (isolate resources)\\nthread_pool_for_service_a = ThreadPool(10)\\nthread_pool_for_service_b = ThreadPool(10)\\n# Service A slow không ảnh hưởng Service B\\n\"}]}]\n47:[\"$\",\"h3\",null,{\"id\":\"failure-type-3-packet-loss\",\"children\":\"Failure Type 3: Packet Loss\"}]\n48:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Định nghĩa:\"}],\" Network packets không đến destination.\"]}]\n49:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Send:     [Packet 1] [Packet 2] [Packet 3] [Packet 4]\\nReceive:  [Packet 1] [        ] [Packet 3] [Packet 4]\\n                     ↑ Lost!\\n\"}]}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Typical packet loss rates:\"}]}]\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"LAN (local network):    0.01% - 0.1%\\nWiFi:                   1% - 5%\\nInternet (good):        0.1% - 1%\\nInternet (poor):        5% - 20%\\n\"}]}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Impact:\"}]}]\n4d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Request bị lost\\nclient.send(request)\\n# ... no response ...\\n# Client không biết: request lost? or response l"])</script><script>self.__next_f.push([1,"ost?\\n\\n# TCP retransmit automatically (but slow)\\n# UDP không retry (faster but unreliable)\\n\"}]}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Application-level handling:\"}]}]\n4f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Idempotent operations\\ndef create_user(user_id, data):\\n    # Use user_id (client-generated UUID)\\n    # Retry-safe: create twice = same result\\n    db.insert_or_update(user_id, data)\\n\\n# Non-idempotent (dangerous)\\ndef increment_counter():\\n    counter += 1\\n    # Retry = wrong result!\\n\"}]}]\n50:[\"$\",\"h3\",null,{\"id\":\"failure-type-4-message-duplication\",\"children\":\"Failure Type 4: Message Duplication\"}]\n51:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Định nghĩa:\"}],\" Same message delivered multiple times.\"]}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario:\"}]}]\n53:[\"$\",\"$L9f\",null,{\"chart\":\"sequenceDiagram\\n    participant Client\\n    participant Server\\n    participant DB\\n    \\n    Client-\u003e\u003eServer: Create order\\n    Server-\u003e\u003eDB: INSERT order\\n    DB--\u003e\u003eServer: Success\\n    \\n    Note over Server,Client: Response packet lost!\\n    Server--xClient: (no response received)\\n    \\n    Note over Client: Client timeout, retry\\n    Client-\u003e\u003eServer: Create order (again)\\n    Server-\u003e\u003eDB: INSERT order (duplicate!)\\n    DB--\u003e\u003eServer: Success\\n    Server--\u003e\u003eClient: Success\\n    \\n    Note over DB: Now have 2 orders!\"}]\n54:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Network packet loss gây duplicate messages khi client retry\"}]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real-world impact:\"}]}]\n56:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario: Payment processing\\n1. User click \\\"Pay $100\\\"\\n2. Request timeout\\n3. User click again\\n4. Both requests succeed\\n5. User charged $200!\\n\\n💸 Company lawsuit, refunds, bad press\\n\"}]}]\n57:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\n58:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Solution 1: Idempotency key\\ndef process_payment(amount, idempotency_key):\\n    if cache.exists(idempotency_key):\\n        return cache.get(idempotency_key)  # Return cached result\\n    \\n    result = charge_card(amount)\\n    cache.set(idempotency_key, result, ttl=86400)\\n    return result\\n\\n# Client\\nidempotency_key = uuid.generate()\\nprocess_payment(100, idempotency_key)\\n# Retry với same key → No duplicate charge\\n\\n# Solution 2: Database constraints\\nCREATE TABLE orders (\\n    order_id UUID PRIMARY KEY,  -- Client-generated\\n    user_id INT,\\n    amount DECIMAL\\n);\\n-- Duplicate INSERT fails due to PK constraint\\n\"}]}]\n59:[\"$\",\"h3\",null,{\"id\":\"failure-type-5-partial-failure\",\"children\":\"Failure Type 5: Partial Failure\"}]\n5a:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Định nghĩa:\"}],\" Một phần hệ thống fail, phần khác vẫn hoạt động.\"]}]\n5b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Đây là failure type nguy hiểm nhất.\"}]}]\n5c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario: E-commerce checkout\\n\\nStep 1: Charge credit card     → Success\\nStep 2: Create order in DB     → Success  \\nStep 3: Send confirmation email → Email service down\\nStep 4: Update inventory        → Inventory service slow, timeout\\n\\nResult:\\n- User charged\\n- Order created\\n- No email (user confused)\\n- Inventory not updated (oversell risk)\\n\\nPartial success = Inconsistent state\\n\"}]}]\n5d:[\"$\",\"$L9f\",null,{\"chart\":\"graph LR\\n    A[Checkout Request] --\u003e B[Payment Service]\\n    B --\u003e C[Order Service]\\n    C --\u003e D[Email Service]\\n    C --\u003e E[Inventory Service]\\n    \\n    B -.Success.-\u003e B\\n    C -.Success.-\u003e C\\n    D -.Failed X.-\u003e D\\n    E -.Timeout X.-\u003e E\\n    \\n    style B fill:#51cf66\\n    style C fill:#51cf66\\n    style D fill:#ff6b6b\\n    style E fill:#ff6b6b\"}]\n5e:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Partial failure: Một số services succeed, một số fail, dẫn đến inconsistent "])</script><script>self.__next_f.push([1,"state\"}]}]\n5f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\na0:T4b4,# Solution 1: Saga pattern (compensating transactions)\ndef checkout_saga(order):\n    try:\n        # Step 1: Charge\n        payment_id = payment_service.charge(order.amount)\n        \n        # Step 2: Create order\n        order_id = order_service.create(order)\n        \n        # Step 3: Send email\n        email_service.send(order.email)\n        \n        # Step 4: Update inventory\n        inventory_service.decrease(order.items)\n        \n        return Success(order_id)\n        \n    except EmailServiceError:\n        # Email failed, compensate\n        order_service.mark_no_email(order_id)\n        queue.retry_email(order)  # Retry later\n        return PartialSuccess(order_id)\n        \n    except InventoryServiceError:\n        # Critical failure, rollback\n        payment_service.refund(payment_id)\n        order_service.cancel(order_id)\n        return Failure(\"Inventory unavailable\")\n\n# Solution 2: Event sourcing\n# Log all events, replay để achieve consistency\nevents = [\n    {type: \"payment_charged\", amount: 100},\n    {type: \"order_created\", order_id: 123},\n    {type: \"email_failed\", retry_at: \"10:00\"},\n    {type: \"inventory_timeout\", retry_at: \"10:01\"}\n]\n# Background job process failures\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a0\"}]}]\n61:[\"$\",\"h2\",null,{\"id\":\"cap-theorem-the-fundamental-trade-off\",\"children\":\"CAP Theorem: The Fundamental Trade-off\"}]\n62:[\"$\",\"h3\",null,{\"id\":\"định-nghĩa-cap\",\"children\":\"Định Nghĩa CAP\"}]\n63:[\"$\",\"p\",null,{\"children\":\"Trong distributed database với network partition, chỉ có thể chọn 2 trong 3:\"}]\n64:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"C (Consistency):\\n    Mọi read nhận được latest write\\n    Mọi node thấy cùng data cùng lúc\\n\\nA (Availability):  \\n    Mọi request nhận được response (non-error)\\n    System luôn hoạt động\\n\\nP (Partition Tolerance):\\n    System tiếp tục hoạt động khi có network partition\\n    Nodes không communicate được nhau\\n\"}]}]\n65:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Reality:\"}],\" Network partition LUÔN xảy ra (P là mandatory).\"]}]\n66:[\"$\",\"p\",null,{\"children\":[\"→ \",[\"$\",\"strong\",null,{\"children\":\"Phải chọn giữa C hoặc A.\"}]]}]\n67:[\"$\",\"h3\",null,{\"id\":\"cap-intuition-qua-ví-dụ-thực-tế\",\"children\":\"CAP Intuition Qua Ví Dụ Thực Tế\"}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario: Banking App với 2 Datacenters\"}]}]\n69:[\"$\",\"$L9f\",null,{\"chart\":\"graph LR\\n    subgraph \\\"US Datacenter\\\"\\n        US_DB[(Database\u003cbr/\u003eBalance: $100)]\\n    end\\n    \\n    subgraph \\\"EU Datacenter\\\"\\n        EU_DB[(Database\u003cbr/\u003eBalance: $100)]\\n    end\\n    \\n    US_DB -.X Network Partition.-\u003e EU_DB\\n    \\n    USER_A[User A\u003cbr/\u003eUS] --\u003e US_DB\\n    USER_B[User B\u003cbr/\u003eEU] --\u003e EU_DB\"}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Network partition happens. What to do?\"}]}]\n6b:[\"$\",\"h3\",null,{\"id\":\"choice-1-cp-consistency--partition-tolerance\",\"children\":\"Choice 1: CP (Consistency + Partition Tolerance)\"}]\n6c:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Strategy:\"}],\" Sacrifice availability để đảm bảo consistency.\"]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# CP system behavior\\ndef withdraw(amount):\\n    if not can_reach_all_replicas():\\n        raise ServiceUnavailableError(\\\"System temporarily unavailable\\\")\\n    \\n    # Only proceed nếu có thể sync all replicas\\n    for replica in all_replicas:\\n        replica.withdraw(amount)\\n    \\n    return Success()\\n\\nTimeline khi partition:\\n10:00:00 - Network partition\\n10:00:01 - User A (US) withdraw $50\\n           → US DB: \\\"Cannot reach EU, refuse request\\\"\\n           → User sees error (unavailable)\\n10:00:02 - User B (EU) withdraw $30  \\n           → EU DB: \\\"Cannot reach US, refuse request\\\"\\n           → User sees error (unavailable)\\n\\nResult:\\nSyste"])</script><script>self.__next_f.push([1,"m unavailable (bad UX)\\nNo inconsistency (data safe)\\n\"}]}]\n6e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n6f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Data luôn consistent\\nNo risk of conflicting updates\\nGood cho: Banking, payments, inventory\\n\\nSystem down khi partition\\nBad UX\\nLost transactions\\n\"}]}]\n70:[\"$\",\"h3\",null,{\"id\":\"choice-2-ap-availability--partition-tolerance\",\"children\":\"Choice 2: AP (Availability + Partition Tolerance)\"}]\n71:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Strategy:\"}],\" Sacrifice consistency để đảm bảo availability.\"]}]\n72:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# AP system behavior\\ndef withdraw(amount):\\n    # Proceed with local replica, sync later\\n    local_db.withdraw(amount)\\n    \\n    queue_sync_to_other_replicas(amount)\\n    \\n    return Success()\\n\\nTimeline khi partition:\\n10:00:00 - Network partition\\n10:00:01 - User A (US) withdraw $50\\n           → US DB: $100 - $50 = $50\\n           → Success (local write)\\n10:00:02 - User B (EU) withdraw $30\\n           → EU DB: $100 - $30 = $70  \\n           → Success (local write)\\n10:01:00 - Network heals\\n10:01:01 - Replicas sync\\n           → Conflict! US says $50, EU says $70\\n\\nResult:\\nSystem available (good UX)\\nData inconsistent (problem!)\\n\"}]}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Conflict resolution strategies:\"}]}]\n74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Strategy 1: Last-Write-Wins (timestamp)\\nus_balance = {\\\"value\\\": 50, \\\"timestamp\\\": \\\"10:00:01\\\"}\\neu_balance = {\\\"value\\\": 70, \\\"timestamp\\\": \\\"10:00:02\\\"}\\n# EU timestamp later → Balance = $70\\n# Lost US transaction!\\n\\n# Strategy 2: Vector clocks (keep both)\\nus_balance = {\\\"value\\\": 50, \\\"version\\\": [1, 0]}\\neu_balance = {\\\"value\\\": 70, \\\"version\\\": [0, 1]}\\n# Both are concurrent → Flag for manual resolution\\n# No data loss, but need human intervention\\n\\n# Strategy 3: Application-specific merge\\n# Banking: Merge = apply both withdrawals\\n# Balance = $100 - $50 - $30 = $20\\n# Correct final state\\n# But requires domain knowledge\\n\"}]}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"System luôn available\\nGood UX\\nGood cho: Social media, recommendations, analytics\\n\\nData có thể inconsistent\\nNeed conflict resolution\\nEventual consistency (not immediate)\\n\"}]}]\n77:[\"$\",\"h3\",null,{\"id\":\"so-sánh-cp-vs-ap\",\"children\":\"So Sánh CP vs AP\"}]\n78:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Banking App:\\nChoice: CP\\nWhy? Data accuracy \u003e Availability\\nUser có thể đợi, không thể accept wrong balance\\n\\nSocial Media Feed:\\nChoice: AP  \\nWhy? Availability \u003e Strict consistency\\nUser see slightly stale likes là OK\\n\\nE-commerce Inventory:\\nChoice: CP\\nWhy? Cannot oversell products\\nBetter show \\\"unavailable\\\" than sell đã hết\\n\"}]}]\n79:[\"$\",\"h2\",null,{\"id\":\"trade-off-thinking-framework\",\"children\":\"Trade-off Thinking Framework\"}]\n7a:[\"$\",\"h3\",null,{\"id\":\"step-1-identify-requirements\",\"children\":\"Step 1: Identify Requirements\"}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Tự hỏi:\\n1. Consistency critical không?\\n   - Wrong data = big problem? (Banking: YES)\\n   - Stale data acceptable? (Social feed: YES)\\n\\n2. Availability critical không?\\n   - Downtime acceptable? (Internal tool: YES)\\n   - Must always work? (Public API: YES)\\n\\n3. Partition frequency?\\n   - Single datacenter: Rare\\n   - Multi-region: Common\\n\"}]}]\n7c:[\"$\",\"h3\",null,{\"id\":\"step-2-analyze-trade-offs\",\"children\":\"Step 2: Analyze Trade-offs\"}]\n7d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"CP System:\\nWhen: Financial transactions, inventory, bookings\\nAccept: Downtime during partitions\\nGain: Data accuracy\\n\\nAP System:\\nWhen: Social features, analytics, recommendations  \\nAccept: Eventual consistency\\nGain: Always available\\n\\nCA System:\\nImpossible in distrib"])</script><script>self.__next_f.push([1,"uted systems\\n   (Network partition luôn happen)\\n\"}]}]\n7e:[\"$\",\"h3\",null,{\"id\":\"step-3-hybrid-approaches\",\"children\":\"Step 3: Hybrid Approaches\"}]\n7f:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Reality:\"}],\" Không phải all-or-nothing. Có thể mix.\"]}]\n80:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Different consistency cho different data\\nclass UserService:\\n    def update_profile(self, user_id, data):\\n        # Profile updates: AP (eventual consistency OK)\\n        local_db.write(data)\\n        async_replicate(data)\\n    \\n    def update_balance(self, user_id, amount):\\n        # Balance updates: CP (strong consistency required)\\n        if not all_replicas_reachable():\\n            raise UnavailableError()\\n        \\n        for replica in all_replicas:\\n            replica.write(amount)\\n\\n# Per-feature consistency choice\\nfeatures = {\\n    \\\"user_profile\\\": \\\"AP\\\",      # Stale OK\\n    \\\"account_balance\\\": \\\"CP\\\",   # Must be accurate\\n    \\\"friend_list\\\": \\\"AP\\\",       # Stale OK\\n    \\\"purchase_history\\\": \\\"CP\\\"   # Must be accurate\\n}\\n\"}]}]\n81:[\"$\",\"h2\",null,{\"id\":\"practical-design-principles\",\"children\":\"Practical Design Principles\"}]\n82:[\"$\",\"h3\",null,{\"id\":\"principle-1-design-for-failure\",\"children\":\"Principle 1: Design for Failure\"}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Assume everything fails.\"}]}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Optimistic (dangerous)\\ndef call_service():\\n    return service.request()\\n\\n# Pessimistic (safe)\\ndef call_service():\\n    try:\\n        return service.request(timeout=2)\\n    except TimeoutError:\\n        log_error(\\\"Service timeout\\\")\\n        return fallback_value()\\n    except ConnectionError:\\n        log_error(\\\"Service unreachable\\\")\\n        return cached_value()\\n    except Exception as e:\\n        log_error(f\\\"Unexpected error: {e}\\\")\\n        return default_value()\\n\"}]}]\n85:[\"$\",\"h3\",null,{\"id\":\"principle-2-fail-fast\",\"children\":\"Principle 2: Fail Fast\"}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't wait forever. Fail quickly và retry.\"}]}]\n87:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Slow failure (30s timeout)\\nresponse = requests.get(url, timeout=30)\\n\\n# Fast failure (2s timeout)\\nresponse = requests.get(url, timeout=2)\\n\\n# Exponential backoff retry\\nfor attempt in range(max_retries):\\n    try:\\n        return requests.get(url, timeout=2)\\n    except TimeoutError:\\n        if attempt \u003c max_retries - 1:\\n            time.sleep(2 ** attempt)  # 1s, 2s, 4s, 8s\\n        else:\\n            raise\\n\"}]}]\n88:[\"$\",\"h3\",null,{\"id\":\"principle-3-idempotency\",\"children\":\"Principle 3: Idempotency\"}]\n89:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Operations phải safe để retry.\"}]}]\n8a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Not idempotent\\ndef process_order(order):\\n    send_email(order.email)  # Retry = duplicate emails!\\n    charge_card(order.amount)  # Retry = double charge!\\n\\n# Idempotent\\ndef process_order(order, idempotency_key):\\n    if already_processed(idempotency_key):\\n        return get_cached_result(idempotency_key)\\n    \\n    result = {\\n        \\\"email_sent\\\": send_email_once(order.email, idempotency_key),\\n        \\\"payment\\\": charge_card_once(order.amount, idempotency_key)\\n    }\\n    \\n    cache_result(idempotency_key, result)\\n    return result\\n\"}]}]\n8b:[\"$\",\"h3\",null,{\"id\":\"principle-4-eventual-consistency-là-ok\",\"children\":\"Principle 4: Eventual Consistency Là OK\"}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không phải mọi thứ cần immediate consistency.\"}]}]\n8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Strong consistency (expensive)\\ndef like_post(post_id):\\n    db.transaction:\\n        count = db.get_like_count(post_id)\\n        db.set_like_count(post_id, count + 1)\\n    # Every like requires "])</script><script>self.__next_f.push([1,"DB write\\n\\n# Eventual consistency (cheap)\\ndef like_post(post_id):\\n    cache.increment(f\\\"likes:{post_id}\\\")\\n    queue.add({\\\"action\\\": \\\"like\\\", \\\"post_id\\\": post_id})\\n    # Batch update DB every 10 seconds\\n\\n# User sees: 1000 likes\\n# Reality: 1002 likes (2 second lag)\\n# Acceptable? YES for social features\\n\"}]}]\n8e:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n8f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Distributed systems failures:\"}]}]\n90:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Network partition: Nodes không communicate\\n2. High latency: Slow ≠ Down  \\n3. Packet loss: Messages disappear\\n4. Message duplication: Same message nhiều lần\\n5. Partial failure: Some succeed, some fail\\n\"}]}]\n91:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"CAP theorem:\"}]}]\n92:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Cannot have all 3: Consistency, Availability, Partition Tolerance\\n\\nPartition tolerance là mandatory (network luôn fail)\\n\\n→ Choose CP (consistency) or AP (availability)\\n\\nCP: Banking, payments, inventory\\nAP: Social media, analytics, recommendations\\n\"}]}]\n93:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Design principles:\"}]}]\n94:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Design for failure (assume everything fails)\\n2. Fail fast (short timeouts, quick retries)\\n3. Idempotency (safe to retry)\\n4. Eventual consistency (acceptable cho nhiều cases)\\n\"}]}]\n95:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off thinking:\"}]}]\n96:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"No perfect solution.\\n\\nEvery choice sacrifices something:\\n- CP sacrifices availability\\n- AP sacrifices consistency\\n- Idempotency sacrifices simplicity\\n- Retries sacrifice latency\\n\\nChoose based on business requirements, không phải technical preference.\\n\"}]}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Murphy's Law is real:\"}]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"If it can fail, it will fail.\\\"\\n\\nTrong distributed systems:\\n\\\"Everything will fail. Simultaneously. At worst time.\\\"\\n\\nDesign accordingly.\\n\"}]}]\n99:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Câu hỏi tự kiểm tra:\"}]}]\n9a:[\"$\",\"p\",null,{\"children\":\"Khi design distributed system, tự hỏi:\"}]\n9b:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Feature này cần consistency hay availability hơn?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Operations có idempotent không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Timeout values có reasonable không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"System handle network partition thế nào?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Có fallback cho mọi external call không?\"}]}],\"\\n\"]}]\n9c:[\"$\",\"p\",null,{\"children\":\"Nếu không trả lời được → Chưa ready cho production.\"}]\n9d:[\"$\",\"p\",null,{\"children\":\"Distributed systems khó. Nhưng với đúng mindset (design for failure) và đúng patterns (timeouts, retries, idempotency), bạn có thể build systems resilient và reliable.\"}]\n9e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Fail gracefully \u003e Never fail.\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"a1:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking | Phase 3 — Distributed Systems Fundamentals | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade off thinking để thiết k\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade off thinking để thiết k\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Hiểu thực tế tàn khốc của distributed systems: network partitions, latency, packet loss và partial failures. Master CAP theorem và trade off thinking để thiết k\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$La1\",\"14\",{}]]\n"])</script></body></html>

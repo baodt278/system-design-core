@@ -1,0 +1,557 @@
+<article class="prose-ui"><h1 id="snake-framework-methodology-để-ace-system-design-interview">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<p>§§SEG10§§</p>
+<p>§§SEG11§§</p>
+<h2 id="tại-sao-cần-framework">§§SEG12§§</h2>
+<h3 id="the-problem-with-no-structure">§§SEG13§§</h3>
+<p>§§SEG14§§</p>
+<pre><code>§§SEG15§§</code></pre>
+<p>§§SEG16§§</p>
+<pre><code>§§SEG17§§</code></pre>
+<p>§§SEG18§§</p>
+<p>§§SEG19§§</p>
+<h2 id="snake-framework-overview">§§SEG20§§</h2>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG21§§</code></pre>
+<p>§§SEG22§§</p>
+<p>§§SEG23§§</p>
+<pre><code>§§SEG24§§</code></pre>
+<p>§§SEG25§§</p>
+<h2 id="s---scope-clarify-requirements">§§SEG26§§</h2>
+<p>§§SEG27§§</p>
+<h3 id="what-to-clarify">§§SEG28§§</h3>
+<p>§§SEG29§§</p>
+<pre><code class="language-python"># Template questions
+
+"Let me clarify the functional requirements:
+
+Core features:
+1. What are the must-have features?
+   Example: For Twitter
+   - Post tweets ✓
+   - Follow users ✓
+   - View feed ✓
+   - Like/retweet ✓
+   
+2. What are nice-to-have features?
+   - Direct messages?
+   - Notifications?
+   - Trending topics?
+   - Search?
+   
+3. Out of scope (explicitly state):
+   - Video tweets
+   - Analytics dashboard
+   - Ads system"
+</code></pre>
+<p>§§SEG30§§</p>
+<pre><code class="language-python"># Template questions
+
+"Non-functional requirements:
+
+Scale:
+- How many users? (1M, 10M, 100M?)
+- Daily active users?
+- Tweets per day?
+- Peak traffic pattern?
+
+Performance:
+- Latency requirement? (&lt; 100ms? &lt; 1s?)
+- Availability requirement? (99%? 99.99%?)
+
+Consistency:
+- Strong consistency needed?
+- Eventual consistency acceptable?
+
+Other:
+- Geographic distribution?
+- Mobile vs web ratio?
+- Read vs write ratio?"
+</code></pre>
+<p>§§SEG31§§</p>
+<pre><code class="language-python"># Template questions
+
+"Any constraints I should know?
+
+Technical:
+- Existing infrastructure to integrate with?
+- Technology preferences?
+- Legacy system compatibility?
+
+Business:
+- Timeline to launch?
+- Budget constraints?
+- Team size?
+- Compliance requirements (GDPR, etc.)?"
+</code></pre>
+<h3 id="how-to-ask-communication-skills-matter">§§SEG32§§</h3>
+<p>§§SEG33§§</p>
+<pre><code>§§SEG34§§</code></pre>
+<p>§§SEG35§§</p>
+<pre><code>§§SEG36§§</code></pre>
+<h3 id="scope-checklist">§§SEG37§§</h3>
+<p>§§SEG38§§</p>
+<pre><code>§§SEG39§§</code></pre>
+<p>§§SEG40§§</p>
+<p>§§SEG41§§</p>
+<h2 id="n---numbers-back-of-envelope-calculations">§§SEG42§§</h2>
+<p>§§SEG43§§</p>
+<h3 id="what-to-calculate">§§SEG44§§</h3>
+<p>§§SEG45§§</p>
+<pre><code class="language-python"># Example: Twitter
+
+Given:
+- 100M daily active users (DAU)
+- Each user views feed 10 times/day
+- Each user posts 2 tweets/day
+
+Calculate:
+
+# Read traffic
+read_requests = 100M users × 10 views/day
+              = 1B requests/day
+              = 1B / 86400 seconds
+              ≈ 12K requests/second
+
+Peak (3x average):
+              = 36K requests/second
+
+# Write traffic  
+write_requests = 100M users × 2 tweets/day
+               = 200M tweets/day
+               = 200M / 86400
+               ≈ 2.3K tweets/second
+
+Peak:          ≈ 7K tweets/second
+
+# Read:Write ratio
+ratio = 12K / 2.3K ≈ 5:1 (read-heavy)
+
+→ Caching critical for reads
+</code></pre>
+<p>§§SEG46§§</p>
+<pre><code class="language-python"># Storage calculation
+
+Per tweet:
+- tweet_id: 8 bytes (bigint)
+- user_id: 8 bytes
+- content: 280 chars × 1 byte = 280 bytes
+- metadata: 100 bytes (timestamps, etc.)
+- media URL: 200 bytes
+Total: ~600 bytes per tweet
+
+Daily storage:
+200M tweets/day × 600 bytes = 120 GB/day
+
+Yearly:
+120 GB × 365 = 43.8 TB/year
+
+5 years:
+43.8 TB × 5 = 219 TB
+
+→ Need distributed storage strategy
+→ Sharding after 2-3 years
+</code></pre>
+<p>§§SEG47§§</p>
+<pre><code class="language-python"># Bandwidth calculation
+
+# Incoming (writes)
+write_bandwidth = 2.3K tweets/s × 600 bytes
+                = 1.4 MB/s (negligible)
+
+# Outgoing (reads)
+# Assume each feed load fetches 20 tweets
+read_bandwidth = 12K requests/s × 20 tweets × 600 bytes
+               = 144 MB/s
+
+Peak: 144 MB/s × 3 = 432 MB/s
+
+# Media (images/videos)
+# 30% of tweets have media, average 2MB
+media_requests = 12K × 0.3 = 3.6K/s
+media_bandwidth = 3.6K × 2MB = 7.2 GB/s
+
+→ CDN absolutely required for media
+</code></pre>
+<p>§§SEG48§§</p>
+<pre><code class="language-python"># Cache hot data
+
+# Cache user feeds (top 1000 tweets per active user)
+active_users = 100M DAU
+tweets_cached = 1000 per user
+size_per_tweet = 600 bytes
+
+cache_memory = 100M × 1000 × 600 bytes
+             = 60 TB
+
+# Only cache 20% most active users
+cache_memory = 60 TB × 0.2 = 12 TB
+
+# Redis cluster: 100 nodes × 128 GB = 12.8 TB
+→ Feasible with distributed cache
+</code></pre>
+<h3 id="why-numbers-matter">§§SEG49§§</h3>
+<p>§§SEG50§§</p>
+<pre><code>§§SEG51§§</code></pre>
+<h3 id="numbers-checklist">§§SEG52§§</h3>
+<pre><code>§§SEG53§§</code></pre>
+<p>§§SEG54§§</p>
+<p>§§SEG55§§</p>
+<h2 id="a---api-define-interfaces">§§SEG56§§</h2>
+<p>§§SEG57§§</p>
+<h3 id="why-api-first">§§SEG58§§</h3>
+<p>§§SEG59§§</p>
+<pre><code>§§SEG60§§</code></pre>
+<h3 id="restful-api-design">§§SEG61§§</h3>
+<p>§§SEG62§§</p>
+<pre><code class="language-python"># Core APIs
+
+# 1. Create tweet
+POST /v1/tweets
+Request:
+{
+    "content": "Hello world!",
+    "media_urls": ["https://..."],
+    "reply_to": "tweet_id"  // optional
+}
+
+Response: 201 Created
+{
+    "tweet_id": "123456",
+    "user_id": "789",
+    "content": "Hello world!",
+    "created_at": "2024-03-15T10:30:00Z"
+}
+
+# 2. Get user feed
+GET /v1/feed?cursor={cursor}&amp;limit=20
+Response: 200 OK
+{
+    "tweets": [
+        {
+            "tweet_id": "123456",
+            "user": {...},
+            "content": "...",
+            "likes": 100,
+            "retweets": 50
+        }
+    ],
+    "next_cursor": "abc123",
+    "has_more": true
+}
+
+# 3. Like tweet
+POST /v1/tweets/{tweet_id}/like
+Response: 204 No Content
+
+# 4. Follow user
+POST /v1/users/{user_id}/follow
+Response: 204 No Content
+
+# 5. Get tweet
+GET /v1/tweets/{tweet_id}
+Response: 200 OK
+{
+    "tweet_id": "123456",
+    "user": {...},
+    "content": "...",
+    "created_at": "...",
+    "stats": {
+        "likes": 100,
+        "retweets": 50,
+        "replies": 20
+    }
+}
+</code></pre>
+<h3 id="api-design-principles">§§SEG63§§</h3>
+<p>§§SEG64§§</p>
+<pre><code class="language-python"># Good: Consistent
+POST   /tweets          # Create
+GET    /tweets/{id}     # Read
+PUT    /tweets/{id}     # Update
+DELETE /tweets/{id}     # Delete
+
+# Bad: Inconsistent
+POST   /createTweet
+GET    /getTweetById
+POST   /tweet_update
+POST   /remove_tweet
+</code></pre>
+<p>§§SEG65§§</p>
+<pre><code class="language-python"># Good: Versioned
+GET /v1/tweets
+GET /v2/tweets  # Breaking changes in v2
+
+# Can support both versions simultaneously
+</code></pre>
+<p>§§SEG66§§</p>
+<pre><code class="language-python"># Good: Cursor-based (for real-time data)
+GET /feed?cursor=xyz&amp;limit=20
+
+# Also good: Offset-based (for stable data)
+GET /users?offset=100&amp;limit=50
+</code></pre>
+<p>§§SEG67§§</p>
+<pre><code class="language-python"># Standard error format
+{
+    "error": {
+        "code": "RATE_LIMIT_EXCEEDED",
+        "message": "Rate limit exceeded. Try again in 60 seconds.",
+        "details": {
+            "retry_after": 60
+        }
+    }
+}
+</code></pre>
+<h3 id="api-checklist">§§SEG68§§</h3>
+<pre><code>§§SEG69§§</code></pre>
+<p>§§SEG70§§</p>
+<p>§§SEG71§§</p>
+<h2 id="k---key-components-high-level-architecture">§§SEG72§§</h2>
+<p>§§SEG73§§</p>
+<h3 id="components-to-include">§§SEG74§§</h3>
+<p>§§SEG75§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG76§§</code></pre>
+<p>§§SEG77§§</p>
+<h3 id="component-descriptions">§§SEG78§§</h3>
+<p>§§SEG79§§</p>
+<pre><code class="language-python"># Template
+
+Component: Load Balancer
+Purpose: Distribute traffic across API servers
+Technology: AWS ALB / Nginx
+Why: Handle 36K req/s, need multiple servers
+
+Component: API Servers
+Purpose: Handle business logic
+Technology: Python/FastAPI (stateless)
+Scale: 50+ servers (horizontal scaling)
+Why: Stateless = easy to scale
+
+Component: Redis Cache
+Purpose: Cache user feeds, hot tweets
+Technology: Redis Cluster
+Capacity: 12 TB (100 nodes × 128 GB)
+Why: Sub-10ms latency for reads
+
+Component: Database
+Purpose: Persistent storage (tweets, users, relationships)
+Technology: PostgreSQL (sharded)
+Scale: 50 shards by user_id
+Why: Strong consistency for critical data
+
+Component: Message Queue
+Purpose: Async fanout of tweets to followers
+Technology: Kafka
+Why: Decouple write from fanout, handle spikes
+
+Component: CDN
+Purpose: Serve media files (images, videos)
+Technology: CloudFront
+Why: 7.2 GB/s bandwidth, global distribution
+</code></pre>
+<h3 id="data-flow">§§SEG80§§</h3>
+<p>§§SEG81§§</p>
+<pre><code>§§SEG82§§</code></pre>
+<h3 id="call-out-key-decisions">§§SEG83§§</h3>
+<p>§§SEG84§§</p>
+<pre><code>§§SEG85§§</code></pre>
+<h3 id="key-components-checklist">§§SEG86§§</h3>
+<pre><code>§§SEG87§§</code></pre>
+<p>§§SEG88§§</p>
+<p>§§SEG89§§</p>
+<h2 id="e---elaborate-deep-dive">§§SEG90§§</h2>
+<p>§§SEG91§§</p>
+<h3 id="what-to-deep-dive">§§SEG92§§</h3>
+<p>§§SEG93§§</p>
+<pre><code>§§SEG94§§</code></pre>
+<p>§§SEG95§§</p>
+<pre><code>§§SEG96§§</code></pre>
+<h3 id="deep-dive-examples">§§SEG97§§</h3>
+<p>§§SEG98§§</p>
+<pre><code class="language-python"># Hybrid fanout implementation
+
+class FanoutService:
+    CELEBRITY_THRESHOLD = 10_000  # followers
+    
+    def handle_new_tweet(self, tweet):
+        author = self.get_user(tweet.user_id)
+        
+        if author.followers_count &lt; self.CELEBRITY_THRESHOLD:
+            # Normal user: Fanout on write
+            self.fanout_to_followers(tweet)
+        else:
+            # Celebrity: Mark for fanout on read
+            self.mark_celebrity_tweet(tweet)
+    
+    def fanout_to_followers(self, tweet):
+        """Async fanout to all followers"""
+        followers = self.db.get_followers(tweet.user_id)
+        
+        for follower_id in followers:
+            self.queue.publish({
+                'task': 'insert_into_feed',
+                'follower_id': follower_id,
+                'tweet_id': tweet.id,
+                'timestamp': tweet.created_at
+            })
+    
+    def get_feed(self, user_id):
+        """Merge pre-computed + celebrity tweets"""
+        # Get pre-computed feed
+        feed = self.cache.get_feed(user_id)
+        
+        # Get celebrity tweets
+        celebrities = self.get_celebrity_followees(user_id)
+        celebrity_tweets = self.query_celebrity_tweets(celebrities)
+        
+        # Merge and sort
+        return self.merge_and_rank(feed, celebrity_tweets)
+</code></pre>
+<p>§§SEG99§§</p>
+<pre><code>§§SEG100§§</code></pre>
+<p>§§SEG101§§</p>
+<pre><code class="language-sql">-- Users table
+CREATE TABLE users (
+    user_id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    followers_count INT DEFAULT 0,
+    following_count INT DEFAULT 0
+);
+
+-- Tweets table (sharded by user_id)
+CREATE TABLE tweets (
+    tweet_id BIGINT PRIMARY KEY,  -- Snowflake ID
+    user_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    media_urls TEXT[],
+    created_at TIMESTAMP DEFAULT NOW(),
+    reply_to BIGINT,  -- NULL if not reply
+    
+    INDEX idx_user_created (user_id, created_at DESC),
+    INDEX idx_created (created_at DESC)
+);
+
+-- Relationships table (sharded by follower_id)
+CREATE TABLE follows (
+    follower_id BIGINT NOT NULL,
+    followee_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    
+    PRIMARY KEY (follower_id, followee_id),
+    INDEX idx_followee (followee_id)  -- For follower count
+);
+
+-- Engagement table (sharded by tweet_id)
+CREATE TABLE likes (
+    tweet_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    
+    PRIMARY KEY (tweet_id, user_id)
+);
+</code></pre>
+<p>§§SEG102§§</p>
+<pre><code>§§SEG103§§</code></pre>
+<p>§§SEG104§§</p>
+<pre><code class="language-python"># Identify và solve bottlenecks
+
+Bottleneck 1: Fanout queue lag
+Problem: 10M followers → 10M messages → Queue backup
+Solution:
+- Priority queue (VIP users processed first)
+- Batch processing (group updates)
+- Circuit breaker (skip if queue too long)
+
+Bottleneck 2: Hot celebrity timeline
+Problem: Taylor Swift's timeline → 10M cache reads/second
+Solution:
+- Multi-tier caching (L1: Local cache, L2: Redis)
+- CDN caching for celebrity profiles
+- Rate limiting per user
+
+Bottleneck 3: Database writes during peaks
+Problem: Viral event → 100K tweets/second
+Solution:
+- Write buffer (queue writes, batch insert)
+- Database connection pooling
+- Auto-scaling write capacity
+</code></pre>
+<h3 id="elaborate-checklist">§§SEG105§§</h3>
+<pre><code>§§SEG106§§</code></pre>
+<p>§§SEG107§§</p>
+<p>§§SEG108§§</p>
+<h2 id="time-management-45-minute-flow">§§SEG109§§</h2>
+<p>§§SEG110§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG111§§</code></pre>
+<p>§§SEG112§§</p>
+<h3 id="phase-by-phase-timing">§§SEG113§§</h3>
+<p>§§SEG114§§</p>
+<pre><code>§§SEG115§§</code></pre>
+<p>§§SEG116§§</p>
+<pre><code>§§SEG117§§</code></pre>
+<p>§§SEG118§§</p>
+<pre><code>§§SEG119§§</code></pre>
+<p>§§SEG120§§</p>
+<pre><code>§§SEG121§§</code></pre>
+<p>§§SEG122§§</p>
+<pre><code>§§SEG123§§</code></pre>
+<h3 id="time-management-tips">§§SEG124§§</h3>
+<p>§§SEG125§§</p>
+<pre><code>§§SEG126§§</code></pre>
+<p>§§SEG127§§</p>
+<pre><code>§§SEG128§§</code></pre>
+<p>§§SEG129§§</p>
+<pre><code>§§SEG130§§</code></pre>
+<p>§§SEG131§§</p>
+<pre><code>§§SEG132§§</code></pre>
+<h2 id="common-mistakes--how-to-avoid">§§SEG133§§</h2>
+<h3 id="mistake-1-jumping-to-solution">§§SEG134§§</h3>
+<pre><code>§§SEG135§§</code></pre>
+<pre><code>§§SEG136§§</code></pre>
+<h3 id="mistake-2-over-engineering">§§SEG137§§</h3>
+<pre><code>§§SEG138§§</code></pre>
+<pre><code>§§SEG139§§</code></pre>
+<h3 id="mistake-3-ignoring-interviewer">§§SEG140§§</h3>
+<pre><code>§§SEG141§§</code></pre>
+<pre><code>§§SEG142§§</code></pre>
+<h3 id="mistake-4-no-trade-off-discussion">§§SEG143§§</h3>
+<pre><code>§§SEG144§§</code></pre>
+<pre><code>§§SEG145§§</code></pre>
+<h3 id="mistake-5-silent-design">§§SEG146§§</h3>
+<pre><code>§§SEG147§§</code></pre>
+<pre><code>§§SEG148§§</code></pre>
+<h2 id="answer-structure-template">§§SEG149§§</h2>
+<p>§§SEG150§§</p>
+<pre><code>§§SEG151§§</code></pre>
+<h2 id="practice-exercise">§§SEG152§§</h2>
+<p>§§SEG153§§</p>
+<p>§§SEG154§§</p>
+<p>§§SEG155§§</p>
+<pre><code>§§SEG156§§</code></pre>
+<p>§§SEG157§§</p>
+<pre><code>§§SEG158§§</code></pre>
+<h2 id="key-takeaways">§§SEG159§§</h2>
+<p>§§SEG160§§</p>
+<pre><code>§§SEG161§§</code></pre>
+<p>§§SEG162§§</p>
+<pre><code>§§SEG163§§</code></pre>
+<p>§§SEG164§§</p>
+<pre><code>§§SEG165§§</code></pre>
+<p>§§SEG166§§</p>
+<pre><code>§§SEG167§§</code></pre>
+<p>§§SEG168§§</p>
+<pre><code>§§SEG169§§</code></pre>
+<p>§§SEG170§§</p>
+<pre><code>§§SEG171§§</code></pre>
+<p>§§SEG172§§</p>
+<p>§§SEG173§§</p></article>

@@ -1,0 +1,284 @@
+@114
+Tư Duy Về ⟦Điểm Nghẽn|Bottleneck⟧
+@115
+**Nguyên tắc cốt lõi: Hệ thống chỉ nhanh bằng thành phần chậm nhất của nó**
+@116
+Chuỗi ⟦Điểm Nghẽn|Bottleneck⟧
+@117
+Luồng xử lý yêu cầu:
+Máy khách → (Mạng 50ms)
+      → Bộ cân bằng tải (5ms)
+      → Máy chủ ứng dụng (20ms)
+      → Truy vấn CSDL (500ms) ← ĐIỂM NGHẼN
+      → Máy chủ ứng dụng (10ms)
+      → Máy khách (50ms)
+
+Tổng: 635ms
+Điểm nghẽn: Cơ sở dữ liệu (79% thời gian)
+
+Thứ tự ưu tiên tối ưu:
+1. Cơ sở dữ liệu (tác động lớn nhất)
+2. Mạng (nếu không sửa được CSDL)
+3. Logic ứng dụng (tác động rất nhỏ)
+
+Đừng phí thời gian tối ưu máy chủ ứng dụng từ 20ms → 10ms
+khi cơ sở dữ liệu mất tới 500ms!
+
+@118
+Xác Định ⟦Điểm Nghẽn|Bottlenecks⟧
+@119
+Hãy đặt những câu hỏi sau:
+
+1. Cái gì tốn nhiều thời gian nhất?
+   - Đo từng thành phần
+   - Tìm ra thành phần chậm nhất
+
+2. Cái gì chịu tải cao nhất?
+   - Mức dùng CPU
+   - Mức dùng bộ nhớ
+   - Mạng bị bão hoà
+   - Disk I/O
+
+3. Cái gì hỏng đầu tiên khi tải tăng?
+   - Kết nối cơ sở dữ liệu đã chạm mức tối đa?
+   - Bộ nhớ máy chủ đầy?
+   - Băng thông mạng bị bão hoà?
+
+Điểm nghẽn là nơi bạn chạm giới hạn đầu tiên.
+
+@120
+Các ⟦Điểm Nghẽn|Bottlenecks⟧ Thường Gặp Theo Quy Mô
+@121
+1K người dùng:
+- Điểm nghẽn: Thường là không có
+- Nếu có: Truy vấn kém hiệu quả
+
+10K người dùng:
+- Điểm nghẽn: Truy vấn cơ sở dữ liệu
+- Cách khắc phục: Thêm chỉ mục, bộ nhớ đệm
+
+100K người dùng:
+- Điểm nghẽn: Ghi vào cơ sở dữ liệu
+- Cách khắc phục: Bản sao chỉ đọc, tối ưu
+
+1M người dùng:
+- Điểm nghẽn: Năng lực cơ sở dữ liệu
+- Cách khắc phục: Phân mảnh dữ liệu, bộ nhớ đệm phân tán
+
+10M+ người dùng:
+- Điểm nghẽn: Mọi thứ
+- Cách khắc phục: Kiến trúc phân tán, CDN, điện toán biên
+
+@122
+Bài Tập Thực Hành
+@123
+Bài tập 1: Ước Lượng Một Dịch Vụ Kiểu YouTube
+@124
+Dữ kiện:
+- 1 tỷ người dùng
+- 100 triệu người dùng hoạt động hằng ngày
+- Mỗi người dùng xem 10 video/ngày (trung bình 5 phút mỗi video)
+- 1% người dùng tải lên 1 video/ngày
+
+Hãy tính:
+1. Số lượt xem video mỗi giây
+2. Băng thông tải lên cần thiết
+3. Dung lượng lưu trữ tăng thêm mỗi ngày
+4. Chi phí hạ tầng ước chừng
+
+Hãy tự thử trước!
+
+@125
+**Đáp án:**
+@126
+1. Số lượt xem video mỗi giây:
+   100M người dùng × 10 video/ngày = 1B lượt xem/ngày
+   1B / 86.400 giây ≈ 11.574 lượt xem/giây
+
+2. Băng thông tải lên:
+   1M lượt tải lên/ngày (1% của 100M)
+   Video trung bình: 5 phút × 10MB/phút = 50MB
+   50MB × 1M = 50TB/ngày băng thông tải lên
+   50TB / 86.400s ≈ 580 MB/giây tải lên
+
+3. Dung lượng lưu trữ tăng thêm:
+   1M video/ngày × 50MB = 50TB/ngày dữ liệu thô
+   Nhiều độ phân giải (360p, 720p, 1080p): ×3
+   = 150TB/ngày
+   = 4,5PB/tháng
+
+4. Chi phí hạ tầng (ước chừng):
+   Lưu trữ: 4,5PB × $0,02/GB = $90.000/tháng
+   CDN: 1B lượt xem × 50MB = 50PB truyền tải
+   Chi phí CDN: ~$500.000/tháng
+   Tính toán: ~$200.000/tháng
+   Tổng: tối thiểu ~$800.000/tháng
+
+@127
+Bài tập 2: Ước Lượng Một Ứng Dụng Nhắn Tin
+@128
+Dữ kiện:
+- 500 triệu người dùng
+- 200 triệu người dùng hoạt động hằng ngày
+- Mỗi người dùng gửi 50 tin nhắn/ngày
+- Mỗi người dùng nhận 50 tin nhắn/ngày
+
+Hãy tính:
+1. Số tin nhắn mỗi giây
+2. Dung lượng lưu trữ mỗi ngày
+3. Số lượt ghi cơ sở dữ liệu mỗi giây
+4. Thách thức khi gửi tin theo thời gian thực
+
+Đến lượt bạn!
+
+@129
+**Đáp án:**
+@130
+1. Số tin nhắn mỗi giây:
+   200M người dùng × 50 tin nhắn = 10B tin nhắn/ngày
+   10B / 86.400 ≈ 115.740 tin nhắn/giây
+
+2. Dung lượng lưu trữ mỗi ngày:
+   10B tin nhắn × 100 byte = 1TB/ngày
+   (tin nhắn văn bản có kích thước nhỏ)
+
+3. Số lượt ghi cơ sở dữ liệu:
+   115.740 lượt ghi/giây
+   → Cần cơ sở dữ liệu phân tán hoặc vùng đệm cho việc ghi
+
+4. Gửi tin theo thời gian thực:
+   115.740 tin nhắn/giây cần được chuyển đi
+   Mỗi tin cần được đẩy qua WebSocket
+   → Cần hệ thống pub/sub hiệu quả
+   → Hàng đợi thông điệp là thiết yếu
+
+@131
+Xây Dựng Trực Giác: Hướng Dẫn Luyện Tập
+@132
+**Cách rèn luyện ⟦trực giác về quy mô|scale intuition⟧:**
+@133
+Bước 1: Ghi Nhớ Các Con Số Then Chốt
+@134
+Bắt buộc phải biết:
+- 1 triệu giây ≈ 12 ngày
+- 1 tỷ giây ≈ 32 năm
+- 1KB = 1.000 byte
+- 1MB = 1.000KB = 1 triệu byte
+- 1GB = 1.000MB = 1 tỷ byte
+- 1TB = 1.000GB
+
+Máy chủ thông thường:
+- 1.000 yêu cầu/giây
+- 16GB RAM
+- 1TB lưu trữ
+
+Chi phí thông thường:
+- Máy chủ: $50-500/tháng
+- Cơ sở dữ liệu: $50-1.000/tháng
+- CDN: $10-1.000/tháng
+- Lưu trữ: $0,02/GB/tháng
+
+@135
+Bước 2: Luyện ⟦Ước Lượng|Estimation⟧ Mỗi Ngày
+@136
+Mỗi ngày, hãy ước lượng:
+
+Thứ Hai: "Instagram có 500M DAU. Mỗi ngày có bao nhiêu ảnh được tải lên?"
+Thứ Ba: "Twitter xử lý bao nhiêu tweet/giây?"
+Thứ Tư: "Băng thông mỗi giây của Netflix là bao nhiêu?"
+Thứ Năm: "Google xử lý bao nhiêu lượt tìm kiếm mỗi giây?"
+Thứ Sáu: "Dung lượng lưu trữ của Facebook tăng bao nhiêu mỗi ngày?"
+
+Có công mài sắt, có ngày nên kim!
+
+@137
+Bước 3: Kiểm Chứng Các ⟦Ước Lượng|Estimates⟧ Của Bạn
+@138
+Sau khi ước lượng, hãy tìm hiểu con số thực tế:
+- Instagram: 95M ảnh/ngày
+- Twitter: 6.000 tweet/giây
+- Netflix: băng thông cao điểm 200Gbps
+- Google: 40.000 lượt tìm kiếm/giây
+
+So sánh với ước lượng của bạn
+Hiệu chỉnh lại trực giác của bạn
+
+@139
+Những Điểm Cốt Lõi
+@140
+**⟦Trực giác về quy mô|Scale intuition⟧ = ⟦Ước lượng|Estimate⟧ nhanh các yêu cầu của hệ thống**
+@141
+Kỹ năng then chốt cho:
+- Phỏng vấn thiết kế hệ thống
+- Lập kế hoạch kiến trúc
+- Hoạch định năng lực
+- Ước lượng chi phí
+
+@142
+**Phổ ⟦quy mô|scale⟧:**
+@143
+1K người dùng: Xe đạp (đơn giản)
+10K người dùng: Xe hơi (thêm cấu trúc)
+100K người dùng: Xe buýt (cần tối ưu)
+1M người dùng: Máy bay (hệ thống phân tán)
+10M+ người dùng: Hạm đội máy bay (hạ tầng phức tạp)
+
+Mỗi lần tăng 10 lần = kiến trúc khác biệt về căn bản
+
+@144
+**⟦Ước tính nhanh|Back-of-envelope calculations⟧:**
+@145
+Khung tư duy:
+1. Người dùng → Hoạt động → Yêu cầu
+2. Yêu cầu → Năng lực máy chủ
+3. Dữ liệu → Lưu trữ → Chi phí
+4. Xác định điểm nghẽn
+
+Luyện tập cho đến khi thành phản xạ!
+
+@146
+**Mẫu hình ⟦đọc|Read⟧ và ⟦ghi|Write⟧:**
+@147
+Thiên về đọc (90%+):
+→ Lưu đệm là vua
+→ CDN là thiết yếu
+→ Bản sao chỉ đọc
+
+Thiên về ghi (50%+):
+→ Tối ưu việc ghi
+→ Dùng hàng đợi làm vùng đệm
+→ Cơ sở dữ liệu chuyên dụng
+
+Biết mẫu hình của mình → Biết chiến lược của mình
+
+@148
+**Tư duy về ⟦điểm nghẽn|bottleneck⟧:**
+@149
+Tốc độ hệ thống = Tốc độ của thành phần chậm nhất
+
+Luôn tự hỏi:
+- Điểm nghẽn là gì?
+- Cái gì chạm giới hạn đầu tiên?
+- Nên tối ưu cái gì trước?
+
+Tối ưu điểm nghẽn, đừng tối ưu mọi thứ!
+
+@150
+**Xây dựng trực giác:**
+@151
+1. Ghi nhớ các con số then chốt
+2. Luyện ước lượng mỗi ngày
+3. Kiểm chứng với dữ liệu thực tế
+4. Hiệu chỉnh và cải thiện
+
+Sau 100 lần ước lượng, bạn sẽ có trực giác vững vàng
+
+@152
+**Hãy nhớ:**
+@153
+Trực giác không đến từ lý thuyết
+Trực giác đến từ thực hành
+
+Hãy tính toán mỗi ngày
+Sau 1 tháng, bạn sẽ "cảm" được quy mô
+

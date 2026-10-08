@@ -1,0 +1,625 @@
+@0
+⟦Mở Rộng Cơ Sở Dữ Liệu|Database Scaling⟧: Chiến Lược Mở Rộng ⟦Tầng Dữ Liệu|Data Layer⟧
+@1
+Tôi còn nhớ cái ngày ⟦cơ sở dữ liệu|database⟧ đầu tiên tôi thiết kế sụp đổ.
+@2
+Black Friday. ⟦Lưu lượng|Traffic⟧ tăng gấp 10 lần. CPU của ⟦cơ sở dữ liệu|database⟧ lên 100%, các ⟦truy vấn|queries⟧ liên tục ⟦hết thời gian chờ|timeout⟧, ⟦thời gian phản hồi|response time⟧ từ 200ms vọt lên 30 giây.
+@3
+3 giờ sáng, tôi gọi cho một ⟦kiến trúc sư lâu năm|senior architect⟧. Anh ấy hỏi đúng một câu: *"Em có mấy cơ sở dữ liệu?"*
+@5
+Anh ấy: *"Vậy là em chưa biết cách mở rộng cơ sở dữ liệu."*
+@6
+Đó là đêm tôi học được bài học đắt giá nhất về ⟦mở rộng cơ sở dữ liệu|database scaling⟧. Và bài học này sẽ giúp bạn tránh được sai lầm đó.
+@7
+Tại Sao ⟦Cơ Sở Dữ Liệu|Database⟧ Luôn Là ⟦Điểm Nghẽn|Bottleneck⟧ Đầu Tiên?
+@8
+Trước khi học cách ⟦mở rộng|scale⟧, hãy hiểu tại sao ⟦cơ sở dữ liệu|database⟧ luôn là điểm nghẽn.
+@9
+**Lý do 1: I/O ổ đĩa chậm nhất trong hệ thống**
+@10
+Truy cập RAM:     100 nano giây
+Đọc SSD:          150 micro giây    (chậm hơn RAM 1,500 lần)
+Đọc HDD:          10 mili giây      (chậm hơn RAM 100,000 lần)
+
+Cơ sở dữ liệu phải:
+- Đọc từ ổ đĩa
+- Phân tích cú pháp truy vấn
+- Thực thi kế hoạch truy vấn
+- Ghi kết quả
+
+→ Bản chất đã chậm
+
+@11
+**Lý do 2: Hệ thống ⟦có trạng thái|stateful⟧ khó mở rộng hơn hệ thống ⟦phi trạng thái|stateless⟧**
+@12
+Máy chủ ứng dụng (phi trạng thái):
+- Không lưu dữ liệu
+- Thêm máy chủ → Mở rộng được ngay
+- Dễ!
+
+Cơ sở dữ liệu (có trạng thái):
+- Lưu dữ liệu
+- Dữ liệu phải nhất quán
+- Khó!
+
+@13
+**Lý do 3: ⟦Điểm lỗi duy nhất|Single point of failure⟧**
+@14
+10 máy chủ ứng dụng, 1 cơ sở dữ liệu
+Cơ sở dữ liệu chết → Toàn bộ hệ thống chết
+
+@15
+**Điểm mấu chốt:** Việc ⟦mở rộng cơ sở dữ liệu|database scaling⟧ phải được lên kế hoạch từ đầu, chứ không phải đợi đến khi ⟦môi trường thực tế|production⟧ đã cháy.
+@16
+⟦Mở Rộng Theo Chiều Dọc|Vertical Scaling⟧: Đơn Giản Nhưng Có Giới Hạn
+@18
+**⟦Mở rộng theo chiều dọc|Vertical scaling⟧ = Tăng sức mạnh của ⟦máy chủ|server⟧ hiện tại**
+@19
+Hiện tại: 8 CPU, 16GB RAM, 500GB SSD
+Nâng cấp: 32 CPU, 128GB RAM, 2TB SSD
+
+@20
+graph TB
+    A[Máy chủ CSDL<br/>8 CPU, 16GB RAM] -->|Nâng cấp phần cứng| B[Máy chủ CSDL<br/>32 CPU, 128GB RAM]
+
+    style A fill:#ff6b6b
+    style B fill:#51cf66
+@21
+*⟦Mở rộng theo chiều dọc|Vertical scaling⟧: Nâng cấp phần cứng của cùng một ⟦máy chủ|server⟧*
+@24
+Không phải sửa code
+Không phải thay đổi kiến trúc
+Bấm nút → Có thêm sức mạnh
+10 phút là xong
+
+@25
+**2. Không có ⟦độ phức tạp|complexity⟧ của ⟦hệ thống phân tán|distributed system⟧**
+@26
+Vẫn là một cơ sở dữ liệu duy nhất
+Giao dịch ACID hoạt động bình thường
+Không có vấn đề nhất quán dữ liệu
+Truy vấn vẫn như cũ
+
+@27
+**3. Có kết quả ngay lập tức**
+@28
+Trước: CPU 90%, truy vấn 5 giây
+Sau:   CPU 30%, truy vấn 200ms
+
+@31
+Không thể mua CPU/RAM vô hạn
+Có mức trần tối đa
+Sớm muộn cũng phải chuyển sang mở rộng theo chiều ngang
+
+@32
+**2. Đắt đỏ và ⟦lợi ích giảm dần|diminishing returns⟧**
+@33
+Chi phí khi mở rộng (số liệu thực tế từ AWS):
+
+16GB RAM → 32GB:  giá x2 ($200 → $400/tháng)
+32GB RAM → 64GB:  giá x3 ($400 → $1,200/tháng)
+64GB RAM → 128GB: giá x5 ($1,200 → $6,000/tháng)
+128GB RAM → 256GB: giá x8 ($6,000 → $48,000/tháng)
+
+Giá tăng theo cấp số nhân, hiệu năng chỉ tăng tuyến tính
+
+@34
+**3. ⟦Điểm lỗi duy nhất|Single point of failure⟧**
+@35
+Máy chủ chết → Toàn bộ hệ thống chết
+Bảo trì → Ngừng hoạt động
+Không có dự phòng
+
+@36
+**4. Bắt buộc phải có ⟦thời gian ngừng hoạt động|downtime⟧**
+@37
+Phải khởi động lại cơ sở dữ liệu
+Ngừng hoạt động 5-30 phút
+Không thể nâng cấp mà không ngừng hoạt động
+
+@38
+Ma Trận ⟦Đánh Đổi|Trade-off⟧
+@39
+Mở rộng theo chiều dọc:
+
+Đơn giản:              ★★★★★
+Triển khai nhanh:      ★★★★★
+Tính nhất quán:        ★★★★★
+Hiệu quả chi phí:      ★★☆☆☆
+Tính sẵn sàng:         ★★☆☆☆
+Giới hạn mở rộng:      ★★☆☆☆
+
+@41
+**Sử dụng ⟦mở rộng theo chiều dọc|vertical scaling⟧ khi:**
+@42
+✓ Công ty khởi nghiệp/MVP (< 10 nghìn người dùng)
+✓ Ngân sách eo hẹp
+✓ Nhóm nhỏ (không có chuyên môn về hệ thống phân tán)
+✓ Lưu lượng dự đoán được và có mức trần
+✓ Dữ liệu < 1TB
+✓ Giao dịch ACID là tối quan trọng (ngân hàng, thanh toán)
+
+@44
+Tôi từng tư vấn cho một ⟦công ty khởi nghiệp|startup⟧ ngân hàng. ⟦Nhóm|Team⟧ muốn làm "⟦vi dịch vụ|microservices⟧ + ⟦cơ sở dữ liệu phân mảnh|sharded database⟧ ngay từ đầu".
+@46
+5.000 ⟦người dùng|users⟧ hiện tại
+@47
+PostgreSQL 16GB RAM chịu được 50 nghìn ⟦người dùng|users⟧
+@48
+Đơn giản = ra mắt sản phẩm nhanh hơn
+@49
+Tiết kiệm ngân sách cho marketing
+@50
+2 năm sau, 30 nghìn ⟦người dùng|users⟧, ⟦cơ sở dữ liệu|database⟧ vẫn ổn. Chỉ cần nâng cấp lên 32GB RAM (⟦ngừng hoạt động|downtime⟧ 1 giờ lúc 3 giờ sáng).
+@51
+**Quyết định đúng cho bối cảnh đó.**
+@53
+**Luôn bắt đầu với ⟦mở rộng theo chiều dọc|vertical scaling⟧.**
+@54
+Chỉ chuyển sang ⟦mở rộng theo chiều ngang|horizontal scaling⟧ khi:
+@55
+Chạm giới hạn CPU/bộ nhớ (thường xuyên ở mức 80% trở lên)
+@56
+Chi phí quá cao
+@57
+Cần ⟦tính sẵn sàng cao|high availability⟧
+@58
+Đừng ⟦tối ưu hoá quá sớm|prematurely optimize⟧.
+@59
+⟦Mở Rộng Theo Chiều Ngang|Horizontal Scaling⟧: Phức Tạp Nhưng Không Giới Hạn
+@61
+**⟦Mở rộng theo chiều ngang|Horizontal scaling⟧ = Thêm nhiều ⟦máy chủ|servers⟧**
+@62
+1 cơ sở dữ liệu xử lý 10,000 req/s
+→ 5 cơ sở dữ liệu, mỗi cái xử lý 2,000 req/s
+
+@63
+graph TB
+    A[Một CSDL duy nhất<br/>10K req/s] -->|Mở rộng ra| B[Nhiều CSDL]
+    B --> C[DB 1<br/>2K req/s]
+    B --> D[DB 2<br/>2K req/s]
+    B --> E[DB 3<br/>2K req/s]
+    B --> F[DB 4<br/>2K req/s]
+    B --> G[DB 5<br/>2K req/s]
+
+    style A fill:#ff6b6b
+    style C fill:#51cf66
+    style D fill:#51cf66
+    style E fill:#51cf66
+    style F fill:#51cf66
+    style G fill:#51cf66
+@64
+*⟦Mở rộng theo chiều ngang|Horizontal scaling⟧: Thêm nhiều ⟦máy chủ cơ sở dữ liệu|database servers⟧ để phân tán ⟦tải|load⟧*
+@66
+Về lý thuyết, mở rộng không giới hạn
+   - 10 máy chủ → năng lực gấp 10 lần
+   - 100 máy chủ → năng lực gấp 100 lần
+
+Hiệu quả về chi phí khi ở quy mô lớn
+   - Dùng phần cứng phổ thông
+   - Chi phí tăng tuyến tính theo năng lực
+
+Tính sẵn sàng cao
+   - 1 máy chủ chết → Các máy còn lại vẫn tiếp tục chạy
+   - Không có điểm lỗi duy nhất
+
+Mở rộng không cần ngừng hoạt động
+   - Thêm máy chủ mà không cần khởi động lại các máy hiện có
+
+@68
+Độ phức tạp cực cao
+   - Thách thức về nhất quán dữ liệu
+   - Giao dịch phân tán là cơn ác mộng
+   - Phân vùng mạng
+
+Phải sửa đổi ứng dụng
+   - Code phải biết về các mảnh (shard-aware)
+   - Không thể coi như một CSDL duy nhất
+
+Chi phí vận hành phụ trội
+   - Giám sát nhiều máy chủ
+   - Sao lưu/khôi phục phức tạp
+   - Phân mảnh lại = cơn ác mộng
+
+@69
+⟦Bản Sao Chỉ Đọc|Read Replicas⟧: Mở Rộng Việc Đọc Dễ Dàng
+@70
+⟦Mẫu Đọc/Ghi|The Read/Write Pattern⟧
+@71
+**Đối chiếu thực tế:** Hầu hết các ứng dụng đều ⟦thiên về đọc|read-heavy⟧.
+@72
+Ứng dụng web thông thường:
+90% đọc (SELECT)
+10% ghi (INSERT, UPDATE, DELETE)
+
+Mạng xã hội:
+95% đọc (xem bài đăng, hồ sơ)
+5% ghi (tạo bài đăng, thích)
+
+Thương mại điện tử:
+85% đọc (duyệt sản phẩm)
+15% ghi (thanh toán, đánh giá)
+
+@73
+**Điểm mấu chốt:** Nếu tách riêng việc đọc và ghi, ta có thể ⟦mở rộng|scale⟧ việc đọc rất dễ dàng.
+@74
+Kiến Trúc ⟦Chủ–Tớ|Master-Slave⟧
+@75
+graph TB
+    APP[Máy chủ ứng dụng]
+
+    APP -->|Mọi thao tác ghi| MASTER[CSDL chính - Master<br/>Xử lý ghi]
+
+    MASTER -.->|Nhân bản bất đồng bộ| SLAVE1[Slave 1<br/>Chỉ đọc]
+    MASTER -.->|Nhân bản bất đồng bộ| SLAVE2[Slave 2<br/>Chỉ đọc]
+    MASTER -.->|Nhân bản bất đồng bộ| SLAVE3[Slave 3<br/>Chỉ đọc]
+
+    APP -->|Truy vấn đọc| LB[Bộ cân bằng tải]
+    LB --> SLAVE1
+    LB --> SLAVE2
+    LB --> SLAVE3
+
+    style MASTER fill:#ff6b6b
+    style SLAVE1 fill:#51cf66
+    style SLAVE2 fill:#51cf66
+    style SLAVE3 fill:#51cf66
+@76
+*⟦Nút chủ|Master⟧ xử lý việc ghi, các ⟦nút tớ|Slaves⟧ xử lý việc đọc. ⟦Nhân bản|Replication⟧ diễn ra ⟦bất đồng bộ|async⟧.*
+@77
+**Quy trình hoạt động:**
+@78
+1. Ứng dụng ghi → CSDL chính (Master)
+2. Master nhân bản thay đổi bất đồng bộ → các Slave
+3. Ứng dụng đọc → được cân bằng tải qua các Slave
+4. Slave chỉ phục vụ đọc, không nhận ghi
+
+@79
+Ví Dụ Triển Khai
+@80
+⟦Độ Trễ Nhân Bản|Replication Lag⟧: Vấn Đề Quan Trọng Nhất
+@81
+**Vấn đề:**
+@82
+Dòng thời gian:
+10:00:00.000 - Người dùng cập nhật hồ sơ trên Master
+10:00:00.050 - Master nhân bản sang các Slave (trễ 50ms)
+10:00:00.010 - Người dùng tải lại trang, truy vấn đi tới Slave
+              → Slave chưa có dữ liệu mới!
+              → Người dùng thấy dữ liệu cũ
+
+Người dùng bối rối: "Tôi vừa cập nhật sao không thấy thay đổi?"
+
+@83
+**⟦Độ trễ nhân bản|Replication lag⟧ = Độ trễ giữa lúc ⟦nút chủ|Master⟧ ghi và lúc ⟦nút tớ|Slave⟧ có dữ liệu**
+@84
+Tốt:          < 100ms
+Chấp nhận được: < 1 giây
+Có vấn đề:    1-5 giây
+Thảm hoạ:     > 5 giây
+
+@85
+Giải Pháp Cho ⟦Độ Trễ Nhân Bản|Replication Lag⟧
+@86
+**Giải pháp 1: ⟦Đọc-Sau-Khi-Ghi|Read-After-Write⟧ từ ⟦nút chủ|Master⟧**
+@87
+**Giải pháp 2: ⟦Gắn phiên|Session Stickiness⟧**
+@88
+**Giải pháp 3: Chấp nhận và thông báo cho ⟦người dùng|user⟧**
+@89
+Khi Nào Dùng ⟦Bản Sao Chỉ Đọc|Read Replicas⟧?
+@90
+Sử dụng khi:
+✓ Khối lượng công việc thiên về đọc (> 70% đọc)
+✓ Chấp nhận được độ trễ nhân bản (< 1 giây là ổn)
+✓ Master có thể xử lý toàn bộ thao tác ghi
+✓ Cần tính sẵn sàng cao cho việc đọc
+
+Không dùng khi:
+✗ Khối lượng công việc thiên về ghi (> 40% ghi)
+✗ Cần nhất quán mạnh ở mọi nơi
+✗ Master đã quá tải vì thao tác ghi
+
+@91
+**Kinh nghiệm cá nhân:**
+@92
+⟦Bản sao chỉ đọc|Read replicas⟧ giải quyết được 80% các vấn đề ⟦mở rộng cơ sở dữ liệu|database scaling⟧. Đơn giản, hiệu quả, ít rủi ro.
+@93
+Khuyến nghị: Hãy thử ⟦bản sao chỉ đọc|read replicas⟧ trước khi nghĩ đến ⟦phân mảnh dữ liệu|sharding⟧.
+@94
+⟦Phân Mảnh Dữ Liệu|Sharding⟧: Quy Mô Tối Thượng, Độ Phức Tạp Tối Thượng
+@95
+Vấn Đề ⟦Bản Sao Chỉ Đọc|Read Replicas⟧ Không Giải Quyết Được
+@96
+Kịch bản:
+- Master xử lý 50,000 thao tác ghi/giây
+- Thêm 10 bản sao chỉ đọc → Master vẫn phải xử lý 50 nghìn thao tác ghi
+- Bản sao chỉ đọc chỉ mở rộng việc đọc, KHÔNG mở rộng việc ghi
+
+Tương tự:
+- Cơ sở dữ liệu quá lớn: 10TB dữ liệu
+- Một máy chủ không đủ dung lượng lưu trữ
+- Truy vấn chậm vì bảng có hàng tỷ dòng
+
+@97
+**⟦Bản sao chỉ đọc|Read replicas⟧ mở rộng việc đọc. ⟦Phân mảnh dữ liệu|Sharding⟧ mở rộng CẢ việc ghi lẫn kích thước dữ liệu.**
+@98
+Khái Niệm ⟦Phân Mảnh Dữ Liệu|Sharding⟧
+@99
+**⟦Phân mảnh dữ liệu|Sharding⟧ = Chia dữ liệu ra nhiều ⟦cơ sở dữ liệu|databases⟧, mỗi cơ sở dữ liệu lưu một tập con**
+@100
+graph TB
+    APP[Tầng ứng dụng]
+
+    APP -->|Người dùng 0-250K| SHARD1[Mảnh 1<br/>Người dùng 0-250K]
+    APP -->|Người dùng 250K-500K| SHARD2[Mảnh 2<br/>Người dùng 250K-500K]
+    APP -->|Người dùng 500K-750K| SHARD3[Mảnh 3<br/>Người dùng 500K-750K]
+    APP -->|Người dùng 750K-1M| SHARD4[Mảnh 4<br/>Người dùng 750K-1M]
+
+    style SHARD1 fill:#51cf66
+    style SHARD2 fill:#51cf66
+    style SHARD3 fill:#51cf66
+    style SHARD4 fill:#51cf66
+@101
+*Mỗi ⟦mảnh|shard⟧ chứa một tập con của toàn bộ dữ liệu và hoạt động độc lập*
+@102
+**Đặc điểm chính:**
+@103
+- Mỗi mảnh là một cơ sở dữ liệu độc lập
+- Mỗi mảnh chứa một phần của toàn bộ dữ liệu
+- Không có trạng thái dùng chung giữa các mảnh
+- Ứng dụng quyết định truy vấn đi tới mảnh nào
+
+@104
+Các Chiến Lược ⟦Phân Mảnh|Shard⟧
+@105
+**Chiến lược 1: ⟦Phân mảnh theo hàm băm|Hash-Based Sharding⟧**
+@106
+Phân phối dữ liệu đồng đều
+Thuật toán đơn giản
+Dự đoán được vị trí mảnh
+
+Khó thay đổi num_shards (phân mảnh lại là cơn ác mộng)
+Truy vấn theo khoảng xuyên các mảnh rất khó
+Dữ liệu liên quan có thể nằm ở các mảnh khác nhau
+
+@107
+**Chiến lược 2: ⟦Phân mảnh theo khoảng|Range-Based Sharding⟧**
+@108
+Dễ thêm mảnh mới (chỉ cần thêm khoảng mới)
+Truy vấn theo khoảng trong 1 mảnh rất hiệu quả
+Dữ liệu liên quan (ID tuần tự) nằm cùng mảnh
+
+Phân phối không đều (mảnh mới có ít dữ liệu)
+Điểm nóng (người dùng mới dồn vào mảnh mới nhất)
+Tải không cân bằng
+
+@109
+**Chiến lược 3: ⟦Phân mảnh theo địa lý|Geography-Based Sharding⟧**
+@110
+Độ trễ thấp (dữ liệu ở gần người dùng)
+Tuân thủ quy định (yêu cầu lưu trữ dữ liệu trong nước)
+Dữ liệu được cô lập một cách tự nhiên
+
+Truy vấn xuyên vùng tốn kém
+Phân phối không đều nếu người dùng phân bố không đều
+Phức tạp nếu người dùng di chuyển
+
+@111
+**Chiến lược 4: ⟦Phân mảnh theo thực thể|Entity-Based Sharding⟧**
+@112
+Tối ưu riêng cho từng thực thể
+Quyền sở hữu dữ liệu rõ ràng
+Mở rộng độc lập theo từng loại thực thể
+
+JOIN giữa các thực thể = thảm hoạ
+Giao dịch giữa các thực thể rất khó
+Nhiều mảnh hơn phải quản lý
+
+@113
+Những Thách Thức Của ⟦Phân Mảnh Dữ Liệu|Sharding⟧
+@114
+**Thách thức 1: ⟦Truy vấn xuyên mảnh|Cross-Shard Queries⟧**
+@115
+**Thách thức 2: ⟦Giao dịch phân tán|Distributed Transactions⟧**
+@116
+**Thách thức 3: ⟦Phân mảnh lại|Resharding⟧**
+@117
+Kịch bản:
+- Bắt đầu với 4 mảnh
+- Cần tăng lên 8 mảnh
+- Phải chuyển 50% dữ liệu từ mỗi mảnh cũ
+
+Quy trình:
+1. Tạo 4 mảnh mới
+2. Dừng ghi (ngừng hoạt động) hoặc ghi kép (phức tạp)
+3. Sao chép dữ liệu từ mảnh cũ → mảnh mới
+4. Kiểm chứng tính nhất quán dữ liệu
+5. Chuyển lưu lượng sang các mảnh mới
+6. Gỡ bỏ các mảnh cũ
+
+Cơn ác mộng:
+- 10TB dữ liệu → mất 1-2 tuần để di chuyển
+- Rủi ro mất dữ liệu
+- Ngừng hoạt động hoặc độ phức tạp cực cao
+
+@118
+**Thách thức 4: ⟦ID tự tăng|Auto-Increment IDs⟧**
+@119
+Khi Nào Dùng ⟦Phân Mảnh Dữ Liệu|Sharding⟧?
+@120
+Chỉ dùng phân mảnh khi:
+✓ Mở rộng theo chiều dọc đã kịch trần (512GB+ RAM)
+✓ Bản sao chỉ đọc không đủ (quá nhiều thao tác ghi)
+✓ Một cơ sở dữ liệu không đủ dung lượng lưu trữ (>10TB)
+✓ Có nhóm giàu kinh nghiệm (chuyên môn về hệ thống phân tán)
+✓ Có ngân sách cho độ phức tạp vận hành
+
+Tránh phân mảnh khi:
+✗ < 1 triệu người dùng
+✗ < 5TB dữ liệu
+✗ Vẫn còn có thể mở rộng theo chiều dọc
+✗ Nhóm chưa có kinh nghiệm
+✗ Chưa thử bản sao chỉ đọc + bộ nhớ đệm
+
+@122
+Tôi đã làm việc với 3 công ty cố gắng ⟦phân mảnh|shard⟧ ⟦cơ sở dữ liệu|database⟧ quá sớm. Cả 3 đều hối hận.
+@123
+**Công ty A:** 50 nghìn ⟦người dùng|users⟧, phân mảnh ⟦cơ sở dữ liệu|database⟧. 6 tháng phát triển, nhiều ⟦lỗi|bugs⟧, ⟦nhóm|team⟧ kiệt sức.
+@124
+**Công ty B:** Đợi đến 2 triệu ⟦người dùng|users⟧, ⟦mở rộng theo chiều dọc|vertical scale⟧ + ⟦bản sao chỉ đọc|read replicas⟧. Chỉ ⟦phân mảnh|shard⟧ khi thực sự cần (5 triệu ⟦người dùng|users⟧).
+@125
+**Công ty C:** 100 nghìn ⟦người dùng|users⟧, ⟦kiến trúc sư|architect⟧ khăng khăng đòi ⟦phân mảnh|shard⟧. 1 năm sau, phải thu gọn về một ⟦cơ sở dữ liệu|database⟧ duy nhất vì ⟦độ phức tạp|complexity⟧ không đáng.
+@126
+**Quy tắc của tôi:**
+@127
+Thứ tự mở rộng cơ sở dữ liệu:
+1. Mở rộng theo chiều dọc (đầu tiên)
+2. Tối ưu truy vấn + đánh chỉ mục
+3. Tầng bộ nhớ đệm
+4. Bản sao chỉ đọc
+5. Phân mảnh dữ liệu (cuối cùng, khi không còn cách nào khác)
+
+@128
+⟦Phân mảnh dữ liệu|Sharding⟧ là **giải pháp cuối cùng**, không phải lựa chọn đầu tiên.
+@129
+Những ⟦Đánh Đổi|Trade-offs⟧ Về ⟦Tính Nhất Quán|Consistency⟧
+@130
+Nhắc Lại ⟦Định Lý CAP|CAP Theorem⟧
+@131
+Trong ⟦cơ sở dữ liệu phân tán|distributed database⟧, chỉ chọn được 2 trong 3:
+@132
+C (Consistency - Tính nhất quán):  Mọi người đọc cùng một dữ liệu
+A (Availability - Tính sẵn sàng): Hệ thống luôn phản hồi
+P (Partition tolerance - Khả năng chịu phân vùng): Vẫn hoạt động khi mạng gặp sự cố
+
+Phân vùng mạng LUÔN xảy ra → Phải chọn C hoặc A
+
+@133
+Các ⟦Mô Hình Nhất Quán|Consistency Models⟧
+@134
+**⟦Nhất quán mạnh|Strong Consistency⟧ (CP)**
+@135
+Người dùng A ghi X = 10
+Người dùng B đọc X → PHẢI thấy 10
+
+Ứng dụng ngân hàng:
+- Chuyển $100
+- Số dư PHẢI được phản ánh ngay
+- Không chấp nhận dữ liệu cũ
+
+Đánh đổi:
+Dữ liệu chính xác
+Chậm (phải chờ tất cả bản sao)
+Tính sẵn sàng thấp hơn
+
+@136
+**⟦Nhất quán cuối cùng|Eventual Consistency⟧ (AP)**
+@137
+Người dùng A ghi X = 10
+Người dùng B đọc X → Có thể thấy giá trị cũ
+Sau vài giây → Mọi người đều thấy 10
+
+Mạng xã hội:
+- Thích một bài đăng
+- Số lượt thích có thể trễ vài giây
+- Chấp nhận được
+
+Đánh đổi:
+Nhanh
+Tính sẵn sàng cao
+Dữ liệu có thể bị cũ
+
+@138
+Chọn Mức Độ ⟦Nhất Quán|Consistency⟧
+@139
+Cần nhất quán mạnh:
+✓ Giao dịch tài chính
+✓ Quản lý tồn kho
+✓ Xác thực người dùng
+✓ Logic nghiệp vụ trọng yếu
+
+Chấp nhận nhất quán cuối cùng:
+✓ Số liệu mạng xã hội (lượt thích, lượt xem)
+✓ Hệ thống gợi ý
+✓ Bảng điều khiển phân tích
+✓ Bảng tin hoạt động
+
+@140
+**⟦Khung tư duy|Framework⟧:**
+@141
+Tự hỏi:
+1. Người dùng có bị ảnh hưởng nếu dữ liệu sai trong vài giây không?
+2. Doanh nghiệp có bị thiệt hại nếu dữ liệu không nhất quán không?
+3. Có thể bù đắp/sửa lại sau không?
+
+Nếu có bất kỳ câu "có" → Nhất quán mạnh
+Tất cả đều "không" → Nhất quán cuối cùng là ổn
+
+@142
+Những Điểm Cốt Lõi
+@143
+**Thứ bậc ⟦mở rộng cơ sở dữ liệu|database scaling⟧:**
+@144
+Cấp 1: Mở rộng theo chiều dọc
+- Đơn giản nhất, bắt đầu từ đây
+- Phù hợp cho < 100 nghìn người dùng
+
+Cấp 2: Tối ưu truy vấn + bộ nhớ đệm
+- Giải quyết 70% vấn đề
+- Chi phí thấp, tác động lớn
+
+Cấp 3: Bản sao chỉ đọc
+- Mở rộng việc đọc dễ dàng
+- Phù hợp cho ứng dụng thiên về đọc
+
+Cấp 4: Phân mảnh dữ liệu
+- Giải pháp cuối cùng
+- Chỉ khi thực sự cần
+- Độ phức tạp cực cao
+
+@145
+**Các chiến lược ⟦phân mảnh|shard⟧:**
+@146
+Theo hàm băm:    Đều, khó thay đổi kích thước
+Theo khoảng:     Dễ thêm mảnh, phân phối không đều
+Theo địa lý:     Độ trễ thấp, tuân thủ quy định
+Theo thực thể:   Sở hữu rõ ràng, khó JOIN
+
+@147
+**Những ⟦đánh đổi|trade-offs⟧ về ⟦tính nhất quán|consistency⟧:**
+@148
+Nhất quán mạnh: Chính xác, chậm, tính sẵn sàng thấp hơn
+Nhất quán cuối cùng: Nhanh, sẵn sàng, có thể bị cũ
+
+Lựa chọn dựa trên tác động kinh doanh, không phải sở thích kỹ thuật
+
+@149
+**Những quy tắc vàng:**
+@150
+**Bắt đầu đơn giản:** ⟦Mở rộng theo chiều dọc|Vertical scaling⟧ trước
+@151
+**Đo lường trước:** Chứng minh rằng bạn cần ⟦mở rộng|scale⟧
+@152
+**Tối ưu trước khi mở rộng:** Tối ưu ⟦truy vấn|query⟧ > Thêm ⟦máy chủ|servers⟧
+@153
+**⟦Bản sao chỉ đọc|Read replicas⟧ trước ⟦phân mảnh dữ liệu|sharding⟧:** Giải quyết 80% vấn đề
+@154
+**Chỉ ⟦phân mảnh|shard⟧ khi cần thiết:** Giải pháp cuối cùng
+@156
+Trước khi ⟦mở rộng|scale⟧ ⟦cơ sở dữ liệu|database⟧, hãy tự hỏi:
+@157
+*Tôi đã tối ưu các ⟦truy vấn|queries⟧ chưa?*
+@158
+*Tôi đã dùng ⟦bộ nhớ đệm|cache⟧ chưa?*
+@159
+*Tôi đã thử ⟦mở rộng theo chiều dọc|vertical scale⟧ chưa?*
+@160
+*Tôi đã thử ⟦bản sao chỉ đọc|read replicas⟧ chưa?*
+@161
+*Tôi có dữ liệu/kinh nghiệm chứng minh rằng cần ⟦phân mảnh dữ liệu|sharding⟧ không?*
+@162
+Nếu chưa trả lời "có" cho cả 4 câu đầu, đừng nghĩ đến ⟦phân mảnh dữ liệu|sharding⟧.
+@163
+⟦Mở rộng cơ sở dữ liệu|Database scaling⟧ không phải là dùng công nghệ phức tạp nhất. Nó là chọn giải pháp **phù hợp** với ⟦quy mô|scale⟧ và các ⟦ràng buộc|constraints⟧ của bạn.
+@164
+**Đơn giản > Phức tạp. Luôn luôn.**

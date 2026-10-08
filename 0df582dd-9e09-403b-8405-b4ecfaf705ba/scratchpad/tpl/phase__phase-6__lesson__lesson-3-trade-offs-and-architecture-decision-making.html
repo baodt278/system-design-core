@@ -1,0 +1,400 @@
+<article class="prose-ui"><h1 id="trade-offs--architecture-decision-making">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<p>§§SEG10§§</p>
+<p>§§SEG11§§</p>
+<p>§§SEG12§§</p>
+<h2 id="tại-sao-trade-off-thinking-là-core-skill">§§SEG13§§</h2>
+<h3 id="the-fundamental-truth">§§SEG14§§</h3>
+<p>§§SEG15§§</p>
+<pre><code>§§SEG16§§</code></pre>
+<h3 id="junior-vs-senior-thinking">§§SEG17§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG18§§</code></pre>
+<p>§§SEG19§§</p>
+<p>§§SEG20§§</p>
+<pre><code>§§SEG21§§</code></pre>
+<p>§§SEG22§§</p>
+<p>§§SEG23§§</p>
+<h2 id="the-major-trade-offs-mọi-architect-phải-hiểu">§§SEG24§§</h2>
+<h3 id="trade-off-1-consistency-vs-availability">§§SEG25§§</h3>
+<p>§§SEG26§§</p>
+<pre><code>§§SEG27§§</code></pre>
+<p>§§SEG28§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG29§§</code></pre>
+<p>§§SEG30§§</p>
+<p>§§SEG31§§</p>
+<pre><code class="language-python"># Strong Consistency (CP)
+def purchase_product(product_id, quantity):
+    # Lock row, ensure stock accurate
+    with db.transaction():
+        product = db.query("SELECT * FROM products WHERE id = ? FOR UPDATE", product_id)
+        
+        if product.stock &lt; quantity:
+            return {"error": "Out of stock"}
+        
+        product.stock -= quantity
+        db.commit()
+        
+        return {"success": True}
+
+# Trade-offs:
+No overselling (critical!)
+Accurate inventory
+Slow (lock + transaction overhead)
+Lower availability (if DB down, can't sell)
+Poor scalability (locks limit concurrency)
+
+Why choose this: Overselling = angry customers + revenue loss
+Consistency &gt; Availability for this use case
+</code></pre>
+<p>§§SEG32§§</p>
+<pre><code class="language-python"># High Availability (AP)
+def like_post(post_id, user_id):
+    # Async write, eventual consistency
+    cache.increment(f"post:{post_id}:likes")
+    queue.publish({
+        "event": "post_liked",
+        "post_id": post_id,
+        "user_id": user_id
+    })
+    
+    return {"success": True}
+
+# Worker processes queue eventually
+@worker.task
+def process_like(event):
+    db.execute("INSERT INTO likes ...")
+
+# Trade-offs:
+Super fast (&lt; 10ms)
+Always available
+High scalability
+Like count might be slightly off
+Eventual consistency (delay 1-2s)
+
+Why choose this: User doesn't care if count is 99 or 101
+Availability &gt; Consistency for this use case
+</code></pre>
+<p>§§SEG33§§</p>
+<pre><code class="language-python">def choose_consistency_level(feature):
+    """Framework để decide consistency vs availability"""
+    
+    # Ask critical questions
+    questions = {
+        "financial_impact": "Sai data = mất tiền?",
+        "user_experience": "User notice inconsistency?",
+        "legal_requirement": "Compliance yêu cầu consistency?",
+        "failure_cost": "Downtime cost bao nhiêu?"
+    }
+    
+    if feature.financial_impact == "high":
+        return "Strong Consistency (CP)"
+    
+    if feature.legal_requirement == "yes":
+        return "Strong Consistency (CP)"
+    
+    if feature.user_experience == "unaffected_by_slight_delay":
+        return "Eventual Consistency (AP)"
+    
+    if feature.failure_cost == "very_high":
+        return "High Availability (AP)"
+    
+    # Default: Strong consistency (safer)
+    return "Strong Consistency (CP)"
+
+# Examples
+choose_consistency_level(Payment)           # → CP (financial)
+choose_consistency_level(UserProfile)       # → CP (user-facing)
+choose_consistency_level(ViewCount)         # → AP (doesn't matter)
+choose_consistency_level(Recommendations)   # → AP (can be stale)
+</code></pre>
+<h3 id="trade-off-2-latency-vs-cost">§§SEG34§§</h3>
+<p>§§SEG35§§</p>
+<pre><code>§§SEG36§§</code></pre>
+<p>§§SEG37§§</p>
+<pre><code class="language-python"># Baseline: No optimization
+# Latency: 500ms
+# Cost: $500/month (basic setup)
+
+# Option 1: Add Redis cache
+# Latency: 50ms (10x improvement)
+# Cost: $500 + $300 = $800/month
+# ROI: Worth it? Depends on user value
+
+# Option 2: Add CDN for static assets
+# Latency: 200ms (2.5x improvement)
+# Cost: $500 + $100 = $600/month
+# ROI: Better bang for buck
+
+# Option 3: Upgrade database (vertical scale)
+# Latency: 300ms (1.7x improvement)
+# Cost: $500 + $400 = $900/month
+# ROI: Expensive for little gain
+
+# Option 4: All of the above
+# Latency: 30ms (16x improvement)
+# Cost: $500 + $300 + $100 + $400 = $1,300/month
+# ROI: Overkill? Depends on requirements
+</code></pre>
+<p>§§SEG38§§</p>
+<pre><code class="language-python"># Latency requirements tiers
+
+Tier 1: Real-time (&lt; 50ms)
+Use cases: Gaming, trading, video calls
+Cost: Very high
+Solution: Aggressive caching, edge computing, WebSocket
+
+Tier 2: Interactive (&lt; 200ms)
+Use cases: Web apps, mobile apps
+Cost: Medium
+Solution: Cache, CDN, optimized queries
+
+Tier 3: Responsive (&lt; 1s)
+Use cases: Reports, batch operations
+Cost: Low
+Solution: Basic optimization, no over-engineering
+
+Tier 4: Background (&lt; 10s)
+Use cases: Email, notifications, analytics
+Cost: Very low
+Solution: Async processing, queues
+</code></pre>
+<p>§§SEG39§§</p>
+<pre><code>§§SEG40§§</code></pre>
+<p>§§SEG41§§</p>
+<pre><code>§§SEG42§§</code></pre>
+<h3 id="trade-off-3-simplicity-vs-scalability">§§SEG43§§</h3>
+<p>§§SEG44§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG45§§</code></pre>
+<p>§§SEG46§§</p>
+<p>§§SEG47§§</p>
+<pre><code class="language-python"># Context
+startup = {
+    "users": 1000,
+    "developers": 3,
+    "runway": "12 months",
+    "goal": "Product-market fit"
+}
+
+# Option 1: Microservices from day 1
+architecture_1 = {
+    "services": ["user-service", "order-service", "payment-service", "notification-service"],
+    "infrastructure": ["Kubernetes", "Kafka", "Service Mesh"],
+    "time_to_market": "6 months",
+    "operational_complexity": "High",
+    "cost": "$5000/month"
+}
+
+# Trade-offs:
+"Scales to millions" (not needed yet)
+Modern architecture
+6 months to MVP (too slow!)
+High complexity với 3 devs
+Expensive for 1K users
+Might not reach PMF before running out of money
+
+# Option 2: Monolith with good structure
+architecture_2 = {
+    "structure": "Modular monolith",
+    "infrastructure": ["Heroku", "PostgreSQL", "Redis"],
+    "time_to_market": "6 weeks",
+    "operational_complexity": "Low",
+    "cost": "$500/month"
+}
+
+# Trade-offs:
+Ship fast (critical for startup!)
+Easy to change (iterate quickly)
+Low cost
+Simple operations
+Might need to refactor later (acceptable!)
+Not "impressive" architecture
+
+# Which to choose?
+# Startup context → Option 2
+# Why: Speed &gt; Scalability at this stage
+# Can refactor when/if successful
+</code></pre>
+<p>§§SEG48§§</p>
+<pre><code>§§SEG49§§</code></pre>
+<p>§§SEG50§§</p>
+<pre><code class="language-python">def choose_architecture(context):
+    """Simple vs Complex architecture decision"""
+    
+    if context.users &lt; 10_000:
+        return "Monolith"
+    
+    if context.developers &lt; 10:
+        return "Modular Monolith"
+    
+    if context.has_proven_bottlenecks and context.can_afford_complexity:
+        return "Selective Microservices"
+    
+    if context.users &gt; 10_000_000 and context.developers &gt; 50:
+        return "Full Microservices"
+    
+    # Default: Keep it simple
+    return "Monolith"
+</code></pre>
+<h3 id="trade-off-4-premature-optimization">§§SEG51§§</h3>
+<p>§§SEG52§§</p>
+<pre><code>§§SEG53§§</code></pre>
+<p>§§SEG54§§</p>
+<pre><code class="language-python"># Engineer's proposal for new feature
+
+"We need to build a notification system.
+I propose:
+
+- Kafka for event streaming
+- Cassandra for storage (scales to billions)
+- Microservices architecture
+- Service mesh for reliability
+- Custom protocol for low latency
+- Machine learning for personalization
+
+Timeline: 4 months
+Cost: $50K in infrastructure
+Team: 3 developers full-time"
+
+# Senior architect's response:
+
+"Let's start simpler:
+
+Current scale:
+- 5K users
+- ~100 notifications/day
+- 99% email, 1% push
+
+MVP approach:
+- PostgreSQL for storage (we already have it)
+- Background job processor (Celery)
+- SendGrid API for emails
+- FCM for push notifications
+
+Timeline: 1 week
+Cost: $50/month (SendGrid + FCM)
+Team: 1 developer part-time
+
+We can refactor when we hit 100K users.
+Right now, shipping fast &gt; perfect architecture."
+
+→ 4 months vs 1 week
+→ $50K vs $50/month
+→ 3 devs vs 1 dev
+
+Which would you choose?
+</code></pre>
+<p>§§SEG55§§</p>
+<pre><code>§§SEG56§§</code></pre>
+<h2 id="cap-theorem-intuition-beyond-theory">§§SEG57§§</h2>
+<p>§§SEG58§§</p>
+<pre><code>§§SEG59§§</code></pre>
+<p>§§SEG60§§</p>
+<pre><code>§§SEG61§§</code></pre>
+<p>§§SEG62§§</p>
+<p>§§SEG63§§</p>
+<pre><code>§§SEG64§§</code></pre>
+<p>§§SEG65§§</p>
+<pre><code>§§SEG66§§</code></pre>
+<p>§§SEG67§§</p>
+<pre><code>§§SEG68§§</code></pre>
+<h2 id="how-to-defend-architecture-decisions">§§SEG69§§</h2>
+<p>§§SEG70§§</p>
+<h3 id="the-defense-framework">§§SEG71§§</h3>
+<pre><code>§§SEG72§§</code></pre>
+<p>§§SEG73§§</p>
+<pre><code>§§SEG74§§</code></pre>
+<h3 id="common-challenges--responses">§§SEG75§§</h3>
+<p>§§SEG76§§</p>
+<pre><code>§§SEG77§§</code></pre>
+<p>§§SEG78§§</p>
+<pre><code>§§SEG79§§</code></pre>
+<p>§§SEG80§§</p>
+<pre><code>§§SEG81§§</code></pre>
+<h2 id="practical-exercise-trade-off-analysis">§§SEG82§§</h2>
+<p>§§SEG83§§</p>
+<p>§§SEG84§§</p>
+<p>§§SEG85§§</p>
+<ul>
+<li>§§SEG86§§</li>
+<li>§§SEG87§§</li>
+<li>§§SEG88§§</li>
+<li>§§SEG89§§</li>
+<li>§§SEG90§§</li>
+</ul>
+<p>§§SEG91§§</p>
+<p>§§SEG92§§</p>
+<pre><code class="language-python">cache_ttl = 3600  # 1 hour
+
+Benefits:
+- Very fast (&lt; 10ms)
+- Low database load
+- Handle traffic spikes
+
+Costs:
+- Stale prices (up to 1 hour old)
+- Flash sale prices delayed
+- User complaints possible
+</code></pre>
+<p>§§SEG93§§</p>
+<pre><code class="language-python">cache_ttl = 60  # 1 minute
+
+Benefits:
+- Reasonably fresh data
+- Flash sales mostly accurate
+- Balanced approach
+
+Costs:
+- More cache misses
+- Higher DB load
+- Slightly slower
+</code></pre>
+<p>§§SEG94§§</p>
+<pre><code class="language-python"># Cache-aside pattern with event-driven invalidation
+
+on_price_update(product_id):
+    cache.delete(f"product:{product_id}")
+
+Benefits:
+- Always fresh
+- Still fast (cached until update)
+- Best user experience
+
+Costs:
+- Complex implementation
+- Invalidation bugs possible
+- Need event system
+</code></pre>
+<p>§§SEG95§§</p>
+<ol>
+<li>§§SEG96§§</li>
+<li>§§SEG97§§</li>
+<li>§§SEG98§§</li>
+<li>§§SEG99§§</li>
+</ol>
+<p>§§SEG100§§</p>
+<pre><code>§§SEG101§§</code></pre>
+<h2 id="key-takeaways">§§SEG102§§</h2>
+<p>§§SEG103§§</p>
+<pre><code>§§SEG104§§</code></pre>
+<p>§§SEG105§§</p>
+<pre><code>§§SEG106§§</code></pre>
+<p>§§SEG107§§</p>
+<pre><code>§§SEG108§§</code></pre>
+<p>§§SEG109§§</p>
+<pre><code>§§SEG110§§</code></pre>
+<p>§§SEG111§§</p>
+<pre><code>§§SEG112§§</code></pre>
+<p>§§SEG113§§</p>
+<pre><code>§§SEG114§§</code></pre>
+<p>§§SEG115§§</p>
+<pre><code>§§SEG116§§</code></pre>
+<p>§§SEG117§§</p>
+<p>§§SEG118§§</p></article>

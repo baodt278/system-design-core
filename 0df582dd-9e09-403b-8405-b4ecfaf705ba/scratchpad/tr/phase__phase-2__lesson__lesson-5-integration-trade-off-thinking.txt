@@ -1,0 +1,939 @@
+@0
+⟦Tích Hợp|Integration⟧ & ⟦Tư Duy Đánh Đổi|Trade-off Thinking⟧: Kết Hợp Các ⟦Thành Phần|Components⟧ Thành Hệ Thống
+@1
+Đây là bài học mà 90% khoá học bỏ qua. Và đó là lý do tại sao nhiều ⟦kỹ sư|engineers⟧ biết từng ⟦thành phần|component⟧ nhưng không biết thiết kế hệ thống.
+@2
+Tôi còn nhớ lần đầu tiên phải thiết kế một hệ thống hoàn chỉnh. Tôi biết ⟦bộ nhớ đệm|cache⟧, biết ⟦cơ sở dữ liệu|database⟧, biết ⟦hàng đợi thông điệp|message queue⟧. Nhưng khi ngồi trước tấm bảng trắng, đầu óc tôi hoàn toàn trống rỗng.
+@3
+*"Tôi dùng cái nào trước? ⟦Bộ nhớ đệm|Cache⟧ hay ⟦cơ sở dữ liệu|database⟧? ⟦Hàng đợi|Queue⟧ đặt ở đâu? ⟦Bộ cân bằng tải|Load balancer⟧ kết nối với cái gì?"*
+@4
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ ngồi bên cạnh nói: *"Em biết từng viên gạch, nhưng chưa biết xây nhà."*
+@5
+Đó chính là bài học này. Không phải học thêm ⟦thành phần|component⟧ mới. Mà học cách **kết hợp chúng thành hệ thống hoàn chỉnh**.
+@6
+Tại Sao ⟦Tư Duy Tích Hợp|Integration Thinking⟧ Quan Trọng Hơn Kiến Thức Về Từng ⟦Thành Phần|Component⟧?
+@7
+**Đối chiếu với thực tế:**
+@8
+Biết bộ nhớ đệm:        ✅
+Biết cơ sở dữ liệu:     ✅
+Biết hàng đợi thông điệp: ✅
+Biết bộ cân bằng tải:   ✅
+
+Thiết kế được hệ thống: ❌
+
+Tại sao?
+
+@9
+Vì **thiết kế hệ thống không phải là về các ⟦thành phần|components⟧. Nó là về sự ⟦tương tác|interactions⟧ giữa các ⟦thành phần|components⟧.**
+@10
+Khoảng Trống Về ⟦Tích Hợp|Integration⟧
+@11
+**Khoảng trống 1: ⟦Tương tác giữa các thành phần|Component interactions⟧**
+@12
+Câu hỏi: Bộ nhớ đệm nằm ở đâu trong luồng xử lý?
+
+Tư duy sai:
+"Tôi cần bộ nhớ đệm → Thêm Redis"
+
+Tư duy đúng:
+"Bộ nhớ đệm nằm giữa máy chủ ứng dụng và cơ sở dữ liệu
+→ Ứng dụng kiểm tra bộ nhớ đệm trước
+→ Trượt bộ nhớ đệm → Truy vấn cơ sở dữ liệu
+→ Lưu vào bộ nhớ đệm
+→ Yêu cầu tiếp theo trúng bộ nhớ đệm"
+
+@13
+**Khoảng trống 2: Kết hợp các ⟦sự đánh đổi|trade-offs⟧**
+@14
+Mỗi thành phần có những đánh đổi riêng:
+- Bộ nhớ đệm: Nhanh nhưng có rủi ro dữ liệu cũ
+- Hàng đợi: Bất đồng bộ nhưng xử lý không tức thì (xử lý sau)
+- Bản sao CSDL: Mở rộng việc đọc nhưng có độ trễ nhân bản
+
+Câu hỏi: Khi kết hợp chúng lại, các đánh đổi tương tác với nhau thế nào?
+
+@15
+**Khoảng trống 3: ⟦Ràng buộc|Constraints⟧ thực tế**
+@16
+Sách giáo khoa: "Dùng bộ nhớ đệm để tăng hiệu năng"
+
+Thực tế:
+- Ngân sách: $500/tháng
+- Nhóm: 2 lập trình viên
+- Bảo trì: Ai giám sát Redis?
+- Độ phức tạp: Nhóm có kinh nghiệm không?
+
+→ Quyết định phức tạp hơn nhiều
+
+@17
+**Điểm mấu chốt:** Các ⟦thành phần|components⟧ là công cụ. ⟦Tích hợp|Integration⟧ là tay nghề.
+@18
+⟦Khung Tư Duy|Thinking Framework⟧: Từ Bài Toán Đến ⟦Kiến Trúc|Architecture⟧
+@19
+Đây là ⟦khung tư duy|framework⟧ tôi dùng cho mọi bài toán ⟦thiết kế hệ thống|system design⟧.
+@20
+Bước 1: Xác Định ⟦Yêu Cầu|Requirements⟧ (Bài Toán Trước Tiên)
+@21
+**⟦Yêu cầu chức năng|Functional requirements⟧:**
+@22
+Hệ thống phải làm GÌ:
+- Người dùng tải ảnh lên
+- Hệ thống thay đổi kích thước ảnh
+- Người dùng xem ảnh đã được thay đổi kích thước
+
+@23
+**⟦Yêu cầu phi chức năng|Non-functional requirements⟧:**
+@24
+Hệ thống phải làm TỐT ĐẾN MỨC NÀO:
+- Tải lên: phản hồi < 5 giây
+- Xem: độ trễ < 500ms
+- Quy mô: 100 nghìn lượt tải lên/ngày
+- Tính sẵn sàng: 99,9% thời gian hoạt động
+
+@25
+**⟦Ràng buộc|Constraints⟧:**
+@26
+- Ngân sách: $1.000/tháng
+- Nhóm: 3 lập trình viên
+- Thời hạn: Phát hành trong 2 tháng
+- Chuyên môn: Nhóm biết Node.js, PostgreSQL
+
+@27
+Bước 2: Xác Định Các ⟦Thành Phần|Components⟧ Cốt Lõi Cần Thiết
+@28
+**Các ⟦thành phần|components⟧ bắt buộc phải có:**
+@29
+Lưu trữ: Cần lưu ảnh → Lưu trữ đối tượng (S3)
+Cơ sở dữ liệu: Cần siêu dữ liệu → SQL hoặc NoSQL
+Tính toán: Cần thay đổi kích thước ảnh → Máy chủ ứng dụng
+
+@30
+**Các ⟦thành phần|components⟧ tuỳ chọn (cần đánh giá):**
+@31
+Bộ nhớ đệm: Có cần không? → Tuỳ vào kiểu đọc
+Hàng đợi: Có cần không? → Tuỳ vào thời gian xử lý
+Bộ cân bằng tải: Có cần không? → Tuỳ vào lưu lượng
+CDN: Có cần không? → Tuỳ vào việc có người dùng toàn cầu không
+
+@32
+**Tư duy phản biện:**
+@33
+Đừng thêm thành phần "để phòng hờ"
+Mỗi thành phần = Thêm độ phức tạp
+Chỉ thêm khi có lý do rõ ràng
+
+@34
+Bước 3: Vạch Ra ⟦Luồng Dữ Liệu|Data Flow⟧
+@35
+**Lần theo ⟦yêu cầu|request⟧ từ ⟦máy khách|client⟧ đến ⟦phản hồi|response⟧:**
+@36
+Người dùng tải ảnh lên:
+1. Máy khách → Máy chủ API
+2. API → Kiểm tra tính hợp lệ của tệp
+3. API → Tải lên S3
+4. API → Thêm tác vụ vào hàng đợi
+5. API → Trả về phản hồi "đang xử lý"
+6. Worker → Xử lý tác vụ thay đổi kích thước
+7. Worker → Tải ảnh đã thay đổi kích thước lên S3
+8. Worker → Cập nhật cơ sở dữ liệu
+9. Người dùng hỏi vòng (poll) API → Lấy trạng thái
+
+Xác định:
+- Ranh giới giữa đồng bộ và bất đồng bộ
+- Chỗ nào nên thêm bộ nhớ đệm
+- Chỗ nào có thể xảy ra sự cố
+
+@37
+Bước 4: Áp Dụng ⟦Tư Duy Đánh Đổi|Trade-off Thinking⟧
+@38
+**Với mỗi ⟦thành phần|component⟧, hãy hỏi:**
+@39
+1. Nó giải quyết vấn đề gì?
+2. Chi phí là gì? (độ phức tạp, tiền bạc, bảo trì)
+3. Có những phương án thay thế nào?
+4. Có thể bắt đầu đơn giản hơn không?
+
+@40
+**Ví dụ ⟦cây quyết định|decision tree⟧:**
+@41
+Cần xử lý ảnh:
+
+Phương án A: Đồng bộ
+- Người dùng chờ thay đổi kích thước xong
+- Mã đơn giản
+- Trải nghiệm người dùng tệ nếu chậm
+
+Phương án B: Hàng đợi + Worker
+- Người dùng nhận phản hồi ngay lập tức
+- Hạ tầng phức tạp
+- Trải nghiệm người dùng tốt
+
+Với các ràng buộc đã cho:
+- Thay đổi kích thước mất 5 giây
+- Người dùng có chờ được 5 giây không? KHÔNG
+→ Chọn Phương án B
+
+@42
+Bước 5: Bắt Đầu Đơn Giản, Tiến Hoá Dần
+@43
+**Phiên bản 1 (MVP):**
+@44
+Một máy chủ duy nhất
+PostgreSQL
+Không bộ nhớ đệm
+Không hàng đợi (nếu xử lý đủ nhanh)
+
+Phát hành trong 2 tuần
+Học hỏi từ việc sử dụng thực tế
+
+@45
+**Phiên bản 2 (Sau khi có dữ liệu):**
+@46
+Nếu chậm:
+→ Thêm hàng đợi + worker
+
+Nếu đọc chậm:
+→ Thêm bộ nhớ đệm
+
+Nếu máy chủ quá tải:
+→ Thêm bộ cân bằng tải
+
+@47
+**Nguyên tắc: Xây những gì bạn cần BÂY GIỜ, không phải những gì bạn có thể cần SAU NÀY.**
+@48
+Ví Dụ ⟦Kiến Trúc|Architecture⟧ Thực Tế 1: Nền Tảng Blog Đơn Giản
+@49
+Hãy cùng thiết kế từ con số không.
+@50
+⟦Yêu Cầu|Requirements⟧
+@51
+Chức năng:
+- Người dùng đọc bài viết blog
+- Quản trị viên viết/sửa bài viết
+- Người dùng bình luận
+
+Phi chức năng:
+- 10 nghìn người dùng hoạt động hằng ngày
+- Tổng cộng 1 nghìn bài viết
+- 10 nghìn bình luận/ngày
+- Độ trễ: < 1 giây
+
+Ràng buộc:
+- Ngân sách: $200/tháng
+- Nhóm: 2 lập trình viên
+- Công nghệ: Python/Django, PostgreSQL
+
+@52
+⟦Kiến Trúc|Architecture⟧ V1: ⟦Hệ Thống Nguyên Khối|Monolith⟧ Đơn Giản
+@53
+flowchart TB
+    USER[Người dùng] --> LB[Bộ cân bằng tải<br/>Tuỳ chọn]
+    LB --> APP[Ứng dụng Django<br/>Gunicorn]
+    APP --> DB[(PostgreSQL<br/>Bài viết, Bình luận, Người dùng)]
+    APP --> S3[S3<br/>Hình ảnh]
+
+    style APP fill:#51cf66
+    style DB fill:#339af0
+    style S3 fill:#ff6b6b
+@54
+*⟦Kiến trúc|Architecture⟧ V1: ⟦Hệ thống nguyên khối|monolith⟧ đơn giản, không có ⟦bộ nhớ đệm|cache⟧ hay ⟦hàng đợi|queue⟧*
+@55
+**Lý do đằng sau quyết định:**
+@56
+Không bộ nhớ đệm:
+✓ 10 nghìn người dùng = Lưu lượng thấp
+✓ 1 nghìn bài viết = CSDL xử lý dễ dàng
+✓ PostgreSQL đủ nhanh khi có chỉ mục
+✓ Tiết kiệm $50/tháng chi phí Redis
+✓ Ít phức tạp hơn
+
+Không hàng đợi:
+✓ Không có xử lý nặng
+✓ Thêm bình luận nhanh (< 100ms)
+✓ Tiết kiệm chi phí hạ tầng
+
+Không CDN:
+✓ Người dùng chỉ ở trong khu vực
+✓ S3 vốn đã nhanh
+✓ Tiết kiệm $30/tháng chi phí CDN
+
+Bộ cân bằng tải: Tuỳ chọn
+✓ Có thì tốt để triển khai không gián đoạn
+✓ 1 máy chủ xử lý tốt 10 nghìn người dùng
+✓ Thêm sau nếu cần
+
+@57
+**Tổng chi phí: $100/tháng (EC2 + RDS + S3)**
+@58
+Khi Nào Cần Tiến Hoá: Quyết Định Dựa Trên Dữ Liệu
+@59
+**Tín hiệu 1: ⟦Truy vấn|queries⟧ ⟦cơ sở dữ liệu|database⟧ chậm**
+@60
+Triệu chứng:
+- Tải trang mất 3 giây
+- CPU của PostgreSQL ở mức 80%
+- Log truy vấn chậm cho thấy các truy vấn lặp lại
+
+Giải pháp:
+→ Thêm bộ nhớ đệm Redis
+
+@61
+**⟦Kiến trúc|Architecture⟧ V2: Thêm ⟦Tầng Bộ Nhớ Đệm|Cache Layer⟧**
+@62
+flowchart TB
+    USER[Người dùng] --> APP[Ứng dụng Django]
+    APP --> CACHE[Bộ nhớ đệm Redis<br/>Bài viết & Bình luận]
+    CACHE -.->|Trượt bộ nhớ đệm| DB[(PostgreSQL)]
+    APP --> S3[S3]
+
+    style CACHE fill:#ffd43b
+    style APP fill:#51cf66
+    style DB fill:#339af0
+@63
+*⟦Kiến trúc|Architecture⟧ V2: Thêm ⟦bộ nhớ đệm|cache⟧ Redis khi ⟦truy vấn|queries⟧ ⟦cơ sở dữ liệu|database⟧ chậm*
+@64
+**Triển khai:**
+@65
+**Chi phí mới: $150/tháng (+$50 cho Redis)**
+@66
+**Tín hiệu 2: ⟦Lưu lượng|traffic⟧ cao**
+@67
+Triệu chứng:
+- 100 nghìn người dùng hằng ngày (tăng 10 lần)
+- CPU của máy chủ duy nhất ở mức 90%
+- Thời gian phản hồi giảm sút
+
+Giải pháp:
+→ Thêm bộ cân bằng tải + Mở rộng theo chiều ngang
+
+@68
+**⟦Kiến trúc|Architecture⟧ V3: ⟦Mở Rộng Theo Chiều Ngang|Horizontal Scaling⟧**
+@69
+flowchart TB
+    USER[Người dùng] --> LB[Bộ cân bằng tải]
+    LB --> APP1[Máy chủ ứng dụng 1]
+    LB --> APP2[Máy chủ ứng dụng 2]
+    LB --> APP3[Máy chủ ứng dụng 3]
+
+    APP1 --> CACHE[Bộ nhớ đệm Redis]
+    APP2 --> CACHE
+    APP3 --> CACHE
+
+    CACHE -.->|Trượt bộ nhớ đệm| DB[(PostgreSQL)]
+
+    APP1 --> S3[S3]
+    APP2 --> S3
+    APP3 --> S3
+
+    style LB fill:#ff6b6b
+    style APP1 fill:#51cf66
+    style APP2 fill:#51cf66
+    style APP3 fill:#51cf66
+    style CACHE fill:#ffd43b
+@70
+*⟦Kiến trúc|Architecture⟧ V3: ⟦Bộ cân bằng tải|Load balancer⟧ + nhiều ⟦máy chủ|servers⟧ khi ⟦lưu lượng|traffic⟧ cao*
+@71
+**Chi phí mới: $400/tháng (3 máy chủ + bộ cân bằng tải + Redis + CSDL)**
+@72
+Những Bài Học Chính
+@73
+1. Bắt đầu đơn giản (V1)
+   - Không tối ưu hoá sớm
+   - Phát hành trong 2 tuần
+   - Học hỏi từ dữ liệu thực tế
+
+2. Tiến hoá dựa trên vấn đề thực sự (V2, V3)
+   - Không dựa vào phỏng đoán
+   - Không dựa vào "thực hành tốt nhất"
+   - Số liệu đo thực tế dẫn dắt quyết định
+
+3. Ý thức về chi phí
+   - V1: $100/tháng (10 nghìn người dùng)
+   - V2: $150/tháng (50 nghìn người dùng)
+   - V3: $400/tháng (100 nghìn người dùng)
+   - Chi phí tăng tương ứng với giá trị
+
+4. Kiểm soát độ phức tạp
+   - Thêm từng thành phần một
+   - Nhóm học hỏi dần dần
+   - Duy trì sự ổn định trên môi trường thực tế
+
+@74
+Ví Dụ ⟦Kiến Trúc|Architecture⟧ Thực Tế 2: ⟦Dịch Vụ|Service⟧ Xử Lý Ảnh
+@75
+Một trường hợp phức tạp hơn với ⟦xử lý bất đồng bộ|async processing⟧.
+@76
+⟦Yêu Cầu|Requirements⟧
+@77
+Chức năng:
+- Người dùng tải ảnh lên
+- Hệ thống thay đổi kích thước thành 3 cỡ (ảnh thu nhỏ, vừa, lớn)
+- Người dùng xem ảnh đã xử lý
+
+Phi chức năng:
+- 50 nghìn lượt tải lên/ngày
+- Xử lý: 5-10 giây/ảnh
+- Phản hồi khi tải lên: < 2 giây
+- Độ trễ khi xem: < 500ms
+- Tính sẵn sàng 99%
+
+Ràng buộc:
+- Ngân sách: $2.000/tháng
+- Nhóm: 4 lập trình viên
+- Cần nhật ký kiểm toán (audit trail)
+
+@78
+⟦Kiến Trúc|Architecture⟧: Đầy Đủ Các Tầng
+@79
+flowchart TB
+    USER[Người dùng] --> CDN[CloudFront CDN]
+    CDN --> LB[Bộ cân bằng tải]
+
+    LB --> API1[Máy chủ API 1]
+    LB --> API2[Máy chủ API 2]
+
+    API1 --> CACHE[Bộ nhớ đệm Redis<br/>Trạng thái & Siêu dữ liệu]
+    API2 --> CACHE
+
+    API1 --> QUEUE[Hàng đợi SQS<br/>Tác vụ thay đổi kích thước]
+    API2 --> QUEUE
+
+    QUEUE --> W1[Worker 1]
+    QUEUE --> W2[Worker 2]
+    QUEUE --> W3[Worker 3]
+
+    W1 --> S3[S3<br/>Lưu trữ ảnh]
+    W2 --> S3
+    W3 --> S3
+
+    API1 --> DB[(PostgreSQL<br/>Siêu dữ liệu & Kiểm toán)]
+    API2 --> DB
+    W1 --> DB
+    W2 --> DB
+    W3 --> DB
+
+    style CDN fill:#fa5252
+    style LB fill:#ff6b6b
+    style API1 fill:#51cf66
+    style API2 fill:#51cf66
+    style CACHE fill:#ffd43b
+    style QUEUE fill:#ff922b
+    style W1 fill:#748ffc
+    style W2 fill:#748ffc
+    style W3 fill:#748ffc
+    style S3 fill:#e64980
+    style DB fill:#339af0
+@80
+*⟦Kiến trúc|Architecture⟧ hoàn chỉnh với tất cả các ⟦thành phần|components⟧: CDN, ⟦bộ cân bằng tải|Load Balancer⟧, ⟦bộ nhớ đệm|Cache⟧, ⟦hàng đợi|Queue⟧, ⟦tiến trình xử lý|Workers⟧, ⟦cơ sở dữ liệu|Database⟧*
+@81
+⟦Tương Tác Giữa Các Thành Phần|Component Interactions⟧ & Các ⟦Đánh Đổi|Trade-offs⟧
+@82
+**1. ⟦Luồng|Flow⟧ Tải Lên (Ranh Giới ⟦Đồng Bộ|Sync⟧ → ⟦Bất Đồng Bộ|Async⟧)**
+@83
+**⟦Đánh đổi|Trade-off⟧:**
+@84
+Phản hồi người dùng nhanh (< 2 giây)
+Chịu được lưu lượng tăng đột biến (hàng đợi làm vùng đệm)
+Worker mở rộng độc lập
+Xử lý không tức thì (xử lý sau)
+Phức tạp hơn (hạ tầng hàng đợi)
+Cần cơ chế hỏi vòng (polling) để lấy trạng thái
+
+@85
+**2. Xử Lý Tại ⟦Tiến Trình Xử Lý|Worker⟧ (⟦Bất Đồng Bộ|Async⟧)**
+@86
+**⟦Đánh đổi|Trade-off⟧:**
+@87
+Chịu lỗi tốt (logic thử lại)
+Mở rộng được (thêm worker)
+Có nhật ký kiểm toán (log trong cơ sở dữ liệu)
+Xử lý lỗi phức tạp
+Phải đảm bảo tính lũy đẳng
+Chi phí phụ cho việc giám sát
+
+@88
+**3. Hỏi Vòng Trạng Thái (⟦Đường Đọc|Read Path⟧)**
+@89
+**⟦Đánh đổi|Trade-off⟧:**
+@90
+Đọc nhanh (bộ nhớ đệm)
+Giảm tải cho cơ sở dữ liệu
+Độ phức tạp của việc vô hiệu hoá bộ nhớ đệm
+Có thể có trạng thái cũ (tối đa 5 phút)
+
+@91
+**4. Xem Ảnh (Tầng CDN)**
+@92
+**⟦Đánh đổi|Trade-off⟧:**
+@93
+Cực nhanh (các điểm biên)
+Giảm chi phí S3 (ít yêu cầu hơn)
+Độ trễ thấp trên toàn cầu
+Chi phí CDN ($100-200/tháng)
+Khó vô hiệu hoá bộ nhớ đệm (nếu ảnh thay đổi)
+
+@94
+Tổng Hợp Các ⟦Đánh Đổi|Trade-offs⟧ Của ⟦Kiến Trúc|Architecture⟧
+@95
+Các thành phần:
+- CDN: $150/tháng
+- Bộ cân bằng tải: $50/tháng
+- 2 máy chủ API: $200/tháng
+- Redis: $100/tháng
+- Hàng đợi SQS: $20/tháng
+- 3 worker: $300/tháng
+- PostgreSQL RDS: $200/tháng
+- S3: $100/tháng
+-----------------------
+Tổng: $1.120/tháng
+
+Xử lý được:
+- 50 nghìn lượt tải lên/ngày
+- 150 nghìn ảnh được xử lý/ngày
+- 1 triệu lượt xem/ngày
+- Tính sẵn sàng 99,9%
+
+Những đánh đổi chấp nhận:
+Độ phức tạp → Đổi lấy khả năng mở rộng
+Chi phí → Đổi lấy độ tin cậy
+Xử lý không tức thì → Đổi lấy trải nghiệm người dùng
+
+@96
+Nếu Ngân Sách Chỉ Là $500/Tháng Thì Sao?
+@97
+**⟦Kiến trúc|Architecture⟧ thay thế:**
+@98
+Đơn giản hoá:
+- Bỏ CDN → Truy cập S3 trực tiếp (tiết kiệm $150)
+- 1 máy chủ API → Xử lý 50 nghìn lượt tải lên (tiết kiệm $100)
+- Không có worker riêng → Dùng hàm Lambda (tiết kiệm $250)
+- Redis nhỏ hơn → ElastiCache t3.micro (tiết kiệm $50)
+
+Tổng: $470/tháng
+
+Đánh đổi:
+Độ trễ toàn cầu chậm hơn (không có CDN)
+Kém bền bỉ hơn (chỉ một máy chủ API)
+Vẫn mở rộng được (Lambda tự động mở rộng)
+Vẫn hoạt động tốt
+
+@99
+**Bài học chính: ⟦Kiến trúc|Architecture⟧ thích nghi theo các ⟦ràng buộc|constraints⟧.**
+@100
+Các ⟦Mẫu|Patterns⟧ ⟦Tương Tác Giữa Các Thành Phần|Component Interaction⟧
+@101
+⟦Mẫu|Pattern⟧ 1: Cache-Aside (Bộ Nhớ Đệm Đặt Bên Cạnh)
+@102
+sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+
+    App->>Cache: GET key
+    alt Trúng bộ nhớ đệm
+        Cache-->>App: Trả về dữ liệu
+    else Trượt bộ nhớ đệm
+        Cache-->>App: null
+        App->>DB: Truy vấn dữ liệu
+        DB-->>App: Trả về dữ liệu
+        App->>Cache: SET key (TTL)
+    end
+@103
+*⟦Mẫu|Pattern⟧ cache-aside: Ứng dụng tự quản lý logic ⟦bộ nhớ đệm|cache⟧*
+@104
+**Khi nào nên dùng:**
+@105
+✓ Khối lượng công việc thiên về đọc
+✓ Dữ liệu không thay đổi thường xuyên
+✓ Ứng dụng có thể tự xử lý logic bộ nhớ đệm
+
+@106
+⟦Mẫu|Pattern⟧ 2: Write-Through Cache (Ghi Xuyên Qua Bộ Nhớ Đệm)
+@107
+sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+
+    App->>Cache: Ghi dữ liệu
+    Cache->>DB: Ghi dữ liệu
+    DB-->>Cache: Xác nhận
+    Cache-->>App: Thành công
+@108
+*Write-through: Mọi thao tác ghi đều đi qua ⟦bộ nhớ đệm|cache⟧, ⟦bộ nhớ đệm|cache⟧ cập nhật ⟦cơ sở dữ liệu|DB⟧*
+@109
+**Khi nào nên dùng:**
+@110
+✓ Độ tươi mới của dữ liệu là cực kỳ quan trọng
+✓ Đọc >> Ghi
+✓ Chấp nhận được việc ghi chậm hơn
+
+@111
+⟦Mẫu|Pattern⟧ 3: ⟦Mẫu Hàng Đợi – Worker|Queue-Worker Pattern⟧
+@112
+flowchart LR
+    API[Máy chủ API] -->|Đưa tác vụ vào hàng đợi| Q[Hàng đợi thông điệp]
+    Q -->|Lấy ra| W1[Worker 1]
+    Q -->|Lấy ra| W2[Worker 2]
+    Q -->|Lấy ra| W3[Worker 3]
+
+    W1 --> DB[(Cơ sở dữ liệu)]
+    W2 --> DB
+    W3 --> DB
+
+    style Q fill:#ff922b
+    style W1 fill:#748ffc
+    style W2 fill:#748ffc
+    style W3 fill:#748ffc
+@113
+*⟦Hàng đợi – worker|Queue-worker⟧: ⟦Xử lý bất đồng bộ|Async processing⟧ kèm ⟦thử lại|retry⟧ và ⟦mở rộng|scaling⟧*
+@114
+**Khi nào nên dùng:**
+@115
+✓ Xử lý mất > 5 giây
+✓ Người dùng không cần kết quả ngay lập tức
+✓ Cần logic thử lại
+✓ Lưu lượng hay tăng đột biến
+
+@116
+⟦Mẫu|Pattern⟧ 4: ⟦Mẫu Bản Sao Chỉ Đọc|Read Replica Pattern⟧
+@117
+flowchart TB
+    APP[Ứng dụng]
+    APP -->|Ghi| MASTER[(CSDL chính)]
+    MASTER -.->|Nhân bản| SLAVE1[(Bản sao 1)]
+    MASTER -.->|Nhân bản| SLAVE2[(Bản sao 2)]
+
+    APP -->|Đọc| SLAVE1
+    APP -->|Đọc| SLAVE2
+
+    style MASTER fill:#ff6b6b
+    style SLAVE1 fill:#51cf66
+    style SLAVE2 fill:#51cf66
+@118
+*⟦Bản sao chỉ đọc|Read replicas⟧: Thao tác ghi đi vào ⟦máy chủ chính|master⟧, thao tác đọc lấy từ các ⟦bản sao|slaves⟧*
+@119
+**Khi nào nên dùng:**
+@120
+✓ Đọc >> Ghi (70%+ là đọc)
+✓ Độ trễ nhân bản chấp nhận được (< 1 giây)
+✓ Một máy chủ chính duy nhất xử lý được lượng ghi
+
+@121
+⟦Khung Ra Quyết Định|Decision Framework⟧: Lựa Chọn ⟦Thành Phần|Component⟧
+@122
+Ma Trận ⟦Khung Tư Duy|Framework⟧
+@123
+Với mỗi thành phần, hãy đánh giá:
+
+1. Vấn đề nó giải quyết:
+   - Điểm nghẽn cụ thể
+   - Tác động đo lường được
+   - Không phải kiểu "có thì tốt"
+
+2. Chi phí (tổng thể):
+   - Hạ tầng ($)
+   - Thời gian phát triển
+   - Gánh nặng bảo trì
+   - Độ phức tạp vận hành
+
+3. Phương án thay thế:
+   - Có giải pháp đơn giản hơn không?
+   - Có thể tối ưu cái đang có không?
+   - Có bắt buộc phải thêm ngay không?
+
+4. Rủi ro:
+   - Công nghệ mới?
+   - Nhóm có chuyên môn không?
+   - Các kiểu sự cố có thể xảy ra?
+
+Quyết định: Chỉ thêm khi Vấn đề > Chi phí + Rủi ro
+
+@124
+Các Quyết Định Ví Dụ
+@125
+**Quyết định 1: Có thêm ⟦bộ nhớ đệm|cache⟧ hay không?**
+@126
+Vấn đề:
+- Truy vấn cơ sở dữ liệu chậm (500ms)
+- Thiên về đọc (90% là đọc)
+- 1000 req/s
+
+Đánh giá giải pháp:
+
+Phương án A: Thêm bộ nhớ đệm Redis
+Giảm thời gian truy vấn 500ms → 10ms
+Giảm 90% tải cho CSDL
+Chi phí $100/tháng
+Độ phức tạp của việc vô hiệu hoá bộ nhớ đệm
+Thêm một thứ cần giám sát
+
+Phương án B: Tối ưu truy vấn + chỉ mục
+Miễn phí
+Không thêm hạ tầng mới
+Cải thiện lâu dài
+Tốn thời gian đầu tư (1 tuần)
+Có thể chưa đủ
+
+Quyết định: Thử Phương án B trước
+- Nếu sau khi tối ưu truy vấn vẫn > 100ms
+→ Khi đó mới thêm bộ nhớ đệm
+
+@127
+**Quyết định 2: ⟦Hàng đợi|Queue⟧ hay Lambda?**
+@128
+Vấn đề:
+- Xử lý ảnh mất 10 giây
+- 1000 lượt tải lên/ngày
+- Người dùng không thể chờ
+
+Đánh giá giải pháp:
+
+Phương án A: SQS + worker trên EC2
+Toàn quyền kiểm soát
+Chi phí dự đoán được
+Phải tự quản lý máy chủ
+Chi phí nền $150/tháng
+
+Phương án B: Hàm Lambda
+Tự động mở rộng
+Trả tiền theo mức sử dụng (~$20/tháng cho 1000 lượt tải lên)
+Không phải quản lý máy chủ
+Giới hạn thời gian chờ 15 phút
+Độ trễ khởi động nguội (cold start)
+
+Bối cảnh: 1000 lượt tải lên/ngày, xử lý mất 10 giây
+
+Quyết định: Lambda
+- Rẻ hơn 7,5 lần
+- Có sẵn tự động mở rộng
+- 10 giây thấp hơn nhiều so với giới hạn 15 phút
+- Nhóm không phải quản lý máy chủ
+
+@129
+**Quyết định 3: Có dùng CDN hay không?**
+@130
+Vấn đề:
+- Ảnh tải chậm với người dùng quốc tế
+- 10 nghìn người dùng hằng ngày
+- 50% ở Mỹ, 50% ở châu Á
+
+Đánh giá giải pháp:
+
+Phương án A: Thêm CloudFront CDN
+Độ trễ thấp trên toàn cầu
+Giảm chi phí S3
+$100/tháng
+Thiết lập phức tạp
+
+Phương án B: S3 Transfer Acceleration
+Nhanh hơn S3 thông thường
+Chỉ $5/tháng
+Không nhanh bằng CDN
+Vẫn còn độ trễ từ máy chủ gốc
+
+Phương án C: Không làm gì
+Miễn phí
+Trải nghiệm kém cho người dùng châu Á
+
+Số liệu cần có:
+- Đo độ trễ thực tế: Mỹ so với châu Á
+- Nếu châu Á > 2 giây → Thêm CDN
+- Nếu châu Á 500ms-1 giây → Transfer Acceleration
+- Nếu châu Á < 500ms → Không làm gì
+
+Quyết định: Dựa trên dữ liệu, không dựa trên giả định
+
+@131
+Những Sai Lầm ⟦Tích Hợp|Integration⟧ Thường Gặp
+@132
+Sai Lầm 1: Thêm ⟦Thành Phần|Components⟧ "Để Phòng Hờ"
+@133
+Sai:
+"Thêm bộ nhớ đệm Redis ngay từ ngày đầu đi"
+"Sau này có thể mình sẽ cần"
+
+Đúng:
+"Truy vấn cơ sở dữ liệu trung bình mất 50ms"
+"Với 1000 người dùng, thế là đủ nhanh"
+"Thêm bộ nhớ đệm khi truy vấn > 200ms hoặc lưu lượng > 10 nghìn người dùng"
+
+Nguyên tắc: YAGNI (You Aren't Gonna Need It - Bạn sẽ không cần đến nó đâu)
+
+@134
+Sai Lầm 2: Sao Chép Nguyên Xi ⟦Kiến Trúc|Architecture⟧ Của Netflix
+@135
+Sai:
+Công ty khởi nghiệp với 100 người dùng:
+- 50 vi dịch vụ
+- Cụm Kubernetes
+- Service mesh
+- Event sourcing
+- CQRS
+"Netflix làm thế mà!"
+
+Đúng:
+Công ty khởi nghiệp với 100 người dùng:
+- Hệ thống nguyên khối
+- PostgreSQL
+- 1 máy chủ
+- Phát hành nhanh
+
+Bối cảnh rất quan trọng. Netflix có 200 triệu người dùng, 500 nhóm.
+Bạn không phải Netflix.
+
+@136
+Sai Lầm 3: ⟦Tối Ưu Hoá Sớm|Premature Optimization⟧
+@137
+Sai:
+"Phân mảnh cơ sở dữ liệu ngay từ ngày đầu đi"
+"Đằng nào sau này cũng phải mở rộng"
+
+Đúng:
+"Chúng ta có 1000 người dùng"
+"Một PostgreSQL duy nhất xử lý được 100 nghìn người dùng"
+"Chúng ta sẽ phân mảnh khi thực sự chạm giới hạn"
+
+Nguyên tắc: Tối ưu cho HIỆN TẠI, không phải cho một tương lai giả định
+
+@138
+Sai Lầm 4: Phớt Lờ Gánh Nặng Vận Hành
+@139
+Tư duy sai:
+"Kiến trúc này hoàn hảo về mặt kỹ thuật!"
+
+Đối chiếu thực tế:
+- 10 thành phần cần giám sát
+- 5 công nghệ khác nhau
+- Nhóm 3 người
+- Không ai có kinh nghiệm với một nửa số công nghệ
+→ Những cơn ác mộng trên môi trường thực tế
+
+Tư duy đúng:
+"Kiến trúc này đủ đơn giản để nhóm bảo trì"
+"Chúng ta hiểu rõ mọi thành phần"
+"Trực sự cố sẽ không phải là địa ngục"
+
+@140
+Sai Lầm 5: Không Đo Lường
+@141
+Sai:
+Thêm bộ nhớ đệm → "Cảm giác nhanh hơn"
+Thêm hàng đợi → "Chắc sẽ giúp chịu được lúc tăng đột biến"
+
+Đúng:
+Trước khi có bộ nhớ đệm:
+- Thời gian truy vấn trung bình: 500ms
+- P95: 2 giây
+- CPU cơ sở dữ liệu: 80%
+
+Sau khi có bộ nhớ đệm:
+- Thời gian truy vấn trung bình: 50ms (nhanh hơn 10 lần)
+- P95: 150ms (nhanh hơn 13 lần)
+- CPU cơ sở dữ liệu: 20% (giảm 4 lần)
+- Tỷ lệ trúng bộ nhớ đệm: 85%
+
+Đo lường → Chứng minh tác động
+
+@142
+Những Điểm Cốt Lõi
+@143
+**⟦Tư duy tích hợp|Integration thinking⟧ > Kiến thức về từng ⟦thành phần|component⟧:**
+@144
+Biết từng thành phần: Điều kiện cần
+Biết kết hợp các thành phần: Điều kiện đủ
+Biết các đánh đổi: Thành thạo
+
+@145
+**⟦Kiến trúc|Architecture⟧ mang tính tiến hoá:**
+@146
+V1: Hệ thống nguyên khối đơn giản
+    ↓ (khi chậm)
+V2: Thêm bộ nhớ đệm
+    ↓ (khi lưu lượng cao)
+V3: Thêm bộ cân bằng tải
+    ↓ (khi thao tác ghi quá tải)
+V4: Thêm bản sao chỉ đọc
+    ↓ (khi cần bất đồng bộ)
+V5: Thêm hàng đợi + worker
+
+Mỗi bước là phản ứng trước một vấn đề thực sự
+Không phải phỏng đoán
+
+@147
+**⟦Khung|Framework⟧ lựa chọn ⟦thành phần|component⟧:**
+@148
+1. Vấn đề là gì? (cụ thể, đo lường được)
+2. Chi phí là gì? (tiền bạc, độ phức tạp, bảo trì)
+3. Phương án thay thế là gì? (giải pháp đơn giản hơn?)
+4. Có thể chờ không? (thêm sau khi cần?)
+
+Chỉ thêm thành phần khi: Vấn đề > Chi phí + Rủi ro
+
+@149
+**Những ⟦sự đánh đổi|trade-offs⟧ thực tế mới là điều quan trọng:**
+@150
+Đánh đổi kỹ thuật: Hiệu năng, tính nhất quán, tính sẵn sàng
+Đánh đổi kinh doanh: Chi phí, thời gian đưa ra thị trường
+Đánh đổi về nhóm: Chuyên môn, gánh nặng bảo trì
+Đánh đổi về người dùng: Trải nghiệm, độ tin cậy
+
+Kiến trúc sư giỏi cân bằng TẤT CẢ
+Không chỉ riêng kỹ thuật
+
+@151
+**Bắt đầu đơn giản, tiến hoá dựa trên dữ liệu:**
+@152
+Đừng: Thiết kế cho 1 triệu người dùng khi bạn mới có 100
+Hãy: Thiết kế cho quy mô hiện tại + mức tăng trưởng 2-3 lần
+Hãy: Đo lường các điểm nghẽn thực tế
+Hãy: Tiến hoá kiến trúc từng bước một
+
+"Tối ưu hoá sớm là cội rễ của mọi tội lỗi"
+- Donald Knuth
+
+@153
+**Bối cảnh là tất cả:**
+@154
+Kiến trúc của Netflix ≠ Kiến trúc của bạn
+Quy mô của Google ≠ Quy mô của bạn
+Thực hành tốt nhất ≠ Tốt nhất cho BẠN
+
+Hiểu bối cảnh:
+- Quy mô hiện tại
+- Tốc độ tăng trưởng
+- Quy mô nhóm
+- Ngân sách
+- Thời hạn
+- Chuyên môn
+
+Rồi mới thiết kế cho phù hợp
+
+@155
+**Danh sách kiểm tra trước khi thêm ⟦thành phần|component⟧:**
+@156
+☐ Có vấn đề cụ thể kèm số liệu đo không?
+☐ Đã thử tối ưu các thành phần hiện có chưa?
+☐ Thành phần này có giải quyết được vấn đề đó không?
+☐ Chi phí (thời gian + tiền bạc + độ phức tạp) có đáng không?
+☐ Nhóm có đủ chuyên môn để bảo trì không?
+☐ Có thể thêm sau được không?
+
+Nếu không vượt qua danh sách kiểm tra → Đừng thêm
+
+@157
+**Lời khuyên cuối cùng:**
+@158
+⟦Thiết kế hệ thống|System design⟧ không phải là dùng công nghệ mới nhất hay phức tạp nhất.
+@159
+Nó là về **giải quyết các vấn đề thực sự bằng những giải pháp phù hợp**.
+@160
+Giải pháp đơn giản cho vấn đề đơn giản.
+Giải pháp phức tạp chỉ khi thực sự cần.
+@161
+**"Làm cho nó chạy, làm cho nó đúng, làm cho nó nhanh - theo đúng thứ tự đó."**
+@162
+Làm chủ ⟦tư duy tích hợp|integration thinking⟧, và bạn sẽ thiết kế được những hệ thống ⟦mở rộng|scale⟧ cho hàng triệu người dùng.
+@163
+**Bài tiếp theo:** Phần 3 - Nền Tảng ⟦Hệ Thống Phân Tán|Distributed Systems⟧: ⟦Tính Nhất Quán|Consistency⟧, ⟦Đồng Thuận|Consensus⟧ và ⟦Giao Dịch Phân Tán|Distributed Transactions⟧.

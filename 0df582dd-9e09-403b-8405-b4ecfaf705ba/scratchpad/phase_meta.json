@@ -1,0 +1,30 @@
+{
+ "/phase/phase-0": {
+  "title": "Phase 0 — Mental Model Shift",
+  "desc": "Entry phase giúp chuyển từ code-first sang system thinking trước khi học sâu system design."
+ },
+ "/phase/phase-1": {
+  "title": "Phase 1 — Foundation: Thinking in Systems",
+  "desc": "Nền tảng tư duy hệ thống để chuyển từ hiểu khái niệm sang phân tích hệ thống thực tế."
+ },
+ "/phase/phase-2": {
+  "title": "Phase 2 — Core Building Blocks",
+  "desc": "Nền tảng kỹ thuật cốt lõi để xây hệ thống production có khả năng scale, tối ưu hiệu năng và tích hợp dịch vụ."
+ },
+ "/phase/phase-3": {
+  "title": "Phase 3 — Distributed Systems Fundamentals",
+  "desc": "Bước chuyển sâu vào thực tế hệ phân tán: failure, consistency, coordination, integrity và ordering."
+ },
+ "/phase/phase-4": {
+  "title": "Phase 4 — Scalability & Performance",
+  "desc": "Tư duy và kỹ thuật tối ưu hiệu năng hệ thống ở quy mô production: bottleneck, caching, load control, observability."
+ },
+ "/phase/phase-5": {
+  "title": "Phase 5 — Real-World Architecture Patterns",
+  "desc": "Áp dụng kiến thức hệ phân tán và hiệu năng vào kiến trúc production theo bối cảnh thực tế."
+ },
+ "/phase/phase-6": {
+  "title": "Phase 6 — System Design Mastery",
+  "desc": "Giai đoạn master: tư duy architect, ra quyết định kiến trúc, interview strategy và production ownership."
+ }
+}

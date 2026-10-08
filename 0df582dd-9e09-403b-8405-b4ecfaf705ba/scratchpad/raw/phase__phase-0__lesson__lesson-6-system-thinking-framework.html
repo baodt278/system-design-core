@@ -1,0 +1,660 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể | Phase 0 — Mental Model Shift | System Design Core</title><meta name="description" content="Học system thinking framework: hiểu components Client, API, Database, Cache, Queue, Storage và mental model Input → Processing → Storage → Output. Nhìn architec"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-0/lesson/lesson-6-system-thinking-framework"/><meta property="og:title" content="System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể | Phase 0 — Mental Model Shift"/><meta property="og:description" content="Học system thinking framework: hiểu components Client, API, Database, Cache, Queue, Storage và mental model Input → Processing → Storage → Output. Nhìn architec"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-0/lesson/lesson-6-system-thinking-framework"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể | Phase 0 — Mental Model Shift"/><meta name="twitter:description" content="Học system thinking framework: hiểu components Client, API, Database, Cache, Queue, Storage và mental model Input → Processing → Storage → Output. Nhìn architec"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 0 — Mental Model Shift</p><p class="mt-3 text-xl font-semibold text-ink">System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học system thinking framework: hiểu components (Client, API, Database, Cache, Queue, Storage) và mental model Input → Processing → Storage → Output. Nhìn architecture từ góc độ tổng thể thay vì từng phần riêng lẻ.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-1-code-first-to-problem-first"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Từ Code-First đến Problem-First - Thay Đổi Tư Duy Architect</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-2-perfect-solution-to-trade-off-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Từ Perfect Solution đến Trade-off Thinking - Nghệ Thuật Của Quyết Định Kiến Trúc</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-3-foundation-exercises"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Components và Communication - Giải Mã Kiến Trúc Hệ Thống Phân Tán</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-4-thinking-in-constraints"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Thinking in Constraints - Engineering Là Quản Lý Giới Hạn</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-5-scale-intuition"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Scale Intuition - Xây Dựng Cảm Giác Về Numbers</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-0/lesson/lesson-6-system-thinking-framework"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-7-system-question-framework"><p class="text-xs text-ink-dim">Bài <!-- -->7</p><p class="mt-1 text-sm font-medium text-ink">System Question Framework - Checklist Chuẩn Khi Design Hệ Thống</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-8-mental-model-recap"><p class="text-xs text-ink-dim">Bài <!-- -->8</p><p class="mt-1 text-sm font-medium text-ink">Mental Model Recap - Củng Cố Tư Duy System Design</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-0">Phase 0 — Mental Model Shift</a></li><li>/</li><li aria-current="page" class="text-ink">System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học system thinking framework: hiểu components (Client, API, Database, Cache, Queue, Storage) và mental model Input → Processing → Storage → Output. Nhìn architecture từ góc độ tổng thể thay vì từng phần riêng lẻ.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể"><article class="prose-ui"><h1 id="system-thinking-framework-nhìn-hệ-thống-như-một-tổng-thể">System Thinking Framework: Nhìn Hệ Thống Như Một Tổng Thể</h1>
+<p>Tôi còn nhớ lần đầu tiên nhìn vào codebase của một hệ thống lớn.</p>
+<p>Hàng trăm files. Chục microservices. Database, cache, queues, APIs...</p>
+<p>Tôi hỏi senior: <em>&quot;Làm sao anh hiểu được hết những cái này?&quot;</em></p>
+<p>Anh ấy cười: <em>&quot;Em không cần hiểu từng dòng code. Em cần hiểu hệ thống như một <strong>tổng thể</strong>.&quot;</em></p>
+<p>Tôi: <em>&quot;Nghĩa là sao ạ?&quot;</em></p>
+<p>Anh ấy vẽ một diagram đơn giản:</p>
+<pre><code>User → API → Cache → Database
+              ↓
+            Queue → Worker
+</code></pre>
+<p><em>&quot;Đây là cả hệ thống. Data flow từ User, qua API, check Cache, query Database, async jobs vào Queue. Hiểu flow này quan trọng hơn hiểu từng function.&quot;</em></p>
+<p><strong>Đó là lần đầu tiên tôi học về System Thinking.</strong></p>
+<h2 id="tại-sao-phải-think-in-systems">Tại Sao Phải Think in Systems?</h2>
+<h3 id="the-problem-thinking-in-code">The Problem: Thinking in Code</h3>
+<p>Hầu hết developers think như này:</p>
+<pre><code class="language-python"># Code-level thinking
+def get_user(user_id):
+    user = cache.get(user_id)
+    if not user:
+        user = db.query(&quot;SELECT * FROM users WHERE id = ?&quot;, user_id)
+        cache.set(user_id, user)
+    return user
+</code></pre>
+<p>Bạn thấy: function, cache logic, database query.</p>
+<p><strong>Nhưng bạn không thấy:</strong></p>
+<ul>
+<li>Request flow từ đâu đến?</li>
+<li>Response đi về đâu?</li>
+<li>Cache fail thì sao?</li>
+<li>Database slow thì sao?</li>
+<li>Scale như thế nào?</li>
+</ul>
+<h3 id="the-solution-system-level-view">The Solution: System-Level View</h3>
+<p>System thinking nhìn như này:</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant API
+    participant Cache
+    participant DB
+    
+    User-&gt;&gt;API: GET /users/123
+    API-&gt;&gt;Cache: Check user:123
+    
+    alt Cache Hit
+        Cache--&gt;&gt;API: Return user data
+        API--&gt;&gt;User: 200 OK (50ms)
+    else Cache Miss
+        Cache--&gt;&gt;API: Not found
+        API-&gt;&gt;DB: SELECT * FROM users
+        DB--&gt;&gt;API: User data
+        API-&gt;&gt;Cache: Store user:123
+        API--&gt;&gt;User: 200 OK (200ms)
+    end</code></pre>
+<p><em>System view: Thấy được flow, interactions, và failure scenarios</em></p>
+<p><strong>Thấy sự khác biệt chưa?</strong></p>
+<p>System thinking giúp bạn:</p>
+<ul>
+<li>Hiểu data flow</li>
+<li>Spot bottlenecks</li>
+<li>Design for failure</li>
+<li>Scale intelligently</li>
+<li>Debug production issues</li>
+</ul>
+<h2 id="the-universal-system-pattern">The Universal System Pattern</h2>
+<p><strong>Mọi system đều follow một pattern cơ bản:</strong></p>
+<pre><code>Input → Processing → Storage → Output
+</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    INPUT[Input&lt;br/&gt;Request/Event] --&gt; PROCESS[Processing&lt;br/&gt;Business Logic]
+    PROCESS --&gt; STORAGE[Storage&lt;br/&gt;Persist Data]
+    STORAGE --&gt; OUTPUT[Output&lt;br/&gt;Response/Action]
+    
+    style INPUT fill:#51cf66
+    style PROCESS fill:#ffd43b
+    style STORAGE fill:#ff6b6b
+    style OUTPUT fill:#339af0</code></pre>
+<p><em>Universal pattern: Mọi system đều nhận input, xử lý, lưu trữ, và trả output</em></p>
+<h3 id="examples-of-this-pattern">Examples of This Pattern</h3>
+<p><strong>Web Application:</strong></p>
+<pre><code>Input: User clicks &quot;Submit Order&quot;
+Processing: Validate, calculate total, check inventory
+Storage: Save order to database
+Output: Show confirmation page
+</code></pre>
+<p><strong>Messaging System:</strong></p>
+<pre><code>Input: User sends message
+Processing: Encrypt, route to recipient
+Storage: Store in message queue
+Output: Deliver to recipient&#x27;s device
+</code></pre>
+<p><strong>Analytics Pipeline:</strong></p>
+<pre><code>Input: Events from applications
+Processing: Aggregate, transform data
+Storage: Write to data warehouse
+Output: Update dashboards
+</code></pre>
+<p><strong>Video Platform:</strong></p>
+<pre><code>Input: User uploads video
+Processing: Encode to multiple formats
+Storage: Save to object storage (S3)
+Output: Video available for streaming
+</code></pre>
+<p><strong>Key insight:</strong> Hiểu pattern này → Hiểu mọi system.</p>
+<h2 id="core-system-components">Core System Components</h2>
+<p><strong>Mọi web system đều có 6 components cơ bản:</strong></p>
+<h3 id="component-1-client-input-layer">Component 1: Client (Input Layer)</h3>
+<p><strong>Vai trò:</strong> Initiate requests, receive responses</p>
+<pre><code>Types:
+- Web browser (JavaScript)
+- Mobile app (iOS/Android)
+- Desktop app
+- Other services (API clients)
+
+Characteristics:
+- Không đáng tin cậy (user có thể modify)
+- Không kiểm soát được (network, device)
+- Stateful (có local state)
+
+Key principle: NEVER trust client input
+</code></pre>
+<p><strong>Example flow:</strong></p>
+<pre><code>User action:
+1. User clicks &quot;Login&quot;
+2. Browser sends POST /login with credentials
+3. Waits for response
+4. Renders result
+
+What can go wrong:
+- User modifies request (change user_id)
+- Network timeout
+- Slow response
+- Device crashes
+
+System must handle all these!
+</code></pre>
+<h3 id="component-2-api-processing-layer">Component 2: API (Processing Layer)</h3>
+<p><strong>Vai trò:</strong> Handle requests, execute business logic, orchestrate data flow</p>
+<pre><code>Responsibilities:
+- Validate input (client không tin cậy!)
+- Execute business rules
+- Coordinate between services
+- Format response
+- Handle errors
+
+Characteristics:
+- Stateless (nên là stateless!)
+- Horizontally scalable
+- Contains business logic
+
+Technology examples:
+- REST API (Express, FastAPI, Spring)
+- GraphQL API
+- gRPC services
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-python"># API Server handles request
+@app.post(&quot;/orders&quot;)
+def create_order(order_data):
+    # 1. Validate (client không tin cậy)
+    if not validate_order(order_data):
+        return 400, {&quot;error&quot;: &quot;Invalid order&quot;}
+    
+    # 2. Business logic
+    total = calculate_total(order_data)
+    
+    # 3. Check inventory
+    if not check_inventory(order_data.items):
+        return 400, {&quot;error&quot;: &quot;Out of stock&quot;}
+    
+    # 4. Save to database
+    order = db.create_order(order_data, total)
+    
+    # 5. Async processing (queue)
+    queue.publish(&quot;order.created&quot;, order.id)
+    
+    # 6. Return response
+    return 201, {&quot;order_id&quot;: order.id}
+</code></pre>
+<h3 id="component-3-database-storage-layer">Component 3: Database (Storage Layer)</h3>
+<p><strong>Vai trò:</strong> Persist data reliably</p>
+<pre><code>Types:
+- Relational (PostgreSQL, MySQL)
+  → Structured data, transactions
+  
+- NoSQL (MongoDB, Cassandra)
+  → Flexible schema, horizontal scale
+  
+- Time-series (InfluxDB, TimescaleDB)
+  → Metrics, logs, events
+
+Characteristics:
+- ACID properties (SQL) or eventual consistency (NoSQL)
+- Slower than memory (disk I/O)
+- Usually the bottleneck
+- Data must survive crashes
+
+Key principle: Source of truth
+</code></pre>
+<p><strong>When to use what:</strong></p>
+<pre><code>SQL (PostgreSQL):
+✓ Need transactions
+✓ Complex relationships
+✓ Data integrity critical
+Example: E-commerce, banking
+
+NoSQL (MongoDB):
+✓ Flexible schema
+✓ Horizontal scaling
+✓ Simple queries
+Example: User profiles, content
+
+Time-series (InfluxDB):
+✓ Metrics/monitoring
+✓ IoT sensor data
+✓ Time-based queries
+Example: Observability, analytics
+</code></pre>
+<h3 id="component-4-cache-performance-layer">Component 4: Cache (Performance Layer)</h3>
+<p><strong>Vai trò:</strong> Store frequently accessed data in memory</p>
+<pre><code>Why cache?
+- Memory: 100 nanoseconds
+- SSD: 150 microseconds (1,500x slower)
+- HDD: 10 milliseconds (100,000x slower)
+
+→ Cache = Speed up reads dramatically
+
+Common implementations:
+- Redis (most popular)
+- Memcached (simple key-value)
+- Application-level (in-process)
+
+Characteristics:
+- Volatile (data can be lost)
+- Limited capacity (expensive RAM)
+- Stale data possible
+- Cache invalidation is hard
+
+Key principle: Cache is optimization, not source of truth
+</code></pre>
+<p><strong>Cache patterns:</strong></p>
+<pre><code class="language-python"># Pattern 1: Cache-Aside (Lazy Loading)
+def get_user(user_id):
+    # Check cache first
+    user = cache.get(f&quot;user:{user_id}&quot;)
+    if user:
+        return user  # Cache hit
+    
+    # Cache miss → Query database
+    user = db.query(&quot;SELECT * FROM users WHERE id = ?&quot;, user_id)
+    
+    # Store in cache for next time
+    cache.set(f&quot;user:{user_id}&quot;, user, ttl=3600)
+    return user
+
+# Pattern 2: Write-Through
+def update_user(user_id, data):
+    # Update database
+    db.update(&quot;users&quot;, user_id, data)
+    
+    # Update cache immediately
+    cache.set(f&quot;user:{user_id}&quot;, data)
+</code></pre>
+<h3 id="component-5-queue-async-layer">Component 5: Queue (Async Layer)</h3>
+<p><strong>Vai trò:</strong> Decouple services, enable async processing</p>
+<pre><code>Why queues?
+- Long-running tasks (don&#x27;t block user)
+- Traffic spikes (buffer requests)
+- Service decoupling (sender doesn&#x27;t need receiver online)
+- Retry logic (handle failures)
+
+Common implementations:
+- RabbitMQ (message broker)
+- Kafka (event streaming)
+- AWS SQS (managed queue)
+- Redis (simple queue)
+
+Characteristics:
+- Asynchronous (fire and forget)
+- At-least-once delivery (usually)
+- Ordered or unordered
+- Persistent or in-memory
+
+Key principle: Use for work that can be delayed
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-python"># API: Quick response to user
+@app.post(&quot;/orders&quot;)
+def create_order(order_data):
+    order = db.create_order(order_data)
+    
+    # Don&#x27;t send email synchronously (slow!)
+    # Put in queue instead
+    queue.publish(&quot;order.created&quot;, {
+        &quot;order_id&quot;: order.id,
+        &quot;user_email&quot;: order_data.email
+    })
+    
+    return 201, {&quot;order_id&quot;: order.id}
+    # User gets response immediately!
+
+# Worker: Process async
+@worker.task(&quot;order.created&quot;)
+def on_order_created(message):
+    # This runs in background
+    send_confirmation_email(message.user_email)
+    update_inventory(message.order_id)
+    notify_warehouse(message.order_id)
+</code></pre>
+<h3 id="component-6-storage-file-layer">Component 6: Storage (File Layer)</h3>
+<p><strong>Vai trò:</strong> Store large files (images, videos, documents)</p>
+<pre><code>Why separate from database?
+- Databases bad for large files
+- Need scalability (terabytes/petabytes)
+- Need CDN integration
+- Cost optimization
+
+Common implementations:
+- S3 (AWS object storage)
+- Google Cloud Storage
+- Azure Blob Storage
+- MinIO (self-hosted S3-compatible)
+
+Characteristics:
+- Cheap (compared to database)
+- Scalable (unlimited storage)
+- Durable (99.999999999% durability)
+- Slow for small files (latency overhead)
+
+Key principle: Store metadata in DB, files in object storage
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-python"># Upload flow
+@app.post(&quot;/upload&quot;)
+def upload_photo(file):
+    # 1. Generate unique filename
+    filename = f&quot;{uuid.uuid4()}.jpg&quot;
+    
+    # 2. Upload to S3
+    s3_url = s3.upload(filename, file)
+    
+    # 3. Save metadata to database
+    photo = db.create({
+        &quot;filename&quot;: filename,
+        &quot;s3_url&quot;: s3_url,
+        &quot;size&quot;: file.size,
+        &quot;uploaded_at&quot;: datetime.now()
+    })
+    
+    return {&quot;photo_id&quot;: photo.id, &quot;url&quot;: s3_url}
+
+# Retrieve flow
+@app.get(&quot;/photos/{id}&quot;)
+def get_photo(id):
+    # Get metadata from database
+    photo = db.get_photo(id)
+    
+    # Client downloads from S3 directly
+    return {&quot;url&quot;: photo.s3_url}
+</code></pre>
+<h2 id="putting-it-all-together-system-architecture">Putting It All Together: System Architecture</h2>
+<p><strong>Typical web application architecture:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    subgraph Client Layer
+        WEB[Web Browser]
+        MOBILE[Mobile App]
+    end
+    
+    subgraph Edge Layer
+        CDN[CDN&lt;br/&gt;Static Assets]
+        LB[Load Balancer]
+    end
+    
+    subgraph Application Layer
+        API1[API Server 1]
+        API2[API Server 2]
+        API3[API Server N]
+    end
+    
+    subgraph Data Layer
+        CACHE[Redis Cache&lt;br/&gt;Fast Reads]
+        DB[(Database&lt;br/&gt;Source of Truth)]
+        S3[S3 Storage&lt;br/&gt;Large Files]
+    end
+    
+    subgraph Async Layer
+        QUEUE[Message Queue]
+        WORKER[Background Workers]
+    end
+    
+    WEB --&gt; CDN
+    MOBILE --&gt; CDN
+    WEB --&gt; LB
+    MOBILE --&gt; LB
+    LB --&gt; API1 &amp; API2 &amp; API3
+    
+    API1 &amp; API2 &amp; API3 --&gt; CACHE
+    API1 &amp; API2 &amp; API3 --&gt; DB
+    API1 &amp; API2 &amp; API3 --&gt; S3
+    API1 &amp; API2 &amp; API3 --&gt; QUEUE
+    
+    QUEUE --&gt; WORKER
+    WORKER --&gt; DB
+    WORKER --&gt; S3
+    
+    style CACHE fill:#51cf66
+    style DB fill:#ff6b6b
+    style QUEUE fill:#ffd43b</code></pre>
+<p><em>Complete system: Tất cả components work together</em></p>
+<h2 id="request-flow-example-user-updates-profile">Request Flow Example: User Updates Profile</h2>
+<p><strong>Trace một request qua toàn bộ system:</strong></p>
+<pre><code>Step 1: User clicks &quot;Save Profile&quot;
+Component: Client (Browser)
+Action: POST /users/123 with new data
+
+Step 2: Request hits Load Balancer
+Component: Load Balancer
+Action: Route to API Server 2 (least connections)
+Time: +10ms
+
+Step 3: API validates and processes
+Component: API Server
+Actions:
+- Validate input (email format, etc.)
+- Check permissions (is user allowed?)
+- Sanitize data
+Time: +20ms
+
+Step 4: Update database
+Component: Database
+Actions:
+- Execute UPDATE query
+- Transaction commit
+- Confirm success
+Time: +100ms
+
+Step 5: Invalidate cache
+Component: Cache
+Actions:
+- Delete cache key &quot;user:123&quot;
+- Force fresh read next time
+Time: +5ms
+
+Step 6: Queue async tasks
+Component: Queue
+Actions:
+- Publish &quot;user.updated&quot; event
+- Non-blocking (returns immediately)
+Time: +2ms
+
+Step 7: Return response to user
+Component: API → Client
+Response: 200 OK
+Total time: 137ms (good UX!)
+
+Step 8: Background processing
+Component: Worker (async)
+Actions:
+- Send &quot;profile updated&quot; email
+- Update search index
+- Sync to analytics
+Time: Doesn&#x27;t affect user experience
+</code></pre>
+<p><strong>Key observations:</strong></p>
+<pre><code>✓ User gets response in 137ms (fast!)
+✓ Heavy work done async (email, indexing)
+✓ Cache invalidated (consistency)
+✓ Each component has clear role
+✓ Failures can be isolated
+
+This is system thinking in action!
+</code></pre>
+<h2 id="the-mental-model-input--processing--storage--output">The Mental Model: Input → Processing → Storage → Output</h2>
+<p><strong>Apply to everything:</strong></p>
+<h3 id="example-1-e-commerce-checkout">Example 1: E-commerce Checkout</h3>
+<pre><code>Input:
+- User clicks &quot;Place Order&quot;
+- Cart items, shipping address, payment
+
+Processing:
+- Validate inventory
+- Calculate total (items + tax + shipping)
+- Process payment
+- Generate order ID
+
+Storage:
+- Save order to database
+- Store payment receipt in S3
+- Cache order details
+
+Output:
+- Confirmation page to user
+- Email confirmation (async via queue)
+- Notification to warehouse (async)
+</code></pre>
+<h3 id="example-2-social-media-post">Example 2: Social Media Post</h3>
+<pre><code>Input:
+- User writes post + uploads photo
+
+Processing:
+- Sanitize text (remove bad words)
+- Resize/compress photo
+- Generate post ID
+
+Storage:
+- Save post to database
+- Upload photo to S3
+- Cache hot posts (trending)
+
+Output:
+- Show post to user
+- Fanout to followers (async via queue)
+- Update feed cache (async)
+</code></pre>
+<h3 id="example-3-video-upload">Example 3: Video Upload</h3>
+<pre><code>Input:
+- User uploads video file
+
+Processing:
+- Validate file (format, size)
+- Generate thumbnail
+- Queue encoding job
+
+Storage:
+- Save original to S3
+- Save metadata to database
+- Store encoding job in queue
+
+Output:
+- Show &quot;Processing...&quot; to user
+- Email when ready (async)
+- Multiple resolutions in S3 (async)
+</code></pre>
+<p><strong>Pattern is consistent across all systems!</strong></p>
+<h2 id="common-system-patterns">Common System Patterns</h2>
+<h3 id="pattern-1-read-heavy-system">Pattern 1: Read-Heavy System</h3>
+<pre><code>Characteristics:
+- 90%+ reads, &lt; 10% writes
+- Examples: News site, documentation, social media feed
+
+Optimization:
+- Aggressive caching (Redis)
+- CDN for static content
+- Database read replicas
+- Cache-first architecture
+
+Architecture:
+Client → CDN (90% hits) → Load Balancer → API → Cache (95% hits) → Database (5% hits)
+
+Result: 99.5% requests never hit database!
+</code></pre>
+<h3 id="pattern-2-write-heavy-system">Pattern 2: Write-Heavy System</h3>
+<pre><code>Characteristics:
+- 50%+ writes
+- Examples: Analytics, logging, IoT sensors
+
+Optimization:
+- Write buffering (queue)
+- Batch processing
+- Write-optimized database (Cassandra)
+- Async everything
+
+Architecture:
+Client → API → Queue → Worker → Database (batched writes)
+
+Result: Handle 100K writes/sec with buffering
+</code></pre>
+<h3 id="pattern-3-real-time-system">Pattern 3: Real-Time System</h3>
+<pre><code>Characteristics:
+- Low latency critical (&lt; 100ms)
+- Examples: Chat, gaming, trading
+
+Optimization:
+- WebSocket connections
+- In-memory everything
+- Geographic distribution
+- Minimal processing
+
+Architecture:
+Client ←→ WebSocket Server → Redis (pub/sub) → Database (eventual)
+
+Result: Sub-50ms message delivery
+</code></pre>
+<h2 id="debugging-with-system-thinking">Debugging with System Thinking</h2>
+<p><strong>When production issue happens:</strong></p>
+<h3 id="before-system-thinking">Before System Thinking:</h3>
+<pre><code>&quot;API is slow. Let me check the code...&quot;
+*Reads 1000 lines of code*
+*No idea where problem is*
+</code></pre>
+<h3 id="after-system-thinking">After System Thinking:</h3>
+<pre><code>&quot;API is slow. Let me trace the request:
+
+1. Client → API: 50ms (normal)
+2. API → Cache: 2ms (normal)
+3. API → Database: 5000ms (PROBLEM!)
+4. Database → API: 2ms
+5. API → Client: 10ms
+
+Bottleneck: Database query taking 5 seconds
+
+Next: Check database
+- Slow query log
+- Missing index?
+- Lock contention?
+
+Found: Missing index on user_id
+Fix: CREATE INDEX idx_user_id
+Result: Query now 50ms&quot;
+
+→ Solved in 10 minutes!
+</code></pre>
+<p><strong>System thinking = Structured debugging approach</strong></p>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>System = Components + Interactions</strong></p>
+<pre><code>6 core components:
+1. Client (input layer)
+2. API (processing layer)
+3. Database (storage layer)
+4. Cache (performance layer)
+5. Queue (async layer)
+6. Storage (file layer)
+
+Each has specific role
+Together form complete system
+</code></pre>
+<p><strong>Universal pattern:</strong></p>
+<pre><code>Input → Processing → Storage → Output
+
+Every system follows this
+Understand pattern → Understand systems
+</code></pre>
+<p><strong>System thinking benefits:</strong></p>
+<pre><code>✓ See the big picture
+✓ Identify bottlenecks faster
+✓ Design better architectures
+✓ Debug production issues
+✓ Communicate with team
+✓ Make informed trade-offs
+</code></pre>
+<p><strong>Mental shift:</strong></p>
+<pre><code>From: &quot;How does this function work?&quot;
+To: &quot;How does request flow through system?&quot;
+
+From: &quot;What does this code do?&quot;
+To: &quot;What is the role of this component?&quot;
+
+From: &quot;Fix this bug&quot;
+To: &quot;Which component is causing issue?&quot;
+</code></pre>
+<p><strong>Remember:</strong></p>
+<pre><code>Code is implementation detail
+System is the big picture
+
+Master code → Good developer
+Master systems → Good architect
+
+You need both, but system view comes first
+</code></pre></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-0/lesson/lesson-5-scale-intuition"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Scale Intuition - Xây Dựng Cảm Giác Về Numbers</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-0/lesson/lesson-7-system-question-framework">System Question Framework - Checklist Chuẩn Khi Design Hệ Thống<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-0\",\"lesson\",\"lesson-6-system-thinking-framework\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-0\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-6-system-thinking-framework\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 0 — Mental Model Shift\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học system thinking framework: hiểu components (Client, API, Database, Cache, Queue, Storage) và mental model Input → Processing → Storage → Output. Nhìn architecture từ góc độ tổng thể thay vì từng phần riêng lẻ.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-code-first-to-problem-first\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-1-code-first-to-problem-first\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Từ Code-First đến Problem-First - Thay Đổi Tư Duy Architect\"}]]}]}],[\"$\",\"li\",\"lesson-2-perfect-solution-to-trade-off-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-2-perfect-solution-to-trade-off-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Từ Perfect Solution đến Trade-off Thinking - Nghệ Thuật Của Quyết Định Kiến Trúc\"}]]}]}],[\"$\",\"li\",\"lesson-3-foundation-exercises\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-3-foundation-exercises\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Components và Communication - Giải Mã Kiến Trúc Hệ Thống Phân Tán\"}]]}]}],[\"$\",\"li\",\"lesson-4-thinking-in-constraints\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-4-thinking-in-constraints\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Thinking in Constraints - Engineering Là Quản Lý Giới Hạn\"}]]}]}],[\"$\",\"li\",\"lesson-5-scale-intuition\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-5-scale-intuition\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers\"}]]}]}],[\"$\",\"li\",\"lesson-6-system-thinking-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-6-system-thinking-framework\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[\"$L24\",\"$L25\"]}]}],\"$L26\",\"$L27\"]}]]}],\"$L28\"]}],\"$L29\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"2a:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể\"}]\n26:[\"$\",\"li\",\"lesson-7-system-question-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-7-system-question-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",7]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"System Question Framework - Checklist Chuẩn Khi Design Hệ Thống\"}]]}]}]\n27:[\"$\",\"li\",\"lesson-8-mental-model-recap\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-8-mental-model-recap\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",8]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Mental Model Recap - Củng Cố Tư Duy System Design\"}]]}]}]\n28:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0\",\"className\":\"hover:text-ink\",\"children\":\"Phase 0 — Mental Model Shift\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học system thinking framework: hiểu components (Client, API, Database, Cache, Queue, Storage) và mental model Input → Processing → Storage → Output. Nhìn architecture từ góc độ tổng thể thay vì từng phần riêng lẻ.\"}]]}],[\"$\",\"$L2a\",null,{\"path\":\"/phase/phase-0/lesson/lesson-6-system-thinking-framework\",\"title\":\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể\",\"description\":\"Học system thinking framework: hiểu components (Client, API, Database, Cache, Queue, Storage) và mental model Input → Processing → Storage → Output. Nhìn architecture từ góc độ tổng thể thay vì từng phần riêng lẻ.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể\",\"children\":\"$L2b\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-5-scale-intuition\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-7-system-question-framework\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"System Question Framework - Checklist Chuẩn Khi Design Hệ Thống\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2c:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"system-thinking-framework-nhìn-hệ-thống-như-một-tổng-thể\",\"children\":\"System Thinking Framework: Nhìn Hệ Thống Như Một Tổng Thể\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ lần đầu tiên nhìn vào codebase của một hệ thống lớn.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Hàng trăm files. Chục microservices. Database, cache, queues, APIs...\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi hỏi senior: \",[\"$\",\"em\",null,{\"children\":\"\\\"Làm sao anh hiểu được hết những cái này?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Anh ấy cười: \",[\"$\",\"em\",null,{\"children\":[\"\\\"Em không cần hiểu từng dòng code. Em cần hiểu hệ thống như một \",[\"$\",\"strong\",null,{\"children\":\"tổng thể\"}],\".\\\"\"]}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Nghĩa là sao ạ?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Anh ấy vẽ một diagram đơn giản:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User → API → Cache → Database\\n              ↓\\n            Queue → Worker\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"\\\"Đây là cả hệ thống. Data flow từ User, qua API, check Cache, query Database, async jobs vào Queue. Hiểu flow này quan trọng hơn hiểu từng function.\\\"\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Đó là lần đầu tiên tôi học về System Thinking.\"}]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-phải-think-in-systems\",\"children\":\"Tại Sao Phải Think in Systems?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-problem-thinking-in-code\",\"children\":\"The Problem: Thinking in Code\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Hầu hết developers think như này:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Code-level thinking\\ndef get_user(user_id):\\n    user = cache.get(user_id)\\n    if not user:\\n        user = db.query(\\\"SELECT * FROM users WHERE id = ?\\\", user_id)\\n        cache.set(user_id, user)\\n    return user\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Bạn thấy: function, cache logic, database query.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhưng bạn không thấy:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Request flow từ đâu đến?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Response đi về đâu?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cache fail thì sao?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database slow thì sao?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Scale như thế nào?\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-solution-system-level-view\",\"children\":\"The Solution: System-Level View\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"System thinking nhìn như này:\"}],\"\\n\",[\"$\",\"$L2c\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant API\\n    participant Cache\\n    participant DB\\n    \\n    User-\u003e\u003eAPI: GET /users/123\\n    API-\u003e\u003eCache: Check user:123\\n    \\n    alt Cache Hit\\n        Cache--\u003e\u003eAPI: Return user data\\n        API--\u003e\u003eUser: 200 OK (50ms)\\n    else Cache Miss\\n        Cache--\u003e\u003eAPI: Not found\\n        API-\u003e\u003eDB: SELECT * FROM users\\n        DB--\u003e\u003eAPI: User data\\n        API-\u003e\u003eCache: Store user:123\\n        API--\u003e\u003eUser: 200 OK (200ms)\\n    end\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"System view: Thấy được flow, interactions, và failure scenarios\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Thấy sự khác biệt chưa?\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"System thinking giúp bạn:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Hiểu data flow\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Spot bottlenecks\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Design for failure\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Scale intelligently\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Debug production issues\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"the-universal-system-pattern\",\"children\":\"The Universal System Pattern\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mọi system đều follow một pattern cơ bản:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Input → Processing → Storage → Output\\n\"}]}],\"\\n\",[\"$\",\"$L2c\",null,{\"chart\":\"graph LR\\n    INPUT[Input\u003cbr/\u003eRequest/Event] --\u003e PROCESS[Processing\u003cbr/\u003eBusiness Logic]\\n    PROCESS --\u003e STORAGE[Storage\u003cbr/\u003ePersist Data]\\n    STORAGE --\u003e OUTPUT[Output\u003cbr/\u003eResponse/Action]\\n    \\n    style INPUT fill:#51cf66\\n    style PROCESS fill:#ffd43b\\n    style STORAGE fill:#ff6b6b\\n    style OUTPUT fill:#339af0\"}],\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\"]}]\n"])</script><script>self.__next_f.push([1,"2d:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Universal pattern: Mọi system đều nhận input, xử lý, lưu trữ, và trả output\"}]}]\n2e:[\"$\",\"h3\",null,{\"id\":\"examples-of-this-pattern\",\"children\":\"Examples of This Pattern\"}]\n2f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Web Application:\"}]}]\n30:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Input: User clicks \\\"Submit Order\\\"\\nProcessing: Validate, calculate total, check inventory\\nStorage: Save order to database\\nOutput: Show confirmation page\\n\"}]}]\n31:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Messaging System:\"}]}]\n32:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Input: User sends message\\nProcessing: Encrypt, route to recipient\\nStorage: Store in message queue\\nOutput: Deliver to recipient's device\\n\"}]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Analytics Pipeline:\"}]}]\n34:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Input: Events from applications\\nProcessing: Aggregate, transform data\\nStorage: Write to data warehouse\\nOutput: Update dashboards\\n\"}]}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Video Platform:\"}]}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Input: User uploads video\\nProcessing: Encode to multiple formats\\nStorage: Save to object storage (S3)\\nOutput: Video available for streaming\\n\"}]}]\n37:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key insight:\"}],\" Hiểu pattern này → Hiểu mọi system.\"]}]\n38:[\"$\",\"h2\",null,{\"id\":\"core-system-components\",\"children\":\"Core System Components\"}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mọi web system đều có 6 components cơ bản:\"}]}]\n3a:[\"$\",\"h3\",null,{\"id\":\"component-1-client-input-layer\",\"children\":\"Component 1: Client (Input Layer)\"}]\n3b:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Vai trò:\"}],\" Initiate requests, receive responses\"]}]\n3c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Types:\\n- Web browser (JavaScript)\\n- Mobile app (iOS/Android)\\n- Desktop app\\n- Other services (API clients)\\n\\nCharacteristics:\\n- Không đáng tin cậy (user có thể modify)\\n- Không kiểm soát được (network, device)\\n- Stateful (có local state)\\n\\nKey principle: NEVER trust client input\\n\"}]}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example flow:\"}]}]\n3e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User action:\\n1. User clicks \\\"Login\\\"\\n2. Browser sends POST /login with credentials\\n3. Waits for response\\n4. Renders result\\n\\nWhat can go wrong:\\n- User modifies request (change user_id)\\n- Network timeout\\n- Slow response\\n- Device crashes\\n\\nSystem must handle all these!\\n\"}]}]\n3f:[\"$\",\"h3\",null,{\"id\":\"component-2-api-processing-layer\",\"children\":\"Component 2: API (Processing Layer)\"}]\n40:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Vai trò:\"}],\" Handle requests, execute business logic, orchestrate data flow\"]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Responsibilities:\\n- Validate input (client không tin cậy!)\\n- Execute business rules\\n- Coordinate between services\\n- Format response\\n- Handle errors\\n\\nCharacteristics:\\n- Stateless (nên là stateless!)\\n- Horizontally scalable\\n- Contains business logic\\n\\nTechnology examples:\\n- REST API (Express, FastAPI, Spring)\\n- GraphQL API\\n- gRPC services\\n\"}]}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\n43:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# API Server handles request\\n@app.post(\\\"/orders\\\")\\ndef create_order(order_data):\\n    # 1. Validate (client không tin cậy)\\n    if not validate_order(order_data):\\n        return 400, {\\\"error\\\": \\\"Invalid order\\\"}\\n    \\n    # 2. Business logic\\n    total = calculate_total(order_data)\\n    \\n    # 3. Check inventory\\n    if not check_inventory(order_data.items):\\n        return 400, {\\\"error\\\": \\\"Out of stock\\\"}\\n    \\n    # 4. Save to database\\n    order = d"])</script><script>self.__next_f.push([1,"b.create_order(order_data, total)\\n    \\n    # 5. Async processing (queue)\\n    queue.publish(\\\"order.created\\\", order.id)\\n    \\n    # 6. Return response\\n    return 201, {\\\"order_id\\\": order.id}\\n\"}]}]\n44:[\"$\",\"h3\",null,{\"id\":\"component-3-database-storage-layer\",\"children\":\"Component 3: Database (Storage Layer)\"}]\n45:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Vai trò:\"}],\" Persist data reliably\"]}]\n46:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Types:\\n- Relational (PostgreSQL, MySQL)\\n  → Structured data, transactions\\n  \\n- NoSQL (MongoDB, Cassandra)\\n  → Flexible schema, horizontal scale\\n  \\n- Time-series (InfluxDB, TimescaleDB)\\n  → Metrics, logs, events\\n\\nCharacteristics:\\n- ACID properties (SQL) or eventual consistency (NoSQL)\\n- Slower than memory (disk I/O)\\n- Usually the bottleneck\\n- Data must survive crashes\\n\\nKey principle: Source of truth\\n\"}]}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When to use what:\"}]}]\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"SQL (PostgreSQL):\\n✓ Need transactions\\n✓ Complex relationships\\n✓ Data integrity critical\\nExample: E-commerce, banking\\n\\nNoSQL (MongoDB):\\n✓ Flexible schema\\n✓ Horizontal scaling\\n✓ Simple queries\\nExample: User profiles, content\\n\\nTime-series (InfluxDB):\\n✓ Metrics/monitoring\\n✓ IoT sensor data\\n✓ Time-based queries\\nExample: Observability, analytics\\n\"}]}]\n49:[\"$\",\"h3\",null,{\"id\":\"component-4-cache-performance-layer\",\"children\":\"Component 4: Cache (Performance Layer)\"}]\n4a:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Vai trò:\"}],\" Store frequently accessed data in memory\"]}]\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Why cache?\\n- Memory: 100 nanoseconds\\n- SSD: 150 microseconds (1,500x slower)\\n- HDD: 10 milliseconds (100,000x slower)\\n\\n→ Cache = Speed up reads dramatically\\n\\nCommon implementations:\\n- Redis (most popular)\\n- Memcached (simple key-value)\\n- Application-level (in-process)\\n\\nCharacteristics:\\n- Volatile (data can be lost)\\n- Limited capacity (expensive RAM)\\n- Stale data possible\\n- Cache invalidation is hard\\n\\nKey principle: Cache is optimization, not source of truth\\n\"}]}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache patterns:\"}]}]\n4d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Pattern 1: Cache-Aside (Lazy Loading)\\ndef get_user(user_id):\\n    # Check cache first\\n    user = cache.get(f\\\"user:{user_id}\\\")\\n    if user:\\n        return user  # Cache hit\\n    \\n    # Cache miss → Query database\\n    user = db.query(\\\"SELECT * FROM users WHERE id = ?\\\", user_id)\\n    \\n    # Store in cache for next time\\n    cache.set(f\\\"user:{user_id}\\\", user, ttl=3600)\\n    return user\\n\\n# Pattern 2: Write-Through\\ndef update_user(user_id, data):\\n    # Update database\\n    db.update(\\\"users\\\", user_id, data)\\n    \\n    # Update cache immediately\\n    cache.set(f\\\"user:{user_id}\\\", data)\\n\"}]}]\n4e:[\"$\",\"h3\",null,{\"id\":\"component-5-queue-async-layer\",\"children\":\"Component 5: Queue (Async Layer)\"}]\n4f:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Vai trò:\"}],\" Decouple services, enable async processing\"]}]\n50:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Why queues?\\n- Long-running tasks (don't block user)\\n- Traffic spikes (buffer requests)\\n- Service decoupling (sender doesn't need receiver online)\\n- Retry logic (handle failures)\\n\\nCommon implementations:\\n- RabbitMQ (message broker)\\n- Kafka (event streaming)\\n- AWS SQS (managed queue)\\n- Redis (simple queue)\\n\\nCharacteristics:\\n- Asynchronous (fire and forget)\\n- At-least-once delivery (usually)\\n- Ordered or unordered\\n- Persistent or in-memory\\n\\nKey principle: Use for work that can be delayed\\n\"}]}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# API: Quick response to user\\n@app.post(\\\"/orders\\\")\\ndef create_order(order_data):\\n    order = db.create_"])</script><script>self.__next_f.push([1,"order(order_data)\\n    \\n    # Don't send email synchronously (slow!)\\n    # Put in queue instead\\n    queue.publish(\\\"order.created\\\", {\\n        \\\"order_id\\\": order.id,\\n        \\\"user_email\\\": order_data.email\\n    })\\n    \\n    return 201, {\\\"order_id\\\": order.id}\\n    # User gets response immediately!\\n\\n# Worker: Process async\\n@worker.task(\\\"order.created\\\")\\ndef on_order_created(message):\\n    # This runs in background\\n    send_confirmation_email(message.user_email)\\n    update_inventory(message.order_id)\\n    notify_warehouse(message.order_id)\\n\"}]}]\n53:[\"$\",\"h3\",null,{\"id\":\"component-6-storage-file-layer\",\"children\":\"Component 6: Storage (File Layer)\"}]\n54:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Vai trò:\"}],\" Store large files (images, videos, documents)\"]}]\n55:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Why separate from database?\\n- Databases bad for large files\\n- Need scalability (terabytes/petabytes)\\n- Need CDN integration\\n- Cost optimization\\n\\nCommon implementations:\\n- S3 (AWS object storage)\\n- Google Cloud Storage\\n- Azure Blob Storage\\n- MinIO (self-hosted S3-compatible)\\n\\nCharacteristics:\\n- Cheap (compared to database)\\n- Scalable (unlimited storage)\\n- Durable (99.999999999% durability)\\n- Slow for small files (latency overhead)\\n\\nKey principle: Store metadata in DB, files in object storage\\n\"}]}]\n56:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\n57:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Upload flow\\n@app.post(\\\"/upload\\\")\\ndef upload_photo(file):\\n    # 1. Generate unique filename\\n    filename = f\\\"{uuid.uuid4()}.jpg\\\"\\n    \\n    # 2. Upload to S3\\n    s3_url = s3.upload(filename, file)\\n    \\n    # 3. Save metadata to database\\n    photo = db.create({\\n        \\\"filename\\\": filename,\\n        \\\"s3_url\\\": s3_url,\\n        \\\"size\\\": file.size,\\n        \\\"uploaded_at\\\": datetime.now()\\n    })\\n    \\n    return {\\\"photo_id\\\": photo.id, \\\"url\\\": s3_url}\\n\\n# Retrieve flow\\n@app.get(\\\"/photos/{id}\\\")\\ndef get_photo(id):\\n    # Get metadata from database\\n    photo = db.get_photo(id)\\n    \\n    # Client downloads from S3 directly\\n    return {\\\"url\\\": photo.s3_url}\\n\"}]}]\n58:[\"$\",\"h2\",null,{\"id\":\"putting-it-all-together-system-architecture\",\"children\":\"Putting It All Together: System Architecture\"}]\n59:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Typical web application architecture:\"}]}]\n5a:[\"$\",\"$L2c\",null,{\"chart\":\"graph TB\\n    subgraph Client Layer\\n        WEB[Web Browser]\\n        MOBILE[Mobile App]\\n    end\\n    \\n    subgraph Edge Layer\\n        CDN[CDN\u003cbr/\u003eStatic Assets]\\n        LB[Load Balancer]\\n    end\\n    \\n    subgraph Application Layer\\n        API1[API Server 1]\\n        API2[API Server 2]\\n        API3[API Server N]\\n    end\\n    \\n    subgraph Data Layer\\n        CACHE[Redis Cache\u003cbr/\u003eFast Reads]\\n        DB[(Database\u003cbr/\u003eSource of Truth)]\\n        S3[S3 Storage\u003cbr/\u003eLarge Files]\\n    end\\n    \\n    subgraph Async Layer\\n        QUEUE[Message Queue]\\n        WORKER[Background Workers]\\n    end\\n    \\n    WEB --\u003e CDN\\n    MOBILE --\u003e CDN\\n    WEB --\u003e LB\\n    MOBILE --\u003e LB\\n    LB --\u003e API1 \u0026 API2 \u0026 API3\\n    \\n    API1 \u0026 API2 \u0026 API3 --\u003e CACHE\\n    API1 \u0026 API2 \u0026 API3 --\u003e DB\\n    API1 \u0026 API2 \u0026 API3 --\u003e S3\\n    API1 \u0026 API2 \u0026 API3 --\u003e QUEUE\\n    \\n    QUEUE --\u003e WORKER\\n    WORKER --\u003e DB\\n    WORKER --\u003e S3\\n    \\n    style CACHE fill:#51cf66\\n    style DB fill:#ff6b6b\\n    style QUEUE fill:#ffd43b\"}]\n5b:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Complete system: Tất cả components work together\"}]}]\n5c:[\"$\",\"h2\",null,{\"id\":\"request-flow-example-user-updates-profile\",\"children\":\"Request Flow Example: User Updates Profile\"}]\n5d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trace một request qua toàn bộ system:\"}]}]\n83:T425,Step 1: User clicks \"Save Profile\"\nComponent: Client (Browser)\nAction: POST /users/123 with new data\n\nStep 2: Request hits Load Balancer\nComponent: Load Balancer\nAction: Route to API Server 2 (least connections)\nTime"])</script><script>self.__next_f.push([1,": +10ms\n\nStep 3: API validates and processes\nComponent: API Server\nActions:\n- Validate input (email format, etc.)\n- Check permissions (is user allowed?)\n- Sanitize data\nTime: +20ms\n\nStep 4: Update database\nComponent: Database\nActions:\n- Execute UPDATE query\n- Transaction commit\n- Confirm success\nTime: +100ms\n\nStep 5: Invalidate cache\nComponent: Cache\nActions:\n- Delete cache key \"user:123\"\n- Force fresh read next time\nTime: +5ms\n\nStep 6: Queue async tasks\nComponent: Queue\nActions:\n- Publish \"user.updated\" event\n- Non-blocking (returns immediately)\nTime: +2ms\n\nStep 7: Return response to user\nComponent: API → Client\nResponse: 200 OK\nTotal time: 137ms (good UX!)\n\nStep 8: Background processing\nComponent: Worker (async)\nActions:\n- Send \"profile updated\" email\n- Update search index\n- Sync to analytics\nTime: Doesn't affect user experience\n5e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"$83\"}]}]\n5f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key observations:\"}]}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ User gets response in 137ms (fast!)\\n✓ Heavy work done async (email, indexing)\\n✓ Cache invalidated (consistency)\\n✓ Each component has clear role\\n✓ Failures can be isolated\\n\\nThis is system thinking in action!\\n\"}]}]\n61:[\"$\",\"h2\",null,{\"id\":\"the-mental-model-input--processing--storage--output\",\"children\":\"The Mental Model: Input → Processing → Storage → Output\"}]\n62:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Apply to everything:\"}]}]\n63:[\"$\",\"h3\",null,{\"id\":\"example-1-e-commerce-checkout\",\"children\":\"Example 1: E-commerce Checkout\"}]\n64:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Input:\\n- User clicks \\\"Place Order\\\"\\n- Cart items, shipping address, payment\\n\\nProcessing:\\n- Validate inventory\\n- Calculate total (items + tax + shipping)\\n- Process payment\\n- Generate order ID\\n\\nStorage:\\n- Save order to database\\n- Store payment receipt in S3\\n- Cache order details\\n\\nOutput:\\n- Confirmation page to user\\n- Email confirmation (async via queue)\\n- Notification to warehouse (async)\\n\"}]}]\n65:[\"$\",\"h3\",null,{\"id\":\"example-2-social-media-post\",\"children\":\"Example 2: Social Media Post\"}]\n66:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Input:\\n- User writes post + uploads photo\\n\\nProcessing:\\n- Sanitize text (remove bad words)\\n- Resize/compress photo\\n- Generate post ID\\n\\nStorage:\\n- Save post to database\\n- Upload photo to S3\\n- Cache hot posts (trending)\\n\\nOutput:\\n- Show post to user\\n- Fanout to followers (async via queue)\\n- Update feed cache (async)\\n\"}]}]\n67:[\"$\",\"h3\",null,{\"id\":\"example-3-video-upload\",\"children\":\"Example 3: Video Upload\"}]\n68:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Input:\\n- User uploads video file\\n\\nProcessing:\\n- Validate file (format, size)\\n- Generate thumbnail\\n- Queue encoding job\\n\\nStorage:\\n- Save original to S3\\n- Save metadata to database\\n- Store encoding job in queue\\n\\nOutput:\\n- Show \\\"Processing...\\\" to user\\n- Email when ready (async)\\n- Multiple resolutions in S3 (async)\\n\"}]}]\n69:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pattern is consistent across all systems!\"}]}]\n6a:[\"$\",\"h2\",null,{\"id\":\"common-system-patterns\",\"children\":\"Common System Patterns\"}]\n6b:[\"$\",\"h3\",null,{\"id\":\"pattern-1-read-heavy-system\",\"children\":\"Pattern 1: Read-Heavy System\"}]\n6c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Characteristics:\\n- 90%+ reads, \u003c 10% writes\\n- Examples: News site, documentation, social media feed\\n\\nOptimization:\\n- Aggressive caching (Redis)\\n- CDN for static content\\n- Database read replicas\\n- Cache-first architecture\\n\\nArchitecture:\\nClient → CDN (90% hits) → Load Balancer → API → Cache (95% hits) → Database (5% hits)\\n\\nResult: 99.5% requests never hit database!\\n\"}]}]\n6d:[\"$\",\"h3\",null,{\"id\":\"pattern-2-write-heavy-system\",\"children\":\"Pattern 2: Write-Heavy System\"}]\n6e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Characteristics:\\n- 50%+ writes\\n- Examples: Analytics, logging, IoT sensors\\n\\nOptimizat"])</script><script>self.__next_f.push([1,"ion:\\n- Write buffering (queue)\\n- Batch processing\\n- Write-optimized database (Cassandra)\\n- Async everything\\n\\nArchitecture:\\nClient → API → Queue → Worker → Database (batched writes)\\n\\nResult: Handle 100K writes/sec with buffering\\n\"}]}]\n6f:[\"$\",\"h3\",null,{\"id\":\"pattern-3-real-time-system\",\"children\":\"Pattern 3: Real-Time System\"}]\n70:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Characteristics:\\n- Low latency critical (\u003c 100ms)\\n- Examples: Chat, gaming, trading\\n\\nOptimization:\\n- WebSocket connections\\n- In-memory everything\\n- Geographic distribution\\n- Minimal processing\\n\\nArchitecture:\\nClient ←→ WebSocket Server → Redis (pub/sub) → Database (eventual)\\n\\nResult: Sub-50ms message delivery\\n\"}]}]\n71:[\"$\",\"h2\",null,{\"id\":\"debugging-with-system-thinking\",\"children\":\"Debugging with System Thinking\"}]\n72:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When production issue happens:\"}]}]\n73:[\"$\",\"h3\",null,{\"id\":\"before-system-thinking\",\"children\":\"Before System Thinking:\"}]\n74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"API is slow. Let me check the code...\\\"\\n*Reads 1000 lines of code*\\n*No idea where problem is*\\n\"}]}]\n75:[\"$\",\"h3\",null,{\"id\":\"after-system-thinking\",\"children\":\"After System Thinking:\"}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"API is slow. Let me trace the request:\\n\\n1. Client → API: 50ms (normal)\\n2. API → Cache: 2ms (normal)\\n3. API → Database: 5000ms (PROBLEM!)\\n4. Database → API: 2ms\\n5. API → Client: 10ms\\n\\nBottleneck: Database query taking 5 seconds\\n\\nNext: Check database\\n- Slow query log\\n- Missing index?\\n- Lock contention?\\n\\nFound: Missing index on user_id\\nFix: CREATE INDEX idx_user_id\\nResult: Query now 50ms\\\"\\n\\n→ Solved in 10 minutes!\\n\"}]}]\n77:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"System thinking = Structured debugging approach\"}]}]\n78:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n79:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"System = Components + Interactions\"}]}]\n7a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"6 core components:\\n1. Client (input layer)\\n2. API (processing layer)\\n3. Database (storage layer)\\n4. Cache (performance layer)\\n5. Queue (async layer)\\n6. Storage (file layer)\\n\\nEach has specific role\\nTogether form complete system\\n\"}]}]\n7b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Universal pattern:\"}]}]\n7c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Input → Processing → Storage → Output\\n\\nEvery system follows this\\nUnderstand pattern → Understand systems\\n\"}]}]\n7d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"System thinking benefits:\"}]}]\n7e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ See the big picture\\n✓ Identify bottlenecks faster\\n✓ Design better architectures\\n✓ Debug production issues\\n✓ Communicate with team\\n✓ Make informed trade-offs\\n\"}]}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mental shift:\"}]}]\n80:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"From: \\\"How does this function work?\\\"\\nTo: \\\"How does request flow through system?\\\"\\n\\nFrom: \\\"What does this code do?\\\"\\nTo: \\\"What is the role of this component?\\\"\\n\\nFrom: \\\"Fix this bug\\\"\\nTo: \\\"Which component is causing issue?\\\"\\n\"}]}]\n81:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember:\"}]}]\n82:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Code is implementation detail\\nSystem is the big picture\\n\\nMaster code → Good developer\\nMaster systems → Good architect\\n\\nYou need both, but system view comes first\\n\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"84:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể | Phase 0 — Mental Model Shift | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học system thinking framework: hiểu components Client, API, Database, Cache, Queue, Storage và mental model Input → Processing → Storage → Output. Nhìn architec\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-0/lesson/lesson-6-system-thinking-framework\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể | Phase 0 — Mental Model Shift\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học system thinking framework: hiểu components Client, API, Database, Cache, Queue, Storage và mental model Input → Processing → Storage → Output. Nhìn architec\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-0/lesson/lesson-6-system-thinking-framework\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể | Phase 0 — Mental Model Shift\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học system thinking framework: hiểu components Client, API, Database, Cache, Queue, Storage và mental model Input → Processing → Storage → Output. Nhìn architec\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L84\",\"14\",{}]]\n"])</script></body></html>

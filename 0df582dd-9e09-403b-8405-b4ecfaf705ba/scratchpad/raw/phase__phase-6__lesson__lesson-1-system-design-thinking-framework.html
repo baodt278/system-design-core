@@ -1,0 +1,1023 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset | Phase 6 — System Design Mastery | System Design Core</title><meta name="description" content="Master system design thinking framework: requirement driven design, constraint first thinking, top down vs bottom up approaches. Học cách approach problems như "/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-6/lesson/lesson-1-system-design-thinking-framework"/><meta property="og:title" content="System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset | Phase 6 — System Design Mastery"/><meta property="og:description" content="Master system design thinking framework: requirement driven design, constraint first thinking, top down vs bottom up approaches. Học cách approach problems như "/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-6/lesson/lesson-1-system-design-thinking-framework"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset | Phase 6 — System Design Mastery"/><meta name="twitter:description" content="Master system design thinking framework: requirement driven design, constraint first thinking, top down vs bottom up approaches. Học cách approach problems như "/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 6 — System Design Mastery</p><p class="mt-3 text-xl font-semibold text-ink">System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset</p><p class="mt-3 text-sm leading-7 text-ink-dim">Master system design thinking framework: requirement-driven design, constraint-first thinking, top-down vs bottom-up approaches. Học cách approach problems như Senior Architect thay vì chỉ apply patterns.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-6/lesson/lesson-1-system-design-thinking-framework"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-2-snake-framework"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">SNAKE Framework - Methodology Để Ace System Design Interview</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-4-real-interview-strategy"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-5-advanced-architecture-topics"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-6">Phase 6 — System Design Mastery</a></li><li>/</li><li aria-current="page" class="text-ink">System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Master system design thinking framework: requirement-driven design, constraint-first thinking, top-down vs bottom-up approaches. Học cách approach problems như Senior Architect thay vì chỉ apply patterns.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset"><article class="prose-ui"><h1 id="system-design-thinking-framework-từ-biết-pattern-đến-biết-tư-duy">System Design Thinking Framework: Từ Biết Pattern Đến Biết Tư Duy</h1>
+<p>Chào mừng đến Phase 6 - System Design Mastery.</p>
+<p>Bạn đã đi qua 5 phases, học về components, distributed systems, scalability patterns, real-world architectures. Bạn biết rất nhiều patterns.</p>
+<p>Nhưng có một sự thật tôi phải nói thẳng:</p>
+<p><strong>Biết patterns không đồng nghĩa với giỏi system design.</strong></p>
+<p>Tôi từng interview một candidate rất giỏi. Anh ta thuộc lòng tất cả patterns: CAP theorem, consistent hashing, CQRS, event sourcing...</p>
+<p>Tôi hỏi: <em>&quot;Thiết kế URL shortener.&quot;</em></p>
+<p>Anh ta ngay lập tức: <em>&quot;Em sẽ dùng NoSQL, Redis cache, CDN, microservices, event-driven architecture...&quot;</em></p>
+<p>Tôi: <em>&quot;Tại sao?&quot;</em></p>
+<p>Anh ta: <em>&quot;Vì... đó là best practices ạ?&quot;</em></p>
+<p><strong>Anh ta fail interview.</strong></p>
+<p>Không phải vì thiếu kiến thức. Mà vì <strong>thiếu system design thinking</strong>.</p>
+<p>Lesson này sẽ dạy bạn cái quan trọng nhất: <strong>Cách tư duy khi approach một problem.</strong></p>
+<h2 id="system-design-thinking-là-gì">System Design Thinking Là Gì?</h2>
+<h3 id="định-nghĩa">Định Nghĩa</h3>
+<p><strong>System design thinking = Mental framework để approach và solve architecture problems</strong></p>
+<p>Không phải là:</p>
+<ul>
+<li>Thuộc patterns</li>
+<li>Biết technologies</li>
+<li>Copy solutions</li>
+</ul>
+<p>Mà là:</p>
+<ul>
+<li>Understand problems deeply</li>
+<li>Reason từ first principles</li>
+<li>Make trade-off decisions</li>
+<li>Justify mọi choice</li>
+</ul>
+<h3 id="ví-dụ-so-sánh">Ví Dụ So Sánh</h3>
+<p><strong>Pattern thinking (Bad):</strong></p>
+<pre><code>Problem: Build social network
+Approach:
+1. Social network = need feed
+2. Feed = need fanout
+3. Use fanout on write pattern
+4. Done!
+
+Result: Over-engineered cho startup với 100 users
+</code></pre>
+<p><strong>System design thinking (Good):</strong></p>
+<pre><code>Problem: Build social network
+
+Questions:
+1. Scale? (100 users hay 100M users?)
+2. Traffic pattern? (read-heavy hay write-heavy?)
+3. Consistency requirements? (real-time hay eventual OK?)
+4. Team size? (2 devs hay 50 devs?)
+5. Timeline? (MVP trong 1 tháng hay 1 năm?)
+6. Budget? (limited hay unlimited?)
+
+Với 100 users, 2 devs, 1 tháng timeline:
+→ Simple SQL database
+→ Query followees&#x27; posts on demand
+→ Basic chronological sort
+→ No caching needed yet
+
+Scale later when proven needed.
+
+Result: Shipped on time, iterated fast
+</code></pre>
+<p>Thấy sự khác biệt chưa?</p>
+<p>Pattern thinking = Apply solutions</p>
+<p>System design thinking = <strong>Understand problem → Choose appropriate solution</strong></p>
+<h2 id="the-mental-shift-từ-what-tech-sang-what-problem">The Mental Shift: Từ &quot;What Tech&quot; Sang &quot;What Problem&quot;</h2>
+<h3 id="old-mindset-what-tech-to-use">Old Mindset (What Tech to Use)</h3>
+<pre><code>Senior: &quot;Thiết kế notification system&quot;
+
+Junior thinks:
+- &quot;Dùng tech gì nhỉ?&quot;
+- &quot;Kafka hay RabbitMQ?&quot;
+- &quot;WebSocket hay Server-Sent Events?&quot;
+- &quot;PostgreSQL hay MongoDB?&quot;
+
+→ Technology-first thinking
+→ Solution shopping
+</code></pre>
+<p><strong>Vấn đề:</strong></p>
+<pre><code>Chưa hiểu problem
+Không biết constraints
+Không justify trade-offs
+Có thể over-engineer
+Có thể under-engineer
+</code></pre>
+<h3 id="new-mindset-what-problem-to-solve">New Mindset (What Problem to Solve)</h3>
+<pre><code>Senior: &quot;Thiết kế notification system&quot;
+
+Senior thinks:
+- &quot;Problem gì đang giải quyết?&quot;
+- &quot;Scale bao nhiêu? (1K hay 1B notifications/day?)&quot;
+- &quot;Latency requirement? (real-time hay eventual OK?)&quot;
+- &quot;Delivery guarantee? (at-least-once hay exactly-once?)&quot;
+- &quot;Types of notifications? (push, email, SMS?)&quot;
+- &quot;User preferences? (mute, frequency?)&quot;
+
+→ Problem-first thinking
+→ Requirement-driven design
+</code></pre>
+<p><strong>Framework:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    START[System Design Problem]
+    
+    START --&gt; Q1[Clarify Requirements]
+    Q1 --&gt; Q2[Identify Constraints]
+    Q2 --&gt; Q3[List Trade-offs]
+    Q3 --&gt; Q4[Choose Approach]
+    Q4 --&gt; Q5[Justify Decisions]
+    Q5 --&gt; Q6[Iterate]
+    
+    style START fill:#ffd43b
+    style Q4 fill:#51cf66
+    style Q5 fill:#ff6b6b</code></pre>
+<p><em>System design thinking process: Requirements → Constraints → Trade-offs → Decision → Justification</em></p>
+<h2 id="requirement-driven-design">Requirement-Driven Design</h2>
+<p><strong>Bắt đầu mọi design bằng requirements. Always.</strong></p>
+<h3 id="functional-requirements">Functional Requirements</h3>
+<p><strong>Định nghĩa:</strong> System phải làm gì?</p>
+<pre><code class="language-python"># Example: URL Shortener
+
+Functional Requirements:
+1. Shorten URL
+   - Input: long URL
+   - Output: short URL
+   - Example: https://example.com/long-path → ex.co/abc123
+
+2. Redirect
+   - Input: short URL
+   - Output: redirect to original URL
+   - Must work consistently
+
+3. Custom aliases (optional)
+   - User can choose short code
+   - Example: ex.co/my-link
+
+4. Analytics (optional)
+   - Track clicks
+   - Show statistics
+
+5. Expiration (optional)
+   - URL expires after X days
+   - Auto-cleanup
+</code></pre>
+<p><strong>Kỹ thuật clarify:</strong></p>
+<pre><code>Interviewer: &quot;Design URL shortener&quot;
+
+You: &quot;Let me clarify functional requirements:
+1. Do we support custom short URLs?
+2. Do we need analytics (click tracking)?
+3. Do URLs expire?
+4. Do we need user accounts?
+5. Can users edit/delete their URLs?
+6. Do we need API rate limiting?&quot;
+
+Each answer changes design significantly!
+</code></pre>
+<h3 id="non-functional-requirements-critical">Non-Functional Requirements (Critical!)</h3>
+<p><strong>Định nghĩa:</strong> System phải perform như thế nào?</p>
+<pre><code class="language-python"># Non-Functional Requirements
+
+1. Scale
+   - Users: 1M, 10M, hay 100M?
+   - Requests: 100 req/s hay 100K req/s?
+   - Data: 1GB hay 10TB?
+   - Growth rate: 2x/year hay 10x/year?
+
+2. Performance
+   - Latency: &lt; 100ms? &lt; 1s?
+   - Throughput: 1K req/s? 1M req/s?
+   - Availability: 99%? 99.99%?
+
+3. Consistency
+   - Strong consistency needed?
+   - Eventual consistency OK?
+   - Tolerance for stale data?
+
+4. Durability
+   - Data loss acceptable? (NO for banking, maybe OK for analytics)
+   - Backup requirements?
+   - Recovery time objective (RTO)?
+
+5. Security
+   - Authentication needed?
+   - Authorization model?
+   - Data encryption?
+   - Rate limiting?
+
+6. Cost
+   - Budget constraints?
+   - Optimize for cost vs performance?
+</code></pre>
+<p><strong>Back-of-envelope calculations:</strong></p>
+<pre><code class="language-python"># Example: URL Shortener
+
+Given:
+- 100M URLs shortened per month
+- 10B redirects per month
+- 5 years retention
+
+Calculate:
+
+# Write traffic
+writes_per_second = 100M / (30 * 24 * 3600)
+                  ≈ 40 writes/second
+
+# Read traffic  
+reads_per_second = 10B / (30 * 24 * 3600)
+                 ≈ 4,000 reads/second
+
+# Read:Write ratio = 100:1
+→ Read-heavy system → Caching critical
+
+# Storage
+urls_total = 100M/month × 12 months × 5 years
+           = 6 billion URLs
+
+storage_per_url = 500 bytes (URL + metadata)
+total_storage = 6B × 500 bytes
+              = 3TB
+
+→ Single database can handle (scale vertically first)
+
+# Bandwidth
+write_bandwidth = 40 req/s × 500 bytes
+                = 20 KB/s (negligible)
+
+read_bandwidth = 4,000 req/s × 500 bytes  
+               = 2 MB/s (manageable)
+
+→ Network not bottleneck
+
+Conclusion:
+- Database: Start with single PostgreSQL
+- Caching: Critical (Redis for hot URLs)
+- CDN: Not needed (no static assets)
+- Sharding: Not needed yet (3TB manageable)
+</code></pre>
+<p><strong>Why calculations matter:</strong></p>
+<pre><code>Without calculations:
+&quot;Need to handle millions of users!&quot;
+→ Over-engineer với microservices, Kafka, sharding
+
+With calculations:
+&quot;40 writes/s, 4K reads/s, 3TB data&quot;
+→ Single server + Redis cache is enough
+→ Ship in 2 weeks, not 6 months
+</code></pre>
+<h2 id="constraint-first-thinking">Constraint-First Thinking</h2>
+<p><strong>Constraints shape design. Identify constraints TRƯỚC KHI design.</strong></p>
+<h3 id="types-of-constraints">Types of Constraints</h3>
+<p><strong>1. Technical Constraints</strong></p>
+<pre><code class="language-python"># Database constraints
+- Single database max: ~10K writes/second
+- PostgreSQL max connections: ~500
+- Redis max memory: Depends on instance (16GB typical)
+- Network latency: Speed of light (can&#x27;t beat physics)
+
+# CAP theorem constraint
+- Can&#x27;t have perfect Consistency + Availability với Partition tolerance
+- Must choose trade-off
+
+# Eventual consistency constraint
+- Distributed caches → replication lag
+- Async processing → delay
+</code></pre>
+<p><strong>2. Business Constraints</strong></p>
+<pre><code class="language-python"># Timeline
+- MVP in 1 month → Simple architecture
+- No deadline pressure → Can optimize
+
+# Budget
+- Limited ($1000/month) → Optimize for cost
+- Unlimited → Optimize for performance
+
+# Team
+- 2 developers → Choose simple stack
+- 20 developers → Can handle complexity
+
+# Compliance
+- GDPR → Data residency requirements
+- PCI DSS → Strict security requirements
+- HIPAA → Healthcare data protection
+</code></pre>
+<p><strong>3. Scale Constraints</strong></p>
+<pre><code class="language-python"># Current scale
+- 1K users → Monolith OK
+- 1M users → Need horizontal scaling
+- 100M users → Need distributed architecture
+
+# Growth rate
+- Stable growth (2x/year) → Scale gradually
+- Hypergrowth (10x/year) → Plan for scale early
+
+# Traffic pattern
+- Uniform → Simple load balancing
+- Spiky (Black Friday) → Need burst capacity
+- Predictable → Can optimize
+- Unpredictable → Need flexibility
+</code></pre>
+<h3 id="constraint-analysis-framework">Constraint Analysis Framework</h3>
+<pre><code class="language-python">def analyze_constraints(problem):
+    &quot;&quot;&quot;Framework để identify constraints&quot;&quot;&quot;
+    
+    constraints = {
+        # Hard constraints (cannot violate)
+        &#x27;hard&#x27;: [
+            &#x27;Budget: $5000/month maximum&#x27;,
+            &#x27;Timeline: 3 months to launch&#x27;,
+            &#x27;Availability: Must be 99.9%&#x27;,
+            &#x27;Compliance: GDPR required&#x27;
+        ],
+        
+        # Soft constraints (prefer but flexible)
+        &#x27;soft&#x27;: [
+            &#x27;Team familiar with Python&#x27;,
+            &#x27;Prefer open-source solutions&#x27;,
+            &#x27;Easy to maintain&#x27;
+        ],
+        
+        # Technical limits
+        &#x27;technical&#x27;: [
+            &#x27;Database writes: &lt; 1000/second&#x27;,
+            &#x27;Read latency: &lt; 200ms&#x27;,
+            &#x27;Network: Public internet (not dedicated)&#x27;
+        ],
+        
+        # Scale limits
+        &#x27;scale&#x27;: [
+            &#x27;Current: 10K users&#x27;,
+            &#x27;Target: 100K users in 1 year&#x27;,
+            &#x27;Data: Currently 100GB, growing 10GB/month&#x27;
+        ]
+    }
+    
+    return constraints
+
+# Design decisions từ constraints
+def make_decisions(constraints):
+    &quot;&quot;&quot;Derive design từ constraints&quot;&quot;&quot;
+    
+    decisions = []
+    
+    # Budget constraint → Choose managed services
+    if constraints[&#x27;hard&#x27;][&#x27;budget&#x27;] &lt; 10000:
+        decisions.append(&#x27;Use managed services (RDS, ElastiCache)&#x27;)
+        decisions.append(&#x27;Avoid self-managed Kubernetes&#x27;)
+    
+    # Timeline constraint → Choose familiar tech
+    if constraints[&#x27;hard&#x27;][&#x27;timeline&#x27;] &lt; 6_months:
+        decisions.append(&#x27;Use team\&#x27;s existing stack&#x27;)
+        decisions.append(&#x27;Avoid learning new paradigms&#x27;)
+    
+    # Scale constraint → Start simple
+    if constraints[&#x27;scale&#x27;][&#x27;current&#x27;] &lt; 100K:
+        decisions.append(&#x27;Monolith architecture&#x27;)
+        decisions.append(&#x27;Vertical scaling first&#x27;)
+    
+    return decisions
+</code></pre>
+<p><strong>Real-world example:</strong></p>
+<pre><code>Startup scenario:
+- Budget: $2000/month
+- Team: 3 developers (Python)
+- Timeline: 2 months to MVP
+- Scale: Expect 5K users initially
+
+Constraints dictate:
+Don&#x27;t use: Kubernetes, Kafka, Cassandra
+   → Too expensive, complex, overkill
+
+Do use:
+   - Heroku or AWS Elastic Beanstalk (managed)
+   - PostgreSQL (familiar, powerful enough)
+   - Redis (simple caching)
+   - Monolith (fast development)
+
+Decision justified by constraints, not by &quot;best practices&quot;
+</code></pre>
+<h2 id="top-down-vs-bottom-up-design">Top-Down vs Bottom-Up Design</h2>
+<p>Có 2 approaches để design systems. Biết khi nào dùng cái nào.</p>
+<h3 id="top-down-design-recommended-for-interviews">Top-Down Design (Recommended for Interviews)</h3>
+<p><strong>Approach: Start từ high-level, drill down details</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    A[High-Level Architecture] --&gt; B[Core Components]
+    B --&gt; C[Component Interactions]
+    C --&gt; D[Data Flow]
+    D --&gt; E[API Design]
+    E --&gt; F[Data Models]
+    F --&gt; G[Deep Dive Specific Parts]
+    
+    style A fill:#ffd43b
+    style G fill:#51cf66</code></pre>
+<p><em>Top-down: Từ tổng quan đến chi tiết</em></p>
+<p><strong>Process:</strong></p>
+<pre><code class="language-python"># Step 1: High-level boxes
+&quot;&quot;&quot;
+[Client] → [Load Balancer] → [API Servers] → [Database]
+                                    ↓
+                                [Cache]
+&quot;&quot;&quot;
+
+# Step 2: Define components
+&quot;&quot;&quot;
+Load Balancer: Nginx
+API Servers: Python/FastAPI (stateless)
+Cache: Redis  
+Database: PostgreSQL
+&quot;&quot;&quot;
+
+# Step 3: Detail interactions
+&quot;&quot;&quot;
+Client:
+- HTTPS requests
+- JWT authentication
+- Rate limited
+
+API Servers:
+- RESTful endpoints
+- Horizontal scaling
+- Health checks
+
+Cache:
+- Store hot data
+- TTL: 5 minutes
+- Cache-aside pattern
+&quot;&quot;&quot;
+
+# Step 4: API design
+&quot;&quot;&quot;
+POST /shorten
+Body: {&quot;url&quot;: &quot;https://...&quot;}
+Response: {&quot;short_url&quot;: &quot;ex.co/abc123&quot;}
+
+GET /{shortCode}
+Response: 302 Redirect
+&quot;&quot;&quot;
+
+# Step 5: Data models
+&quot;&quot;&quot;
+CREATE TABLE urls (
+    id BIGSERIAL PRIMARY KEY,
+    short_code VARCHAR(10) UNIQUE,
+    original_url TEXT,
+    created_at TIMESTAMP,
+    expires_at TIMESTAMP
+);
+&quot;&quot;&quot;
+
+# Step 6: Deep dive critical parts
+&quot;&quot;&quot;
+Short code generation:
+- Base62 encoding (a-z, A-Z, 0-9)
+- 7 characters = 62^7 = 3.5 trillion combinations
+- Collision handling: retry với new code
+&quot;&quot;&quot;
+</code></pre>
+<p><strong>Ưu điểm:</strong></p>
+<pre><code>Comprehensive view early
+Spot architecture issues fast
+Easy to communicate
+Good for interviews (shows thinking process)
+Can adjust before deep implementation
+</code></pre>
+<p><strong>Nhược điểm:</strong></p>
+<pre><code>Có thể miss details
+Assumptions có thể sai
+Harder nếu chưa có experience
+</code></pre>
+<h3 id="bottom-up-design-good-for-implementation">Bottom-Up Design (Good for Implementation)</h3>
+<p><strong>Approach: Start từ core problem, build up</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph BT
+    G[Data Model] --&gt; F[Core Logic]
+    F --&gt; E[API Layer]
+    E --&gt; D[Caching Layer]
+    D --&gt; C[Load Balancing]
+    C --&gt; B[Monitoring]
+    B --&gt; A[Complete System]
+    
+    style G fill:#ffd43b
+    style A fill:#51cf66</code></pre>
+<p><em>Bottom-up: Từ foundation build lên</em></p>
+<p><strong>Process:</strong></p>
+<pre><code class="language-python"># Step 1: Core data model
+&quot;&quot;&quot;
+What data do we store?
+- URL mapping
+- Metadata
+- Analytics
+
+CREATE TABLE urls (...);
+&quot;&quot;&quot;
+
+# Step 2: Core logic
+&quot;&quot;&quot;
+How do we generate short codes?
+- Base62 encoding
+- Collision handling
+- Validation
+&quot;&quot;&quot;
+
+# Step 3: API layer
+&quot;&quot;&quot;
+What endpoints do we need?
+POST /shorten
+GET /{code}
+&quot;&quot;&quot;
+
+# Step 4: Caching
+&quot;&quot;&quot;
+Cache hot URLs
+Redis sorted set by access frequency
+&quot;&quot;&quot;
+
+# Step 5: Scaling
+&quot;&quot;&quot;
+Add load balancer
+Multiple API servers
+Database read replicas
+&quot;&quot;&quot;
+
+# Step 6: Monitoring
+&quot;&quot;&quot;
+Metrics: latency, error rate
+Alerts: high latency, failures
+Dashboards
+&quot;&quot;&quot;
+</code></pre>
+<p><strong>Ưu điểm:</strong></p>
+<pre><code>Solid foundation
+Less rework
+Details không bị miss
+Good khi implementing
+</code></pre>
+<p><strong>Nhược điểm:</strong></p>
+<pre><code>Không thấy big picture early
+Có thể over-optimize details
+Harder to pivot
+Less effective trong interviews
+</code></pre>
+<h3 id="khi-nào-dùng-approach-nào">Khi Nào Dùng Approach Nào?</h3>
+<pre><code>Top-Down:
+✓ System design interviews
+✓ Architecture planning meetings
+✓ New greenfield projects
+✓ Communication với stakeholders
+✓ Khi cần quick proof of concept
+
+Bottom-Up:
+✓ Implementation phase
+✓ Refactoring existing systems
+✓ When details matter (security, compliance)
+✓ Complex algorithmic problems
+✓ Database schema design
+</code></pre>
+<p><strong>Hybrid approach (Best in practice):</strong></p>
+<pre><code>1. Top-down: Draw high-level architecture
+2. Identify critical components
+3. Bottom-up: Detail critical parts
+4. Top-down: Validate fits together
+5. Iterate
+</code></pre>
+<h2 id="scalability-mindset">Scalability Mindset</h2>
+<p><strong>Scalability thinking ≠ &quot;Make it handle millions&quot;</strong></p>
+<p><strong>Scalability thinking = Design để có thể scale khi cần, without rewrite</strong></p>
+<h3 id="the-scalability-spectrum">The Scalability Spectrum</h3>
+<pre><code>Over-engineered ←→ Right-sized ←→ Under-engineered
+
+[Microservices]   [Modular     [Spaghetti
+[Kubernetes]      Monolith]    code]
+[Kafka]           [PostgreSQL] [No DB
+[Sharding]        [Redis]      indexes]
+
+Left: Premature optimization
+Middle: Goldilocks zone ✓
+Right: Technical debt
+</code></pre>
+<p><strong>Find the Goldilocks zone:</strong></p>
+<pre><code class="language-python">def choose_architecture(current_scale, target_scale, timeline):
+    &quot;&quot;&quot;Choose architecture dựa trên scale&quot;&quot;&quot;
+    
+    if current_scale &lt; 10_000 and target_scale &lt; 100_000:
+        return {
+            &#x27;architecture&#x27;: &#x27;Monolith&#x27;,
+            &#x27;database&#x27;: &#x27;Single PostgreSQL&#x27;,
+            &#x27;cache&#x27;: &#x27;Redis (optional)&#x27;,
+            &#x27;reasoning&#x27;: &#x27;Simple, ship fast, iterate&#x27;
+        }
+    
+    elif current_scale &lt; 1_000_000 and target_scale &lt; 10_000_000:
+        return {
+            &#x27;architecture&#x27;: &#x27;Modular Monolith&#x27;,
+            &#x27;database&#x27;: &#x27;PostgreSQL with read replicas&#x27;,
+            &#x27;cache&#x27;: &#x27;Redis cluster&#x27;,
+            &#x27;reasoning&#x27;: &#x27;Balance simplicity with scalability&#x27;
+        }
+    
+    else:  # &gt; 10M users
+        return {
+            &#x27;architecture&#x27;: &#x27;Microservices&#x27;,
+            &#x27;database&#x27;: &#x27;Sharded PostgreSQL or NoSQL&#x27;,
+            &#x27;cache&#x27;: &#x27;Distributed Redis&#x27;,
+            &#x27;messaging&#x27;: &#x27;Kafka for async&#x27;,
+            &#x27;reasoning&#x27;: &#x27;Need independent scaling, team autonomy&#x27;
+        }
+</code></pre>
+<h3 id="design-for-scalability-without-over-engineering">Design for Scalability Without Over-Engineering</h3>
+<p><strong>Principles:</strong></p>
+<p><strong>1. Stateless application servers</strong></p>
+<pre><code class="language-python"># Bad: Stateful
+sessions = {}  # In-memory state
+
+def handle_request(user_id):
+    session = sessions[user_id]  # Tied to this server
+    # ...
+
+# Good: Stateless
+def handle_request(user_id, session_token):
+    session = redis.get(f&quot;session:{session_token}&quot;)  # Any server can handle
+    # ...
+</code></pre>
+<p><strong>2. Database indexes from day 1</strong></p>
+<pre><code class="language-sql">-- Don&#x27;t wait until slow to add indexes
+
+-- Add early
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_posts_created_at ON posts(created_at);
+CREATE INDEX idx_posts_user_id ON posts(user_id);
+
+-- Small cost now, huge benefit later
+</code></pre>
+<p><strong>3. Monitoring from day 1</strong></p>
+<pre><code class="language-python"># Track metrics early
+metrics.increment(&#x27;api.requests&#x27;)
+metrics.timing(&#x27;api.latency&#x27;, duration)
+metrics.gauge(&#x27;active_users&#x27;, count)
+
+# When scale issues hit, you have data
+# Without metrics = flying blind
+</code></pre>
+<p><strong>4. Async where appropriate</strong></p>
+<pre><code class="language-python"># Long tasks → Async
+
+# Synchronous
+def create_user(email):
+    user = db.create(email)
+    send_welcome_email(email)  # Block 5 seconds
+    generate_thumbnail(user)    # Block 10 seconds
+    return user  # User waits 15 seconds
+
+# Asynchronous
+def create_user(email):
+    user = db.create(email)
+    queue.publish(&#x27;user.created&#x27;, user.id)  # Fire and forget
+    return user  # User waits 100ms
+
+# Workers handle async
+@worker.task
+def on_user_created(user_id):
+    send_welcome_email(user_id)
+    generate_thumbnail(user_id)
+</code></pre>
+<p><strong>5. Modular code structure</strong></p>
+<pre><code class="language-python"># Even trong monolith, structure well
+
+# Bad: Everything in one file
+# app.py (5000 lines)
+
+# Good: Clear boundaries
+/services
+  /user_service.py
+  /post_service.py
+  /notification_service.py
+/models
+/api
+
+# Khi cần split to microservices, boundaries already clear
+</code></pre>
+<h2 id="design-vs-implementation-thinking">Design vs Implementation Thinking</h2>
+<p><strong>Critical distinction: Designing ≠ Implementing</strong></p>
+<h3 id="design-thinking-interviews-planning">Design Thinking (Interviews, Planning)</h3>
+<p><strong>Focus: Architecture decisions, trade-offs, justification</strong></p>
+<pre><code>Questions to answer:
+- What components do we need?
+- How do they interact?
+- What are the bottlenecks?
+- What can fail and how to handle?
+- What are trade-offs of each choice?
+- How does it scale?
+
+Output:
+- Architecture diagram
+- Component responsibilities
+- API contracts
+- Data models (high-level)
+- Trade-off analysis
+</code></pre>
+<p><strong>Example dialogue:</strong></p>
+<pre><code>Interviewer: &quot;Design Twitter&quot;
+
+You (Design thinking):
+&quot;Let me start with requirements...
+- 500M daily users
+- 200M tweets per day
+- Read-heavy (95% reads)
+
+Architecture:
+- Fanout service for tweet distribution
+- Timeline cache in Redis
+- CDN for media
+- Sharded PostgreSQL for persistence
+
+Key trade-off: Fanout on write vs fanout on read
+- For normal users: Fanout on write (pre-compute timelines)
+- For celebrities: Fanout on read (too many followers)
+- Hybrid approach balances write and read performance
+
+Bottlenecks:
+- Timeline generation during fanout
+- Media delivery
+- Hot celebrity problem
+
+Failure handling:
+- Queue for fanout (if service down, retry)
+- Async processing (eventual consistency OK)
+- Circuit breakers for external services
+&quot;
+</code></pre>
+<h3 id="implementation-thinking-building">Implementation Thinking (Building)</h3>
+<p><strong>Focus: Code, algorithms, specific technologies</strong></p>
+<pre><code>Questions to answer:
+- What framework to use?
+- How to structure code?
+- What libraries to use?
+- How to handle edge cases?
+- How to test?
+- How to deploy?
+
+Output:
+- Working code
+- Unit tests
+- Integration tests
+- Deployment scripts
+- Documentation
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-python"># Implementation details
+
+# Short code generation algorithm
+def generate_short_code(url_id):
+    &quot;&quot;&quot;Convert numeric ID to base62 string&quot;&quot;&quot;
+    BASE62 = &quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;
+    
+    if url_id == 0:
+        return BASE62[0]
+    
+    result = []
+    while url_id &gt; 0:
+        result.append(BASE62[url_id % 62])
+        url_id //= 62
+    
+    return &#x27;&#x27;.join(reversed(result))
+
+# Collision handling
+def create_short_url(long_url, max_retries=3):
+    for attempt in range(max_retries):
+        url_id = get_next_id()
+        short_code = generate_short_code(url_id)
+        
+        try:
+            db.insert(short_code, long_url)
+            return short_code
+        except UniqueViolation:
+            # Collision, retry
+            continue
+    
+    raise Exception(&quot;Failed to generate unique short code&quot;)
+</code></pre>
+<h3 id="balance-both">Balance Both</h3>
+<p><strong>Good engineers balance design và implementation thinking:</strong></p>
+<pre><code>Design phase:
+- Think high-level
+- Focus on architecture
+- Justify trade-offs
+- Don&#x27;t get stuck in implementation details
+
+Implementation phase:
+- Think low-level
+- Focus on code quality
+- Handle edge cases
+- Maintain architecture vision
+
+Don&#x27;t mix phases:
+Design interview: &quot;I&#x27;ll use FastAPI with async/await...&quot;
+   → Too implementation-focused
+
+Coding: &quot;Let me redesign the entire architecture...&quot;
+   → Wrong time for that
+
+Design: Focus on what and why
+Implement: Focus on how
+</code></pre>
+<h2 id="the-complete-framework-putting-it-all-together">The Complete Framework: Putting It All Together</h2>
+<p><strong>Khi approach một system design problem:</strong></p>
+<h3 id="step-by-step-framework">Step-by-Step Framework</h3>
+<pre><code>1. CLARIFY (5 minutes)
+   ├─ Functional requirements
+   ├─ Non-functional requirements
+   ├─ Scale (users, traffic, data)
+   └─ Constraints (budget, timeline, team)
+
+2. ESTIMATE (5 minutes)
+   ├─ Back-of-envelope calculations
+   ├─ Read/write ratio
+   ├─ Storage needs
+   └─ Bandwidth needs
+
+3. HIGH-LEVEL DESIGN (10 minutes)
+   ├─ Draw main components
+   ├─ Show data flow
+   ├─ Identify critical path
+   └─ Call out key decisions
+
+4. DEEP DIVE (15 minutes)
+   ├─ API design
+   ├─ Data model
+   ├─ Algorithm details
+   ├─ Caching strategy
+   └─ Scaling approach
+
+5. TRADE-OFFS (10 minutes)
+   ├─ Discuss alternatives
+   ├─ Justify choices
+   ├─ Mention trade-offs
+   └─ Address edge cases
+
+6. WRAP UP (5 minutes)
+   ├─ Bottlenecks &amp; solutions
+   ├─ Failure scenarios
+   ├─ Monitoring strategy
+   └─ Future improvements
+</code></pre>
+<h3 id="mental-checklist">Mental Checklist</h3>
+<p><strong>Trước khi finalize design, verify:</strong></p>
+<pre><code>☑ Requirements clear?
+☑ Constraints identified?
+☑ Scale calculated?
+☑ Read/write ratio known?
+☑ Bottlenecks identified?
+☑ Failure modes considered?
+☑ Trade-offs justified?
+☑ Scalability path clear?
+☑ Monitoring plan exists?
+☑ Cost estimated?
+</code></pre>
+<h3 id="common-mistakes-to-avoid">Common Mistakes to Avoid</h3>
+<pre><code>Jump to solution immediately
+   → Clarify requirements first
+
+Over-engineer for unknown future
+   → Design for 2x scale, not 100x
+
+Ignore constraints
+   → Budget, timeline, team affect design
+
+Copy Big Tech architecture
+   → Their scale ≠ your scale
+
+Neglect failure scenarios
+   → System will fail, plan for it
+
+Ignore monitoring
+   → Can&#x27;t improve what you don&#x27;t measure
+
+Perfect vs shipped
+   → MVP first, iterate later
+</code></pre>
+<h2 id="real-world-application">Real-World Application</h2>
+<p><strong>Example: Design Instagram-like app</strong></p>
+<h3 id="apply-framework">Apply Framework</h3>
+<p><strong>1. Clarify Requirements:</strong></p>
+<pre><code>Functional:
+- Upload photos
+- Follow users
+- View feed (photos from following)
+- Like, comment
+- Search users
+
+Non-functional:
+- 100M users
+- 50M daily active users
+- 10M photos uploaded/day
+- Read-heavy (view:upload = 100:1)
+- Latency: Feed &lt; 500ms
+- Availability: 99.9%
+</code></pre>
+<p><strong>2. Estimate:</strong></p>
+<pre><code>Storage:
+- 10M photos/day × 2MB average = 20TB/day
+- 20TB × 365 = 7.3PB/year
+→ Need object storage (S3)
+
+Traffic:
+- Uploads: 10M/day / 86400s ≈ 115 uploads/s
+- Views: 115 × 100 = 11,500 views/s
+→ Read-heavy, caching critical
+
+Database:
+- 100M users × 500 bytes = 50GB (users table)
+- 3.6B photos/year × 200 bytes metadata = 720GB/year
+→ Manageable với SQL, shard after 2-3 years
+</code></pre>
+<p><strong>3. High-Level Design:</strong></p>
+<pre><code>[Mobile/Web] 
+    ↓
+[CDN] (images)
+    ↓
+[Load Balancer]
+    ↓
+[API Servers] (stateless)
+    ↓
+[Redis Cache] ← Feed timelines
+    ↓
+[PostgreSQL] ← Metadata
+    ↓
+[S3] ← Photo storage
+</code></pre>
+<p><strong>4. Key Decisions:</strong></p>
+<pre><code>Photo storage: S3
+- Durable, scalable
+- CDN integration
+- Trade-off: Cost vs reliability
+
+Feed generation: Fanout on write
+- Pre-compute feeds
+- Fast reads (&lt; 50ms from cache)
+- Trade-off: Write amplification
+
+Caching: Redis timelines
+- Store 1000 recent posts per user
+- TTL: No expiry (explicit invalidation)
+- Trade-off: Memory cost vs read performance
+
+Database: PostgreSQL with sharding
+- Strong consistency for critical data
+- Shard by user_id after 2 years
+- Trade-off: Complexity vs scale
+</code></pre>
+<p><strong>5. Trade-offs Discussed:</strong></p>
+<pre><code>Fanout on write vs read:
+- Chose write because read-heavy
+- Celebrity problem: Switch to pull for &gt; 10K followers
+
+SQL vs NoSQL:
+- Chose SQL for consistency, relationships
+- Can add read replicas, then shard
+
+Sync vs async:
+- Photo upload: Sync (user waits)
+- Feed fanout: Async (eventual consistency OK)
+</code></pre>
+<p><strong>6. Wrap Up:</strong></p>
+<pre><code>Bottlenecks:
+- Feed generation (solved by async fanout)
+- Photo delivery (solved by CDN)
+- Database reads (solved by caching)
+
+Monitoring:
+- Upload success rate
+- Feed load latency
+- Cache hit rate
+- Fanout lag
+
+Future improvements:
+- ML ranking for feeds
+- Stories feature
+- Live video
+- Recommendations
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>System design thinking ≠ Knowing patterns</strong></p>
+<pre><code>Patterns are tools.
+Thinking is knowing when to use which tool.
+</code></pre>
+<p><strong>Mental shift:</strong></p>
+<pre><code>From: &quot;What tech to use?&quot;
+To:   &quot;What problem to solve?&quot;
+
+From: &quot;Best practices&quot;
+To:   &quot;Best fit for context&quot;
+
+From: &quot;Copy Big Tech&quot;
+To:   &quot;Design for my scale&quot;
+</code></pre>
+<p><strong>Framework:</strong></p>
+<pre><code>1. Requirements first (always)
+2. Constraints shape design
+3. Calculate scale (math matters)
+4. Top-down for planning
+5. Design for 2x, not 100x
+6. Justify every decision
+7. Trade-offs over perfection
+</code></pre>
+<p><strong>The ultimate test:</strong></p>
+<pre><code>Good design thinking = Có thể explain &quot;WHY&quot; cho mọi decision
+
+If you can&#x27;t explain why:
+- Why this database?
+- Why this caching strategy?
+- Why this architecture?
+
+→ You don&#x27;t understand your own design
+→ Go back and think deeper
+</code></pre>
+<p><strong>Remember:</strong></p>
+<pre><code>Junior: Knows patterns
+Mid: Applies patterns
+Senior: Knows when NOT to apply patterns
+
+System design mastery = Thinking, not memorization
+</code></pre>
+<p>Bạn đã học đủ patterns qua 5 phases. Phase 6 về refining thinking process.</p>
+<p><strong>Practice thinking framework, không chỉ memorize patterns.</strong></p>
+<p>Đó là điều phân biệt Senior Engineer với Junior Engineer.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-6/lesson/lesson-2-snake-framework">SNAKE Framework - Methodology Để Ace System Design Interview<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-6\",\"lesson\",\"lesson-1-system-design-thinking-framework\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-6\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-1-system-design-thinking-framework\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 6 — System Design Mastery\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Master system design thinking framework: requirement-driven design, constraint-first thinking, top-down vs bottom-up approaches. Học cách approach problems như Senior Architect thay vì chỉ apply patterns.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-system-design-thinking-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-1-system-design-thinking-framework\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\"}]]}]}],[\"$\",\"li\",\"lesson-2-snake-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-2-snake-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"SNAKE Framework - Methodology Để Ace System Design Interview\"}]]}]}],[\"$\",\"li\",\"lesson-3-trade-offs-and-architecture-decision-making\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\"}]]}]}],[\"$\",\"li\",\"lesson-4-real-interview-strategy\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-4-real-interview-strategy\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\"}]]}]}],[\"$\",\"li\",\"lesson-5-advanced-architecture-topics\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"}]]}]}],[\"$\",\"li\",\"lesson-6-architect-mindset-production-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}]]}]]}],\"$L26\"]}],\"$L27\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\"}]\n26:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"hover:text-ink\",\"children\":\"Phase 6 — System Design Mastery\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Master system design thinking framework: requirement-driven design, constraint-first thinking, top-down vs bottom-up approaches. Học cách approach problems như Senior Architect thay vì chỉ apply patterns.\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-6/lesson/lesson-1-system-design-thinking-framework\",\"title\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\",\"description\":\"Master system design thinking framework: requirement-driven design, constraint-first thinking, top-down vs bottom-up approaches. Học cách approach problems như Senior Architect thay vì chỉ apply patterns.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\",\"children\":\"$L29\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[null,[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-2-snake-framework\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"SNAKE Framework - Methodology Để Ace System Design Interview\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"system-design-thinking-framework-từ-biết-pattern-đến-biết-tư-duy\",\"children\":\"System Design Thinking Framework: Từ Biết Pattern Đến Biết Tư Duy\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Chào mừng đến Phase 6 - System Design Mastery.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Bạn đã đi qua 5 phases, học về components, distributed systems, scalability patterns, real-world architectures. Bạn biết rất nhiều patterns.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Nhưng có một sự thật tôi phải nói thẳng:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Biết patterns không đồng nghĩa với giỏi system design.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi từng interview một candidate rất giỏi. Anh ta thuộc lòng tất cả patterns: CAP theorem, consistent hashing, CQRS, event sourcing...\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi hỏi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Thiết kế URL shortener.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Anh ta ngay lập tức: \",[\"$\",\"em\",null,{\"children\":\"\\\"Em sẽ dùng NoSQL, Redis cache, CDN, microservices, event-driven architecture...\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Tại sao?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Anh ta: \",[\"$\",\"em\",null,{\"children\":\"\\\"Vì... đó là best practices ạ?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Anh ta fail interview.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Không phải vì thiếu kiến thức. Mà vì \",[\"$\",\"strong\",null,{\"children\":\"thiếu system design thinking\"}],\".\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Lesson này sẽ dạy bạn cái quan trọng nhất: \",[\"$\",\"strong\",null,{\"children\":\"Cách tư duy khi approach một problem.\"}]]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"system-design-thinking-là-gì\",\"children\":\"System Design Thinking Là Gì?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"định-nghĩa\",\"children\":\"Định Nghĩa\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"System design thinking = Mental framework để approach và solve architecture problems\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Không phải là:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Thuộc patterns\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Biết technologies\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Copy solutions\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Mà là:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Understand problems deeply\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Reason từ first principles\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Make trade-off decisions\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Justify mọi choice\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"ví-dụ-so-sánh\",\"children\":\"Ví Dụ So Sánh\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pattern thinking (Bad):\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem: Build social network\\nApproach:\\n1. Social network = need feed\\n2. Feed = need fanout\\n3. Use fanout on write pattern\\n4. Done!\\n\\nResult: Over-engineered cho startup với 100 users\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"System design thinking (Good):\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem: Build social network\\n\\nQuestions:\\n1. Scale? (100 users hay 100M users?)\\n2. Traffic pattern? (read-heavy hay write-heavy?)\\n3. Consistency requirements? (real-time hay eventual OK?)\\n4. Team size? (2 devs hay 50 devs?)\\n5. Timeline? (MVP trong 1 tháng hay 1 năm?)\\n6. Budget? (limited hay unlimited?)\\n\\nVới 100 users, 2 devs, 1 tháng timeline:\\n→ Simple SQL database\\n→ Query followees' posts on demand\\n→ Basic chronological sort\\n→ No caching needed yet\\n\\nScale later when proven needed.\\n\\nResult: Shipped on time, iterated fast\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Thấy sự khác biệt chưa?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Pattern thinking = Apply solutions\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"System design thinking = \",[\"$\",\"strong\",null,{\"children\":\"Understand problem → Choose appropriate solution\"}]]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"the-mental-shift-từ-what-tech-sang-what-problem\",\"children\":\"The Mental Shift: Từ \\\"What Tech\\\" Sang \\\"What Problem\\\"\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"old-mindset-what-tech-to-use\",\"children\":\"Old Mindset (What Tech to Use)\"}],\"\\n\",\"$L2a\",\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\"]}]\n"])</script><script>self.__next_f.push([1,"af:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n2a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Senior: \\\"Thiết kế notification system\\\"\\n\\nJunior thinks:\\n- \\\"Dùng tech gì nhỉ?\\\"\\n- \\\"Kafka hay RabbitMQ?\\\"\\n- \\\"WebSocket hay Server-Sent Events?\\\"\\n- \\\"PostgreSQL hay MongoDB?\\\"\\n\\n→ Technology-first thinking\\n→ Solution shopping\\n\"}]}]\n2b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Vấn đề:\"}]}]\n2c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Chưa hiểu problem\\nKhông biết constraints\\nKhông justify trade-offs\\nCó thể over-engineer\\nCó thể under-engineer\\n\"}]}]\n2d:[\"$\",\"h3\",null,{\"id\":\"new-mindset-what-problem-to-solve\",\"children\":\"New Mindset (What Problem to Solve)\"}]\n2e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Senior: \\\"Thiết kế notification system\\\"\\n\\nSenior thinks:\\n- \\\"Problem gì đang giải quyết?\\\"\\n- \\\"Scale bao nhiêu? (1K hay 1B notifications/day?)\\\"\\n- \\\"Latency requirement? (real-time hay eventual OK?)\\\"\\n- \\\"Delivery guarantee? (at-least-once hay exactly-once?)\\\"\\n- \\\"Types of notifications? (push, email, SMS?)\\\"\\n- \\\"User preferences? (mute, frequency?)\\\"\\n\\n→ Problem-first thinking\\n→ Requirement-driven design\\n\"}]}]\n2f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Framework:\"}]}]\n30:[\"$\",\"$Laf\",null,{\"chart\":\"graph TB\\n    START[System Design Problem]\\n    \\n    START --\u003e Q1[Clarify Requirements]\\n    Q1 --\u003e Q2[Identify Constraints]\\n    Q2 --\u003e Q3[List Trade-offs]\\n    Q3 --\u003e Q4[Choose Approach]\\n    Q4 --\u003e Q5[Justify Decisions]\\n    Q5 --\u003e Q6[Iterate]\\n    \\n    style START fill:#ffd43b\\n    style Q4 fill:#51cf66\\n    style Q5 fill:#ff6b6b\"}]\n31:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"System design thinking process: Requirements → Constraints → Trade-offs → Decision → Justification\"}]}]\n32:[\"$\",\"h2\",null,{\"id\":\"requirement-driven-design\",\"children\":\"Requirement-Driven Design\"}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bắt đầu mọi design bằng requirements. Always.\"}]}]\n34:[\"$\",\"h3\",null,{\"id\":\"functional-requirements\",\"children\":\"Functional Requirements\"}]\n35:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Định nghĩa:\"}],\" System phải làm gì?\"]}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Example: URL Shortener\\n\\nFunctional Requirements:\\n1. Shorten URL\\n   - Input: long URL\\n   - Output: short URL\\n   - Example: https://example.com/long-path → ex.co/abc123\\n\\n2. Redirect\\n   - Input: short URL\\n   - Output: redirect to original URL\\n   - Must work consistently\\n\\n3. Custom aliases (optional)\\n   - User can choose short code\\n   - Example: ex.co/my-link\\n\\n4. Analytics (optional)\\n   - Track clicks\\n   - Show statistics\\n\\n5. Expiration (optional)\\n   - URL expires after X days\\n   - Auto-cleanup\\n\"}]}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Kỹ thuật clarify:\"}]}]\n38:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Interviewer: \\\"Design URL shortener\\\"\\n\\nYou: \\\"Let me clarify functional requirements:\\n1. Do we support custom short URLs?\\n2. Do we need analytics (click tracking)?\\n3. Do URLs expire?\\n4. Do we need user accounts?\\n5. Can users edit/delete their URLs?\\n6. Do we need API rate limiting?\\\"\\n\\nEach answer changes design significantly!\\n\"}]}]\n39:[\"$\",\"h3\",null,{\"id\":\"non-functional-requirements-critical\",\"children\":\"Non-Functional Requirements (Critical!)\"}]\n3a:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Định nghĩa:\"}],\" System phải perform như thế nào?\"]}]\n3b"])</script><script>self.__next_f.push([1,":[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Non-Functional Requirements\\n\\n1. Scale\\n   - Users: 1M, 10M, hay 100M?\\n   - Requests: 100 req/s hay 100K req/s?\\n   - Data: 1GB hay 10TB?\\n   - Growth rate: 2x/year hay 10x/year?\\n\\n2. Performance\\n   - Latency: \u003c 100ms? \u003c 1s?\\n   - Throughput: 1K req/s? 1M req/s?\\n   - Availability: 99%? 99.99%?\\n\\n3. Consistency\\n   - Strong consistency needed?\\n   - Eventual consistency OK?\\n   - Tolerance for stale data?\\n\\n4. Durability\\n   - Data loss acceptable? (NO for banking, maybe OK for analytics)\\n   - Backup requirements?\\n   - Recovery time objective (RTO)?\\n\\n5. Security\\n   - Authentication needed?\\n   - Authorization model?\\n   - Data encryption?\\n   - Rate limiting?\\n\\n6. Cost\\n   - Budget constraints?\\n   - Optimize for cost vs performance?\\n\"}]}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Back-of-envelope calculations:\"}]}]\n3d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Example: URL Shortener\\n\\nGiven:\\n- 100M URLs shortened per month\\n- 10B redirects per month\\n- 5 years retention\\n\\nCalculate:\\n\\n# Write traffic\\nwrites_per_second = 100M / (30 * 24 * 3600)\\n                  ≈ 40 writes/second\\n\\n# Read traffic  \\nreads_per_second = 10B / (30 * 24 * 3600)\\n                 ≈ 4,000 reads/second\\n\\n# Read:Write ratio = 100:1\\n→ Read-heavy system → Caching critical\\n\\n# Storage\\nurls_total = 100M/month × 12 months × 5 years\\n           = 6 billion URLs\\n\\nstorage_per_url = 500 bytes (URL + metadata)\\ntotal_storage = 6B × 500 bytes\\n              = 3TB\\n\\n→ Single database can handle (scale vertically first)\\n\\n# Bandwidth\\nwrite_bandwidth = 40 req/s × 500 bytes\\n                = 20 KB/s (negligible)\\n\\nread_bandwidth = 4,000 req/s × 500 bytes  \\n               = 2 MB/s (manageable)\\n\\n→ Network not bottleneck\\n\\nConclusion:\\n- Database: Start with single PostgreSQL\\n- Caching: Critical (Redis for hot URLs)\\n- CDN: Not needed (no static assets)\\n- Sharding: Not needed yet (3TB manageable)\\n\"}]}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why calculations matter:\"}]}]\n3f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Without calculations:\\n\\\"Need to handle millions of users!\\\"\\n→ Over-engineer với microservices, Kafka, sharding\\n\\nWith calculations:\\n\\\"40 writes/s, 4K reads/s, 3TB data\\\"\\n→ Single server + Redis cache is enough\\n→ Ship in 2 weeks, not 6 months\\n\"}]}]\n40:[\"$\",\"h2\",null,{\"id\":\"constraint-first-thinking\",\"children\":\"Constraint-First Thinking\"}]\n41:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Constraints shape design. Identify constraints TRƯỚC KHI design.\"}]}]\n42:[\"$\",\"h3\",null,{\"id\":\"types-of-constraints\",\"children\":\"Types of Constraints\"}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Technical Constraints\"}]}]\n44:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Database constraints\\n- Single database max: ~10K writes/second\\n- PostgreSQL max connections: ~500\\n- Redis max memory: Depends on instance (16GB typical)\\n- Network latency: Speed of light (can't beat physics)\\n\\n# CAP theorem constraint\\n- Can't have perfect Consistency + Availability với Partition tolerance\\n- Must choose trade-off\\n\\n# Eventual consistency constraint\\n- Distributed caches → replication lag\\n- Async processing → delay\\n\"}]}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Business Constraints\"}]}]\n46:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Timeline\\n- MVP in 1 month → Simple architecture\\n- No deadline pressure → Can optimize\\n\\n# Budget\\n- Limited ($1000/month) → Optimize for cost\\n- Unlimited → Optimize for performance\\n\\n# Team\\n- 2 developers → Choose simple stack\\n- 20 developers → Can handle complexity\\n\\n# Compliance\\n- GDPR → Data residency requirements\\n- PCI DSS → Strict security requirements\\n- HIPAA → Healthcare data protection\\n\"}]}]\n47:[\"$\",\""])</script><script>self.__next_f.push([1,"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Scale Constraints\"}]}]\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Current scale\\n- 1K users → Monolith OK\\n- 1M users → Need horizontal scaling\\n- 100M users → Need distributed architecture\\n\\n# Growth rate\\n- Stable growth (2x/year) → Scale gradually\\n- Hypergrowth (10x/year) → Plan for scale early\\n\\n# Traffic pattern\\n- Uniform → Simple load balancing\\n- Spiky (Black Friday) → Need burst capacity\\n- Predictable → Can optimize\\n- Unpredictable → Need flexibility\\n\"}]}]\n49:[\"$\",\"h3\",null,{\"id\":\"constraint-analysis-framework\",\"children\":\"Constraint Analysis Framework\"}]\nb0:T6ff,"])</script><script>self.__next_f.push([1,"def analyze_constraints(problem):\n    \"\"\"Framework để identify constraints\"\"\"\n    \n    constraints = {\n        # Hard constraints (cannot violate)\n        'hard': [\n            'Budget: $5000/month maximum',\n            'Timeline: 3 months to launch',\n            'Availability: Must be 99.9%',\n            'Compliance: GDPR required'\n        ],\n        \n        # Soft constraints (prefer but flexible)\n        'soft': [\n            'Team familiar with Python',\n            'Prefer open-source solutions',\n            'Easy to maintain'\n        ],\n        \n        # Technical limits\n        'technical': [\n            'Database writes: \u003c 1000/second',\n            'Read latency: \u003c 200ms',\n            'Network: Public internet (not dedicated)'\n        ],\n        \n        # Scale limits\n        'scale': [\n            'Current: 10K users',\n            'Target: 100K users in 1 year',\n            'Data: Currently 100GB, growing 10GB/month'\n        ]\n    }\n    \n    return constraints\n\n# Design decisions từ constraints\ndef make_decisions(constraints):\n    \"\"\"Derive design từ constraints\"\"\"\n    \n    decisions = []\n    \n    # Budget constraint → Choose managed services\n    if constraints['hard']['budget'] \u003c 10000:\n        decisions.append('Use managed services (RDS, ElastiCache)')\n        decisions.append('Avoid self-managed Kubernetes')\n    \n    # Timeline constraint → Choose familiar tech\n    if constraints['hard']['timeline'] \u003c 6_months:\n        decisions.append('Use team\\'s existing stack')\n        decisions.append('Avoid learning new paradigms')\n    \n    # Scale constraint → Start simple\n    if constraints['scale']['current'] \u003c 100K:\n        decisions.append('Monolith architecture')\n        decisions.append('Vertical scaling first')\n    \n    return decisions\n"])</script><script>self.__next_f.push([1,"4a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$b0\"}]}]\n4b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real-world example:\"}]}]\n4c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Startup scenario:\\n- Budget: $2000/month\\n- Team: 3 developers (Python)\\n- Timeline: 2 months to MVP\\n- Scale: Expect 5K users initially\\n\\nConstraints dictate:\\nDon't use: Kubernetes, Kafka, Cassandra\\n   → Too expensive, complex, overkill\\n\\nDo use:\\n   - Heroku or AWS Elastic Beanstalk (managed)\\n   - PostgreSQL (familiar, powerful enough)\\n   - Redis (simple caching)\\n   - Monolith (fast development)\\n\\nDecision justified by constraints, not by \\\"best practices\\\"\\n\"}]}]\n4d:[\"$\",\"h2\",null,{\"id\":\"top-down-vs-bottom-up-design\",\"children\":\"Top-Down vs Bottom-Up Design\"}]\n4e:[\"$\",\"p\",null,{\"children\":\"Có 2 approaches để design systems. Biết khi nào dùng cái nào.\"}]\n4f:[\"$\",\"h3\",null,{\"id\":\"top-down-design-recommended-for-interviews\",\"children\":\"Top-Down Design (Recommended for Interviews)\"}]\n50:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Approach: Start từ high-level, drill down details\"}]}]\n51:[\"$\",\"$Laf\",null,{\"chart\":\"graph TB\\n    A[High-Level Architecture] --\u003e B[Core Components]\\n    B --\u003e C[Component Interactions]\\n    C --\u003e D[Data Flow]\\n    D --\u003e E[API Design]\\n    E --\u003e F[Data Models]\\n    F --\u003e G[Deep Dive Specific Parts]\\n    \\n    style A fill:#ffd43b\\n    style G fill:#51cf66\"}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Top-down: Từ tổng quan đến chi tiết\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Process:\"}]}]\nb1:T43f,# Step 1: High-level boxes\n\"\"\"\n[Client] → [Load Balancer] → [API Servers] → [Database]\n                                    ↓\n                                [Cache]\n\"\"\"\n\n# Step 2: Define components\n\"\"\"\nLoad Balancer: Nginx\nAPI Servers: Python/FastAPI (stateless)\nCache: Redis  \nDatabase: PostgreSQL\n\"\"\"\n\n# Step 3: Detail interactions\n\"\"\"\nClient:\n- HTTPS requests\n- JWT authentication\n- Rate limited\n\nAPI Servers:\n- RESTful endpoints\n- Horizontal scaling\n- Health checks\n\nCache:\n- Store hot data\n- TTL: 5 minutes\n- Cache-aside pattern\n\"\"\"\n\n# Step 4: API design\n\"\"\"\nPOST /shorten\nBody: {\"url\": \"https://...\"}\nResponse: {\"short_url\": \"ex.co/abc123\"}\n\nGET /{shortCode}\nResponse: 302 Redirect\n\"\"\"\n\n# Step 5: Data models\n\"\"\"\nCREATE TABLE urls (\n    id BIGSERIAL PRIMARY KEY,\n    short_code VARCHAR(10) UNIQUE,\n    original_url TEXT,\n    created_at TIMESTAMP,\n    expires_at TIMESTAMP\n);\n\"\"\"\n\n# Step 6: Deep dive critical parts\n\"\"\"\nShort code generation:\n- Base62 encoding (a-z, A-Z, 0-9)\n- 7 characters = 62^7 = 3.5 trillion combinations\n- Collision handling: retry với new code\n\"\"\"\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$b1\"}]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ưu điểm:\"}]}]\n56:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Comprehensive view early\\nSpot architecture issues fast\\nEasy to communicate\\nGood for interviews (shows thinking process)\\nCan adjust before deep implementation\\n\"}]}]\n57:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhược điểm:\"}]}]\n58:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Có thể miss details\\nAssumptions có thể sai\\nHarder nếu chưa có experience\\n\"}]}]\n59:[\"$\",\"h3\",null,{\"id\":\"bottom-up-design-good-for-implementation\",\"children\":\"Bottom-Up Design (Good for Implementation)\"}]\n5a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Approach: Start từ core problem, build up\"}]}]\n5b:[\"$\",\"$Laf\",null,{\"chart\":\"graph BT\\n    G[Data Model] --\u003e F[Core Logic]\\n    F --\u003e E[API Layer]\\n    E --\u003e D[Caching Layer]\\n    D --\u003e C[Load Balancing]\\n    C --\u003e B[Monitoring]\\n    B --\u003e A[Complete System]\\n    \\n    style G fill:#ffd43b\\n    style A fill:#51cf66\"}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Bottom-up: Từ foundation build lên\"}]}]\n5d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Process:\"}]}]\n5e:[\""])</script><script>self.__next_f.push([1,"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Step 1: Core data model\\n\\\"\\\"\\\"\\nWhat data do we store?\\n- URL mapping\\n- Metadata\\n- Analytics\\n\\nCREATE TABLE urls (...);\\n\\\"\\\"\\\"\\n\\n# Step 2: Core logic\\n\\\"\\\"\\\"\\nHow do we generate short codes?\\n- Base62 encoding\\n- Collision handling\\n- Validation\\n\\\"\\\"\\\"\\n\\n# Step 3: API layer\\n\\\"\\\"\\\"\\nWhat endpoints do we need?\\nPOST /shorten\\nGET /{code}\\n\\\"\\\"\\\"\\n\\n# Step 4: Caching\\n\\\"\\\"\\\"\\nCache hot URLs\\nRedis sorted set by access frequency\\n\\\"\\\"\\\"\\n\\n# Step 5: Scaling\\n\\\"\\\"\\\"\\nAdd load balancer\\nMultiple API servers\\nDatabase read replicas\\n\\\"\\\"\\\"\\n\\n# Step 6: Monitoring\\n\\\"\\\"\\\"\\nMetrics: latency, error rate\\nAlerts: high latency, failures\\nDashboards\\n\\\"\\\"\\\"\\n\"}]}]\n5f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ưu điểm:\"}]}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Solid foundation\\nLess rework\\nDetails không bị miss\\nGood khi implementing\\n\"}]}]\n61:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhược điểm:\"}]}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Không thấy big picture early\\nCó thể over-optimize details\\nHarder to pivot\\nLess effective trong interviews\\n\"}]}]\n63:[\"$\",\"h3\",null,{\"id\":\"khi-nào-dùng-approach-nào\",\"children\":\"Khi Nào Dùng Approach Nào?\"}]\n64:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Top-Down:\\n✓ System design interviews\\n✓ Architecture planning meetings\\n✓ New greenfield projects\\n✓ Communication với stakeholders\\n✓ Khi cần quick proof of concept\\n\\nBottom-Up:\\n✓ Implementation phase\\n✓ Refactoring existing systems\\n✓ When details matter (security, compliance)\\n✓ Complex algorithmic problems\\n✓ Database schema design\\n\"}]}]\n65:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Hybrid approach (Best in practice):\"}]}]\n66:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Top-down: Draw high-level architecture\\n2. Identify critical components\\n3. Bottom-up: Detail critical parts\\n4. Top-down: Validate fits together\\n5. Iterate\\n\"}]}]\n67:[\"$\",\"h2\",null,{\"id\":\"scalability-mindset\",\"children\":\"Scalability Mindset\"}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scalability thinking ≠ \\\"Make it handle millions\\\"\"}]}]\n69:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scalability thinking = Design để có thể scale khi cần, without rewrite\"}]}]\n6a:[\"$\",\"h3\",null,{\"id\":\"the-scalability-spectrum\",\"children\":\"The Scalability Spectrum\"}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Over-engineered ←→ Right-sized ←→ Under-engineered\\n\\n[Microservices]   [Modular     [Spaghetti\\n[Kubernetes]      Monolith]    code]\\n[Kafka]           [PostgreSQL] [No DB\\n[Sharding]        [Redis]      indexes]\\n\\nLeft: Premature optimization\\nMiddle: Goldilocks zone ✓\\nRight: Technical debt\\n\"}]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Find the Goldilocks zone:\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def choose_architecture(current_scale, target_scale, timeline):\\n    \\\"\\\"\\\"Choose architecture dựa trên scale\\\"\\\"\\\"\\n    \\n    if current_scale \u003c 10_000 and target_scale \u003c 100_000:\\n        return {\\n            'architecture': 'Monolith',\\n            'database': 'Single PostgreSQL',\\n            'cache': 'Redis (optional)',\\n            'reasoning': 'Simple, ship fast, iterate'\\n        }\\n    \\n    elif current_scale \u003c 1_000_000 and target_scale \u003c 10_000_000:\\n        return {\\n            'architecture': 'Modular Monolith',\\n            'database': 'PostgreSQL with read replicas',\\n            'cache': 'Redis cluster',\\n            'reasoning': 'Balance simplicity with scalability'\\n        }\\n    \\n    else:  # \u003e 10M users\\n        return {\\n            'architecture': 'Microservices',\\n            'database': 'Sharded PostgreSQL or NoSQL',\\n            'cache': 'Distributed Redis',\\n            'messaging': 'Kafka for async',\\n            'reasoning': 'Need independ"])</script><script>self.__next_f.push([1,"ent scaling, team autonomy'\\n        }\\n\"}]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"design-for-scalability-without-over-engineering\",\"children\":\"Design for Scalability Without Over-Engineering\"}]\n6f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Principles:\"}]}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Stateless application servers\"}]}]\n71:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Bad: Stateful\\nsessions = {}  # In-memory state\\n\\ndef handle_request(user_id):\\n    session = sessions[user_id]  # Tied to this server\\n    # ...\\n\\n# Good: Stateless\\ndef handle_request(user_id, session_token):\\n    session = redis.get(f\\\"session:{session_token}\\\")  # Any server can handle\\n    # ...\\n\"}]}]\n72:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Database indexes from day 1\"}]}]\n73:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Don't wait until slow to add indexes\\n\\n-- Add early\\nCREATE INDEX idx_users_email ON users(email);\\nCREATE INDEX idx_posts_created_at ON posts(created_at);\\nCREATE INDEX idx_posts_user_id ON posts(user_id);\\n\\n-- Small cost now, huge benefit later\\n\"}]}]\n74:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Monitoring from day 1\"}]}]\n75:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Track metrics early\\nmetrics.increment('api.requests')\\nmetrics.timing('api.latency', duration)\\nmetrics.gauge('active_users', count)\\n\\n# When scale issues hit, you have data\\n# Without metrics = flying blind\\n\"}]}]\n76:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Async where appropriate\"}]}]\n77:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Long tasks → Async\\n\\n# Synchronous\\ndef create_user(email):\\n    user = db.create(email)\\n    send_welcome_email(email)  # Block 5 seconds\\n    generate_thumbnail(user)    # Block 10 seconds\\n    return user  # User waits 15 seconds\\n\\n# Asynchronous\\ndef create_user(email):\\n    user = db.create(email)\\n    queue.publish('user.created', user.id)  # Fire and forget\\n    return user  # User waits 100ms\\n\\n# Workers handle async\\n@worker.task\\ndef on_user_created(user_id):\\n    send_welcome_email(user_id)\\n    generate_thumbnail(user_id)\\n\"}]}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Modular code structure\"}]}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Even trong monolith, structure well\\n\\n# Bad: Everything in one file\\n# app.py (5000 lines)\\n\\n# Good: Clear boundaries\\n/services\\n  /user_service.py\\n  /post_service.py\\n  /notification_service.py\\n/models\\n/api\\n\\n# Khi cần split to microservices, boundaries already clear\\n\"}]}]\n7a:[\"$\",\"h2\",null,{\"id\":\"design-vs-implementation-thinking\",\"children\":\"Design vs Implementation Thinking\"}]\n7b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Critical distinction: Designing ≠ Implementing\"}]}]\n7c:[\"$\",\"h3\",null,{\"id\":\"design-thinking-interviews-planning\",\"children\":\"Design Thinking (Interviews, Planning)\"}]\n7d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Focus: Architecture decisions, trade-offs, justification\"}]}]\n7e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Questions to answer:\\n- What components do we need?\\n- How do they interact?\\n- What are the bottlenecks?\\n- What can fail and how to handle?\\n- What are trade-offs of each choice?\\n- How does it scale?\\n\\nOutput:\\n- Architecture diagram\\n- Component responsibilities\\n- API contracts\\n- Data models (high-level)\\n- Trade-off analysis\\n\"}]}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example dialogue:\"}]}]\n80:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Interviewer: \\\"Design Twitter\\\"\\n\\nYou (Design thinking):\\n\\\"Let me start with requirements...\\n- 500M daily users\\n- 200M tweets per day\\n- Read-heavy (95% reads)\\n\\nArchitecture:\\n- Fanout service for tweet distribution\\n- Timeline cache in Redis\\n- CDN for media\\n-"])</script><script>self.__next_f.push([1," Sharded PostgreSQL for persistence\\n\\nKey trade-off: Fanout on write vs fanout on read\\n- For normal users: Fanout on write (pre-compute timelines)\\n- For celebrities: Fanout on read (too many followers)\\n- Hybrid approach balances write and read performance\\n\\nBottlenecks:\\n- Timeline generation during fanout\\n- Media delivery\\n- Hot celebrity problem\\n\\nFailure handling:\\n- Queue for fanout (if service down, retry)\\n- Async processing (eventual consistency OK)\\n- Circuit breakers for external services\\n\\\"\\n\"}]}]\n81:[\"$\",\"h3\",null,{\"id\":\"implementation-thinking-building\",\"children\":\"Implementation Thinking (Building)\"}]\n82:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Focus: Code, algorithms, specific technologies\"}]}]\n83:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Questions to answer:\\n- What framework to use?\\n- How to structure code?\\n- What libraries to use?\\n- How to handle edge cases?\\n- How to test?\\n- How to deploy?\\n\\nOutput:\\n- Working code\\n- Unit tests\\n- Integration tests\\n- Deployment scripts\\n- Documentation\\n\"}]}]\n84:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\n85:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Implementation details\\n\\n# Short code generation algorithm\\ndef generate_short_code(url_id):\\n    \\\"\\\"\\\"Convert numeric ID to base62 string\\\"\\\"\\\"\\n    BASE62 = \\\"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\\\"\\n    \\n    if url_id == 0:\\n        return BASE62[0]\\n    \\n    result = []\\n    while url_id \u003e 0:\\n        result.append(BASE62[url_id % 62])\\n        url_id //= 62\\n    \\n    return ''.join(reversed(result))\\n\\n# Collision handling\\ndef create_short_url(long_url, max_retries=3):\\n    for attempt in range(max_retries):\\n        url_id = get_next_id()\\n        short_code = generate_short_code(url_id)\\n        \\n        try:\\n            db.insert(short_code, long_url)\\n            return short_code\\n        except UniqueViolation:\\n            # Collision, retry\\n            continue\\n    \\n    raise Exception(\\\"Failed to generate unique short code\\\")\\n\"}]}]\n86:[\"$\",\"h3\",null,{\"id\":\"balance-both\",\"children\":\"Balance Both\"}]\n87:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good engineers balance design và implementation thinking:\"}]}]\n88:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Design phase:\\n- Think high-level\\n- Focus on architecture\\n- Justify trade-offs\\n- Don't get stuck in implementation details\\n\\nImplementation phase:\\n- Think low-level\\n- Focus on code quality\\n- Handle edge cases\\n- Maintain architecture vision\\n\\nDon't mix phases:\\nDesign interview: \\\"I'll use FastAPI with async/await...\\\"\\n   → Too implementation-focused\\n\\nCoding: \\\"Let me redesign the entire architecture...\\\"\\n   → Wrong time for that\\n\\nDesign: Focus on what and why\\nImplement: Focus on how\\n\"}]}]\n89:[\"$\",\"h2\",null,{\"id\":\"the-complete-framework-putting-it-all-together\",\"children\":\"The Complete Framework: Putting It All Together\"}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi approach một system design problem:\"}]}]\n8b:[\"$\",\"h3\",null,{\"id\":\"step-by-step-framework\",\"children\":\"Step-by-Step Framework\"}]\n8c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. CLARIFY (5 minutes)\\n   ├─ Functional requirements\\n   ├─ Non-functional requirements\\n   ├─ Scale (users, traffic, data)\\n   └─ Constraints (budget, timeline, team)\\n\\n2. ESTIMATE (5 minutes)\\n   ├─ Back-of-envelope calculations\\n   ├─ Read/write ratio\\n   ├─ Storage needs\\n   └─ Bandwidth needs\\n\\n3. HIGH-LEVEL DESIGN (10 minutes)\\n   ├─ Draw main components\\n   ├─ Show data flow\\n   ├─ Identify critical path\\n   └─ Call out key decisions\\n\\n4. DEEP DIVE (15 minutes)\\n   ├─ API design\\n   ├─ Data model\\n   ├─ Algorithm details\\n   ├─ Caching strategy\\n   └─ Scaling approach\\n\\n5. TRADE-OFFS (10 minutes)\\n   ├─ Discuss alternatives\\n   ├─ Justify choices\\n   ├─ Mention trade-offs\\n   └─ Address edge ca"])</script><script>self.__next_f.push([1,"ses\\n\\n6. WRAP UP (5 minutes)\\n   ├─ Bottlenecks \u0026 solutions\\n   ├─ Failure scenarios\\n   ├─ Monitoring strategy\\n   └─ Future improvements\\n\"}]}]\n8d:[\"$\",\"h3\",null,{\"id\":\"mental-checklist\",\"children\":\"Mental Checklist\"}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trước khi finalize design, verify:\"}]}]\n8f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"☑ Requirements clear?\\n☑ Constraints identified?\\n☑ Scale calculated?\\n☑ Read/write ratio known?\\n☑ Bottlenecks identified?\\n☑ Failure modes considered?\\n☑ Trade-offs justified?\\n☑ Scalability path clear?\\n☑ Monitoring plan exists?\\n☑ Cost estimated?\\n\"}]}]\n90:[\"$\",\"h3\",null,{\"id\":\"common-mistakes-to-avoid\",\"children\":\"Common Mistakes to Avoid\"}]\n91:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Jump to solution immediately\\n   → Clarify requirements first\\n\\nOver-engineer for unknown future\\n   → Design for 2x scale, not 100x\\n\\nIgnore constraints\\n   → Budget, timeline, team affect design\\n\\nCopy Big Tech architecture\\n   → Their scale ≠ your scale\\n\\nNeglect failure scenarios\\n   → System will fail, plan for it\\n\\nIgnore monitoring\\n   → Can't improve what you don't measure\\n\\nPerfect vs shipped\\n   → MVP first, iterate later\\n\"}]}]\n92:[\"$\",\"h2\",null,{\"id\":\"real-world-application\",\"children\":\"Real-World Application\"}]\n93:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example: Design Instagram-like app\"}]}]\n94:[\"$\",\"h3\",null,{\"id\":\"apply-framework\",\"children\":\"Apply Framework\"}]\n95:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Clarify Requirements:\"}]}]\n96:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Functional:\\n- Upload photos\\n- Follow users\\n- View feed (photos from following)\\n- Like, comment\\n- Search users\\n\\nNon-functional:\\n- 100M users\\n- 50M daily active users\\n- 10M photos uploaded/day\\n- Read-heavy (view:upload = 100:1)\\n- Latency: Feed \u003c 500ms\\n- Availability: 99.9%\\n\"}]}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Estimate:\"}]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Storage:\\n- 10M photos/day × 2MB average = 20TB/day\\n- 20TB × 365 = 7.3PB/year\\n→ Need object storage (S3)\\n\\nTraffic:\\n- Uploads: 10M/day / 86400s ≈ 115 uploads/s\\n- Views: 115 × 100 = 11,500 views/s\\n→ Read-heavy, caching critical\\n\\nDatabase:\\n- 100M users × 500 bytes = 50GB (users table)\\n- 3.6B photos/year × 200 bytes metadata = 720GB/year\\n→ Manageable với SQL, shard after 2-3 years\\n\"}]}]\n99:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. High-Level Design:\"}]}]\n9a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"[Mobile/Web] \\n    ↓\\n[CDN] (images)\\n    ↓\\n[Load Balancer]\\n    ↓\\n[API Servers] (stateless)\\n    ↓\\n[Redis Cache] ← Feed timelines\\n    ↓\\n[PostgreSQL] ← Metadata\\n    ↓\\n[S3] ← Photo storage\\n\"}]}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Key Decisions:\"}]}]\n9c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Photo storage: S3\\n- Durable, scalable\\n- CDN integration\\n- Trade-off: Cost vs reliability\\n\\nFeed generation: Fanout on write\\n- Pre-compute feeds\\n- Fast reads (\u003c 50ms from cache)\\n- Trade-off: Write amplification\\n\\nCaching: Redis timelines\\n- Store 1000 recent posts per user\\n- TTL: No expiry (explicit invalidation)\\n- Trade-off: Memory cost vs read performance\\n\\nDatabase: PostgreSQL with sharding\\n- Strong consistency for critical data\\n- Shard by user_id after 2 years\\n- Trade-off: Complexity vs scale\\n\"}]}]\n9d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Trade-offs Discussed:\"}]}]\n9e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Fanout on write vs read:\\n- Chose write because read-heavy\\n- Celebrity problem: Switch to pull for \u003e 10K followers\\n\\nSQL vs NoSQL:\\n- Chose SQL for consistency, relationships\\n- Can add read replicas, then shard\\n\\nSync vs async:\\n- Photo upload: Sync (user waits)\\n- Feed fanout: Async (eventual consistency OK)\\n\"}]}]\n9f:[\"$\",\"p\",null,{\"children\":"])</script><script>self.__next_f.push([1,"[\"$\",\"strong\",null,{\"children\":\"6. Wrap Up:\"}]}]\na0:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bottlenecks:\\n- Feed generation (solved by async fanout)\\n- Photo delivery (solved by CDN)\\n- Database reads (solved by caching)\\n\\nMonitoring:\\n- Upload success rate\\n- Feed load latency\\n- Cache hit rate\\n- Fanout lag\\n\\nFuture improvements:\\n- ML ranking for feeds\\n- Stories feature\\n- Live video\\n- Recommendations\\n\"}]}]\na1:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\na2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"System design thinking ≠ Knowing patterns\"}]}]\na3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Patterns are tools.\\nThinking is knowing when to use which tool.\\n\"}]}]\na4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mental shift:\"}]}]\na5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"From: \\\"What tech to use?\\\"\\nTo:   \\\"What problem to solve?\\\"\\n\\nFrom: \\\"Best practices\\\"\\nTo:   \\\"Best fit for context\\\"\\n\\nFrom: \\\"Copy Big Tech\\\"\\nTo:   \\\"Design for my scale\\\"\\n\"}]}]\na6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Framework:\"}]}]\na7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Requirements first (always)\\n2. Constraints shape design\\n3. Calculate scale (math matters)\\n4. Top-down for planning\\n5. Design for 2x, not 100x\\n6. Justify every decision\\n7. Trade-offs over perfection\\n\"}]}]\na8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The ultimate test:\"}]}]\na9:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Good design thinking = Có thể explain \\\"WHY\\\" cho mọi decision\\n\\nIf you can't explain why:\\n- Why this database?\\n- Why this caching strategy?\\n- Why this architecture?\\n\\n→ You don't understand your own design\\n→ Go back and think deeper\\n\"}]}]\naa:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember:\"}]}]\nab:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Junior: Knows patterns\\nMid: Applies patterns\\nSenior: Knows when NOT to apply patterns\\n\\nSystem design mastery = Thinking, not memorization\\n\"}]}]\nac:[\"$\",\"p\",null,{\"children\":\"Bạn đã học đủ patterns qua 5 phases. Phase 6 về refining thinking process.\"}]\nad:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Practice thinking framework, không chỉ memorize patterns.\"}]}]\nae:[\"$\",\"p\",null,{\"children\":\"Đó là điều phân biệt Senior Engineer với Junior Engineer.\"}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"b2:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset | Phase 6 — System Design Mastery | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Master system design thinking framework: requirement driven design, constraint first thinking, top down vs bottom up approaches. Học cách approach problems như \"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-1-system-design-thinking-framework\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Master system design thinking framework: requirement driven design, constraint first thinking, top down vs bottom up approaches. Học cách approach problems như \"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-1-system-design-thinking-framework\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Master system design thinking framework: requirement driven design, constraint first thinking, top down vs bottom up approaches. Học cách approach problems như \"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$Lb2\",\"14\",{}]]\n"])</script></body></html>

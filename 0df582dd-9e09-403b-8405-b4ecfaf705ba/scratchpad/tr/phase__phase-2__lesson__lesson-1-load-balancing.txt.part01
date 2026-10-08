@@ -1,0 +1,586 @@
+@0
+⟦Cân Bằng Tải|Load Balancing⟧: Phân Phối ⟦Lưu Lượng|Traffic⟧ Trong ⟦Hệ Thống Phân Tán|Distributed Systems⟧
+@1
+Tóm Tắt Nhanh
+@2
+**⟦Cân bằng tải|Load balancing⟧** là cơ chế phân phối ⟦lưu lượng|traffic⟧ giữa nhiều ⟦phiên bản máy chủ|instances⟧ để tăng **⟦khả năng mở rộng|scalability⟧** và **⟦độ tin cậy|reliability⟧**.
+@3
+Trong ⟦môi trường thực tế|production⟧, ⟦bộ cân bằng tải|load balancer⟧ giúp giảm ⟦điểm lỗi duy nhất|single point of failure⟧, hỗ trợ ⟦triển khai không gián đoạn|zero-downtime deploy⟧ và giữ ⟦độ trễ|latency⟧ ổn định khi ⟦lưu lượng|traffic⟧ tăng.
+@4
+Chọn thuật toán theo ⟦khối lượng công việc|workload⟧: `Round Robin`, `Least Connections`, `Weighted`, hoặc `IP Hash`.
+@5
+Với web/API hiện đại, ⟦tầng 7|Layer 7⟧ thường là lựa chọn mặc định; ⟦tầng 4|Layer 4⟧ phù hợp khi cần ⟦thông lượng|throughput⟧ cực cao hoặc dùng các giao thức không phải HTTP.
+@6
+⟦Cân Bằng Tải|Load Balancing⟧ Là Gì?
+@7
+⟦Cân bằng tải|Load balancing⟧ trong ⟦thiết kế hệ thống|system design⟧ là kỹ thuật phân phối ⟦yêu cầu|request⟧ đến nhiều ⟦máy chủ phía sau|backend servers⟧ để tránh quá tải một ⟦nút|node⟧ và tăng khả năng mở rộng của hệ thống.
+@8
+Vì Sao ⟦Cân Bằng Tải|Load Balancing⟧ Quan Trọng?
+@9
+Tăng khả năng chịu tải khi ⟦lưu lượng|traffic⟧ tăng đột biến.
+@10
+Tăng độ sẵn sàng của hệ thống khi một ⟦máy chủ|server⟧ bị lỗi.
+@11
+Giữ hiệu năng ổn định cho ⟦người dùng|user⟧ trong môi trường ⟦hệ thống phân tán|distributed systems⟧.
+@12
+Là nền tảng cho ⟦kiến trúc có tính sẵn sàng cao|high-availability architecture⟧ trong ⟦môi trường thực tế|production⟧.
+@13
+Khi Nào Nên Dùng?
+@14
+Khi một ⟦máy chủ|server⟧ không còn đủ ⟦năng lực|capacity⟧ cho ⟦thông lượng|throughput⟧ hiện tại.
+@15
+Khi cần giảm ⟦thời gian ngừng hoạt động|downtime⟧ lúc ⟦triển khai|deploy⟧.
+@16
+Khi hệ thống có nhiều ⟦dịch vụ|service⟧ hoặc nhiều vùng (⟦đa vùng|multi-region⟧).
+@17
+Khi muốn cải thiện ⟦độ tin cậy|reliability⟧ và ⟦hiệu năng|performance⟧ ở quy mô ⟦môi trường thực tế|production⟧.
+@18
+Nó Hoạt Động Như Thế Nào?
+@19
+⟦Máy khách|Client⟧ gửi ⟦yêu cầu|request⟧ đến ⟦bộ cân bằng tải|load balancer⟧.
+@20
+⟦Bộ cân bằng tải|Load balancer⟧ chọn ⟦máy chủ phía sau|backend server⟧ theo ⟦thuật toán định tuyến|routing algorithm⟧.
+@21
+⟦Yêu cầu|Request⟧ được ⟦chuyển tiếp|forward⟧ đến máy chủ đã chọn.
+@22
+⟦Phản hồi|Response⟧ được trả về ⟦máy khách|client⟧ thông qua ⟦bộ cân bằng tải|load balancer⟧.
+@23
+Những ⟦Sự Đánh Đổi|Trade-offs⟧ Cần Nắm
+@24
+⟦Tầng 4|Layer 4⟧ nhanh hơn nhưng có ít ngữ cảnh để định tuyến.
+@25
+⟦Tầng 7|Layer 7⟧ linh hoạt hơn nhưng tốn thêm chi phí xử lý.
+@26
+⟦Phiên dính|Sticky session⟧ giúp các luồng ⟦có trạng thái|stateful⟧ hoạt động nhưng làm giảm mức độ phân phối đều.
+@27
+Thuật toán đơn giản dễ vận hành hơn nhưng có thể không tối ưu cho ⟦khối lượng công việc|workload⟧ phức tạp.
+@28
+Thuật Ngữ Chính (Định Nghĩa Nhanh Cho AI/SEO)
+@29
+**⟦Khả năng mở rộng|Scalability⟧:** khả năng hệ thống tăng công suất khi ⟦lưu lượng|traffic⟧ tăng.
+@30
+**⟦Độ tin cậy|Reliability⟧:** khả năng hệ thống tiếp tục hoạt động ổn định khi có lỗi.
+@31
+**⟦Độ trễ|Latency⟧:** thời gian từ lúc gửi ⟦yêu cầu|request⟧ đến khi nhận được ⟦phản hồi|response⟧.
+@32
+**⟦Thông lượng|Throughput⟧:** số lượng ⟦yêu cầu|request⟧ hệ thống xử lý được trong một đơn vị thời gian.
+@33
+Bạn đã học về các ⟦thành phần|components⟧ và các ⟦mẫu giao tiếp|communication patterns⟧. Giờ là lúc đi sâu vào một trong những thành phần quan trọng nhất: **⟦Bộ Cân Bằng Tải|Load Balancer⟧**.
+@34
+Tôi còn nhớ ngày Black Friday đầu tiên ở ⟦công ty khởi nghiệp|startup⟧ tôi từng làm. ⟦Lưu lượng|Traffic⟧ tăng gấp 50 lần. Một ⟦máy chủ|server⟧ duy nhất? Chết ngay lập tức.
+@35
+Chúng tôi hoảng loạn thêm 5 ⟦máy chủ|servers⟧. Nhưng rồi nhận ra: **Làm sao ⟦lưu lượng|traffic⟧ biết phải đi đến máy chủ nào?**
+@36
+Đó là lúc tôi thực sự hiểu giá trị của ⟦bộ cân bằng tải|load balancer⟧. Không chỉ đơn thuần là "phân phối ⟦lưu lượng|traffic⟧". Mà là **làm cho ⟦hệ thống phân tán|distributed system⟧ hoạt động như một thể thống nhất**.
+@37
+Tại Sao ⟦Cân Bằng Tải|Load Balancing⟧ Tồn Tại?
+@38
+Vấn Đề Cơ Bản: Giới Hạn Của Một ⟦Máy Chủ|Server⟧ Duy Nhất
+@39
+flowchart TB
+    subgraph "Kiến trúc một máy chủ"
+        C1[Máy khách 1] --> S[Máy chủ<br/>Tối đa: 1000 req/s]
+        C2[Máy khách 2] --> S
+        C3[Máy khách 3] --> S
+        C4[...] --> S
+        C5[Máy khách N] --> S
+    end
+
+    style S fill:#ff6b6b
+@40
+**⟦Kịch bản|Scenario⟧ thực tế:**
+@41
+Năng lực máy chủ: 1,000 yêu cầu/giây
+Lưu lượng bình thường: 800 req/s (80% năng lực)
+Lưu lượng Black Friday: 5,000 req/s
+
+Kết quả:
+- Thời gian phản hồi: 200ms → 15 giây
+- Hết thời gian chờ (timeout) khắp nơi
+- Máy chủ sập
+- Mất doanh thu
+
+@42
+Giải Pháp 1: ⟦Mở Rộng Theo Chiều Dọc|Vertical Scaling⟧ (Scale Up)
+@43
+Nâng cấp máy chủ:
+4 lõi CPU → 16 lõi
+8GB RAM → 64GB RAM
+Chi phí: $200/tháng → $1,200/tháng
+
+Kết quả: Xử lý được 4,000 req/s
+Vấn đề: Vẫn thiếu 1,000 req/s
+        Và... không thể nâng cấp mãi mãi
+
+@44
+**Hạn chế:**
+@45
+Có giới hạn vật lý (không thể mua CPU vô hạn)
+@46
+Đắt đỏ (⟦chi phí|cost⟧ không tăng tuyến tính)
+@47
+⟦Điểm lỗi duy nhất|Single point of failure⟧ (⟦máy chủ|server⟧ chết = hệ thống chết)
+@48
+⟦Thời gian ngừng hoạt động|Downtime⟧ khi nâng cấp
+@49
+Giải Pháp 2: ⟦Mở Rộng Theo Chiều Ngang|Horizontal Scaling⟧ (Scale Out)
+@50
+flowchart TB
+    subgraph "Kiến trúc nhiều máy chủ"
+        C1[Máy khách 1] --> LB[Bộ cân bằng tải]
+        C2[Máy khách 2] --> LB
+        C3[Máy khách 3] --> LB
+        C4[...] --> LB
+        C5[Máy khách N] --> LB
+
+        LB --> S1[Máy chủ 1<br/>1000 req/s]
+        LB --> S2[Máy chủ 2<br/>1000 req/s]
+        LB --> S3[Máy chủ 3<br/>1000 req/s]
+        LB --> S4[Máy chủ 4<br/>1000 req/s]
+        LB --> S5[Máy chủ 5<br/>1000 req/s]
+    end
+
+    style LB fill:#51cf66
+@51
+**Kết quả:**
+@52
+5 máy chủ × 1,000 req/s = tổng năng lực 5,000 req/s
+Chi phí: 5 × $200 = $1,000/tháng
+Có thể thêm máy chủ vô hạn
+
+@53
+**Nhưng có một vấn đề:**
+@54
+Với 5 ⟦máy chủ|servers⟧, **⟦máy khách|client⟧ sẽ gửi ⟦yêu cầu|request⟧ đến máy chủ nào?**
+@55
+Ai quyết định? Làm sao phân phối cho đều?
+@56
+→ Đó chính là **nhiệm vụ của ⟦Bộ Cân Bằng Tải|Load Balancer⟧**.
+@57
+⟦Bộ Cân Bằng Tải|Load Balancer⟧ Là Gì?
+@58
+**Định nghĩa:**
+@59
+⟦Bộ cân bằng tải|Load balancer⟧ là ⟦thành phần|component⟧ đứng giữa ⟦máy khách|clients⟧ và ⟦máy chủ|servers⟧, nhận tất cả ⟦yêu cầu|requests⟧ đến và phân phối chúng một cách đều đặn (hoặc thông minh) giữa nhiều ⟦máy chủ phía sau|backend servers⟧.
+@60
+**Một phép so sánh đơn giản:**
+@61
+Hãy hình dung quầy làm thủ tục ở sân bay:
+@62
+Khách hàng đến → Nhân viên điều phối → Quầy check-in
+(máy khách)      (bộ cân bằng tải)    (máy chủ)
+
+Nhân viên: "Quầy 3 đang trống, mời anh qua đây"
+
+@63
+**Luồng kỹ thuật:**
+@64
+sequenceDiagram
+    participant C as Client
+    participant LB as Load Balancer
+    participant S1 as Server 1
+    participant S2 as Server 2
+    participant S3 as Server 3
+
+    C->>LB: Yêu cầu HTTP
+    Note over LB: Chọn máy chủ<br/>dựa trên thuật toán
+    LB->>S2: Chuyển tiếp yêu cầu
+    S2->>S2: Xử lý yêu cầu
+    S2->>LB: Phản hồi
+    LB->>C: Chuyển tiếp phản hồi
+@65
+*⟦Bộ cân bằng tải|Load balancer⟧ nhận ⟦yêu cầu|request⟧, chọn ⟦máy chủ|server⟧ theo thuật toán, ⟦chuyển tiếp|forward⟧ yêu cầu, nhận ⟦phản hồi|response⟧ rồi trả về cho ⟦máy khách|client⟧.*
+@66
+Lợi Ích Của ⟦Cân Bằng Tải|Load Balancing⟧
+@67
+Lợi Ích 1: Tăng ⟦Năng Lực|Capacity⟧
+@68
+Trước: 1 máy chủ = 1,000 req/s
+Sau:   10 máy chủ = 10,000 req/s
+
+Mở rộng tuyến tính (thêm máy chủ = thêm năng lực)
+
+@69
+Lợi Ích 2: ⟦Tính Sẵn Sàng Cao|High Availability⟧
+@70
+flowchart LR
+    LB[Bộ cân bằng tải]
+    S1[Máy chủ 1<br/> Khoẻ mạnh]
+    S2[Máy chủ 2<br/> Ngừng hoạt động]
+    S3[Máy chủ 3<br/> Khoẻ mạnh]
+
+    LB --> S1
+    LB -.X S2
+    LB --> S3
+
+    style S2 fill:#ff6b6b
+    style S1 fill:#51cf66
+    style S3 fill:#51cf66
+@71
+*Khi Máy chủ 2 chết, ⟦bộ cân bằng tải|load balancer⟧ tự động loại nó khỏi ⟦nhóm máy chủ|pool⟧ và định tuyến ⟦lưu lượng|traffic⟧ đến các máy chủ còn lại.*
+@72
+**Không có ⟦bộ cân bằng tải|LB⟧:**
+@73
+Máy chủ chết → Người dùng gặp lỗi → Ngừng hoạt động
+
+@74
+**Có ⟦bộ cân bằng tải|LB⟧:**
+@75
+Máy chủ chết → LB phát hiện → Định tuyến đến các máy chủ khoẻ mạnh
+→ Người dùng không bị ảnh hưởng
+→ Không có thời gian ngừng hoạt động
+
+@76
+Lợi Ích 3: ⟦Triển Khai Không Gián Đoạn|Zero-Downtime Deployment⟧
+@77
+Triển khai truyền thống:
+1. Dừng máy chủ
+2. Triển khai mã mới
+3. Khởi động máy chủ
+→ Ngừng hoạt động: 2-5 phút
+
+Với bộ cân bằng tải:
+1. Gỡ Máy chủ 1 khỏi nhóm
+2. Triển khai lên Máy chủ 1
+3. Đưa Máy chủ 1 trở lại
+4. Lặp lại với Máy chủ 2, 3, 4, 5...
+→ Ngừng hoạt động: 0 giây
+
+@78
+**Chiến lược ⟦triển khai cuốn chiếu|rolling deployment⟧:**
+@79
+flowchart TD
+    Start[Bắt đầu triển khai] --> R1[Gỡ Máy chủ 1 khỏi LB]
+    R1 --> D1[Triển khai lên Máy chủ 1]
+    D1 --> H1[Kiểm tra sức khoẻ Máy chủ 1]
+    H1 --> A1[Đưa Máy chủ 1 trở lại LB]
+    A1 --> R2[Gỡ Máy chủ 2 khỏi LB]
+    R2 --> D2[Triển khai lên Máy chủ 2]
+    D2 --> Done[Mọi máy chủ đã được cập nhật]
+@80
+Lợi Ích 4: Phân Bố Theo Địa Lý
+@81
+Người dùng ở Mỹ → Bộ cân bằng tải Mỹ → Máy chủ Mỹ (độ trễ thấp)
+Người dùng ở châu Âu → Bộ cân bằng tải EU → Máy chủ EU (độ trễ thấp)
+Người dùng ở châu Á → Bộ cân bằng tải châu Á → Máy chủ châu Á (độ trễ thấp)
+
+@82
+**Tác động:**
+@83
+Không phân bố theo địa lý:
+Người dùng ở Brazil → Máy chủ ở Singapore → độ trễ 400ms
+
+Có phân bố theo địa lý:
+Người dùng ở Brazil → Máy chủ ở São Paulo → độ trễ 20ms
+
+Cải thiện 20 lần!
+
+@84
+Các Thuật Toán ⟦Cân Bằng Tải|Load Balancing⟧
+@85
+Đây là phần quan trọng nhất: **Làm thế nào ⟦bộ cân bằng tải|load balancer⟧ quyết định ⟦yêu cầu|request⟧ nào đi đến ⟦máy chủ|server⟧ nào?**
+@86
+Thuật Toán 1: Round Robin (Xoay Vòng)
+@87
+**Cách hoạt động:**
+@88
+Phân phối các ⟦yêu cầu|requests⟧ tuần tự, mỗi ⟦máy chủ|server⟧ lần lượt nhận một yêu cầu theo vòng tròn.
+@89
+flowchart LR
+    LB[Bộ cân bằng tải]
+    S1[Máy chủ A]
+    S2[Máy chủ B]
+    S3[Máy chủ C]
+
+    LB -->|Yêu cầu 1| S1
+    LB -->|Yêu cầu 2| S2
+    LB -->|Yêu cầu 3| S3
+    LB -->|Yêu cầu 4| S1
+    LB -->|Yêu cầu 5| S2
+@90
+**Ý tưởng mã nguồn:**
+@92
+Cực kỳ đơn giản
+Phân phối đều về số lượng ⟦yêu cầu|requests⟧
+Không cần theo dõi ⟦trạng thái|state⟧
+⟦Chi phí phụ|Overhead⟧ thấp
+@94
+Không quan tâm đến ⟦tải|load⟧ hiện tại của ⟦máy chủ|server⟧
+Không biết ⟦yêu cầu|request⟧ nào nặng, yêu cầu nào nhẹ
+Giả định mọi ⟦yêu cầu|requests⟧ và ⟦máy chủ|servers⟧ đều giống nhau
+@95
+**⟦Kịch bản|Scenario⟧ có vấn đề:**
+@96
+Yêu cầu 1 → Máy chủ A: Tải lên tệp 5GB (mất 10 phút)
+Yêu cầu 2 → Máy chủ B: Lấy hồ sơ người dùng (mất 10ms)
+Yêu cầu 3 → Máy chủ C: Lấy hồ sơ người dùng (mất 10ms)
+Yêu cầu 4 → Máy chủ A: Lấy hồ sơ người dùng (phải chờ sau lượt tải lên...)
+
+Máy chủ A: Quá tải (đang xử lý yêu cầu nặng)
+Máy chủ B, C: Rảnh rỗi (đã xong các yêu cầu nhanh)
+
+Round Robin không biết máy chủ A đang bận!
+
+@98
+Các ⟦yêu cầu|requests⟧ có ⟦thời gian thực thi|execution time⟧ tương tự nhau
+Các ⟦máy chủ|servers⟧ có cấu hình giống nhau
+Các ⟦tình huống sử dụng|use cases⟧ đơn giản
+Lựa chọn mặc định khi mới bắt đầu
+@99
+Thuật Toán 2: Least Connections (Ít Kết Nối Nhất)
+@100
+**Cách hoạt động:**
+@101
+Định tuyến ⟦yêu cầu|request⟧ đến ⟦máy chủ|server⟧ có **ít ⟦kết nối đang hoạt động|active connections⟧ nhất**.
+@102
+flowchart TB
+    LB[Bộ cân bằng tải<br/>Theo dõi kết nối]
+
+    S1[Máy chủ A<br/>10 kết nối]
+    S2[Máy chủ B<br/>5 kết nối]
+    S3[Máy chủ C<br/>8 kết nối]
+
+    LB -->|Yêu cầu mới đi vào đây| S2
+
+    style S2 fill:#51cf66
+@103
+**Ý tưởng mã nguồn:**
+@105
+Cân bằng ⟦tải|load⟧ tốt hơn Round Robin
+Thích ứng với các ⟦yêu cầu|requests⟧ có ⟦thời gian thực thi|execution time⟧ khác nhau
+Hiệu quả cho các ⟦kết nối kéo dài|long-lived connections⟧
+@107
+Phức tạp hơn (phải theo dõi số kết nối)
+⟦Chi phí phụ|Overhead⟧ để cập nhật ⟦trạng thái|state⟧
+Cần ⟦đồng bộ hoá|synchronization⟧ giữa nhiều ⟦phiên bản|instances⟧ bộ cân bằng tải
+@109
+Các ⟦yêu cầu|requests⟧ có ⟦thời gian thực thi|execution time⟧ rất khác nhau
+Kết nối WebSocket
+⟦Thăm dò dài|Long-polling⟧
+Tải lên/tải xuống tệp
+⟦Truyền phát|Streaming⟧
+@110
+**Trải nghiệm cá nhân:**
+@111
+Tôi từng có một API với 2 loại ⟦điểm cuối|endpoints⟧:
+@112
+GET /users/{id} → thời gian thực thi 10ms
+POST /reports/generate → thời gian thực thi 60 giây
+
+@113
+Dùng Round Robin → Các ⟦máy chủ|servers⟧ nhận yêu cầu tạo báo cáo bị kẹt, trong khi các máy chủ khác thì rảnh rỗi.
+@114
+Chuyển sang Least Connections → ⟦Tải|Load⟧ được cân bằng đều, thời gian ⟦phản hồi|response⟧ cải thiện gấp 5 lần.
+@115
+Thuật Toán 3: Weighted Round Robin (Xoay Vòng Có Trọng Số)
+@116
+**Phát biểu vấn đề:**
+@117
+Các ⟦máy chủ|servers⟧ có cấu hình khác nhau. Round Robin đối xử với mọi máy chủ như nhau → lãng phí ⟦năng lực|capacity⟧.
+@118
+Máy chủ A: 16GB RAM, 8 lõi CPU (mạnh)
+Máy chủ B: 8GB RAM, 4 lõi CPU (bình thường)
+Máy chủ C: 8GB RAM, 4 lõi CPU (bình thường)
+
+Round Robin: Mỗi máy chủ nhận số yêu cầu như nhau
+→ Máy chủ A bị dùng chưa hết công suất
+→ Máy chủ B, C có thể bị quá tải
+
+@119
+**Giải pháp: Gán ⟦trọng số|weights⟧**
+@120
+**Luồng ⟦yêu cầu|request⟧:**
+@121
+flowchart LR
+    LB[Bộ cân bằng tải]
+
+    S1[Máy chủ A<br/>Trọng số: 4]
+    S2[Máy chủ B<br/>Trọng số: 2]
+    S3[Máy chủ C<br/>Trọng số: 2]
+
+    LB -->|Yêu cầu 1,2,3,4| S1
+    LB -->|Yêu cầu 5,6| S2
+    LB -->|Yêu cầu 7,8| S3
+@122
+**Ý tưởng triển khai:**
+@124
+Tận dụng các ⟦máy chủ|servers⟧ mạnh hiệu quả hơn
+Phân bổ tài nguyên linh hoạt
+Tiết kiệm ⟦chi phí|cost⟧ (kết hợp nhiều loại máy chủ)
+@126
+Phải cấu hình ⟦trọng số|weights⟧ thủ công
+Cần điều chỉnh ⟦trọng số|weights⟧ khi thêm/bớt ⟦máy chủ|servers⟧
+Không động (không thích ứng với ⟦tải|load⟧ theo thời gian thực)
+@128
+Các ⟦máy chủ|servers⟧ có cấu hình khác nhau
+Kết hợp ⟦máy ảo giá rẻ ngắt quãng|spot instances⟧ và ⟦máy ảo đặt trước|reserved instances⟧ (trên đám mây)
+⟦Chuyển đổi|Migration⟧ dần dần (máy chủ cũ ⟦trọng số|weight⟧ thấp, máy chủ mới ⟦trọng số|weight⟧ cao)
+@129
+Thuật Toán 4: IP Hash (Băm Địa Chỉ IP — ⟦Băm Nhất Quán|Consistent Hashing⟧)
+@130
+**Cách hoạt động:**
+@131
+Băm địa chỉ IP của ⟦máy khách|client⟧ rồi ánh xạ tới một ⟦máy chủ|server⟧. Cùng máy khách → Cùng máy chủ.
+@132
+**Sơ đồ:**
+@133
+flowchart TB
+    C1[Máy khách<br/>IP: 192.168.1.100] -->|Hash → 0| S1[Máy chủ A]
+    C2[Máy khách<br/>IP: 192.168.1.101] -->|Hash → 2| S3[Máy chủ C]
+    C3[Máy khách<br/>IP: 192.168.1.102] -->|Hash → 1| S2[Máy chủ B]
+    C1b[Cùng máy khách<br/>IP: 192.168.1.100] -->|Hash → 0| S1
+@134
+*Cùng một IP ⟦máy khách|client⟧ luôn được băm tới cùng một ⟦máy chủ|server⟧.*
+@136
+Duy trì ⟦phiên|session⟧ (⟦phiên dính|sticky sessions⟧)
+⟦Lưu đệm|Caching⟧ phía ⟦máy chủ|server⟧ hiệu quả (cùng người dùng → cùng máy chủ → ⟦trúng bộ nhớ đệm|cache hit⟧)
+Các ứng dụng ⟦có trạng thái|stateful⟧ hoạt động được
+@138
+Phân phối không đều nếu một số ⟦máy khách|clients⟧ gửi nhiều ⟦yêu cầu|requests⟧
+Khi thêm/bớt ⟦máy chủ|server⟧ → giá trị băm thay đổi → mất ⟦phiên|sessions⟧
+Không cân bằng được ⟦tải|load⟧ nếu một máy khách gửi ồ ạt yêu cầu
+@140
+Cần ⟦gắn phiên|session affinity⟧
+Kết nối WebSocket
+⟦Lưu đệm|Caching⟧ phía ⟦máy chủ|server⟧ cho từng người dùng
+Ứng dụng cũ không hỗ trợ ⟦phiên phân tán|distributed sessions⟧
+@141
+**Phương án tốt hơn:**
+@142
+Thay vì IP Hash, hãy dùng **⟦kho lưu phiên dùng chung|shared session store⟧** (Redis):
+@143
+⟦Kiểm Tra Sức Khoẻ|Health Checks⟧: Tránh Định Tuyến Đến ⟦Máy Chủ|Servers⟧ Đã Chết
+@144
+**Vấn đề:**
+@145
+Máy chủ 2 bị sập
+Bộ cân bằng tải không biết
+Vẫn tiếp tục định tuyến 33% lưu lượng đến Máy chủ 2
+Người dùng gặp lỗi
+
+@146
+**Giải pháp: ⟦Kiểm Tra Sức Khoẻ|Health Checks⟧**
+@147
+⟦Bộ cân bằng tải|Load balancer⟧ định kỳ gửi ping đến các ⟦máy chủ|servers⟧ để xác minh tình trạng sức khoẻ.
+@148
+sequenceDiagram
+    participant LB as Load Balancer
+    participant S1 as Server 1
+    participant S2 as Server 2
+    participant S3 as Server 3
+
+    loop Mỗi 10 giây
+        LB->>S1: GET /health
+        S1->>LB: 200 OK
+
+        LB->>S2: GET /health
+        Note over S2: Máy chủ bị sập
+        S2--xLB: Hết thời gian chờ
+
+        LB->>S3: GET /health
+        S3->>LB: 200 OK
+    end
+
+    Note over LB: Gỡ Máy chủ 2<br/>khỏi nhóm
+@149
+Triển Khai ⟦Kiểm Tra Sức Khoẻ|Health Check⟧
+@150
+**⟦Điểm cuối|Endpoint⟧ phía ⟦máy chủ|server⟧:**
+@151
+**Phía ⟦bộ cân bằng tải|Load Balancer⟧:**
+@152
+⟦Thực Hành Tốt Nhất|Best Practices⟧ Cho ⟦Kiểm Tra Sức Khoẻ|Health Check⟧
+@153
+**Thực hành 1: Kiểm tra cả các ⟦thành phần phụ thuộc|dependencies⟧, không chỉ ⟦máy chủ|server⟧**
+@154
+**Thực hành 2: ⟦Thời gian chờ|Timeout⟧ phù hợp**
+@155
+Quá ngắn (500ms):
+- Âm tính giả (máy chủ khoẻ mạnh nhưng phản hồi chậm)
+- Gỡ bỏ các máy chủ khoẻ mạnh một cách không cần thiết
+
+Quá dài (30s):
+- Dương tính giả (máy chủ đã chết nhưng mất 30 giây mới phát hiện)
+- Người dùng gặp lỗi trong 30 giây
+
+Điểm cân bằng: 2-5 giây
+
+@156
+**Thực hành 3: Logic ⟦thử lại|retry⟧**
+@157
+**Lý do:** Tránh hiện tượng ⟦chập chờn|flapping⟧ (máy chủ bị gỡ → được thêm lại → bị gỡ → được thêm lại...).
+@158
+**Thực hành 4: ⟦Suy giảm có kiểm soát|Graceful degradation⟧**
+@159
+**Bài học cá nhân:**
+@160
+Tôi từng đặt ⟦thời gian chờ|timeout⟧ của ⟦kiểm tra sức khoẻ|health check⟧ = 500ms. ⟦Cơ sở dữ liệu|Database⟧ có lúc ⟦độ trễ|latency⟧ ⟦tăng đột biến|spike⟧ lên 800ms (vẫn khoẻ mạnh, chỉ chậm).
+@161
+⟦Bộ cân bằng tải|Load balancer⟧ phát hiện TẤT CẢ ⟦máy chủ|servers⟧ đều không khoẻ mạnh → Gỡ bỏ tất cả → Không còn máy chủ nào → **Sập toàn bộ hệ thống**.
+@162
+Bài học: ⟦Kiểm tra sức khoẻ|Health checks⟧ phải phân biệt được "chậm" và "chết".
+@163
+⟦Cân Bằng Tải|Load Balancing⟧ ⟦Tầng 4|Layer 4⟧ và ⟦Tầng 7|Layer 7⟧
+@164
+Đây là khái niệm nhiều người hay nhầm lẫn. Hãy cùng phân tích cho rõ ràng.
+@165
+Ôn Nhanh Mô Hình OSI
+@166
+Tầng 7: Ứng dụng - Application (HTTP, FTP, SMTP)
+Tầng 6: Trình diễn - Presentation (SSL/TLS)
+Tầng 5: Phiên - Session
+Tầng 4: Giao vận - Transport (TCP, UDP)
+Tầng 3: Mạng - Network (IP)
+Tầng 2: Liên kết dữ liệu - Data Link (Ethernet)
+Tầng 1: Vật lý - Physical
+
+@167
+⟦Cân Bằng Tải|Load Balancing⟧ ⟦Tầng 4|Layer 4⟧ (⟦Tầng Giao Vận|Transport Layer⟧)
+@168
+**Hoạt động ở:** cấp độ TCP/UDP
+@169
+**Thông tin có thể thấy:**
+@170
+Địa chỉ IP nguồn
+@171
+Địa chỉ IP đích
+@172
+⟦Cổng|Port⟧ nguồn
+@173
+⟦Cổng|Port⟧ đích
+@174
+**Không thể thấy:**
+@175
+⟦Tiêu đề|Headers⟧ HTTP
+@176
+Đường dẫn URL
+@177
+Cookies
+@178
+⟦Thân yêu cầu|Request body⟧
+@179
+Dữ liệu ở ⟦tầng ứng dụng|application-level⟧
+@180
+**Cách hoạt động:**
+@181
+sequenceDiagram
+    participant C as Client
+    participant L4 as L4 Load Balancer
+    participant S as Server
+
+    C->>L4: TCP SYN
+    Note over L4: Chỉ nhìn IP:Port<br/>Chọn máy chủ
+    L4->>S: Chuyển tiếp kết nối TCP
+    S->>L4: TCP SYN-ACK
+    L4->>C: Chuyển tiếp phản hồi
+
+    Note over C,S: Toàn bộ kết nối TCP<br/>được chuyển tiếp đến máy chủ
+@182
+**Ví dụ:**
+@183
+Mọi lưu lượng đến cổng 443 → Các máy chủ HTTPS phía sau
+Mọi lưu lượng đến cổng 5432 → Các bản sao PostgreSQL
+Mọi lưu lượng đến cổng 6379 → Cụm Redis
+
+Định tuyến đơn giản dựa trên cổng
+

@@ -1,0 +1,793 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding | Phase 4 — Scalability &amp; Performance | System Design Core</title><meta name="description" content="Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-4/lesson/lesson-4-database-scaling-optimization"/><meta property="og:title" content="Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding | Phase 4 — Scalability &amp; Performance"/><meta property="og:description" content="Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-4/lesson/lesson-4-database-scaling-optimization"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding | Phase 4 — Scalability &amp; Performance"/><meta name="twitter:description" content="Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 4 — Scalability &amp; Performance</p><p class="mt-3 text-xl font-semibold text-ink">Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và partitioning. Hiểu trade-offs và khi nào dùng từng technique.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-1-performance-bottleneck-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Performance &amp; Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-2-caching-strategy-trade-consistency-de-lay-speed"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Caching Strategy - Trade Consistency Để Lấy Speed</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">CDN &amp; Edge Computing - Distributed Cache Gần User</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-4/lesson/lesson-4-database-scaling-optimization"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Rate Limiting &amp; Load Control - Protect System Khỏi Overload</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging"><p class="text-xs text-ink-dim">Bài <!-- -->7</p><p class="mt-1 text-sm font-medium text-ink">Monitoring, Observability &amp; Performance Debugging - Measure To Scale</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-4">Phase 4 — Scalability &amp; Performance</a></li><li>/</li><li aria-current="page" class="text-ink">Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và partitioning. Hiểu trade-offs và khi nào dùng từng technique.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding"><article class="prose-ui"><h1 id="database-scaling--optimization---từ-query-tuning-đến-sharding">Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding</h1>
+<p>Trong hầu hết các hệ thống, database là <strong>bottleneck lớn nhất</strong>.</p>
+<p>Application server scale horizontal dễ dàng - thêm server, add load balancer, done. Nhưng database? Đây là hard problem.</p>
+<p><strong>Tại sao?</strong></p>
+<p>Database là <strong>stateful</strong>. Không thể đơn giản thêm database server và expect nó tự động work. Data phải sync, transactions phải consistent, queries phải coordinate.</p>
+<p>Khi database chậm, toàn bộ hệ thống chậm. Khi database down, toàn bộ hệ thống down.</p>
+<p><strong>Mental model quan trọng nhất:</strong></p>
+<p><strong>Database scaling không phải một giải pháp. Là progression từ optimization đơn giản → complex distributed patterns.</strong></p>
+<p>Lesson này dạy bạn:</p>
+<ul>
+<li>Query optimization &amp; indexing (first line of defense)</li>
+<li>Read replicas (scale reads)</li>
+<li>Sharding (scale writes &amp; storage)</li>
+<li>Khi nào dùng technique nào</li>
+<li>Trade-offs của từng approach</li>
+</ul>
+<h2 id="tại-sao-database-là-bottleneck">Tại Sao Database Là Bottleneck?</h2>
+<p>Trước khi học scaling, hiểu tại sao database limit performance.</p>
+<h3 id="1-disk-io-bottleneck">1. Disk I/O Bottleneck</h3>
+<p><strong>Database lưu data trên disk. Disk chậm hơn RAM 1000x.</strong></p>
+<pre><code>RAM read:  ~100 nanoseconds
+SSD read:  ~100 microseconds (1000x chậm hơn)
+HDD read:  ~10 milliseconds (100,000x chậm hơn)
+</code></pre>
+<p><strong>Every query = disk reads.</strong></p>
+<p>Query càng phức tạp → càng nhiều disk I/O → càng chậm.</p>
+<h3 id="2-acid-guarantees">2. ACID Guarantees</h3>
+<p><strong>Database phải maintain consistency.</strong></p>
+<ul>
+<li><strong>Atomicity:</strong> Transaction all-or-nothing</li>
+<li><strong>Consistency:</strong> Data valid theo constraints</li>
+<li><strong>Isolation:</strong> Concurrent transactions không conflict</li>
+<li><strong>Durability:</strong> Committed data không mất</li>
+</ul>
+<p><strong>ACID có cost:</strong></p>
+<ul>
+<li>Locking (block concurrent access)</li>
+<li>Write-ahead log (extra writes)</li>
+<li>Transaction coordination (overhead)</li>
+</ul>
+<p><strong>Trade-off:</strong> Correctness vs performance.</p>
+<h3 id="3-single-writer-problem">3. Single Writer Problem</h3>
+<p><strong>Hầu hết RDBMS có single-writer architecture.</strong></p>
+<p>Chỉ 1 node handle writes để maintain consistency.</p>
+<p>Reads có thể scale (replicas), nhưng writes là bottleneck.</p>
+<h3 id="4-data-growth">4. Data Growth</h3>
+<p><strong>Data tăng → performance giảm.</strong></p>
+<pre><code>Table 1K rows:   Query 10ms
+Table 100K rows: Query 50ms
+Table 10M rows:  Query 5000ms
+</code></pre>
+<p>Không có proper indexing, queries slow down exponentially.</p>
+<p><strong>Key insight:</strong> Phải optimize trước khi scale. Scaling costly system vẫn costly.</p>
+<h2 id="index-strategy---first-line-of-defense">Index Strategy - First Line Of Defense</h2>
+<p><strong>Index là data structure giúp database tìm data nhanh hơn.</strong></p>
+<p>Không có index = full table scan (đọc toàn bộ rows).<br/>
+<!-- -->Có index = direct lookup (như book index).</p>
+<h3 id="b-tree-index-default">B-Tree Index (Default)</h3>
+<p><strong>Most common index type.</strong></p>
+<pre><code class="language-sql">CREATE INDEX idx_users_email ON users(email);
+</code></pre>
+<p><strong>Structure:</strong></p>
+<pre><code>         [M]
+       /     \
+    [D]       [T]
+   /   \     /   \
+[A-C] [E-L] [N-S] [U-Z]
+</code></pre>
+<p><strong>Lookup time:</strong> O(log N) - cực nhanh với large datasets.</p>
+<p><strong>Khi nào dùng:</strong></p>
+<ul>
+<li>Columns trong WHERE clause</li>
+<li>JOIN keys</li>
+<li>ORDER BY columns</li>
+<li>Foreign keys</li>
+</ul>
+<h3 id="composite-index">Composite Index</h3>
+<p><strong>Index trên multiple columns.</strong></p>
+<pre><code class="language-sql">CREATE INDEX idx_orders_user_date 
+ON orders(user_id, created_at);
+</code></pre>
+<p><strong>Hiệu quả cho:</strong></p>
+<pre><code class="language-sql">-- Uses index (leftmost column)
+WHERE user_id = 123
+
+-- Uses full index
+WHERE user_id = 123 AND created_at &gt; &#x27;2025-01-01&#x27;
+
+-- Không dùng index (missing leftmost column)
+WHERE created_at &gt; &#x27;2025-01-01&#x27;
+</code></pre>
+<p><strong>Rule: Index matching từ trái sang phải.</strong></p>
+<h3 id="covering-index">Covering Index</h3>
+<p><strong>Index chứa tất cả columns query cần.</strong></p>
+<pre><code class="language-sql">-- Query này
+SELECT user_id, created_at, total 
+FROM orders 
+WHERE user_id = 123;
+
+-- Covering index
+CREATE INDEX idx_orders_covering 
+ON orders(user_id, created_at, total);
+</code></pre>
+<p><strong>Benefit:</strong> Database không cần access table, chỉ read index → cực nhanh.</p>
+<h3 id="partial-index">Partial Index</h3>
+<p><strong>Index subset of rows.</strong></p>
+<pre><code class="language-sql">-- Chỉ index active users
+CREATE INDEX idx_active_users 
+ON users(email) 
+WHERE status = &#x27;active&#x27;;
+</code></pre>
+<p><strong>Smaller index → faster lookups, less storage.</strong></p>
+<h3 id="index-trade-offs">Index Trade-offs</h3>
+<p><strong>Too Many Indexes:</strong></p>
+<ul>
+<li>Slow writes (update all indexes)</li>
+<li>Storage overhead</li>
+<li>Query planner confusion</li>
+</ul>
+<p><strong>Too Few Indexes:</strong></p>
+<ul>
+<li>Slow reads (full table scans)</li>
+</ul>
+<p><strong>Balance:</strong> Index high-traffic queries, monitor usage.</p>
+<pre><code class="language-sql">-- PostgreSQL: Find unused indexes
+SELECT schemaname, tablename, indexname
+FROM pg_stat_user_indexes
+WHERE idx_scan = 0;
+</code></pre>
+<h2 id="query-optimization---make-queries-faster">Query Optimization - Make Queries Faster</h2>
+<p>Kể cả có index, bad queries vẫn chậm.</p>
+<h3 id="explain-analyze---your-best-friend">EXPLAIN ANALYZE - Your Best Friend</h3>
+<p><strong>See query execution plan.</strong></p>
+<pre><code class="language-sql">EXPLAIN ANALYZE
+SELECT * FROM orders 
+WHERE user_id = 123 
+ORDER BY created_at DESC 
+LIMIT 10;
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Limit  (cost=0.42..8.44 rows=10)
+  -&gt; Index Scan using idx_orders_user_date on orders
+     Index Cond: (user_id = 123)
+     Rows Removed by Filter: 0
+Planning Time: 0.123 ms
+Execution Time: 0.456 ms
+</code></pre>
+<p><strong>Look for:</strong></p>
+<ul>
+<li><strong>Seq Scan</strong> (table scan) → add index</li>
+<li><strong>High cost</strong> → optimize query</li>
+<li><strong>Rows removed by filter</strong> → improve WHERE clause</li>
+</ul>
+<h3 id="select--is-evil">SELECT * Is Evil</h3>
+<p><strong>Bad:</strong></p>
+<pre><code class="language-sql">SELECT * FROM users WHERE id = 123;
+</code></pre>
+<p>Fetches tất cả columns (có thể 50 columns, nhiều KB data).</p>
+<p><strong>Good:</strong></p>
+<pre><code class="language-sql">SELECT id, name, email FROM users WHERE id = 123;
+</code></pre>
+<p>Chỉ fetch columns cần thiết.</p>
+<p><strong>Impact:</strong></p>
+<ul>
+<li>Less disk I/O</li>
+<li>Less network transfer</li>
+<li>Better cache utilization</li>
+</ul>
+<h3 id="avoid-or-in-where-clause">Avoid OR In WHERE Clause</h3>
+<p><strong>Bad:</strong></p>
+<pre><code class="language-sql">SELECT * FROM users 
+WHERE email = &#x27;test@example.com&#x27; 
+   OR username = &#x27;testuser&#x27;;
+</code></pre>
+<p>Database phải scan 2 indexes hoặc full table scan.</p>
+<p><strong>Good:</strong></p>
+<pre><code class="language-sql">SELECT * FROM users WHERE email = &#x27;test@example.com&#x27;
+UNION
+SELECT * FROM users WHERE username = &#x27;testuser&#x27;;
+</code></pre>
+<p>2 separate index scans, then merge.</p>
+<h3 id="use-limit">Use LIMIT</h3>
+<p><strong>Bad:</strong></p>
+<pre><code class="language-sql">SELECT * FROM orders ORDER BY created_at DESC;
+</code></pre>
+<p>Fetch millions of rows, sort tất cả.</p>
+<p><strong>Good:</strong></p>
+<pre><code class="language-sql">SELECT * FROM orders 
+ORDER BY created_at DESC 
+LIMIT 20;
+</code></pre>
+<p>Stop after 20 rows, không sort toàn bộ.</p>
+<h3 id="avoid-functions-in-where">Avoid Functions In WHERE</h3>
+<p><strong>Bad:</strong></p>
+<pre><code class="language-sql">WHERE YEAR(created_at) = 2025
+</code></pre>
+<p>Cannot use index (function applied to column).</p>
+<p><strong>Good:</strong></p>
+<pre><code class="language-sql">WHERE created_at &gt;= &#x27;2025-01-01&#x27; 
+  AND created_at &lt; &#x27;2026-01-01&#x27;
+</code></pre>
+<p>Index có thể dùng được.</p>
+<h2 id="n1-problem---silent-performance-killer">N+1 Problem - Silent Performance Killer</h2>
+<p><strong>N+1 là một trong những bugs phổ biến và nguy hiểm nhất.</strong></p>
+<h3 id="problem">Problem</h3>
+<pre><code class="language-python"># Fetch 10 users (1 query)
+users = db.query(&quot;SELECT * FROM users LIMIT 10&quot;)
+
+# For each user, fetch orders (10 queries)
+for user in users:
+    orders = db.query(&quot;SELECT * FROM orders WHERE user_id = ?&quot;, user.id)
+    print(f&quot;{user.name}: {len(orders)} orders&quot;)
+</code></pre>
+<p><strong>Total: 1 + 10 = 11 queries.</strong></p>
+<p>Với 100 users → 101 queries.<br/>
+<!-- -->Với 1000 users → 1001 queries.</p>
+<p><strong>Mỗi query có latency 10ms → 1001 queries = 10 seconds!</strong></p>
+<h3 id="solution-1-eager-loading">Solution 1: Eager Loading</h3>
+<pre><code class="language-python"># Single query with JOIN
+query = &quot;&quot;&quot;
+SELECT u.*, o.id as order_id, o.total
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+LIMIT 10
+&quot;&quot;&quot;
+
+results = db.query(query)
+</code></pre>
+<p><strong>1 query thay vì N+1.</strong></p>
+<h3 id="solution-2-batch-loading">Solution 2: Batch Loading</h3>
+<pre><code class="language-python"># Fetch users
+users = db.query(&quot;SELECT * FROM users LIMIT 10&quot;)
+user_ids = [u.id for u in users]
+
+# Batch fetch all orders
+orders = db.query(
+    &quot;SELECT * FROM orders WHERE user_id IN (?)&quot;,
+    user_ids
+)
+
+# Group orders by user
+orders_by_user = defaultdict(list)
+for order in orders:
+    orders_by_user[order.user_id].append(order)
+</code></pre>
+<p><strong>2 queries total.</strong></p>
+<h3 id="framework-solutions">Framework Solutions</h3>
+<p><strong>Rails:</strong></p>
+<pre><code class="language-ruby">User.includes(:orders).limit(10)
+</code></pre>
+<p><strong>Django:</strong></p>
+<pre><code class="language-python">User.objects.prefetch_related(&#x27;orders&#x27;)[:10]
+</code></pre>
+<p><strong>TypeORM:</strong></p>
+<pre><code class="language-typescript">userRepository.find({ relations: [&#x27;orders&#x27;], take: 10 })
+</code></pre>
+<p><strong>Always check generated SQL để avoid N+1.</strong></p>
+<h2 id="denormalization---trading-consistency-for-performance">Denormalization - Trading Consistency For Performance</h2>
+<p><strong>Normalization = avoid data duplication.</strong><br/>
+<strong>Denormalization = intentionally duplicate data for performance.</strong></p>
+<h3 id="example-order-totals">Example: Order Totals</h3>
+<p><strong>Normalized (slow):</strong></p>
+<pre><code class="language-sql">-- Calculate total mỗi lần query
+SELECT o.id, SUM(oi.price * oi.quantity) as total
+FROM orders o
+JOIN order_items oi ON o.id = oi.order_id
+GROUP BY o.id;
+</code></pre>
+<p>Expensive aggregation mỗi request.</p>
+<p><strong>Denormalized (fast):</strong></p>
+<pre><code class="language-sql">-- Store pre-computed total
+ALTER TABLE orders ADD COLUMN total DECIMAL(10,2);
+
+-- Update when order items change
+UPDATE orders SET total = ? WHERE id = ?;
+
+-- Query simple
+SELECT id, total FROM orders;
+</code></pre>
+<p><strong>Trade-off:</strong> Extra storage + update complexity để lấy read performance.</p>
+<h3 id="when-to-denormalize">When To Denormalize</h3>
+<p><strong>Denormalize khi:</strong></p>
+<ul>
+<li>Aggregations expensive</li>
+<li>Data ít thay đổi</li>
+<li>Read-heavy workload</li>
+</ul>
+<p><strong>Không denormalize khi:</strong></p>
+<ul>
+<li>Data thay đổi thường xuyên</li>
+<li>Synchronization phức tạp</li>
+<li>Strong consistency required</li>
+</ul>
+<h3 id="materialized-views">Materialized Views</h3>
+<p><strong>Database-level denormalization.</strong></p>
+<pre><code class="language-sql">-- PostgreSQL
+CREATE MATERIALIZED VIEW user_stats AS
+SELECT 
+    user_id,
+    COUNT(*) as order_count,
+    SUM(total) as total_spent
+FROM orders
+GROUP BY user_id;
+
+-- Refresh periodically
+REFRESH MATERIALIZED VIEW user_stats;
+</code></pre>
+<p>Pre-computed results, query nhanh.</p>
+<h2 id="read-replicas---scale-reads-horizontally">Read Replicas - Scale Reads Horizontally</h2>
+<p><strong>Read replica = copy of primary database, handle read traffic.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    subgraph Writes
+        App1[App Server] --&gt;|Write| Primary[Primary DB]
+    end
+    
+    subgraph Reads
+        App2[App Server] --&gt;|Read| Replica1[Read Replica 1]
+        App3[App Server] --&gt;|Read| Replica2[Read Replica 2]
+        App4[App Server] --&gt;|Read| Replica3[Read Replica 3]
+    end
+    
+    Primary -.-&gt;|Replicate| Replica1
+    Primary -.-&gt;|Replicate| Replica2
+    Primary -.-&gt;|Replicate| Replica3</code></pre>
+<h3 id="how-it-works">How It Works</h3>
+<p><strong>1. Primary database handle writes</strong></p>
+<ul>
+<li>All INSERT, UPDATE, DELETE → primary</li>
+</ul>
+<p><strong>2. Changes replicate to replicas</strong></p>
+<ul>
+<li>Async replication (usually)</li>
+<li>Binary log shipping (MySQL) hoặc WAL shipping (PostgreSQL)</li>
+</ul>
+<p><strong>3. Replicas handle reads</strong></p>
+<ul>
+<li>SELECT queries → replicas</li>
+<li>Distribute load across multiple replicas</li>
+</ul>
+<h3 id="benefits">Benefits</h3>
+<p><strong>Scale read traffic:</strong></p>
+<ul>
+<li>Add replicas as read traffic grows</li>
+<li>Primary không bị overwhelm</li>
+</ul>
+<p><strong>Geographic distribution:</strong></p>
+<ul>
+<li>Replica ở Singapore cho Asia users</li>
+<li>Replica ở US cho US users</li>
+<li>Lower latency</li>
+</ul>
+<p><strong>Analytics queries:</strong></p>
+<ul>
+<li>Run expensive reports trên replica</li>
+<li>Không impact production traffic</li>
+</ul>
+<h3 id="replication-lag">Replication Lag</h3>
+<p><strong>Problem: Replicas không instantly up-to-date.</strong></p>
+<pre><code>t=0: Write to primary (user.status = &#x27;active&#x27;)
+t=1: Read from replica (user.status = &#x27;pending&#x27;)  ← stale!
+t=2: Replication catches up (user.status = &#x27;active&#x27;)
+</code></pre>
+<p><strong>Typical lag: 10-100ms, có thể cao hơn.</strong></p>
+<h3 id="handling-replication-lag">Handling Replication Lag</h3>
+<p><strong>1. Read-after-write consistency</strong></p>
+<pre><code class="language-python">def update_profile(user_id, data):
+    # Write to primary
+    db_primary.execute(&quot;UPDATE users SET ... WHERE id = ?&quot;, user_id)
+    
+    # Read from primary (not replica)
+    return db_primary.query(&quot;SELECT * FROM users WHERE id = ?&quot;, user_id)
+</code></pre>
+<p><strong>2. Session stickiness</strong></p>
+<ul>
+<li>User session luôn read từ same replica</li>
+<li>Consistent experience</li>
+</ul>
+<p><strong>3. Critical reads from primary</strong></p>
+<pre><code class="language-python"># Payment - critical
+balance = db_primary.query(&quot;SELECT balance FROM accounts&quot;)
+
+# Profile view - không critical
+profile = db_replica.query(&quot;SELECT * FROM users&quot;)
+</code></pre>
+<h3 id="replication-types">Replication Types</h3>
+<p><strong>Asynchronous (default):</strong></p>
+<ul>
+<li>Primary không đợi replica confirm</li>
+<li>Fast writes</li>
+<li>Risk: replica lag, potential data loss</li>
+</ul>
+<p><strong>Synchronous:</strong></p>
+<ul>
+<li>Primary đợi ít nhất 1 replica confirm</li>
+<li>Slower writes</li>
+<li>Strong consistency</li>
+</ul>
+<p><strong>Semi-synchronous:</strong></p>
+<ul>
+<li>Đợi 1 replica, others async</li>
+<li>Balance performance + durability</li>
+</ul>
+<h2 id="sharding---scale-writes--storage">Sharding - Scale Writes &amp; Storage</h2>
+<p><strong>Sharding = chia database thành multiple databases, mỗi database chứa subset of data.</strong></p>
+<p>Đây là ultimate scaling solution, nhưng cũng phức tạp nhất.</p>
+<h3 id="why-sharding">Why Sharding?</h3>
+<p><strong>Read replicas chỉ scale reads. Writes vẫn bottleneck ở primary.</strong></p>
+<p><strong>Sharding scale cả reads và writes:</strong></p>
+<ul>
+<li>Write traffic distribute across shards</li>
+<li>Storage distribute across shards</li>
+<li>Each shard nhỏ hơn → faster queries</li>
+</ul>
+<h3 id="sharding-strategies">Sharding Strategies</h3>
+<h4 id="1-range-based-sharding">1. Range-Based Sharding</h4>
+<p><strong>Chia data theo range of values.</strong></p>
+<pre><code>Shard 1: user_id 1-1000000
+Shard 2: user_id 1000001-2000000
+Shard 3: user_id 2000001-3000000
+</code></pre>
+<pre><code class="language-python">def get_shard(user_id):
+    if user_id &lt;= 1000000:
+        return shard_1
+    elif user_id &lt;= 2000000:
+        return shard_2
+    else:
+        return shard_3
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Simple logic</li>
+<li>Range queries efficient</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Uneven distribution (hotspots)</li>
+<li>Hard to rebalance</li>
+</ul>
+<h4 id="2-hash-based-sharding">2. Hash-Based Sharding</h4>
+<p><strong>Hash key để determine shard.</strong></p>
+<pre><code class="language-python">def get_shard(user_id):
+    shard_num = hash(user_id) % num_shards
+    return shards[shard_num]
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Even distribution</li>
+<li>No hotspots</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Range queries phải query all shards</li>
+<li>Adding shards = re-hash (complex)</li>
+</ul>
+<h4 id="3-geographic-sharding">3. Geographic Sharding</h4>
+<p><strong>Chia theo location.</strong></p>
+<pre><code>Shard 1: Asia users
+Shard 2: US users
+Shard 3: EU users
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Low latency (data gần users)</li>
+<li>Compliance (data residency laws)</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Uneven load</li>
+<li>Cross-region queries expensive</li>
+</ul>
+<h4 id="4-entity-based-sharding-practical">4. Entity-Based Sharding (Practical)</h4>
+<p><strong>Chia theo business entity.</strong></p>
+<pre><code>Shard 1: Organization A&#x27;s data
+Shard 2: Organization B&#x27;s data
+Shard 3: Organization C&#x27;s data
+</code></pre>
+<p><strong>Best for multi-tenant applications.</strong></p>
+<h3 id="sharding-challenges">Sharding Challenges</h3>
+<p><strong>1. Cross-shard queries</strong></p>
+<pre><code class="language-sql">-- Query users across all shards
+SELECT * FROM users WHERE created_at &gt; &#x27;2025-01-01&#x27;
+</code></pre>
+<p>Phải query tất cả shards → aggregate results → slow.</p>
+<p><strong>Solution:</strong> Avoid cross-shard queries bằng cách design shard key cẩn thận.</p>
+<p><strong>2. Cross-shard transactions</strong></p>
+<pre><code class="language-sql">-- Transfer between users on different shards
+BEGIN TRANSACTION;
+  UPDATE accounts SET balance = balance - 100 WHERE user_id = 123; -- Shard 1
+  UPDATE accounts SET balance = balance + 100 WHERE user_id = 456; -- Shard 2
+COMMIT;
+</code></pre>
+<p><strong>Distributed transaction phức tạp.</strong> Thường avoid bằng cách:</p>
+<ul>
+<li>Eventual consistency</li>
+<li>Saga pattern</li>
+<li>Compensating transactions</li>
+</ul>
+<p><strong>3. Rebalancing</strong></p>
+<p>Data grow không đều → một shard đầy trước.</p>
+<p><strong>Rebalancing = move data giữa shards.</strong></p>
+<p>Phức tạp, downtime risk, cần planning cẩn thận.</p>
+<p><strong>4. Joins</strong></p>
+<pre><code class="language-sql">-- Join users + orders across shards
+SELECT u.name, o.total
+FROM users u
+JOIN orders o ON u.id = o.user_id
+</code></pre>
+<p><strong>Users ở shard A, orders ở shard B → không thể join.</strong></p>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>Denormalize data</li>
+<li>Application-level joins</li>
+<li>Design schema để avoid cross-shard joins</li>
+</ul>
+<h3 id="sharding-architecture-example">Sharding Architecture Example</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    App[Application Layer]
+    Router[Shard Router / Proxy]
+    
+    subgraph Shard1[&quot;Shard 1 (user_id: 0-999)&quot;]
+        S1P[Primary]
+        S1R1[Replica 1]
+        S1R2[Replica 2]
+    end
+    
+    subgraph Shard2[&quot;Shard 2 (user_id: 1000-1999)&quot;]
+        S2P[Primary]
+        S2R1[Replica 1]
+        S2R2[Replica 2]
+    end
+    
+    subgraph Shard3[&quot;Shard 3 (user_id: 2000-2999)&quot;]
+        S3P[Primary]
+        S3R1[Replica 1]
+        S3R2[Replica 2]
+    end
+    
+    App --&gt; Router
+    Router --&gt; S1P
+    Router --&gt; S2P
+    Router --&gt; S3P
+    
+    S1P -.-&gt; S1R1
+    S1P -.-&gt; S1R2
+    S2P -.-&gt; S2R1
+    S2P -.-&gt; S2R2
+    S3P -.-&gt; S3R1
+    S3P -.-&gt; S3R2</code></pre>
+<p><strong>Shard router</strong> quyết định query đi đến shard nào dựa trên shard key.</p>
+<h3 id="when-to-shard">When To Shard</h3>
+<p><strong>Shard khi:</strong></p>
+<ul>
+<li>Write throughput vượt quá single database</li>
+<li>Storage vượt quá single server capacity</li>
+<li>Đã optimize queries, indexes, read replicas</li>
+<li>Business justifies complexity</li>
+</ul>
+<p><strong>Chưa nên shard khi:</strong></p>
+<ul>
+<li>Single database đủ handle traffic</li>
+<li>Chưa optimize queries</li>
+<li>Chưa dùng read replicas</li>
+<li>Team chưa có expertise</li>
+</ul>
+<p><strong>Rule of thumb:</strong> Sharding là last resort. Exhaust simpler solutions trước.</p>
+<h2 id="partitioning---logical-sharding-within-single-database">Partitioning - Logical Sharding Within Single Database</h2>
+<p><strong>Partitioning = chia table thành multiple physical partitions, nhưng vẫn 1 logical table.</strong></p>
+<p>Similar sharding, nhưng database-managed, không phải application.</p>
+<h3 id="types-of-partitioning">Types Of Partitioning</h3>
+<h4 id="range-partitioning">Range Partitioning</h4>
+<pre><code class="language-sql">-- PostgreSQL
+CREATE TABLE orders (
+    id BIGINT,
+    user_id BIGINT,
+    created_at TIMESTAMP
+) PARTITION BY RANGE (created_at);
+
+CREATE TABLE orders_2024 
+PARTITION OF orders 
+FOR VALUES FROM (&#x27;2024-01-01&#x27;) TO (&#x27;2025-01-01&#x27;);
+
+CREATE TABLE orders_2025 
+PARTITION OF orders 
+FOR VALUES FROM (&#x27;2025-01-01&#x27;) TO (&#x27;2026-01-01&#x27;);
+</code></pre>
+<p><strong>Query automatically routed đến correct partition.</strong></p>
+<pre><code class="language-sql">-- Chỉ scan orders_2025 partition
+SELECT * FROM orders 
+WHERE created_at &gt;= &#x27;2025-02-01&#x27;;
+</code></pre>
+<h4 id="hash-partitioning">Hash Partitioning</h4>
+<pre><code class="language-sql">CREATE TABLE users (
+    id BIGINT,
+    name VARCHAR(100)
+) PARTITION BY HASH (id);
+
+CREATE TABLE users_p0 PARTITION OF users 
+FOR VALUES WITH (MODULUS 4, REMAINDER 0);
+
+CREATE TABLE users_p1 PARTITION OF users 
+FOR VALUES WITH (MODULUS 4, REMAINDER 1);
+-- ... p2, p3
+</code></pre>
+<p><strong>Even distribution across partitions.</strong></p>
+<h4 id="list-partitioning">List Partitioning</h4>
+<pre><code class="language-sql">CREATE TABLE orders (
+    country VARCHAR(2)
+) PARTITION BY LIST (country);
+
+CREATE TABLE orders_us PARTITION OF orders 
+FOR VALUES IN (&#x27;US&#x27;);
+
+CREATE TABLE orders_eu PARTITION OF orders 
+FOR VALUES IN (&#x27;DE&#x27;, &#x27;FR&#x27;, &#x27;UK&#x27;);
+</code></pre>
+<h3 id="benefits-of-partitioning">Benefits Of Partitioning</h3>
+<p><strong>1. Query performance</strong></p>
+<ul>
+<li>Partition pruning: chỉ scan relevant partitions</li>
+<li>Smaller indexes per partition</li>
+</ul>
+<p><strong>2. Maintenance</strong></p>
+<ul>
+<li>Drop old partitions thay vì DELETE (fast)</li>
+<li>Vacuum/analyze per partition</li>
+</ul>
+<p><strong>3. Archival</strong></p>
+<ul>
+<li>Move old partitions to slower storage</li>
+</ul>
+<h3 id="partitioning-vs-sharding">Partitioning vs Sharding</h3>
+<table><thead><tr><th>Aspect</th><th>Partitioning</th><th>Sharding</th></tr></thead><tbody><tr><td>Scope</td><td>Single database</td><td>Multiple databases</td></tr><tr><td>Complexity</td><td>Low</td><td>High</td></tr><tr><td>Scale</td><td>Limited</td><td>Unlimited</td></tr><tr><td>Management</td><td>Database-managed</td><td>Application-managed</td></tr><tr><td>Transactions</td><td>Easy</td><td>Hard (distributed)</td></tr></tbody></table>
+<p><strong>Partitioning = simpler sharding for single database.</strong></p>
+<h2 id="database-scaling-progression">Database Scaling Progression</h2>
+<p><strong>Không nhảy thẳng vào sharding. Follow progression:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    Start[Single Database] --&gt; Step1{Slow queries?}
+    Step1 --&gt;|Yes| Optimize[Query Optimization&lt;br/&gt;+ Indexing]
+    Optimize --&gt; Step2{Still slow?}
+    
+    Step2 --&gt;|Read-heavy| Replicas[Add Read Replicas]
+    Step2 --&gt;|Write-heavy| Partition[Partitioning]
+    
+    Replicas --&gt; Step3{Replicas maxed?}
+    Partition --&gt; Step3
+    
+    Step3 --&gt;|Yes| Cache[Add Caching Layer]
+    Cache --&gt; Step4{Still bottleneck?}
+    
+    Step4 --&gt;|Yes| Shard[Sharding]
+    Shard --&gt; Done[Scaled!]
+    
+    Step1 --&gt;|No| Good[You&#x27;re good!]
+    Step2 --&gt;|No| Good
+    Step3 --&gt;|No| Good
+    Step4 --&gt;|No| Good</code></pre>
+<p><strong>Mỗi step tăng complexity. Chỉ advance khi necessary.</strong></p>
+<h2 id="practical-recommendations">Practical Recommendations</h2>
+<h3 id="1-measure-first">1. Measure First</h3>
+<p><strong>Don&#x27;t guess. Measure.</strong></p>
+<pre><code class="language-sql">-- Slow query log
+SET global slow_query_log = &#x27;ON&#x27;;
+SET global long_query_time = 1; -- queries &gt; 1s
+
+-- Monitor metrics
+- Query latency (p50, p95, p99)
+- Queries per second
+- Connection pool usage
+- Disk I/O
+- CPU usage
+</code></pre>
+<h3 id="2-low-hanging-fruit-first">2. Low-Hanging Fruit First</h3>
+<p><strong>Before sharding:</strong></p>
+<ol>
+<li>Add missing indexes</li>
+<li>Optimize queries</li>
+<li>Add read replicas</li>
+<li>Add caching</li>
+<li>Partition tables</li>
+</ol>
+<p><strong>Sharding chỉ khi exhausted simpler options.</strong></p>
+<h3 id="3-design-for-your-readwrite-ratio">3. Design For Your Read/Write Ratio</h3>
+<p><strong>Read-heavy (90% reads):</strong></p>
+<ul>
+<li>Read replicas + caching = giải quyết most problems</li>
+<li>Primary chỉ handle 10% writes</li>
+</ul>
+<p><strong>Write-heavy (50%+ writes):</strong></p>
+<ul>
+<li>Partitioning → sharding</li>
+<li>Async writes với queue</li>
+<li>Eventual consistency</li>
+</ul>
+<h3 id="4-connection-pooling">4. Connection Pooling</h3>
+<p><strong>Database connections expensive.</strong></p>
+<pre><code class="language-python"># Bad: New connection mỗi query
+def get_user(id):
+    conn = create_connection()
+    user = conn.query(...)
+    conn.close()
+
+# Good: Connection pool
+pool = ConnectionPool(max_connections=20)
+
+def get_user(id):
+    with pool.get_connection() as conn:
+        user = conn.query(...)
+</code></pre>
+<p><strong>Reuse connections, reduce overhead.</strong></p>
+<h3 id="5-database-specific-tuning">5. Database-Specific Tuning</h3>
+<p><strong>PostgreSQL:</strong></p>
+<pre><code class="language-sql">-- Increase shared buffers
+shared_buffers = 4GB
+
+-- Work mem for sorting
+work_mem = 256MB
+
+-- Effective cache size
+effective_cache_size = 12GB
+</code></pre>
+<p><strong>MySQL:</strong></p>
+<pre><code class="language-sql">-- InnoDB buffer pool
+innodb_buffer_pool_size = 8GB
+
+-- Query cache
+query_cache_size = 256MB
+</code></pre>
+<p><strong>Tune based on workload + hardware.</strong></p>
+<h2 id="mental-model-database-thường-là-bottleneck-lớn-nhất">Mental Model: Database Thường Là Bottleneck Lớn Nhất</h2>
+<p><strong>Core insight:</strong></p>
+<p><strong>Application servers stateless → scale easy.</strong><br/>
+<strong>Database stateful → scale hard.</strong></p>
+<pre><code>Add API server:     1 command, 5 minutes
+Add database shard: Weeks of planning + implementation
+</code></pre>
+<p><strong>Architect priorities:</strong></p>
+<ol>
+<li>
+<p><strong>Reduce database load:</strong></p>
+<ul>
+<li>Caching (90% cache hit = 10x less DB queries)</li>
+<li>Async processing (writes → queue)</li>
+<li>CDN (static content)</li>
+</ul>
+</li>
+<li>
+<p><strong>Optimize queries:</strong></p>
+<ul>
+<li>Proper indexes</li>
+<li>Avoid N+1</li>
+<li>EXPLAIN ANALYZE everything</li>
+</ul>
+</li>
+<li>
+<p><strong>Scale reads:</strong></p>
+<ul>
+<li>Read replicas</li>
+<li>Geographic distribution</li>
+</ul>
+</li>
+<li>
+<p><strong>Last resort - scale writes:</strong></p>
+<ul>
+<li>Partitioning</li>
+<li>Sharding</li>
+</ul>
+</li>
+</ol>
+<p><strong>Great architects minimize database pressure, không rush vào complex scaling.</strong></p>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>1. Database là bottleneck lớn nhất trong most systems</strong></p>
+<p>Stateful, ACID guarantees, disk I/O limits.</p>
+<p><strong>2. Index strategy = first line of defense</strong></p>
+<p>Proper indexes có thể improve performance 100x-1000x.</p>
+<p><strong>3. Query optimization trước khi scaling</strong></p>
+<p>Bad queries trên scaled system vẫn bad. Optimize trước.</p>
+<p><strong>4. N+1 problem = silent killer</strong></p>
+<p>1000 queries thay vì 2. Always check generated SQL.</p>
+<p><strong>5. Denormalization = trade consistency for speed</strong></p>
+<p>Pre-compute expensive aggregations. Material views useful.</p>
+<p><strong>6. Read replicas scale reads horizontally</strong></p>
+<p>Add replicas as traffic grows. Handle replication lag properly.</p>
+<p><strong>7. Sharding = scale writes + storage, nhưng phức tạp</strong></p>
+<p>Cross-shard queries, transactions hard. Last resort.</p>
+<p><strong>8. Partitioning = simpler alternative to sharding</strong></p>
+<p>Database-managed, single server, good for most use cases.</p>
+<p><strong>9. Follow progression: optimize → replicas → partition → shard</strong></p>
+<p>Don&#x27;t jump to sharding. Exhaust simpler solutions.</p>
+<p><strong>10. Measure, don&#x27;t guess</strong></p>
+<p>Slow query log, monitoring metrics, EXPLAIN ANALYZE.</p>
+<hr/>
+<p><strong>Remember: The best database scaling strategy is to need less database. Cache aggressively, optimize queries, and only scale when you&#x27;ve exhausted simpler options.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>CDN &amp; Edge Computing - Distributed Cache Gần User</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control">Rate Limiting &amp; Load Control - Protect System Khỏi Overload<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-4\",\"lesson\",\"lesson-4-database-scaling-optimization\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-4\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-4-database-scaling-optimization\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và partitioning. Hiểu trade-offs và khi nào dùng từng technique.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-performance-bottleneck-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-1-performance-bottleneck-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Performance \u0026 Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn\"}]]}]}],[\"$\",\"li\",\"lesson-2-caching-strategy-trade-consistency-de-lay-speed\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-2-caching-strategy-trade-consistency-de-lay-speed\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Caching Strategy - Trade Consistency Để Lấy Speed\"}]]}]}],[\"$\",\"li\",\"lesson-3-cdn-and-edge-computing-distributed-cache-gan-user\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"CDN \u0026 Edge Computing - Distributed Cache Gần User\"}]]}]}],[\"$\",\"li\",\"lesson-4-database-scaling-optimization\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-4-database-scaling-optimization\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\"}]]}]}],[\"$\",\"li\",\"lesson-5-rate-limiting-and-load-control\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\"}]]}]}],[\"$\",\"li\",\"lesson-6-asynchronous-processin-queues\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}],\"$L26\"]}]]}],\"$L27\"]}],\"$L28\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"29:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\"}]\n26:[\"$\",\"li\",\"lesson-7-monitoring-observability-performance-debugging\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",7]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\"}]]}]}]\n27:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4\",\"className\":\"hover:text-ink\",\"children\":\"Phase 4 — Scalability \u0026 Performance\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và partitioning. Hiểu trade-offs và khi nào dùng từng technique.\"}]]}],[\"$\",\"$L29\",null,{\"path\":\"/phase/phase-4/lesson/lesson-4-database-scaling-optimization\",\"title\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\",\"description\":\"Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và partitioning. Hiểu trade-offs và khi nào dùng từng technique.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\",\"children\":\"$L2a\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"CDN \u0026 Edge Computing - Distributed Cache Gần User\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2a:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"database-scaling--optimization---từ-query-tuning-đến-sharding\",\"children\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Trong hầu hết các hệ thống, database là \",[\"$\",\"strong\",null,{\"children\":\"bottleneck lớn nhất\"}],\".\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Application server scale horizontal dễ dàng - thêm server, add load balancer, done. Nhưng database? Đây là hard problem.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tại sao?\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Database là \",[\"$\",\"strong\",null,{\"children\":\"stateful\"}],\". Không thể đơn giản thêm database server và expect nó tự động work. Data phải sync, transactions phải consistent, queries phải coordinate.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Khi database chậm, toàn bộ hệ thống chậm. Khi database down, toàn bộ hệ thống down.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mental model quan trọng nhất:\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Database scaling không phải một giải pháp. Là progression từ optimization đơn giản → complex distributed patterns.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Lesson này dạy bạn:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Query optimization \u0026 indexing (first line of defense)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read replicas (scale reads)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Sharding (scale writes \u0026 storage)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Khi nào dùng technique nào\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Trade-offs của từng approach\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-database-là-bottleneck\",\"children\":\"Tại Sao Database Là Bottleneck?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Trước khi học scaling, hiểu tại sao database limit performance.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"1-disk-io-bottleneck\",\"children\":\"1. Disk I/O Bottleneck\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Database lưu data trên disk. Disk chậm hơn RAM 1000x.\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"RAM read:  ~100 nanoseconds\\nSSD read:  ~100 microseconds (1000x chậm hơn)\\nHDD read:  ~10 milliseconds (100,000x chậm hơn)\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Every query = disk reads.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Query càng phức tạp → càng nhiều disk I/O → càng chậm.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"2-acid-guarantees\",\"children\":\"2. ACID Guarantees\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Database phải maintain consistency.\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Atomicity:\"}],\" Transaction all-or-nothing\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Consistency:\"}],\" Data valid theo constraints\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Isolation:\"}],\" Concurrent transactions không conflict\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Durability:\"}],\" Committed data không mất\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"ACID có cost:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Locking (block concurrent access)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Write-ahead log (extra writes)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Transaction coordination (overhead)\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Trade-off:\"}],\" Correctness vs performance.\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"3-single-writer-problem\",\"children\":\"3. Single Writer Problem\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Hầu hết RDBMS có single-writer architecture.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Chỉ 1 node handle writes để maintain consistency.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Reads có thể scale (replicas), nhưng writes là bottleneck.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"4-data-growth\",\"children\":\"4. Data Growth\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Data tăng → performance giảm.\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Table 1K rows:   Query 10ms\\nTable 100K rows: Query 50ms\\nTable 10M rows:  Query 5000ms\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Không có proper indexing, queries slow down exponentially.\"}],\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\",\"\\n\",\"$Lc9\",\"\\n\",\"$Lca\",\"\\n\",\"$Lcb\",\"\\n\",\"$Lcc\",\"\\n\",\"$Lcd\",\"\\n\",\"$Lce\",\"\\n\",\"$Lcf\",\"\\n\",\"$Ld0\",\"\\n\",\"$Ld1\",\"\\n\",\"$Ld2\",\"\\n\",\"$Ld3\",\"\\n\",\"$Ld4\",\"\\n\",\"$Ld5\",\"\\n\",\"$Ld6\",\"\\n\",\"$Ld7\",\"\\n\",\"$Ld8\",\"\\n\",\"$Ld9\",\"\\n\",\"$Lda\",\"\\n\",\"$Ldb\",\"\\n\",\"$Ldc\",\"\\n\",\"$Ldd\",\"\\n\",\"$Lde\",\"\\n\",\"$Ldf\",\"\\n\",\"$Le0\",\"\\n\",\"$Le1\",\"\\n\",\"$Le2\",\"\\n\",\"$Le3\",\"\\n\",\"$Le4\",\"\\n\",\"$Le5\",\"\\n\",\"$Le6\",\"\\n\",\"$Le7\",\"\\n\",\"$Le8\",\"\\n\",\"$Le9\",\"\\n\",\"$Lea\",\"\\n\",\"$Leb\",\"\\n\",\"$Lec\",\"\\n\",\"$Led\",\"\\n\",\"$Lee\",\"\\n\",\"$Lef\",\"\\n\",\"$Lf0\",\"\\n\",\"$Lf1\",\"\\n\",\"$Lf2\",\"\\n\",\"$Lf3\",\"\\n\",\"$Lf4\",\"\\n\",\"$Lf5\",\"\\n\",\"$Lf6\",\"\\n\",\"$Lf7\",\"\\n\",\"$Lf8\",\"\\n\",\"$Lf9\",\"\\n\",\"$Lfa\",\"\\n\",\"$Lfb\",\"\\n\",\"$Lfc\",\"\\n\",\"$Lfd\",\"\\n\",\"$Lfe\",\"\\n\",\"$Lff\",\"\\n\",\"$L100\",\"\\n\",\"$L101\",\"\\n\",\"$L102\",\"\\n\",\"$L103\",\"\\n\",\"$L104\",\"\\n\",\"$L105\",\"\\n\",\"$L106\",\"\\n\",\"$L107\",\"\\n\",\"$L108\",\"\\n\",\"$L109\",\"\\n\",\"$L10a\",\"\\n\",\"$L10b\",\"\\n\",\"$L10c\",\"\\n\",\"$L10d\",\"\\n\",\"$L10e\",\"\\n\",\"$L10f\",\"\\n\",\"$L110\",\"\\n\",\"$L111\",\"\\n\",\"$L112\",\"\\n\",\"$L113\",\"\\n\",\"$L114\",\"\\n\",\"$L115\",\"\\n\",\"$L116\",\"\\n\",\"$L117\",\"\\n\",\"$L118\",\"\\n\",\"$L119\",\"\\n\",\"$L11a\",\"\\n\",\"$L11b\",\"\\n\",\"$L11c\",\"\\n\",\"$L11d\",\"\\n\",\"$L11e\",\"\\n\",\"$L11f\",\"\\n\",\"$L120\",\"\\n\",\"$L121\",\"\\n\",\"$L122\",\"\\n\",\"$L123\",\"\\n\",\"$L124\",\"\\n\",\"$L125\",\"\\n\",\"$L126\",\"\\n\",\"$L127\",\"\\n\",\"$L128\",\"\\n\",\"$L129\",\"\\n\",\"$L12a\",\"\\n\",\"$L12b\",\"\\n\",\"$L12c\",\"\\n\",\"$L12d\",\"\\n\",\"$L12e\",\"\\n\",\"$L12f\",\"\\n\",\"$L130\",\"\\n\",\"$L131\",\"\\n\",\"$L132\",\"\\n\",\"$L133\",\"\\n\",\"$L134\",\"\\n\",\"$L135\",\"\\n\",\"$L136\",\"\\n\",\"$L137\",\"\\n\",\"$L138\",\"\\n\",\"$L139\",\"\\n\",\"$L13a\",\"\\n\",\"$L13b\",\"\\n\",\"$L13c\",\"\\n\",\"$L13d\",\"\\n\",\"$L13e\",\"\\n\",\"$L13f\",\"\\n\",\"$L140\",\"\\n\",\"$L141\",\"\\n\",\"$L142\",\"\\n\",\"$L143\",\"\\n\",\"$L144\",\"\\n\",\"$L145\",\"\\n\",\"$L146\",\"\\n\",\"$L147\",\"\\n\",\"$L148\",\"\\n\",\"$L149\"]}]\n"])</script><script>self.__next_f.push([1,"14a:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n2b:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key insight:\"}],\" Phải optimize trước khi scale. Scaling costly system vẫn costly.\"]}]\n2c:[\"$\",\"h2\",null,{\"id\":\"index-strategy---first-line-of-defense\",\"children\":\"Index Strategy - First Line Of Defense\"}]\n2d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Index là data structure giúp database tìm data nhanh hơn.\"}]}]\n2e:[\"$\",\"p\",null,{\"children\":[\"Không có index = full table scan (đọc toàn bộ rows).\",[\"$\",\"br\",null,{}],\"\\n\",\"Có index = direct lookup (như book index).\"]}]\n2f:[\"$\",\"h3\",null,{\"id\":\"b-tree-index-default\",\"children\":\"B-Tree Index (Default)\"}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Most common index type.\"}]}]\n31:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"CREATE INDEX idx_users_email ON users(email);\\n\"}]}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Structure:\"}]}]\n33:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"         [M]\\n       /     \\\\\\n    [D]       [T]\\n   /   \\\\     /   \\\\\\n[A-C] [E-L] [N-S] [U-Z]\\n\"}]}]\n34:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Lookup time:\"}],\" O(log N) - cực nhanh với large datasets.\"]}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n36:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Columns trong WHERE clause\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"JOIN keys\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"ORDER BY columns\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Foreign keys\"}],\"\\n\"]}]\n37:[\"$\",\"h3\",null,{\"id\":\"composite-index\",\"children\":\"Composite Index\"}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Index trên multiple columns.\"}]}]\n39:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"CREATE INDEX idx_orders_user_date \\nON orders(user_id, created_at);\\n\"}]}]\n3a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Hiệu quả cho:\"}]}]\n3b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Uses index (leftmost column)\\nWHERE user_id = 123\\n\\n-- Uses full index\\nWHERE user_id = 123 AND created_at \u003e '2025-01-01'\\n\\n-- Không dùng index (missing leftmost column)\\nWHERE created_at \u003e '2025-01-01'\\n\"}]}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rule: Index matching từ trái sang phải.\"}]}]\n3d:[\"$\",\"h3\",null,{\"id\":\"covering-index\",\"children\":\"Covering Index\"}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Index chứa tất cả columns query cần.\"}]}]\n3f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Query này\\nSELECT user_id, created_at, total \\nFROM orders \\nWHERE user_id = 123;\\n\\n-- Covering index\\nCREATE INDEX idx_orders_covering \\nON orders(user_id, created_at, total);\\n\"}]}]\n40:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Benefit:\"}],\" Database không cần access table, chỉ read index → cực nhanh.\"]}]\n41:[\"$\",\"h3\",null,{\"id\":\"partial-index\",\"children\":\"Partial Index\"}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Index subset of rows.\"}]}]\n43:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Chỉ index active users\\nCREATE INDEX idx_active_users \\nON users(email) \\nWHERE status = 'active';\\n\"}]}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Smaller index → faster lookups, less storage.\"}]}]\n45:[\"$\",\"h3\",null,{\"id\":\"index-trade-offs\",\"children\":\"Index Trade-offs\"}]\n46:[\"$\",\"p\",null,"])</script><script>self.__next_f.push([1,"{\"children\":[\"$\",\"strong\",null,{\"children\":\"Too Many Indexes:\"}]}]\n47:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Slow writes (update all indexes)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Storage overhead\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Query planner confusion\"}],\"\\n\"]}]\n48:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Too Few Indexes:\"}]}]\n49:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Slow reads (full table scans)\"}],\"\\n\"]}]\n4a:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Balance:\"}],\" Index high-traffic queries, monitor usage.\"]}]\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- PostgreSQL: Find unused indexes\\nSELECT schemaname, tablename, indexname\\nFROM pg_stat_user_indexes\\nWHERE idx_scan = 0;\\n\"}]}]\n4c:[\"$\",\"h2\",null,{\"id\":\"query-optimization---make-queries-faster\",\"children\":\"Query Optimization - Make Queries Faster\"}]\n4d:[\"$\",\"p\",null,{\"children\":\"Kể cả có index, bad queries vẫn chậm.\"}]\n4e:[\"$\",\"h3\",null,{\"id\":\"explain-analyze---your-best-friend\",\"children\":\"EXPLAIN ANALYZE - Your Best Friend\"}]\n4f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"See query execution plan.\"}]}]\n50:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"EXPLAIN ANALYZE\\nSELECT * FROM orders \\nWHERE user_id = 123 \\nORDER BY created_at DESC \\nLIMIT 10;\\n\"}]}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Output:\"}]}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Limit  (cost=0.42..8.44 rows=10)\\n  -\u003e Index Scan using idx_orders_user_date on orders\\n     Index Cond: (user_id = 123)\\n     Rows Removed by Filter: 0\\nPlanning Time: 0.123 ms\\nExecution Time: 0.456 ms\\n\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Look for:\"}]}]\n54:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Seq Scan\"}],\" (table scan) → add index\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"High cost\"}],\" → optimize query\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Rows removed by filter\"}],\" → improve WHERE clause\"]}],\"\\n\"]}]\n55:[\"$\",\"h3\",null,{\"id\":\"select--is-evil\",\"children\":\"SELECT * Is Evil\"}]\n56:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bad:\"}]}]\n57:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"SELECT * FROM users WHERE id = 123;\\n\"}]}]\n58:[\"$\",\"p\",null,{\"children\":\"Fetches tất cả columns (có thể 50 columns, nhiều KB data).\"}]\n59:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good:\"}]}]\n5a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"SELECT id, name, email FROM users WHERE id = 123;\\n\"}]}]\n5b:[\"$\",\"p\",null,{\"children\":\"Chỉ fetch columns cần thiết.\"}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Impact:\"}]}]\n5d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Less disk I/O\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Less network transfer\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Better cache utilization\"}],\"\\n\"]}]\n5e:[\"$\",\"h3\",null,{\"id\":\"avoid-or-in-where-clause\",\"children\":\"Avoid OR In WHERE Clause\"}]\n5f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bad:\"}]}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"SELECT * FROM users \\nWHERE email = 'test@example.com' \\n   OR username = 'testuser';\\n\"}]}]\n61:[\"$\",\"p\",null,{\"children\":\"Database phải scan 2 indexes hoặc full table scan.\"}]\n62:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good:\"}]}]\n63:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"SELECT * FROM users WHERE email = 'test@example.com'\\nUNION\\nSELECT * FROM users WHERE username = 'testuser';\\n\"}]}]\n64:[\"$\",\"p\",null,{\"children\":\"2 separate index scans, then merge.\"}]\n65:[\"$\",\"h3\",null,{\"id\":\"use-limit\",\"children\":\"Use LIMIT\"}]\n66:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bad:\"}]}]\n67:[\"$\",\"pre\",null,{\"children"])</script><script>self.__next_f.push([1,"\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"SELECT * FROM orders ORDER BY created_at DESC;\\n\"}]}]\n68:[\"$\",\"p\",null,{\"children\":\"Fetch millions of rows, sort tất cả.\"}]\n69:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good:\"}]}]\n6a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"SELECT * FROM orders \\nORDER BY created_at DESC \\nLIMIT 20;\\n\"}]}]\n6b:[\"$\",\"p\",null,{\"children\":\"Stop after 20 rows, không sort toàn bộ.\"}]\n6c:[\"$\",\"h3\",null,{\"id\":\"avoid-functions-in-where\",\"children\":\"Avoid Functions In WHERE\"}]\n6d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bad:\"}]}]\n6e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"WHERE YEAR(created_at) = 2025\\n\"}]}]\n6f:[\"$\",\"p\",null,{\"children\":\"Cannot use index (function applied to column).\"}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good:\"}]}]\n71:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"WHERE created_at \u003e= '2025-01-01' \\n  AND created_at \u003c '2026-01-01'\\n\"}]}]\n72:[\"$\",\"p\",null,{\"children\":\"Index có thể dùng được.\"}]\n73:[\"$\",\"h2\",null,{\"id\":\"n1-problem---silent-performance-killer\",\"children\":\"N+1 Problem - Silent Performance Killer\"}]\n74:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"N+1 là một trong những bugs phổ biến và nguy hiểm nhất.\"}]}]\n75:[\"$\",\"h3\",null,{\"id\":\"problem\",\"children\":\"Problem\"}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Fetch 10 users (1 query)\\nusers = db.query(\\\"SELECT * FROM users LIMIT 10\\\")\\n\\n# For each user, fetch orders (10 queries)\\nfor user in users:\\n    orders = db.query(\\\"SELECT * FROM orders WHERE user_id = ?\\\", user.id)\\n    print(f\\\"{user.name}: {len(orders)} orders\\\")\\n\"}]}]\n77:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Total: 1 + 10 = 11 queries.\"}]}]\n78:[\"$\",\"p\",null,{\"children\":[\"Với 100 users → 101 queries.\",[\"$\",\"br\",null,{}],\"\\n\",\"Với 1000 users → 1001 queries.\"]}]\n79:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mỗi query có latency 10ms → 1001 queries = 10 seconds!\"}]}]\n7a:[\"$\",\"h3\",null,{\"id\":\"solution-1-eager-loading\",\"children\":\"Solution 1: Eager Loading\"}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Single query with JOIN\\nquery = \\\"\\\"\\\"\\nSELECT u.*, o.id as order_id, o.total\\nFROM users u\\nLEFT JOIN orders o ON u.id = o.user_id\\nLIMIT 10\\n\\\"\\\"\\\"\\n\\nresults = db.query(query)\\n\"}]}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1 query thay vì N+1.\"}]}]\n7d:[\"$\",\"h3\",null,{\"id\":\"solution-2-batch-loading\",\"children\":\"Solution 2: Batch Loading\"}]\n7e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Fetch users\\nusers = db.query(\\\"SELECT * FROM users LIMIT 10\\\")\\nuser_ids = [u.id for u in users]\\n\\n# Batch fetch all orders\\norders = db.query(\\n    \\\"SELECT * FROM orders WHERE user_id IN (?)\\\",\\n    user_ids\\n)\\n\\n# Group orders by user\\norders_by_user = defaultdict(list)\\nfor order in orders:\\n    orders_by_user[order.user_id].append(order)\\n\"}]}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2 queries total.\"}]}]\n80:[\"$\",\"h3\",null,{\"id\":\"framework-solutions\",\"children\":\"Framework Solutions\"}]\n81:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rails:\"}]}]\n82:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-ruby\",\"children\":\"User.includes(:orders).limit(10)\\n\"}]}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Django:\"}]}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"User.objects.prefetch_related('orders')[:10]\\n\"}]}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"TypeORM:\"}]}]\n86:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-typescript\",\"children\":\"userRepository.find({ relations: ['orders'], take: 10 })\\n\"}]}]\n87:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Always check generated SQL đ"])</script><script>self.__next_f.push([1,"ể avoid N+1.\"}]}]\n88:[\"$\",\"h2\",null,{\"id\":\"denormalization---trading-consistency-for-performance\",\"children\":\"Denormalization - Trading Consistency For Performance\"}]\n89:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Normalization = avoid data duplication.\"}],[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Denormalization = intentionally duplicate data for performance.\"}]]}]\n8a:[\"$\",\"h3\",null,{\"id\":\"example-order-totals\",\"children\":\"Example: Order Totals\"}]\n8b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Normalized (slow):\"}]}]\n8c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Calculate total mỗi lần query\\nSELECT o.id, SUM(oi.price * oi.quantity) as total\\nFROM orders o\\nJOIN order_items oi ON o.id = oi.order_id\\nGROUP BY o.id;\\n\"}]}]\n8d:[\"$\",\"p\",null,{\"children\":\"Expensive aggregation mỗi request.\"}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Denormalized (fast):\"}]}]\n8f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Store pre-computed total\\nALTER TABLE orders ADD COLUMN total DECIMAL(10,2);\\n\\n-- Update when order items change\\nUPDATE orders SET total = ? WHERE id = ?;\\n\\n-- Query simple\\nSELECT id, total FROM orders;\\n\"}]}]\n90:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Trade-off:\"}],\" Extra storage + update complexity để lấy read performance.\"]}]\n91:[\"$\",\"h3\",null,{\"id\":\"when-to-denormalize\",\"children\":\"When To Denormalize\"}]\n92:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Denormalize khi:\"}]}]\n93:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Aggregations expensive\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Data ít thay đổi\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read-heavy workload\"}],\"\\n\"]}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không denormalize khi:\"}]}]\n95:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Data thay đổi thường xuyên\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Synchronization phức tạp\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Strong consistency required\"}],\"\\n\"]}]\n96:[\"$\",\"h3\",null,{\"id\":\"materialized-views\",\"children\":\"Materialized Views\"}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Database-level denormalization.\"}]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- PostgreSQL\\nCREATE MATERIALIZED VIEW user_stats AS\\nSELECT \\n    user_id,\\n    COUNT(*) as order_count,\\n    SUM(total) as total_spent\\nFROM orders\\nGROUP BY user_id;\\n\\n-- Refresh periodically\\nREFRESH MATERIALIZED VIEW user_stats;\\n\"}]}]\n99:[\"$\",\"p\",null,{\"children\":\"Pre-computed results, query nhanh.\"}]\n9a:[\"$\",\"h2\",null,{\"id\":\"read-replicas---scale-reads-horizontally\",\"children\":\"Read Replicas - Scale Reads Horizontally\"}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Read replica = copy of primary database, handle read traffic.\"}]}]\n9c:[\"$\",\"$L14a\",null,{\"chart\":\"flowchart TB\\n    subgraph Writes\\n        App1[App Server] --\u003e|Write| Primary[Primary DB]\\n    end\\n    \\n    subgraph Reads\\n        App2[App Server] --\u003e|Read| Replica1[Read Replica 1]\\n        App3[App Server] --\u003e|Read| Replica2[Read Replica 2]\\n        App4[App Server] --\u003e|Read| Replica3[Read Replica 3]\\n    end\\n    \\n    Primary -.-\u003e|Replicate| Replica1\\n    Primary -.-\u003e|Replicate| Replica2\\n    Primary -.-\u003e|Replicate| Replica3\"}]\n9d:[\"$\",\"h3\",null,{\"id\":\"how-it-works\",\"children\":\"How It Works\"}]\n9e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Primary database handle writes\"}]}]\n9f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"All INSERT, UPDATE, DELETE → primary\"}],\"\\n\"]}]\na0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Changes replicate to replicas\"}]}]\na1:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Async replication (usually)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Binary log shipping (MySQL) hoặc WAL shipping (PostgreSQL)\"}],\"\\n\"]}]\na2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Replicas handle "])</script><script>self.__next_f.push([1,"reads\"}]}]\na3:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"SELECT queries → replicas\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Distribute load across multiple replicas\"}],\"\\n\"]}]\na4:[\"$\",\"h3\",null,{\"id\":\"benefits\",\"children\":\"Benefits\"}]\na5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scale read traffic:\"}]}]\na6:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Add replicas as read traffic grows\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Primary không bị overwhelm\"}],\"\\n\"]}]\na7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Geographic distribution:\"}]}]\na8:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Replica ở Singapore cho Asia users\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Replica ở US cho US users\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Lower latency\"}],\"\\n\"]}]\na9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Analytics queries:\"}]}]\naa:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Run expensive reports trên replica\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Không impact production traffic\"}],\"\\n\"]}]\nab:[\"$\",\"h3\",null,{\"id\":\"replication-lag\",\"children\":\"Replication Lag\"}]\nac:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem: Replicas không instantly up-to-date.\"}]}]\nad:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"t=0: Write to primary (user.status = 'active')\\nt=1: Read from replica (user.status = 'pending')  ← stale!\\nt=2: Replication catches up (user.status = 'active')\\n\"}]}]\nae:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Typical lag: 10-100ms, có thể cao hơn.\"}]}]\naf:[\"$\",\"h3\",null,{\"id\":\"handling-replication-lag\",\"children\":\"Handling Replication Lag\"}]\nb0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Read-after-write consistency\"}]}]\nb1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def update_profile(user_id, data):\\n    # Write to primary\\n    db_primary.execute(\\\"UPDATE users SET ... WHERE id = ?\\\", user_id)\\n    \\n    # Read from primary (not replica)\\n    return db_primary.query(\\\"SELECT * FROM users WHERE id = ?\\\", user_id)\\n\"}]}]\nb2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Session stickiness\"}]}]\nb3:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"User session luôn read từ same replica\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Consistent experience\"}],\"\\n\"]}]\nb4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Critical reads from primary\"}]}]\nb5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Payment - critical\\nbalance = db_primary.query(\\\"SELECT balance FROM accounts\\\")\\n\\n# Profile view - không critical\\nprofile = db_replica.query(\\\"SELECT * FROM users\\\")\\n\"}]}]\nb6:[\"$\",\"h3\",null,{\"id\":\"replication-types\",\"children\":\"Replication Types\"}]\nb7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Asynchronous (default):\"}]}]\nb8:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Primary không đợi replica confirm\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fast writes\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Risk: replica lag, potential data loss\"}],\"\\n\"]}]\nb9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Synchronous:\"}]}]\nba:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Primary đợi ít nhất 1 replica confirm\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Slower writes\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Strong consistency\"}],\"\\n\"]}]\nbb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Semi-synchronous:\"}]}]\nbc:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Đợi 1 replica, others async\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Balance performance + durability\"}],\"\\n\"]}]\nbd:[\"$\",\"h2\",null,{\"id\":\"sharding---scale-writes--storage\",\"children\":\"Sharding - Scale Writes \u0026 Storage\"}]\nbe:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Sharding = chia database thành multiple databases, mỗi database chứa subset of data.\"}]}]\nbf:[\"$\",\"p\",null,{\"children\":\"Đây là ultimate scaling solution, nhưng cũn"])</script><script>self.__next_f.push([1,"g phức tạp nhất.\"}]\nc0:[\"$\",\"h3\",null,{\"id\":\"why-sharding\",\"children\":\"Why Sharding?\"}]\nc1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Read replicas chỉ scale reads. Writes vẫn bottleneck ở primary.\"}]}]\nc2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Sharding scale cả reads và writes:\"}]}]\nc3:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Write traffic distribute across shards\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Storage distribute across shards\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Each shard nhỏ hơn → faster queries\"}],\"\\n\"]}]\nc4:[\"$\",\"h3\",null,{\"id\":\"sharding-strategies\",\"children\":\"Sharding Strategies\"}]\nc5:[\"$\",\"h4\",null,{\"id\":\"1-range-based-sharding\",\"children\":\"1. Range-Based Sharding\"}]\nc6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Chia data theo range of values.\"}]}]\nc7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Shard 1: user_id 1-1000000\\nShard 2: user_id 1000001-2000000\\nShard 3: user_id 2000001-3000000\\n\"}]}]\nc8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_shard(user_id):\\n    if user_id \u003c= 1000000:\\n        return shard_1\\n    elif user_id \u003c= 2000000:\\n        return shard_2\\n    else:\\n        return shard_3\\n\"}]}]\nc9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\nca:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple logic\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Range queries efficient\"}],\"\\n\"]}]\ncb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\ncc:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Uneven distribution (hotspots)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Hard to rebalance\"}],\"\\n\"]}]\ncd:[\"$\",\"h4\",null,{\"id\":\"2-hash-based-sharding\",\"children\":\"2. Hash-Based Sharding\"}]\nce:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Hash key để determine shard.\"}]}]\ncf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_shard(user_id):\\n    shard_num = hash(user_id) % num_shards\\n    return shards[shard_num]\\n\"}]}]\nd0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\nd1:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Even distribution\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"No hotspots\"}],\"\\n\"]}]\nd2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\nd3:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Range queries phải query all shards\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Adding shards = re-hash (complex)\"}],\"\\n\"]}]\nd4:[\"$\",\"h4\",null,{\"id\":\"3-geographic-sharding\",\"children\":\"3. Geographic Sharding\"}]\nd5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Chia theo location.\"}]}]\nd6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Shard 1: Asia users\\nShard 2: US users\\nShard 3: EU users\\n\"}]}]\nd7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\nd8:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Low latency (data gần users)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Compliance (data residency laws)\"}],\"\\n\"]}]\nd9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\nda:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Uneven load\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cross-region queries expensive\"}],\"\\n\"]}]\ndb:[\"$\",\"h4\",null,{\"id\":\"4-entity-based-sharding-practical\",\"children\":\"4. Entity-Based Sharding (Practical)\"}]\ndc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Chia theo business entity.\"}]}]\ndd:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Shard 1: Organization A's data\\nShard 2: Organization B's data\\nShard 3: Organization C's data\\n\"}]}]\nde:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Best for multi-tenant applications.\"}]}]\ndf:[\"$\",\"h3\",null,{\"id\":\"sharding-challenges\",\"children\":\"Sharding Challenges\"}]\ne0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Cross-shard queries\"}]}]\ne1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Query u"])</script><script>self.__next_f.push([1,"sers across all shards\\nSELECT * FROM users WHERE created_at \u003e '2025-01-01'\\n\"}]}]\ne2:[\"$\",\"p\",null,{\"children\":\"Phải query tất cả shards → aggregate results → slow.\"}]\ne3:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Solution:\"}],\" Avoid cross-shard queries bằng cách design shard key cẩn thận.\"]}]\ne4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Cross-shard transactions\"}]}]\ne5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Transfer between users on different shards\\nBEGIN TRANSACTION;\\n  UPDATE accounts SET balance = balance - 100 WHERE user_id = 123; -- Shard 1\\n  UPDATE accounts SET balance = balance + 100 WHERE user_id = 456; -- Shard 2\\nCOMMIT;\\n\"}]}]\ne6:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Distributed transaction phức tạp.\"}],\" Thường avoid bằng cách:\"]}]\ne7:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Eventual consistency\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Saga pattern\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Compensating transactions\"}],\"\\n\"]}]\ne8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Rebalancing\"}]}]\ne9:[\"$\",\"p\",null,{\"children\":\"Data grow không đều → một shard đầy trước.\"}]\nea:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rebalancing = move data giữa shards.\"}]}]\neb:[\"$\",\"p\",null,{\"children\":\"Phức tạp, downtime risk, cần planning cẩn thận.\"}]\nec:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Joins\"}]}]\ned:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Join users + orders across shards\\nSELECT u.name, o.total\\nFROM users u\\nJOIN orders o ON u.id = o.user_id\\n\"}]}]\nee:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Users ở shard A, orders ở shard B → không thể join.\"}]}]\nef:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution:\"}]}]\nf0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Denormalize data\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Application-level joins\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Design schema để avoid cross-shard joins\"}],\"\\n\"]}]\nf1:[\"$\",\"h3\",null,{\"id\":\"sharding-architecture-example\",\"children\":\"Sharding Architecture Example\"}]\nf2:[\"$\",\"$L14a\",null,{\"chart\":\"flowchart TB\\n    App[Application Layer]\\n    Router[Shard Router / Proxy]\\n    \\n    subgraph Shard1[\\\"Shard 1 (user_id: 0-999)\\\"]\\n        S1P[Primary]\\n        S1R1[Replica 1]\\n        S1R2[Replica 2]\\n    end\\n    \\n    subgraph Shard2[\\\"Shard 2 (user_id: 1000-1999)\\\"]\\n        S2P[Primary]\\n        S2R1[Replica 1]\\n        S2R2[Replica 2]\\n    end\\n    \\n    subgraph Shard3[\\\"Shard 3 (user_id: 2000-2999)\\\"]\\n        S3P[Primary]\\n        S3R1[Replica 1]\\n        S3R2[Replica 2]\\n    end\\n    \\n    App --\u003e Router\\n    Router --\u003e S1P\\n    Router --\u003e S2P\\n    Router --\u003e S3P\\n    \\n    S1P -.-\u003e S1R1\\n    S1P -.-\u003e S1R2\\n    S2P -.-\u003e S2R1\\n    S2P -.-\u003e S2R2\\n    S3P -.-\u003e S3R1\\n    S3P -.-\u003e S3R2\"}]\nf3:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Shard router\"}],\" quyết định query đi đến shard nào dựa trên shard key.\"]}]\nf4:[\"$\",\"h3\",null,{\"id\":\"when-to-shard\",\"children\":\"When To Shard\"}]\nf5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Shard khi:\"}]}]\nf6:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Write throughput vượt quá single database\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Storage vượt quá single server capacity\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Đã optimize queries, indexes, read replicas\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Business justifies complexity\"}],\"\\n\"]}]\nf7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Chưa nên shard khi:\"}]}]\nf8:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Single database đủ handle traffic\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Chưa optimize queries\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Chưa dùng read replicas\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team chưa có expertise\"}],\"\\n\"]}]\nf9:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{"])</script><script>self.__next_f.push([1,"\"children\":\"Rule of thumb:\"}],\" Sharding là last resort. Exhaust simpler solutions trước.\"]}]\nfa:[\"$\",\"h2\",null,{\"id\":\"partitioning---logical-sharding-within-single-database\",\"children\":\"Partitioning - Logical Sharding Within Single Database\"}]\nfb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Partitioning = chia table thành multiple physical partitions, nhưng vẫn 1 logical table.\"}]}]\nfc:[\"$\",\"p\",null,{\"children\":\"Similar sharding, nhưng database-managed, không phải application.\"}]\nfd:[\"$\",\"h3\",null,{\"id\":\"types-of-partitioning\",\"children\":\"Types Of Partitioning\"}]\nfe:[\"$\",\"h4\",null,{\"id\":\"range-partitioning\",\"children\":\"Range Partitioning\"}]\nff:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- PostgreSQL\\nCREATE TABLE orders (\\n    id BIGINT,\\n    user_id BIGINT,\\n    created_at TIMESTAMP\\n) PARTITION BY RANGE (created_at);\\n\\nCREATE TABLE orders_2024 \\nPARTITION OF orders \\nFOR VALUES FROM ('2024-01-01') TO ('2025-01-01');\\n\\nCREATE TABLE orders_2025 \\nPARTITION OF orders \\nFOR VALUES FROM ('2025-01-01') TO ('2026-01-01');\\n\"}]}]\n100:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Query automatically routed đến correct partition.\"}]}]\n101:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Chỉ scan orders_2025 partition\\nSELECT * FROM orders \\nWHERE created_at \u003e= '2025-02-01';\\n\"}]}]\n102:[\"$\",\"h4\",null,{\"id\":\"hash-partitioning\",\"children\":\"Hash Partitioning\"}]\n103:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"CREATE TABLE users (\\n    id BIGINT,\\n    name VARCHAR(100)\\n) PARTITION BY HASH (id);\\n\\nCREATE TABLE users_p0 PARTITION OF users \\nFOR VALUES WITH (MODULUS 4, REMAINDER 0);\\n\\nCREATE TABLE users_p1 PARTITION OF users \\nFOR VALUES WITH (MODULUS 4, REMAINDER 1);\\n-- ... p2, p3\\n\"}]}]\n104:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Even distribution across partitions.\"}]}]\n105:[\"$\",\"h4\",null,{\"id\":\"list-partitioning\",\"children\":\"List Partitioning\"}]\n106:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"CREATE TABLE orders (\\n    country VARCHAR(2)\\n) PARTITION BY LIST (country);\\n\\nCREATE TABLE orders_us PARTITION OF orders \\nFOR VALUES IN ('US');\\n\\nCREATE TABLE orders_eu PARTITION OF orders \\nFOR VALUES IN ('DE', 'FR', 'UK');\\n\"}]}]\n107:[\"$\",\"h3\",null,{\"id\":\"benefits-of-partitioning\",\"children\":\"Benefits Of Partitioning\"}]\n108:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Query performance\"}]}]\n109:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Partition pruning: chỉ scan relevant partitions\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Smaller indexes per partition\"}],\"\\n\"]}]\n10a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Maintenance\"}]}]\n10b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Drop old partitions thay vì DELETE (fast)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Vacuum/analyze per partition\"}],\"\\n\"]}]\n10c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Archival\"}]}]\n10d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Move old partitions to slower storage\"}],\"\\n\"]}]\n10e:[\"$\",\"h3\",null,{\"id\":\"partitioning-vs-sharding\",\"children\":\"Partitioning vs Sharding\"}]\n10f:[\"$\",\"table\",null,{\"children\":[[\"$\",\"thead\",null,{\"children\":[\"$\",\"tr\",null,{\"children\":[[\"$\",\"th\",null,{\"children\":\"Aspect\"}],[\"$\",\"th\",null,{\"children\":\"Partitioning\"}],[\"$\",\"th\",null,{\"children\":\"Sharding\"}]]}]}],[\"$\",\"tbody\",null,{\"children\":[[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Scope\"}],[\"$\",\"td\",null,{\"children\":\"Single database\"}],[\"$\",\"td\",null,{\"children\":\"Multiple databases\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Complexity\"}],[\"$\",\"td\",null,{\"children\":\"Low\"}],[\"$\",\"td\",null,{\"children\":\"High\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Scale\"}],[\"$\",\"td\",null,{\"children\":\"Limited\"}],[\"$\",\"td\",null,{\"children\":\"Unlimited\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Management\"}],[\"$\",\"td\",null,"])</script><script>self.__next_f.push([1,"{\"children\":\"Database-managed\"}],[\"$\",\"td\",null,{\"children\":\"Application-managed\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Transactions\"}],[\"$\",\"td\",null,{\"children\":\"Easy\"}],[\"$\",\"td\",null,{\"children\":\"Hard (distributed)\"}]]}]]}]]}]\n110:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Partitioning = simpler sharding for single database.\"}]}]\n111:[\"$\",\"h2\",null,{\"id\":\"database-scaling-progression\",\"children\":\"Database Scaling Progression\"}]\n112:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không nhảy thẳng vào sharding. Follow progression:\"}]}]\n113:[\"$\",\"$L14a\",null,{\"chart\":\"flowchart TD\\n    Start[Single Database] --\u003e Step1{Slow queries?}\\n    Step1 --\u003e|Yes| Optimize[Query Optimization\u003cbr/\u003e+ Indexing]\\n    Optimize --\u003e Step2{Still slow?}\\n    \\n    Step2 --\u003e|Read-heavy| Replicas[Add Read Replicas]\\n    Step2 --\u003e|Write-heavy| Partition[Partitioning]\\n    \\n    Replicas --\u003e Step3{Replicas maxed?}\\n    Partition --\u003e Step3\\n    \\n    Step3 --\u003e|Yes| Cache[Add Caching Layer]\\n    Cache --\u003e Step4{Still bottleneck?}\\n    \\n    Step4 --\u003e|Yes| Shard[Sharding]\\n    Shard --\u003e Done[Scaled!]\\n    \\n    Step1 --\u003e|No| Good[You're good!]\\n    Step2 --\u003e|No| Good\\n    Step3 --\u003e|No| Good\\n    Step4 --\u003e|No| Good\"}]\n114:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mỗi step tăng complexity. Chỉ advance khi necessary.\"}]}]\n115:[\"$\",\"h2\",null,{\"id\":\"practical-recommendations\",\"children\":\"Practical Recommendations\"}]\n116:[\"$\",\"h3\",null,{\"id\":\"1-measure-first\",\"children\":\"1. Measure First\"}]\n117:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't guess. Measure.\"}]}]\n118:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Slow query log\\nSET global slow_query_log = 'ON';\\nSET global long_query_time = 1; -- queries \u003e 1s\\n\\n-- Monitor metrics\\n- Query latency (p50, p95, p99)\\n- Queries per second\\n- Connection pool usage\\n- Disk I/O\\n- CPU usage\\n\"}]}]\n119:[\"$\",\"h3\",null,{\"id\":\"2-low-hanging-fruit-first\",\"children\":\"2. Low-Hanging Fruit First\"}]\n11a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Before sharding:\"}]}]\n11b:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Add missing indexes\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Optimize queries\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Add read replicas\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Add caching\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Partition tables\"}],\"\\n\"]}]\n11c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Sharding chỉ khi exhausted simpler options.\"}]}]\n11d:[\"$\",\"h3\",null,{\"id\":\"3-design-for-your-readwrite-ratio\",\"children\":\"3. Design For Your Read/Write Ratio\"}]\n11e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Read-heavy (90% reads):\"}]}]\n11f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read replicas + caching = giải quyết most problems\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Primary chỉ handle 10% writes\"}],\"\\n\"]}]\n120:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Write-heavy (50%+ writes):\"}]}]\n121:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Partitioning → sharding\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Async writes với queue\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Eventual consistency\"}],\"\\n\"]}]\n122:[\"$\",\"h3\",null,{\"id\":\"4-connection-pooling\",\"children\":\"4. Connection Pooling\"}]\n123:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Database connections expensive.\"}]}]\n124:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Bad: New connection mỗi query\\ndef get_user(id):\\n    conn = create_connection()\\n    user = conn.query(...)\\n    conn.close()\\n\\n# Good: Connection pool\\npool = ConnectionPool(max_connections=20)\\n\\ndef get_user(id):\\n    with pool.get_connection() as conn:\\n        user = conn.query(...)\\n\"}]}]\n125:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Reuse connections, reduce overhead.\"}]}]\n126:[\"$\",\"h3\",null,{\"id\":\"5-database-specific-tuning\",\"children\":\"5. Database-Specific Tuning\"}]\n127:[\"$\",\"p\",null,{\"children\":[\"$\","])</script><script>self.__next_f.push([1,"\"strong\",null,{\"children\":\"PostgreSQL:\"}]}]\n128:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Increase shared buffers\\nshared_buffers = 4GB\\n\\n-- Work mem for sorting\\nwork_mem = 256MB\\n\\n-- Effective cache size\\neffective_cache_size = 12GB\\n\"}]}]\n129:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"MySQL:\"}]}]\n12a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- InnoDB buffer pool\\ninnodb_buffer_pool_size = 8GB\\n\\n-- Query cache\\nquery_cache_size = 256MB\\n\"}]}]\n12b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tune based on workload + hardware.\"}]}]\n12c:[\"$\",\"h2\",null,{\"id\":\"mental-model-database-thường-là-bottleneck-lớn-nhất\",\"children\":\"Mental Model: Database Thường Là Bottleneck Lớn Nhất\"}]\n12d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core insight:\"}]}]\n12e:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Application servers stateless → scale easy.\"}],[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Database stateful → scale hard.\"}]]}]\n12f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Add API server:     1 command, 5 minutes\\nAdd database shard: Weeks of planning + implementation\\n\"}]}]\n130:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architect priorities:\"}]}]\n131:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Reduce database load:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Caching (90% cache hit = 10x less DB queries)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Async processing (writes → queue)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"CDN (static content)\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Optimize queries:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Proper indexes\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Avoid N+1\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"EXPLAIN ANALYZE everything\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scale reads:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read replicas\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Geographic distribution\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Last resort - scale writes:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Partitioning\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Sharding\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\"]}]\n132:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Great architects minimize database pressure, không rush vào complex scaling.\"}]}]\n133:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n134:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Database là bottleneck lớn nhất trong most systems\"}]}]\n135:[\"$\",\"p\",null,{\"children\":\"Stateful, ACID guarantees, disk I/O limits.\"}]\n136:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Index strategy = first line of defense\"}]}]\n137:[\"$\",\"p\",null,{\"children\":\"Proper indexes có thể improve performance 100x-1000x.\"}]\n138:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Query optimization trước khi scaling\"}]}]\n139:[\"$\",\"p\",null,{\"children\":\"Bad queries trên scaled system vẫn bad. Optimize trước.\"}]\n13a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. N+1 problem = silent killer\"}]}]\n13b:[\"$\",\"p\",null,{\"children\":\"1000 queries thay vì 2. Always check generated SQL.\"}]\n13c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Denormalization = trade consistency for speed\"}]}]\n13d:[\"$\",\"p\",null,{\"children\":\"Pre-compute expensive aggregations. Material views useful.\"}]\n13e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"6. Read replicas scale reads horizontally\"}]}]\n13f:[\"$\",\"p\",null,{\"children\":\"Add replicas as traffic grows. Handle replication lag properly.\"}]\n140:[\"$"])</script><script>self.__next_f.push([1,"\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"7. Sharding = scale writes + storage, nhưng phức tạp\"}]}]\n141:[\"$\",\"p\",null,{\"children\":\"Cross-shard queries, transactions hard. Last resort.\"}]\n142:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"8. Partitioning = simpler alternative to sharding\"}]}]\n143:[\"$\",\"p\",null,{\"children\":\"Database-managed, single server, good for most use cases.\"}]\n144:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"9. Follow progression: optimize → replicas → partition → shard\"}]}]\n145:[\"$\",\"p\",null,{\"children\":\"Don't jump to sharding. Exhaust simpler solutions.\"}]\n146:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"10. Measure, don't guess\"}]}]\n147:[\"$\",\"p\",null,{\"children\":\"Slow query log, monitoring metrics, EXPLAIN ANALYZE.\"}]\n148:[\"$\",\"hr\",null,{}]\n149:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember: The best database scaling strategy is to need less database. Cache aggressively, optimize queries, and only scale when you've exhausted simpler options.\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"14b:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding | Phase 4 — Scalability \u0026 Performance | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-4/lesson/lesson-4-database-scaling-optimization\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding | Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-4/lesson/lesson-4-database-scaling-optimization\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding | Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học database scaling từ optimization cơ bản đến advanced patterns: index strategy, query optimization, N+1 problem, denormalization, read replicas, sharding, và\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L14b\",\"14\",{}]]\n"])</script></body></html>

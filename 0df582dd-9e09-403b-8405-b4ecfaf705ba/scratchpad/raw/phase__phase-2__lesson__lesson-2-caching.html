@@ -1,0 +1,656 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Caching - Performance Layer Quan Trọng Nhất | Phase 2 — Core Building Blocks | System Design Core</title><meta name="description" content="Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade offs. Hiểu sâu tại sao cache là giải pháp per"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-2/lesson/lesson-2-caching"/><meta property="og:title" content="Caching - Performance Layer Quan Trọng Nhất | Phase 2 — Core Building Blocks"/><meta property="og:description" content="Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade offs. Hiểu sâu tại sao cache là giải pháp per"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-2/lesson/lesson-2-caching"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Caching - Performance Layer Quan Trọng Nhất | Phase 2 — Core Building Blocks"/><meta name="twitter:description" content="Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade offs. Hiểu sâu tại sao cache là giải pháp per"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 2 — Core Building Blocks</p><p class="mt-3 text-xl font-semibold text-ink">Caching - Performance Layer Quan Trọng Nhất</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade-offs. Hiểu sâu tại sao cache là giải pháp performance đầu tiên bạn nên nghĩ đến.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-1-load-balancing"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Load Balancing: Traffic Distribution Trong Distributed Systems</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-2/lesson/lesson-2-caching"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Caching - Performance Layer Quan Trọng Nhất</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-3-database"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Database Scaling - Chiến Lược Scale Data Layer</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Message Queues &amp; Async Processing - Decoupling Services</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-2">Phase 2 — Core Building Blocks</a></li><li>/</li><li aria-current="page" class="text-ink">Caching - Performance Layer Quan Trọng Nhất</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Caching - Performance Layer Quan Trọng Nhất</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade-offs. Hiểu sâu tại sao cache là giải pháp performance đầu tiên bạn nên nghĩ đến.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Caching - Performance Layer Quan Trọng Nhất"><article class="prose-ui"><h1 id="caching-performance-layer-quan-trọng-nhất">Caching: Performance Layer Quan Trọng Nhất</h1>
+<p>Có một câu hỏi mà junior engineers thường hỏi tôi: <em>&quot;API chậm, em nên làm gì?&quot;</em></p>
+<p>10 năm trước, tôi sẽ nói: <em>&quot;Optimize database queries.&quot;</em></p>
+<p>Giờ tôi nói: <em>&quot;Cache trước. Optimize sau.&quot;</em></p>
+<p>Tại sao? Vì tôi đã học một bài học đắt giá.</p>
+<p>Năm 2015, hệ thống tôi quản lý bị chậm. Tôi spend 2 tuần optimize queries, rewrite indexes, tune database parameters. Improvement? 20%.</p>
+<p>Senior architect ghé qua, thêm Redis cache layer trong 2 giờ. Improvement? <strong>10x faster</strong>.</p>
+<p>Đó là lúc tôi hiểu: <strong>Cache không phải là optimization technique. Nó là architectural decision.</strong></p>
+<h2 id="tại-sao-cache-tồn-tại">Tại Sao Cache Tồn Tại?</h2>
+<h3 id="the-fundamental-speed-gap">The Fundamental Speed Gap</h3>
+<pre><code>CPU Cache:     1 nanosecond
+RAM:           100 nanoseconds  (100x slower)
+SSD:           150 microseconds (150,000x slower)
+Network:       50 milliseconds  (50,000,000x slower)
+HDD:           10 milliseconds  (10,000,000x slower)
+</code></pre>
+<p><strong>Implication:</strong> Mỗi lần bạn query database từ network, bạn mất 50 triệu cycles CPU.</p>
+<p><strong>Solution:</strong> Lưu kết quả gần user hơn. Đó chính là cache.</p>
+<h3 id="real-world-scenario">Real-World Scenario</h3>
+<p><strong>Without Cache:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant U as User
+    participant A as API Server
+    participant D as Database
+    
+    U-&gt;&gt;A: GET /product/123
+    A-&gt;&gt;D: SELECT * FROM products WHERE id=123
+    Note over D: Query: 300ms
+    D--&gt;&gt;A: Product data
+    A--&gt;&gt;U: Response
+    Note over U: Total: 350ms</code></pre>
+<p><strong>With Cache:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant U as User
+    participant A as API Server
+    participant C as Cache (Redis)
+    participant D as Database
+    
+    U-&gt;&gt;A: GET /product/123
+    A-&gt;&gt;C: GET product:123
+    Note over C: Cache hit: 5ms
+    C--&gt;&gt;A: Product data
+    A--&gt;&gt;U: Response
+    Note over U: Total: 15ms (23x faster!)</code></pre>
+<h3 id="when-cache-makes-sense">When Cache Makes Sense</h3>
+<p>Không phải mọi thứ đều nên cache. Hãy dùng framework này:</p>
+<p><strong>The Cache Decision Matrix:</strong></p>
+<pre><code>Question 1: Read-heavy? (read:write ratio &gt; 10:1)
+  ↓ YES
+Question 2: Data thay đổi ít?
+  ↓ YES
+Question 3: Same data được request nhiều lần?
+  ↓ YES
+Question 4: Query expensive? (&gt; 100ms)
+  ↓ YES
+  
+→ USE CACHE
+
+Any NO? → Think carefully
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code> SHOULD cache:
+- Product catalog (read 1000x, write 1x)
+- User profiles (read many, update rarely)
+- Static pages
+- API responses cho public data
+
+ SHOULD NOT cache:
+- Real-time stock prices (thay đổi liên tục)
+- Personalized recommendations (different per user)
+- Write-heavy counters (likes, views tăng liên tục)
+- Small datasets (&lt; 1000 records, DB fast enough)
+</code></pre>
+<h2 id="cache-layers-từ-client-đến-database">Cache Layers: Từ Client Đến Database</h2>
+<p>Cache không chỉ là Redis. Nó là một <strong>layered strategy</strong>.</p>
+<h3 id="layer-1-browser-cache">Layer 1: Browser Cache</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    B[Browser] --&gt; BC[Browser Cache]
+    BC --&gt; S[Server]</code></pre>
+<p><strong>How it works:</strong></p>
+<pre><code class="language-http">HTTP/1.1 200 OK
+Cache-Control: public, max-age=31536000, immutable
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code> Fastest (zero network)
+ Reduce server load
+ Hard to invalidate (user doesn&#x27;t refresh)
+ Different cache per user
+</code></pre>
+<p><strong>When to use:</strong></p>
+<pre><code>Static assets:
+- Images, CSS, JS files
+- Fonts, icons
+- Versioned URLs (/app.v2.js)
+
+NOT for:
+- HTML pages (need fresh)
+- API responses
+- Personalized content
+</code></pre>
+<h3 id="layer-2-cdn-cache">Layer 2: CDN Cache</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    U[Users Worldwide] --&gt; CDN[CDN Edge Servers]
+    CDN --&gt; O[Origin Server]
+    
+    style CDN fill:#90EE90</code></pre>
+<p><strong>Geographic distribution:</strong></p>
+<pre><code>User in Brazil → Brazil edge server (20ms)
+User in Tokyo → Tokyo edge server (15ms)
+User in London → London edge server (10ms
+
+All serve từ cache, không hit origin server
+</code></pre>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-javascript">// Cloudflare Workers example
+addEventListener(&#x27;fetch&#x27;, event =&gt; {
+  const cache = caches.default
+  const response = cache.match(event.request)
+  
+  if (response) {
+    return response  // Cache hit
+  }
+  
+  // Cache miss → fetch from origin → cache it
+  const originResponse = fetch(event.request)
+  event.waitUntil(
+    cache.put(event.request, originResponse.clone())
+  )
+  return originResponse
+})
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code> Low latency globally
+ Reduce origin load
+ DDoS protection
+ Cost (bandwidth expensive)
+ Complexity (multiple cache layers)
+</code></pre>
+<h3 id="layer-3-application-cache-redismemcached">Layer 3: Application Cache (Redis/Memcached)</h3>
+<p><strong>This is the main focus.</strong> Đây là layer bạn có full control.</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    A[API Server] --&gt; R[Redis Cache]
+    A --&gt; D[Database]
+    
+    style R fill:#FFB6C1</code></pre>
+<p><strong>Why Redis?</strong></p>
+<ul>
+<li>In-memory → Extremely fast (&lt; 1ms)</li>
+<li>Rich data structures (strings, hashes, lists, sets)</li>
+<li>TTL support</li>
+<li>Pub/sub for cache invalidation</li>
+<li>Persistence options</li>
+</ul>
+<p><strong>Basic pattern:</strong></p>
+<pre><code class="language-python">import redis
+
+cache = redis.Redis()
+
+def get_user(user_id):
+    # 1. Try cache first
+    cached = cache.get(f&quot;user:{user_id}&quot;)
+    if cached:
+        return json.loads(cached)  # Cache hit!
+    
+    # 2. Cache miss → Query DB
+    user = db.query(&quot;SELECT * FROM users WHERE id = ?&quot;, user_id)
+    
+    # 3. Store in cache for next time
+    cache.setex(
+        f&quot;user:{user_id}&quot;,
+        3600,  # TTL: 1 hour
+        json.dumps(user)
+    )
+    
+    return user
+</code></pre>
+<h3 id="layer-4-database-query-cache">Layer 4: Database Query Cache</h3>
+<p>Most databases có built-in query cache.</p>
+<p><strong>MySQL Query Cache:</strong></p>
+<pre><code class="language-sql">-- First query: 300ms (cache miss)
+SELECT * FROM products WHERE category = &#x27;electronics&#x27;;
+
+-- Same query again: 5ms (cache hit)
+SELECT * FROM products WHERE category = &#x27;electronics&#x27;;
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code> Automatic (no code changes)
+ Shared across connections
+ Invalidated on ANY table write
+ Not scalable (single server)
+</code></pre>
+<p><strong>Modern approach:</strong> Disable DB query cache, use application cache instead (Redis). More control.</p>
+<h2 id="cache-strategies-khi-nào-read-khi-nào-write">Cache Strategies: Khi Nào Read? Khi Nào Write?</h2>
+<h3 id="strategy-1-cache-aside-lazy-loading">Strategy 1: Cache-Aside (Lazy Loading)</h3>
+<p><strong>Most common pattern.</strong></p>
+<pre><code class="language-python">def get_product(product_id):
+    # Read path
+    product = cache.get(f&quot;product:{product_id}&quot;)
+    if product:
+        return product  # Hit
+    
+    # Miss → Load from DB
+    product = db.get(product_id)
+    cache.set(f&quot;product:{product_id}&quot;, product, ttl=3600)
+    return product
+
+def update_product(product_id, data):
+    # Write path
+    db.update(product_id, data)
+    cache.delete(f&quot;product:{product_id}&quot;)  # Invalidate
+</code></pre>
+<p><strong>Flow diagram:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    R[Read Request] --&gt; C{Cache?}
+    C --&gt;|Hit| RH[Return from Cache]
+    C --&gt;|Miss| DB[Query Database]
+    DB --&gt; SC[Store in Cache]
+    SC --&gt; RD[Return Data]</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code> Only cache what&#x27;s needed
+ Cache miss không fatal
+ Resilient (cache down → still works)
+ First request always slow (cold cache)
+ Cache miss adds latency
+</code></pre>
+<p><strong>Best for:</strong> Read-heavy workloads, infrequent updates.</p>
+<h3 id="strategy-2-write-through">Strategy 2: Write-Through</h3>
+<pre><code class="language-python">def update_product(product_id, data):
+    # Write to both DB and cache
+    db.update(product_id, data)
+    cache.set(f&quot;product:{product_id}&quot;, data, ttl=3600)
+
+def get_product(product_id):
+    # Read from cache (always up-to-date)
+    return cache.get(f&quot;product:{product_id}&quot;)
+</code></pre>
+<p><strong>Flow diagram:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    W[Write] --&gt; DB[Database]
+    W --&gt; C[Cache]
+    DB --&gt; S[Success]
+    C --&gt; S</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code> Cache always fresh
+ Read latency predictable
+ Write latency higher (2 operations)
+ Wasted writes (might not be read)
+</code></pre>
+<p><strong>Best for:</strong> Read-heavy với strict consistency requirements.</p>
+<h3 id="strategy-3-write-behind-write-back">Strategy 3: Write-Behind (Write-Back)</h3>
+<pre><code class="language-python">def update_product(product_id, data):
+    # Write to cache immediately
+    cache.set(f&quot;product:{product_id}&quot;, data)
+    
+    # Queue DB write asynchronously
+    queue.add({
+        &quot;type&quot;: &quot;update_product&quot;,
+        &quot;id&quot;: product_id,
+        &quot;data&quot;: data
+    })
+    
+    return &quot;Success&quot;  # Return immediately!
+
+# Background worker
+def worker():
+    while True:
+        job = queue.pop()
+        db.update(job[&quot;id&quot;], job[&quot;data&quot;])
+</code></pre>
+<p><strong>Flow diagram:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant C as Client
+    participant A as API
+    participant Cache
+    participant Q as Queue
+    participant DB as Database
+    
+    C-&gt;&gt;A: Update request
+    A-&gt;&gt;Cache: Write data
+    A-&gt;&gt;Q: Queue DB write
+    A--&gt;&gt;C: Success (fast!)
+    Q-&gt;&gt;DB: Async write later</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code> Extremely fast writes
+ Absorb write spikes
+ Risk data loss (cache crash trước khi DB write)
+ Complex error handling
+ Eventual consistency
+</code></pre>
+<p><strong>Best for:</strong> Write-heavy workloads, analytics, logging.</p>
+<h3 id="strategy-4-refresh-ahead">Strategy 4: Refresh-Ahead</h3>
+<pre><code class="language-python">def get_product(product_id):
+    product = cache.get(f&quot;product:{product_id}&quot;)
+    ttl_remaining = cache.ttl(f&quot;product:{product_id}&quot;)
+    
+    # Nếu sắp expire, refresh async
+    if ttl_remaining &lt; 300:  # &lt; 5 phút
+        background_refresh(product_id)
+    
+    return product
+
+def background_refresh(product_id):
+    fresh_data = db.get(product_id)
+    cache.set(f&quot;product:{product_id}&quot;, fresh_data, ttl=3600)
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code> Cache rarely misses
+ Consistent latency
+ Complexity
+ Wasted refreshes (if data not accessed)
+</code></pre>
+<p><strong>Best for:</strong> Predictable access patterns, high availability requirements.</p>
+<h2 id="cache-invalidation-the-hard-problem">Cache Invalidation: The Hard Problem</h2>
+<p>Phil Karlton: <em>&quot;There are only two hard things in Computer Science: cache invalidation and naming things.&quot;</em></p>
+<h3 id="why-its-hard">Why It&#x27;s Hard</h3>
+<pre><code>Timeline:
+10:00:00 - User updates profile (DB updated)
+10:00:01 - User refreshes page
+          → Cache still has old data
+          → User sees old profile
+10:00:02 - User confused, files bug report
+</code></pre>
+<h3 id="solution-1-time-based-ttl">Solution 1: Time-Based (TTL)</h3>
+<pre><code class="language-python">cache.setex(&quot;user:123&quot;, 300, user_data)  # Expire after 5 min
+
+ Simple
+ Automatic cleanup
+ Stale data for up to TTL duration
+ Can&#x27;t invalidate immediately
+</code></pre>
+<p><strong>Rule of thumb cho TTL:</strong></p>
+<pre><code>Highly dynamic data (stock prices): 1-10 seconds
+Dynamic data (news feed): 1-5 minutes
+Semi-static (user profile): 10-30 minutes
+Static (product catalog): 1-24 hours
+Immutable (images, old posts): Days/weeks
+</code></pre>
+<h3 id="solution-2-explicit-invalidation">Solution 2: Explicit Invalidation</h3>
+<pre><code class="language-python">def update_user(user_id, data):
+    db.update(user_id, data)
+    cache.delete(f&quot;user:{user_id}&quot;)  # Delete immediately
+    
+ Fresh data immediately
+ Full control
+ Must remember to invalidate everywhere
+ Easy to forget → stale data
+</code></pre>
+<p><strong>The N+1 invalidation problem:</strong></p>
+<pre><code class="language-python">#  BAD: Easy to miss invalidations
+def update_user_email(user_id, email):
+    db.update_email(user_id, email)
+    cache.delete(f&quot;user:{user_id}&quot;)
+    # Forgot to invalidate: user:email:{email}
+    # Forgot to invalidate: user_list
+    # Forgot to invalidate: search results
+</code></pre>
+<p><strong>Pattern: Centralized invalidation</strong></p>
+<pre><code class="language-python">class UserCache:
+    @staticmethod
+    def invalidate(user_id):
+        keys = [
+            f&quot;user:{user_id}&quot;,
+            f&quot;user:email:{user.email}&quot;,
+            &quot;user_list&quot;,
+            &quot;user_count&quot;
+        ]
+        cache.delete_many(keys)
+
+def update_user(user_id, data):
+    db.update(user_id, data)
+    UserCache.invalidate(user_id)  # One call, all caches cleared
+</code></pre>
+<h3 id="solution-3-event-driven-invalidation">Solution 3: Event-Driven Invalidation</h3>
+<p><strong>Best for microservices.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    US[User Service] --&gt;|user.updated| EB[Event Bus]
+    EB --&gt; CS[Cache Service]
+    EB --&gt; NS[Notification Service]
+    EB --&gt; AS[Analytics Service]
+    
+    CS --&gt; R[Invalidate Cache]</code></pre>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-python"># User Service
+def update_user(user_id, data):
+    db.update(user_id, data)
+    event_bus.publish(&quot;user.updated&quot;, {
+        &quot;user_id&quot;: user_id,
+        &quot;fields&quot;: [&quot;email&quot;, &quot;name&quot;]
+    })
+
+# Cache Service (separate service)
+@event_bus.subscribe(&quot;user.updated&quot;)
+def on_user_updated(event):
+    cache.delete(f&quot;user:{event[&#x27;user_id&#x27;]}&quot;)
+
+# Notification Service
+@event_bus.subscribe(&quot;user.updated&quot;)
+def on_user_updated(event):
+    send_notification(event[&#x27;user_id&#x27;])
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code> Decoupled services
+ Easy to add new subscribers
+ Reliable (event log persisted)
+ Infrastructure complexity (Kafka, RabbitMQ)
+ Eventual consistency (delay 10-100ms)
+</code></pre>
+<h3 id="solution-4-cache-versioning">Solution 4: Cache Versioning</h3>
+<p><strong>For immutable data.</strong></p>
+<pre><code class="language-python"># Version in key
+def get_user_avatar(user_id, version):
+    key = f&quot;avatar:{user_id}:v{version}&quot;
+    return cache.get(key)
+
+# Update creates new version
+def update_avatar(user_id, new_avatar):
+    version = db.increment_avatar_version(user_id)
+    cache.set(f&quot;avatar:{user_id}:v{version}&quot;, new_avatar)
+    
+# Old versions auto-expire via TTL
+# No explicit invalidation needed!
+
+ No invalidation needed
+ Old versions still work (useful for CDN)
+ More storage (multiple versions)
+</code></pre>
+<h2 id="thundering-herd-problem-cache-stampede">Thundering Herd Problem (Cache Stampede)</h2>
+<h3 id="the-problem">The Problem</h3>
+<pre><code>Scenario:
+1. Popular cache key expires at 10:00:00
+2. At 10:00:01, 1000 concurrent requests arrive
+3. All requests: cache miss
+4. All 1000 requests query database simultaneously
+5. Database overloaded → crashes
+
+Result: Cache làm hệ thống TỆ HƠN thay vì TỐT HƠN
+</code></pre>
+<p><strong>Real-world impact:</strong></p>
+<p>Tôi từng thấy Facebook page với 10M followers. Mỗi khi post mới, hàng triệu users refresh cùng lúc. Cache expire → Database chết → 5 phút downtime.</p>
+<h3 id="solution-1-lock-based">Solution 1: Lock-Based</h3>
+<pre><code class="language-python">def get_product(product_id):
+    product = cache.get(f&quot;product:{product_id}&quot;)
+    if product:
+        return product
+    
+    # Try to acquire lock
+    lock_key = f&quot;lock:product:{product_id}&quot;
+    locked = cache.set(lock_key, &quot;1&quot;, nx=True, ex=10)
+    
+    if locked:
+        # Only this request queries DB
+        product = db.get(product_id)
+        cache.set(f&quot;product:{product_id}&quot;, product, ex=3600)
+        cache.delete(lock_key)
+        return product
+    else:
+        # Other requests wait
+        time.sleep(0.1)
+        return get_product(product_id)  # Retry
+</code></pre>
+<p><strong>Flow:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    R1[Request 1] --&gt; L{Acquire Lock?}
+    R2[Request 2] --&gt; L
+    R3[Request 3] --&gt; L
+    
+    L --&gt;|Yes| Q[Query DB]
+    L --&gt;|No| W[Wait &amp; Retry]
+    
+    Q --&gt; C[Update Cache]
+    W --&gt; C
+    C --&gt; RET[Return Data]</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code> Only 1 DB query
+ Protects database
+ Other requests wait (latency spike)
+ Lock can get stuck (if holder crashes)
+</code></pre>
+<h3 id="solution-2-probabilistic-early-expiration">Solution 2: Probabilistic Early Expiration</h3>
+<pre><code class="language-python">import random
+
+def get_product(product_id):
+    product = cache.get(f&quot;product:{product_id}&quot;)
+    ttl = cache.ttl(f&quot;product:{product_id}&quot;)
+    
+    # Probabilistically refresh before expiration
+    if ttl &lt; 300 and random.random() &lt; 0.1:
+        # 10% chance to refresh early
+        background_refresh(product_id)
+    
+    return product
+
+ Spreads DB load over time
+ No locks needed
+ Still possible (but rare) stampede
+</code></pre>
+<h3 id="solution-3-stale-while-revalidate">Solution 3: Stale-While-Revalidate</h3>
+<pre><code class="language-python">def get_product(product_id):
+    product = cache.get(f&quot;product:{product_id}&quot;)
+    ttl = cache.ttl(f&quot;product:{product_id}&quot;)
+    
+    if ttl &lt; 0:  # Expired
+        # Return stale data immediately
+        stale = cache.get(f&quot;product:{product_id}:stale&quot;)
+        
+        # Refresh async
+        background_refresh(product_id)
+        
+        return stale
+    
+    return product
+
+ No waiting
+ Stale data better than no data
+ Users might see slightly old data
+</code></pre>
+<p><strong>This is my favorite approach</strong> cho most use cases. User experience &gt; perfect freshness.</p>
+<h2 id="trade-offs-khi-nào-không-nên-cache">Trade-offs: Khi Nào Không Nên Cache</h2>
+<h3 id="anti-pattern-1-caching-write-heavy-data">Anti-Pattern 1: Caching Write-Heavy Data</h3>
+<pre><code class="language-python">#  BAD: Cache counter that updates constantly
+def increment_view_count(post_id):
+    count = cache.get(f&quot;views:{post_id}&quot;) or 0
+    cache.set(f&quot;views:{post_id}&quot;, count + 1)
+    
+Problem:
+- 1000 increments/second
+- Cache hiệu quả = 0% (mỗi read là miss)
+- Complexity tăng, benefit = 0
+
+ BETTER: Write directly to DB, aggregate periodically
+</code></pre>
+<h3 id="anti-pattern-2-caching-personalized-data">Anti-Pattern 2: Caching Personalized Data</h3>
+<pre><code class="language-python">#  BAD: Cache recommendations per user
+def get_recommendations(user_id):
+    recs = cache.get(f&quot;recs:{user_id}&quot;)
+    if not recs:
+        recs = expensive_ml_model(user_id)
+        cache.set(f&quot;recs:{user_id}&quot;, recs)
+    return recs
+
+Problem:
+- 1M users = 1M cache entries
+- Each user&#x27;s recs accessed 1-2x/day
+- Hit rate low
+- Memory wasted
+
+ BETTER: Cache shared data (trending items), compute personal on-the-fly
+</code></pre>
+<h3 id="anti-pattern-3-over-caching">Anti-Pattern 3: Over-Caching</h3>
+<pre><code class="language-python">#  BAD: Cache everything
+cache.set(&quot;user_count&quot;, db.count_users())
+cache.set(&quot;server_time&quot;, datetime.now())
+cache.set(&quot;config&quot;, load_config())
+
+Problem:
+- Adds complexity for minimal gain
+- Config thay đổi ít, DB query fast (&lt;10ms)
+- Not worth the invalidation headache
+
+Rule: Only cache if query &gt; 100ms hoặc called frequently (&gt;100x/sec)
+</code></pre>
+<h2 id="best-practices-from-10-years-experience">Best Practices From 10 Years Experience</h2>
+<h3 id="1-start-with-metrics">1. Start With Metrics</h3>
+<pre><code class="language-python">#  Don&#x27;t add cache blindly
+&quot;Let&#x27;s cache everything!&quot;
+
+#  Measure first
+1. Log slow queries (&gt; 100ms)
+2. Identify hot paths (&gt;100 req/s)
+3. Cache those, not everything
+</code></pre>
+<h3 id="2-cache-keys-design">2. Cache Keys Design</h3>
+<pre><code class="language-python">#  BAD: Hard to invalidate
+cache.set(&quot;user&quot;, user)
+
+#  GOOD: Namespace and version
+cache.set(&quot;user:123:v2&quot;, user)
+
+Benefits:
+- Easy to invalidate: delete(&quot;user:123:*&quot;)
+- Easy to upgrade: v2 → v3, old cache auto-expires
+</code></pre>
+<h3 id="3-appropriate-ttl">3. Appropriate TTL</h3>
+<pre><code class="language-python">#  BAD: Same TTL cho everything
+cache.setex(key, 3600, data)  # Always 1 hour
+
+#  GOOD: TTL based on data characteristics
+product_catalog: 24 hours (thay đổi ít)
+user_session: 30 minutes (security)
+trending_posts: 5 minutes (freshness)
+stock_price: 5 seconds (real-time)
+</code></pre>
+<h3 id="4-graceful-degradation">4. Graceful Degradation</h3>
+<pre><code class="language-python">#  BAD: Cache down = system down
+def get_product(product_id):
+    return cache.get(f&quot;product:{product_id}&quot;)  # Crash if cache down!
+
+#  GOOD: Cache down = slower, not broken
+def get_product(product_id):
+    try:
+        cached = cache.get(f&quot;product:{product_id}&quot;)
+        if cached:
+            return cached
+    except CacheError:
+        logger.warning(&quot;Cache unavailable, falling back to DB&quot;)
+    
+    return db.get(product_id)  # Still works!
+</code></pre>
+<h3 id="5-monitor-cache-metrics">5. Monitor Cache Metrics</h3>
+<pre><code class="language-python">metrics_to_track = {
+    &quot;hit_rate&quot;: cache_hits / total_requests,  # Should be &gt; 80%
+    &quot;miss_rate&quot;: cache_misses / total_requests,
+    &quot;eviction_rate&quot;: evictions / total_writes,
+    &quot;memory_usage&quot;: used / total,
+    &quot;latency_p99&quot;: p99_latency  # Should be &lt; 5ms
+}
+
+if hit_rate &lt; 0.5:
+    # Cache không effective, review strategy
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Cache là performance optimization đầu tiên bạn nên nghĩ đến:</strong></p>
+<ul>
+<li>10-100x faster than database</li>
+<li>Simple to implement (Redis = 2 giờ setup)</li>
+<li>High ROI</li>
+</ul>
+<p><strong>Cache strategies:</strong></p>
+<ul>
+<li><strong>Cache-Aside:</strong> Most common, read-heavy</li>
+<li><strong>Write-Through:</strong> Consistency critical</li>
+<li><strong>Write-Behind:</strong> Write-heavy, can tolerate data loss</li>
+<li><strong>Refresh-Ahead:</strong> Predictable patterns</li>
+</ul>
+<p><strong>Cache invalidation hard problems:</strong></p>
+<ul>
+<li>TTL: Simple, eventual freshness</li>
+<li>Explicit: Immediate, error-prone</li>
+<li>Event-driven: Scalable, complex</li>
+<li>Versioning: Elegant, more storage</li>
+</ul>
+<p><strong>Thundering herd solutions:</strong></p>
+<ul>
+<li>Lock-based: Safe, latency spikes</li>
+<li>Probabilistic: Spreads load</li>
+<li>Stale-while-revalidate: Best UX (my favorite)</li>
+</ul>
+<p><strong>When NOT to cache:</strong></p>
+<ul>
+<li>Write-heavy data</li>
+<li>Personalized content (low hit rate)</li>
+<li>Data that&#x27;s already fast (&lt; 10ms)</li>
+<li>Real-time requirements</li>
+</ul>
+<p><strong>Remember:</strong> Cache adds complexity. Only add it when benefit &gt; cost. Measure first, cache second.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-2/lesson/lesson-1-load-balancing"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Load Balancing: Traffic Distribution Trong Distributed Systems</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-2/lesson/lesson-3-database">Database Scaling - Chiến Lược Scale Data Layer<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\nf:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-2\",\"lesson\",\"lesson-2-caching\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-2\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-2-caching\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]]}]]}]}],\"$L6\"]}]}]]}],{\"children\":[\"$L7\",{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{},null,false,false]},[\"$Lc\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Ld\",[],[]],false,false],\"$Le\",false]],\"m\":\"$undefined\",\"G\":[\"$f\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"10:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n12:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n13:\"$Sreact.suspense\"\n1f:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n21:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L10\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n7:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[\"$L11\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L12\",null,{\"children\":[\"$\",\"$13\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@14\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"c:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L15\",\"$L16\",\"$L17\",\"$L18\"]}],\"$L19\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1a\",\"$L1b\",\"$L1c\",\"$L1d\"]}],\"$L1e\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L1f\",null,{\"children\":\"$L20\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L21\",null,{\"children\":[\"$\",\"$13\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L22\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"15:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1a:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"11:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 2 — Core Building Blocks\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Caching - Performance Layer Quan Trọng Nhất\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade-offs. Hiểu sâu tại sao cache là giải pháp performance đầu tiên bạn nên nghĩ đến.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-load-balancing\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-1-load-balancing\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Load Balancing: Traffic Distribution Trong Distributed Systems\"}]]}]}],[\"$\",\"li\",\"lesson-2-caching\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-2-caching\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Caching - Performance Layer Quan Trọng Nhất\"}]]}]}],[\"$\",\"li\",\"lesson-3-database\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-3-database\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Database Scaling - Chiến Lược Scale Data Layer\"}]]}]}],[\"$\",\"li\",\"lesson-4-message-queues-async-processing-decoupling-services\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Message Queues \u0026 Async Processing - Decoupling Services\"}]]}]}],[\"$\",\"li\",\"lesson-5-integration-trade-off-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[\"$L23\",\"Tổng quan phase\"]}]]}],\"$L24\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"25:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n23:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"24:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2\",\"className\":\"hover:text-ink\",\"children\":\"Phase 2 — Core Building Blocks\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Caching - Performance Layer Quan Trọng Nhất\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Caching - Performance Layer Quan Trọng Nhất\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade-offs. Hiểu sâu tại sao cache là giải pháp performance đầu tiên bạn nên nghĩ đến.\"}]]}],[\"$\",\"$L25\",null,{\"path\":\"/phase/phase-2/lesson/lesson-2-caching\",\"title\":\"Caching - Performance Layer Quan Trọng Nhất\",\"description\":\"Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade-offs. Hiểu sâu tại sao cache là giải pháp performance đầu tiên bạn nên nghĩ đến.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Caching - Performance Layer Quan Trọng Nhất\",\"children\":\"$L26\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-1-load-balancing\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Load Balancing: Traffic Distribution Trong Distributed Systems\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-3-database\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Database Scaling - Chiến Lược Scale Data Layer\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"27:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"26:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"caching-performance-layer-quan-trọng-nhất\",\"children\":\"Caching: Performance Layer Quan Trọng Nhất\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Có một câu hỏi mà junior engineers thường hỏi tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"API chậm, em nên làm gì?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"10 năm trước, tôi sẽ nói: \",[\"$\",\"em\",null,{\"children\":\"\\\"Optimize database queries.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Giờ tôi nói: \",[\"$\",\"em\",null,{\"children\":\"\\\"Cache trước. Optimize sau.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tại sao? Vì tôi đã học một bài học đắt giá.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Năm 2015, hệ thống tôi quản lý bị chậm. Tôi spend 2 tuần optimize queries, rewrite indexes, tune database parameters. Improvement? 20%.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior architect ghé qua, thêm Redis cache layer trong 2 giờ. Improvement? \",[\"$\",\"strong\",null,{\"children\":\"10x faster\"}],\".\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Đó là lúc tôi hiểu: \",[\"$\",\"strong\",null,{\"children\":\"Cache không phải là optimization technique. Nó là architectural decision.\"}]]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-cache-tồn-tại\",\"children\":\"Tại Sao Cache Tồn Tại?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-fundamental-speed-gap\",\"children\":\"The Fundamental Speed Gap\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"CPU Cache:     1 nanosecond\\nRAM:           100 nanoseconds  (100x slower)\\nSSD:           150 microseconds (150,000x slower)\\nNetwork:       50 milliseconds  (50,000,000x slower)\\nHDD:           10 milliseconds  (10,000,000x slower)\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Implication:\"}],\" Mỗi lần bạn query database từ network, bạn mất 50 triệu cycles CPU.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Solution:\"}],\" Lưu kết quả gần user hơn. Đó chính là cache.\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"real-world-scenario\",\"children\":\"Real-World Scenario\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Without Cache:\"}]}],\"\\n\",[\"$\",\"$L27\",null,{\"chart\":\"sequenceDiagram\\n    participant U as User\\n    participant A as API Server\\n    participant D as Database\\n    \\n    U-\u003e\u003eA: GET /product/123\\n    A-\u003e\u003eD: SELECT * FROM products WHERE id=123\\n    Note over D: Query: 300ms\\n    D--\u003e\u003eA: Product data\\n    A--\u003e\u003eU: Response\\n    Note over U: Total: 350ms\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"With Cache:\"}]}],\"\\n\",[\"$\",\"$L27\",null,{\"chart\":\"sequenceDiagram\\n    participant U as User\\n    participant A as API Server\\n    participant C as Cache (Redis)\\n    participant D as Database\\n    \\n    U-\u003e\u003eA: GET /product/123\\n    A-\u003e\u003eC: GET product:123\\n    Note over C: Cache hit: 5ms\\n    C--\u003e\u003eA: Product data\\n    A--\u003e\u003eU: Response\\n    Note over U: Total: 15ms (23x faster!)\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"when-cache-makes-sense\",\"children\":\"When Cache Makes Sense\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Không phải mọi thứ đều nên cache. Hãy dùng framework này:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The Cache Decision Matrix:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Question 1: Read-heavy? (read:write ratio \u003e 10:1)\\n  ↓ YES\\nQuestion 2: Data thay đổi ít?\\n  ↓ YES\\nQuestion 3: Same data được request nhiều lần?\\n  ↓ YES\\nQuestion 4: Query expensive? (\u003e 100ms)\\n  ↓ YES\\n  \\n→ USE CACHE\\n\\nAny NO? → Think carefully\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Examples:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" SHOULD cache:\\n- Product catalog (read 1000x, write 1x)\\n- User profiles (read many, update rarely)\\n- Static pages\\n- API responses cho public data\\n\\n SHOULD NOT cache:\\n- Real-time stock prices (thay đổi liên tục)\\n- Personalized recommendations (different per user)\\n- Write-heavy counters (likes, views tăng liên tục)\\n- Small datasets (\u003c 1000 records, DB fast enough)\\n\"}]}],\"\\n\",\"$L28\",\"\\n\",\"$L29\",\"\\n\",\"$L2a\",\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\"]}]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"h2\",null,{\"id\":\"cache-layers-từ-client-đến-database\",\"children\":\"Cache Layers: Từ Client Đến Database\"}]\n29:[\"$\",\"p\",null,{\"children\":[\"Cache không chỉ là Redis. Nó là một \",[\"$\",\"strong\",null,{\"children\":\"layered strategy\"}],\".\"]}]\n2a:[\"$\",\"h3\",null,{\"id\":\"layer-1-browser-cache\",\"children\":\"Layer 1: Browser Cache\"}]\n2b:[\"$\",\"$L27\",null,{\"chart\":\"flowchart LR\\n    B[Browser] --\u003e BC[Browser Cache]\\n    BC --\u003e S[Server]\"}]\n2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"How it works:\"}]}]\n2d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-http\",\"children\":\"HTTP/1.1 200 OK\\nCache-Control: public, max-age=31536000, immutable\\n\"}]}]\n2e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n2f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Fastest (zero network)\\n Reduce server load\\n Hard to invalidate (user doesn't refresh)\\n Different cache per user\\n\"}]}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When to use:\"}]}]\n31:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Static assets:\\n- Images, CSS, JS files\\n- Fonts, icons\\n- Versioned URLs (/app.v2.js)\\n\\nNOT for:\\n- HTML pages (need fresh)\\n- API responses\\n- Personalized content\\n\"}]}]\n32:[\"$\",\"h3\",null,{\"id\":\"layer-2-cdn-cache\",\"children\":\"Layer 2: CDN Cache\"}]\n33:[\"$\",\"$L27\",null,{\"chart\":\"flowchart TD\\n    U[Users Worldwide] --\u003e CDN[CDN Edge Servers]\\n    CDN --\u003e O[Origin Server]\\n    \\n    style CDN fill:#90EE90\"}]\n34:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Geographic distribution:\"}]}]\n35:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User in Brazil → Brazil edge server (20ms)\\nUser in Tokyo → Tokyo edge server (15ms)\\nUser in London → London edge server (10ms\\n\\nAll serve từ cache, không hit origin server\\n\"}]}]\n36:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Configuration:\"}]}]\n37:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Cloudflare Workers example\\naddEventListener('fetch', event =\u003e {\\n  const cache = caches.default\\n  const response = cache.match(event.request)\\n  \\n  if (response) {\\n    return response  // Cache hit\\n  }\\n  \\n  // Cache miss → fetch from origin → cache it\\n  const originResponse = fetch(event.request)\\n  event.waitUntil(\\n    cache.put(event.request, originResponse.clone())\\n  )\\n  return originResponse\\n})\\n\"}]}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n39:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Low latency globally\\n Reduce origin load\\n DDoS protection\\n Cost (bandwidth expensive)\\n Complexity (multiple cache layers)\\n\"}]}]\n3a:[\"$\",\"h3\",null,{\"id\":\"layer-3-application-cache-redismemcached\",\"children\":\"Layer 3: Application Cache (Redis/Memcached)\"}]\n3b:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"This is the main focus.\"}],\" Đây là layer bạn có full control.\"]}]\n3c:[\"$\",\"$L27\",null,{\"chart\":\"flowchart LR\\n    A[API Server] --\u003e R[Redis Cache]\\n    A --\u003e D[Database]\\n    \\n    style R fill:#FFB6C1\"}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why Redis?\"}]}]\n3e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"In-memory → Extremely fast (\u003c 1ms)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Rich data structures (strings, hashes, lists, sets)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"TTL support\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Pub/sub for cache invalidation\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Persistence options\"}],\"\\n\"]}]\n3f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Basic pattern:\"}]}]\n40:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import redis\\n\\ncache = redis.Redis()\\n\\ndef get_user(user_id):\\n    # 1. Try cache first\\n    cached = cache.get(f\\\"user:{user_id}\\\")\\n    if cached:\\n        return json.loads(cached)  # Cache hit!\\n    \\n    # 2. Cache miss → Query DB\\n    user = db.query(\\\"SELECT * FROM users WHERE id = ?\\\", user_id)\\n    \\n    # 3. Store in cache for ne"])</script><script>self.__next_f.push([1,"xt time\\n    cache.setex(\\n        f\\\"user:{user_id}\\\",\\n        3600,  # TTL: 1 hour\\n        json.dumps(user)\\n    )\\n    \\n    return user\\n\"}]}]\n41:[\"$\",\"h3\",null,{\"id\":\"layer-4-database-query-cache\",\"children\":\"Layer 4: Database Query Cache\"}]\n42:[\"$\",\"p\",null,{\"children\":\"Most databases có built-in query cache.\"}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"MySQL Query Cache:\"}]}]\n44:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- First query: 300ms (cache miss)\\nSELECT * FROM products WHERE category = 'electronics';\\n\\n-- Same query again: 5ms (cache hit)\\nSELECT * FROM products WHERE category = 'electronics';\\n\"}]}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n46:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Automatic (no code changes)\\n Shared across connections\\n Invalidated on ANY table write\\n Not scalable (single server)\\n\"}]}]\n47:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Modern approach:\"}],\" Disable DB query cache, use application cache instead (Redis). More control.\"]}]\n48:[\"$\",\"h2\",null,{\"id\":\"cache-strategies-khi-nào-read-khi-nào-write\",\"children\":\"Cache Strategies: Khi Nào Read? Khi Nào Write?\"}]\n49:[\"$\",\"h3\",null,{\"id\":\"strategy-1-cache-aside-lazy-loading\",\"children\":\"Strategy 1: Cache-Aside (Lazy Loading)\"}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Most common pattern.\"}]}]\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_product(product_id):\\n    # Read path\\n    product = cache.get(f\\\"product:{product_id}\\\")\\n    if product:\\n        return product  # Hit\\n    \\n    # Miss → Load from DB\\n    product = db.get(product_id)\\n    cache.set(f\\\"product:{product_id}\\\", product, ttl=3600)\\n    return product\\n\\ndef update_product(product_id, data):\\n    # Write path\\n    db.update(product_id, data)\\n    cache.delete(f\\\"product:{product_id}\\\")  # Invalidate\\n\"}]}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Flow diagram:\"}]}]\n4d:[\"$\",\"$L27\",null,{\"chart\":\"flowchart TD\\n    R[Read Request] --\u003e C{Cache?}\\n    C --\u003e|Hit| RH[Return from Cache]\\n    C --\u003e|Miss| DB[Query Database]\\n    DB --\u003e SC[Store in Cache]\\n    SC --\u003e RD[Return Data]\"}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n4f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Only cache what's needed\\n Cache miss không fatal\\n Resilient (cache down → still works)\\n First request always slow (cold cache)\\n Cache miss adds latency\\n\"}]}]\n50:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Best for:\"}],\" Read-heavy workloads, infrequent updates.\"]}]\n51:[\"$\",\"h3\",null,{\"id\":\"strategy-2-write-through\",\"children\":\"Strategy 2: Write-Through\"}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def update_product(product_id, data):\\n    # Write to both DB and cache\\n    db.update(product_id, data)\\n    cache.set(f\\\"product:{product_id}\\\", data, ttl=3600)\\n\\ndef get_product(product_id):\\n    # Read from cache (always up-to-date)\\n    return cache.get(f\\\"product:{product_id}\\\")\\n\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Flow diagram:\"}]}]\n54:[\"$\",\"$L27\",null,{\"chart\":\"flowchart LR\\n    W[Write] --\u003e DB[Database]\\n    W --\u003e C[Cache]\\n    DB --\u003e S[Success]\\n    C --\u003e S\"}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n56:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Cache always fresh\\n Read latency predictable\\n Write latency higher (2 operations)\\n Wasted writes (might not be read)\\n\"}]}]\n57:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Best for:\"}],\" Read-heavy với strict consistency requirements.\"]}]\n58:[\"$\",\"h3\",null,{\"id\":\"strategy-3-write-behind-write-back\",\"children\":\"Strategy 3: Write-Behind (Write-Back)\"}]\n59:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def update_product(product_id, data):\\n    # Write to cache immediately\\n "])</script><script>self.__next_f.push([1,"   cache.set(f\\\"product:{product_id}\\\", data)\\n    \\n    # Queue DB write asynchronously\\n    queue.add({\\n        \\\"type\\\": \\\"update_product\\\",\\n        \\\"id\\\": product_id,\\n        \\\"data\\\": data\\n    })\\n    \\n    return \\\"Success\\\"  # Return immediately!\\n\\n# Background worker\\ndef worker():\\n    while True:\\n        job = queue.pop()\\n        db.update(job[\\\"id\\\"], job[\\\"data\\\"])\\n\"}]}]\n5a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Flow diagram:\"}]}]\n5b:[\"$\",\"$L27\",null,{\"chart\":\"sequenceDiagram\\n    participant C as Client\\n    participant A as API\\n    participant Cache\\n    participant Q as Queue\\n    participant DB as Database\\n    \\n    C-\u003e\u003eA: Update request\\n    A-\u003e\u003eCache: Write data\\n    A-\u003e\u003eQ: Queue DB write\\n    A--\u003e\u003eC: Success (fast!)\\n    Q-\u003e\u003eDB: Async write later\"}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Extremely fast writes\\n Absorb write spikes\\n Risk data loss (cache crash trước khi DB write)\\n Complex error handling\\n Eventual consistency\\n\"}]}]\n5e:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Best for:\"}],\" Write-heavy workloads, analytics, logging.\"]}]\n5f:[\"$\",\"h3\",null,{\"id\":\"strategy-4-refresh-ahead\",\"children\":\"Strategy 4: Refresh-Ahead\"}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_product(product_id):\\n    product = cache.get(f\\\"product:{product_id}\\\")\\n    ttl_remaining = cache.ttl(f\\\"product:{product_id}\\\")\\n    \\n    # Nếu sắp expire, refresh async\\n    if ttl_remaining \u003c 300:  # \u003c 5 phút\\n        background_refresh(product_id)\\n    \\n    return product\\n\\ndef background_refresh(product_id):\\n    fresh_data = db.get(product_id)\\n    cache.set(f\\\"product:{product_id}\\\", fresh_data, ttl=3600)\\n\"}]}]\n61:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Cache rarely misses\\n Consistent latency\\n Complexity\\n Wasted refreshes (if data not accessed)\\n\"}]}]\n63:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Best for:\"}],\" Predictable access patterns, high availability requirements.\"]}]\n64:[\"$\",\"h2\",null,{\"id\":\"cache-invalidation-the-hard-problem\",\"children\":\"Cache Invalidation: The Hard Problem\"}]\n65:[\"$\",\"p\",null,{\"children\":[\"Phil Karlton: \",[\"$\",\"em\",null,{\"children\":\"\\\"There are only two hard things in Computer Science: cache invalidation and naming things.\\\"\"}]]}]\n66:[\"$\",\"h3\",null,{\"id\":\"why-its-hard\",\"children\":\"Why It's Hard\"}]\n67:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Timeline:\\n10:00:00 - User updates profile (DB updated)\\n10:00:01 - User refreshes page\\n          → Cache still has old data\\n          → User sees old profile\\n10:00:02 - User confused, files bug report\\n\"}]}]\n68:[\"$\",\"h3\",null,{\"id\":\"solution-1-time-based-ttl\",\"children\":\"Solution 1: Time-Based (TTL)\"}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"cache.setex(\\\"user:123\\\", 300, user_data)  # Expire after 5 min\\n\\n Simple\\n Automatic cleanup\\n Stale data for up to TTL duration\\n Can't invalidate immediately\\n\"}]}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rule of thumb cho TTL:\"}]}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Highly dynamic data (stock prices): 1-10 seconds\\nDynamic data (news feed): 1-5 minutes\\nSemi-static (user profile): 10-30 minutes\\nStatic (product catalog): 1-24 hours\\nImmutable (images, old posts): Days/weeks\\n\"}]}]\n6c:[\"$\",\"h3\",null,{\"id\":\"solution-2-explicit-invalidation\",\"children\":\"Solution 2: Explicit Invalidation\"}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def update_user(user_id, data):\\n    db.update(user_id, data)\\n    cache.delete(f\\\"user:{user_id}\\\")  # Delete immediately\\n    \\n Fresh data immediately\\n Full control\\n Must remember to invalidate everywhere\\n Easy to forget → stale data\\n\"}]}]\n6e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"child"])</script><script>self.__next_f.push([1,"ren\":\"The N+1 invalidation problem:\"}]}]\n6f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: Easy to miss invalidations\\ndef update_user_email(user_id, email):\\n    db.update_email(user_id, email)\\n    cache.delete(f\\\"user:{user_id}\\\")\\n    # Forgot to invalidate: user:email:{email}\\n    # Forgot to invalidate: user_list\\n    # Forgot to invalidate: search results\\n\"}]}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pattern: Centralized invalidation\"}]}]\n71:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class UserCache:\\n    @staticmethod\\n    def invalidate(user_id):\\n        keys = [\\n            f\\\"user:{user_id}\\\",\\n            f\\\"user:email:{user.email}\\\",\\n            \\\"user_list\\\",\\n            \\\"user_count\\\"\\n        ]\\n        cache.delete_many(keys)\\n\\ndef update_user(user_id, data):\\n    db.update(user_id, data)\\n    UserCache.invalidate(user_id)  # One call, all caches cleared\\n\"}]}]\n72:[\"$\",\"h3\",null,{\"id\":\"solution-3-event-driven-invalidation\",\"children\":\"Solution 3: Event-Driven Invalidation\"}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Best for microservices.\"}]}]\n74:[\"$\",\"$L27\",null,{\"chart\":\"flowchart LR\\n    US[User Service] --\u003e|user.updated| EB[Event Bus]\\n    EB --\u003e CS[Cache Service]\\n    EB --\u003e NS[Notification Service]\\n    EB --\u003e AS[Analytics Service]\\n    \\n    CS --\u003e R[Invalidate Cache]\"}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation:\"}]}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# User Service\\ndef update_user(user_id, data):\\n    db.update(user_id, data)\\n    event_bus.publish(\\\"user.updated\\\", {\\n        \\\"user_id\\\": user_id,\\n        \\\"fields\\\": [\\\"email\\\", \\\"name\\\"]\\n    })\\n\\n# Cache Service (separate service)\\n@event_bus.subscribe(\\\"user.updated\\\")\\ndef on_user_updated(event):\\n    cache.delete(f\\\"user:{event['user_id']}\\\")\\n\\n# Notification Service\\n@event_bus.subscribe(\\\"user.updated\\\")\\ndef on_user_updated(event):\\n    send_notification(event['user_id'])\\n\"}]}]\n77:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n78:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Decoupled services\\n Easy to add new subscribers\\n Reliable (event log persisted)\\n Infrastructure complexity (Kafka, RabbitMQ)\\n Eventual consistency (delay 10-100ms)\\n\"}]}]\n79:[\"$\",\"h3\",null,{\"id\":\"solution-4-cache-versioning\",\"children\":\"Solution 4: Cache Versioning\"}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"For immutable data.\"}]}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Version in key\\ndef get_user_avatar(user_id, version):\\n    key = f\\\"avatar:{user_id}:v{version}\\\"\\n    return cache.get(key)\\n\\n# Update creates new version\\ndef update_avatar(user_id, new_avatar):\\n    version = db.increment_avatar_version(user_id)\\n    cache.set(f\\\"avatar:{user_id}:v{version}\\\", new_avatar)\\n    \\n# Old versions auto-expire via TTL\\n# No explicit invalidation needed!\\n\\n No invalidation needed\\n Old versions still work (useful for CDN)\\n More storage (multiple versions)\\n\"}]}]\n7c:[\"$\",\"h2\",null,{\"id\":\"thundering-herd-problem-cache-stampede\",\"children\":\"Thundering Herd Problem (Cache Stampede)\"}]\n7d:[\"$\",\"h3\",null,{\"id\":\"the-problem\",\"children\":\"The Problem\"}]\n7e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario:\\n1. Popular cache key expires at 10:00:00\\n2. At 10:00:01, 1000 concurrent requests arrive\\n3. All requests: cache miss\\n4. All 1000 requests query database simultaneously\\n5. Database overloaded → crashes\\n\\nResult: Cache làm hệ thống TỆ HƠN thay vì TỐT HƠN\\n\"}]}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real-world impact:\"}]}]\n80:[\"$\",\"p\",null,{\"children\":\"Tôi từng thấy Facebook page với 10M followers. Mỗi khi post mới, hàng triệu users refresh cùng lúc. Cache expire → Database chết → 5 phút downtime.\"}]\n81:[\"$\",\"h3\",null,{\"id\":\"solution-1-lock-base"])</script><script>self.__next_f.push([1,"d\",\"children\":\"Solution 1: Lock-Based\"}]\n82:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_product(product_id):\\n    product = cache.get(f\\\"product:{product_id}\\\")\\n    if product:\\n        return product\\n    \\n    # Try to acquire lock\\n    lock_key = f\\\"lock:product:{product_id}\\\"\\n    locked = cache.set(lock_key, \\\"1\\\", nx=True, ex=10)\\n    \\n    if locked:\\n        # Only this request queries DB\\n        product = db.get(product_id)\\n        cache.set(f\\\"product:{product_id}\\\", product, ex=3600)\\n        cache.delete(lock_key)\\n        return product\\n    else:\\n        # Other requests wait\\n        time.sleep(0.1)\\n        return get_product(product_id)  # Retry\\n\"}]}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Flow:\"}]}]\n84:[\"$\",\"$L27\",null,{\"chart\":\"flowchart TD\\n    R1[Request 1] --\u003e L{Acquire Lock?}\\n    R2[Request 2] --\u003e L\\n    R3[Request 3] --\u003e L\\n    \\n    L --\u003e|Yes| Q[Query DB]\\n    L --\u003e|No| W[Wait \u0026 Retry]\\n    \\n    Q --\u003e C[Update Cache]\\n    W --\u003e C\\n    C --\u003e RET[Return Data]\"}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n86:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Only 1 DB query\\n Protects database\\n Other requests wait (latency spike)\\n Lock can get stuck (if holder crashes)\\n\"}]}]\n87:[\"$\",\"h3\",null,{\"id\":\"solution-2-probabilistic-early-expiration\",\"children\":\"Solution 2: Probabilistic Early Expiration\"}]\n88:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import random\\n\\ndef get_product(product_id):\\n    product = cache.get(f\\\"product:{product_id}\\\")\\n    ttl = cache.ttl(f\\\"product:{product_id}\\\")\\n    \\n    # Probabilistically refresh before expiration\\n    if ttl \u003c 300 and random.random() \u003c 0.1:\\n        # 10% chance to refresh early\\n        background_refresh(product_id)\\n    \\n    return product\\n\\n Spreads DB load over time\\n No locks needed\\n Still possible (but rare) stampede\\n\"}]}]\n89:[\"$\",\"h3\",null,{\"id\":\"solution-3-stale-while-revalidate\",\"children\":\"Solution 3: Stale-While-Revalidate\"}]\n8a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_product(product_id):\\n    product = cache.get(f\\\"product:{product_id}\\\")\\n    ttl = cache.ttl(f\\\"product:{product_id}\\\")\\n    \\n    if ttl \u003c 0:  # Expired\\n        # Return stale data immediately\\n        stale = cache.get(f\\\"product:{product_id}:stale\\\")\\n        \\n        # Refresh async\\n        background_refresh(product_id)\\n        \\n        return stale\\n    \\n    return product\\n\\n No waiting\\n Stale data better than no data\\n Users might see slightly old data\\n\"}]}]\n8b:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"This is my favorite approach\"}],\" cho most use cases. User experience \u003e perfect freshness.\"]}]\n8c:[\"$\",\"h2\",null,{\"id\":\"trade-offs-khi-nào-không-nên-cache\",\"children\":\"Trade-offs: Khi Nào Không Nên Cache\"}]\n8d:[\"$\",\"h3\",null,{\"id\":\"anti-pattern-1-caching-write-heavy-data\",\"children\":\"Anti-Pattern 1: Caching Write-Heavy Data\"}]\n8e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: Cache counter that updates constantly\\ndef increment_view_count(post_id):\\n    count = cache.get(f\\\"views:{post_id}\\\") or 0\\n    cache.set(f\\\"views:{post_id}\\\", count + 1)\\n    \\nProblem:\\n- 1000 increments/second\\n- Cache hiệu quả = 0% (mỗi read là miss)\\n- Complexity tăng, benefit = 0\\n\\n BETTER: Write directly to DB, aggregate periodically\\n\"}]}]\n8f:[\"$\",\"h3\",null,{\"id\":\"anti-pattern-2-caching-personalized-data\",\"children\":\"Anti-Pattern 2: Caching Personalized Data\"}]\n90:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: Cache recommendations per user\\ndef get_recommendations(user_id):\\n    recs = cache.get(f\\\"recs:{user_id}\\\")\\n    if not recs:\\n        recs = expensive_ml_model(user_id)\\n        cache.set(f\\\"recs:{user_id}\\\", recs)\\n    return recs\\n\\nProblem:\\n- 1M users = 1M cache entries\\n- Each user's recs accessed 1-2x/day\\n- Hit r"])</script><script>self.__next_f.push([1,"ate low\\n- Memory wasted\\n\\n BETTER: Cache shared data (trending items), compute personal on-the-fly\\n\"}]}]\n91:[\"$\",\"h3\",null,{\"id\":\"anti-pattern-3-over-caching\",\"children\":\"Anti-Pattern 3: Over-Caching\"}]\n92:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: Cache everything\\ncache.set(\\\"user_count\\\", db.count_users())\\ncache.set(\\\"server_time\\\", datetime.now())\\ncache.set(\\\"config\\\", load_config())\\n\\nProblem:\\n- Adds complexity for minimal gain\\n- Config thay đổi ít, DB query fast (\u003c10ms)\\n- Not worth the invalidation headache\\n\\nRule: Only cache if query \u003e 100ms hoặc called frequently (\u003e100x/sec)\\n\"}]}]\n93:[\"$\",\"h2\",null,{\"id\":\"best-practices-from-10-years-experience\",\"children\":\"Best Practices From 10 Years Experience\"}]\n94:[\"$\",\"h3\",null,{\"id\":\"1-start-with-metrics\",\"children\":\"1. Start With Metrics\"}]\n95:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  Don't add cache blindly\\n\\\"Let's cache everything!\\\"\\n\\n#  Measure first\\n1. Log slow queries (\u003e 100ms)\\n2. Identify hot paths (\u003e100 req/s)\\n3. Cache those, not everything\\n\"}]}]\n96:[\"$\",\"h3\",null,{\"id\":\"2-cache-keys-design\",\"children\":\"2. Cache Keys Design\"}]\n97:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: Hard to invalidate\\ncache.set(\\\"user\\\", user)\\n\\n#  GOOD: Namespace and version\\ncache.set(\\\"user:123:v2\\\", user)\\n\\nBenefits:\\n- Easy to invalidate: delete(\\\"user:123:*\\\")\\n- Easy to upgrade: v2 → v3, old cache auto-expires\\n\"}]}]\n98:[\"$\",\"h3\",null,{\"id\":\"3-appropriate-ttl\",\"children\":\"3. Appropriate TTL\"}]\n99:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: Same TTL cho everything\\ncache.setex(key, 3600, data)  # Always 1 hour\\n\\n#  GOOD: TTL based on data characteristics\\nproduct_catalog: 24 hours (thay đổi ít)\\nuser_session: 30 minutes (security)\\ntrending_posts: 5 minutes (freshness)\\nstock_price: 5 seconds (real-time)\\n\"}]}]\n9a:[\"$\",\"h3\",null,{\"id\":\"4-graceful-degradation\",\"children\":\"4. Graceful Degradation\"}]\n9b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: Cache down = system down\\ndef get_product(product_id):\\n    return cache.get(f\\\"product:{product_id}\\\")  # Crash if cache down!\\n\\n#  GOOD: Cache down = slower, not broken\\ndef get_product(product_id):\\n    try:\\n        cached = cache.get(f\\\"product:{product_id}\\\")\\n        if cached:\\n            return cached\\n    except CacheError:\\n        logger.warning(\\\"Cache unavailable, falling back to DB\\\")\\n    \\n    return db.get(product_id)  # Still works!\\n\"}]}]\n9c:[\"$\",\"h3\",null,{\"id\":\"5-monitor-cache-metrics\",\"children\":\"5. Monitor Cache Metrics\"}]\n9d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"metrics_to_track = {\\n    \\\"hit_rate\\\": cache_hits / total_requests,  # Should be \u003e 80%\\n    \\\"miss_rate\\\": cache_misses / total_requests,\\n    \\\"eviction_rate\\\": evictions / total_writes,\\n    \\\"memory_usage\\\": used / total,\\n    \\\"latency_p99\\\": p99_latency  # Should be \u003c 5ms\\n}\\n\\nif hit_rate \u003c 0.5:\\n    # Cache không effective, review strategy\\n\"}]}]\n9e:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n9f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache là performance optimization đầu tiên bạn nên nghĩ đến:\"}]}]\na0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"10-100x faster than database\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple to implement (Redis = 2 giờ setup)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"High ROI\"}],\"\\n\"]}]\na1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache strategies:\"}]}]\na2:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Cache-Aside:\"}],\" Most common, read-heavy\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Write-Through:\"}],\" Consistency critical\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Write-Behind:\"}],\" Write-heavy, can tolerate data "])</script><script>self.__next_f.push([1,"loss\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Refresh-Ahead:\"}],\" Predictable patterns\"]}],\"\\n\"]}]\na3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cache invalidation hard problems:\"}]}]\na4:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"TTL: Simple, eventual freshness\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Explicit: Immediate, error-prone\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Event-driven: Scalable, complex\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Versioning: Elegant, more storage\"}],\"\\n\"]}]\na5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Thundering herd solutions:\"}]}]\na6:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Lock-based: Safe, latency spikes\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Probabilistic: Spreads load\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Stale-while-revalidate: Best UX (my favorite)\"}],\"\\n\"]}]\na7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When NOT to cache:\"}]}]\na8:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Write-heavy data\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Personalized content (low hit rate)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Data that's already fast (\u003c 10ms)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Real-time requirements\"}],\"\\n\"]}]\na9:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Remember:\"}],\" Cache adds complexity. Only add it when benefit \u003e cost. Measure first, cache second.\"]}]\n"])</script><script>self.__next_f.push([1,"20:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"aa:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n14:null\n"])</script><script>self.__next_f.push([1,"22:[[\"$\",\"title\",\"0\",{\"children\":\"Caching - Performance Layer Quan Trọng Nhất | Phase 2 — Core Building Blocks | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade offs. Hiểu sâu tại sao cache là giải pháp per\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-2/lesson/lesson-2-caching\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Caching - Performance Layer Quan Trọng Nhất | Phase 2 — Core Building Blocks\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade offs. Hiểu sâu tại sao cache là giải pháp per\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-2/lesson/lesson-2-caching\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Caching - Performance Layer Quan Trọng Nhất | Phase 2 — Core Building Blocks\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học cách thiết kế cache layer hiệu quả: cache strategies, invalidation patterns, thundering herd problem, và trade offs. Hiểu sâu tại sao cache là giải pháp per\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$Laa\",\"14\",{}]]\n"])</script></body></html>

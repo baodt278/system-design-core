@@ -1,0 +1,472 @@
+<article class="prose-ui"><h1 id="distributed-id--ordering-vấn-đề-định-danh-trong-hệ-thống-phân-tán">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<h2 id="tại-sao-auto-increment-breaks">§§SEG8§§</h2>
+<h3 id="monolith-auto-increment-works-perfectly">§§SEG9§§</h3>
+<pre><code class="language-sql">-- Single database
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,  -- Auto-increment
+    user_id INT,
+    amount DECIMAL
+);
+
+-- Insert order 1 → id = 1
+-- Insert order 2 → id = 2
+-- Insert order 3 → id = 3
+
+Perfect! Đơn giản, sequential, unique.
+</code></pre>
+<p>§§SEG10§§</p>
+<pre><code>§§SEG11§§</code></pre>
+<h3 id="distributed-auto-increment-breaks">§§SEG12§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG13§§</code></pre>
+<p>§§SEG14§§</p>
+<p>§§SEG15§§</p>
+<pre><code>§§SEG16§§</code></pre>
+<p>§§SEG17§§</p>
+<p>§§SEG18§§</p>
+<ul>
+<li>§§SEG19§§</li>
+<li>§§SEG20§§</li>
+<li>§§SEG21§§</li>
+<li>§§SEG22§§</li>
+<li>§§SEG23§§</li>
+</ul>
+<p>§§SEG24§§</p>
+<h2 id="requirements-cho-distributed-ids">§§SEG25§§</h2>
+<p>§§SEG26§§</p>
+<p>§§SEG27§§</p>
+<pre><code>§§SEG28§§</code></pre>
+<p>§§SEG29§§</p>
+<pre><code>§§SEG30§§</code></pre>
+<p>§§SEG31§§</p>
+<p>§§SEG32§§</p>
+<h2 id="solution-1-uuid-universally-unique-identifier">§§SEG33§§</h2>
+<h3 id="concept">§§SEG34§§</h3>
+<p>§§SEG35§§</p>
+<pre><code>§§SEG36§§</code></pre>
+<p>§§SEG37§§</p>
+<pre><code>§§SEG38§§</code></pre>
+<h3 id="implementation">§§SEG39§§</h3>
+<pre><code class="language-python">import uuid
+
+# Generate UUID v4 (random)
+id = uuid.uuid4()
+print(id)  # 550e8400-e29b-41d4-a716-446655440000
+
+# In database
+CREATE TABLE orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id INT,
+    amount DECIMAL
+);
+
+# Application code
+def create_order(user_id, amount):
+    order_id = uuid.uuid4()
+    db.execute("""
+        INSERT INTO orders (id, user_id, amount)
+        VALUES (?, ?, ?)
+    """, [order_id, user_id, amount])
+    return order_id
+</code></pre>
+<p>§§SEG40§§</p>
+<pre><code>§§SEG41§§</code></pre>
+<h3 id="trade-offs">§§SEG42§§</h3>
+<pre><code>§§SEG43§§</code></pre>
+<h3 id="database-performance-impact">§§SEG44§§</h3>
+<p>§§SEG45§§</p>
+<pre><code>§§SEG46§§</code></pre>
+<p>§§SEG47§§</p>
+<pre><code>§§SEG48§§</code></pre>
+<p>§§SEG49§§</p>
+<pre><code class="language-python"># UUID v7: Time-ordered, better for databases
+import uuid_utils as uuid
+
+id = uuid.uuid7()
+# 018e8e7a-0000-7000-8000-000000000000
+# ^^^^^^^^ - timestamp (sortable!)
+</code></pre>
+<h3 id="khi-nào-dùng-uuid">§§SEG50§§</h3>
+<pre><code>§§SEG51§§</code></pre>
+<p>§§SEG52§§</p>
+<p>§§SEG53§§</p>
+<p>§§SEG54§§</p>
+<h2 id="solution-2-twitter-snowflake">§§SEG55§§</h2>
+<h3 id="concept-1">§§SEG56§§</h3>
+<p>§§SEG57§§</p>
+<pre><code>§§SEG58§§</code></pre>
+<p>§§SEG59§§</p>
+<pre><code>§§SEG60§§</code></pre>
+<p>§§SEG61§§</p>
+<pre><code>§§SEG62§§</code></pre>
+<h3 id="implementation-1">§§SEG63§§</h3>
+<pre><code class="language-python">import time
+import threading
+
+class SnowflakeGenerator:
+    def __init__(self, machine_id, datacenter_id=0):
+        # Custom epoch (Jan 1, 2020)
+        self.epoch = 1577836800000  # milliseconds
+        
+        # Bit lengths
+        self.machine_id_bits = 5
+        self.datacenter_id_bits = 5
+        self.sequence_bits = 12
+        
+        # Max values
+        self.max_machine_id = (1 &lt;&lt; self.machine_id_bits) - 1
+        self.max_datacenter_id = (1 &lt;&lt; self.datacenter_id_bits) - 1
+        self.max_sequence = (1 &lt;&lt; self.sequence_bits) - 1
+        
+        # Current state
+        self.machine_id = machine_id
+        self.datacenter_id = datacenter_id
+        self.sequence = 0
+        self.last_timestamp = -1
+        
+        # Thread safety
+        self.lock = threading.Lock()
+        
+        # Validate
+        if machine_id &gt; self.max_machine_id or machine_id &lt; 0:
+            raise ValueError(f"machine_id must be 0-{self.max_machine_id}")
+    
+    def _current_millis(self):
+        return int(time.time() * 1000)
+    
+    def _wait_next_millis(self, last_timestamp):
+        timestamp = self._current_millis()
+        while timestamp &lt;= last_timestamp:
+            timestamp = self._current_millis()
+        return timestamp
+    
+    def generate_id(self):
+        with self.lock:
+            timestamp = self._current_millis()
+            
+            # Same millisecond
+            if timestamp == self.last_timestamp:
+                self.sequence = (self.sequence + 1) &amp; self.max_sequence
+                
+                # Sequence overflow, wait next millisecond
+                if self.sequence == 0:
+                    timestamp = self._wait_next_millis(self.last_timestamp)
+            else:
+                # New millisecond, reset sequence
+                self.sequence = 0
+            
+            # Clock moved backwards (rare but possible)
+            if timestamp &lt; self.last_timestamp:
+                raise Exception(f"Clock moved backwards. Refusing to generate id")
+            
+            self.last_timestamp = timestamp
+            
+            # Combine all parts
+            id = ((timestamp - self.epoch) &lt;&lt; (self.datacenter_id_bits + 
+                                               self.machine_id_bits + 
+                                               self.sequence_bits))
+            id |= (self.datacenter_id &lt;&lt; (self.machine_id_bits + self.sequence_bits))
+            id |= (self.machine_id &lt;&lt; self.sequence_bits)
+            id |= self.sequence
+            
+            return id
+
+# Usage
+generator = SnowflakeGenerator(machine_id=1, datacenter_id=1)
+
+id1 = generator.generate_id()  # 1234567890123456789
+id2 = generator.generate_id()  # 1234567890123456790
+id3 = generator.generate_id()  # 1234567890123456791
+
+# Properties
+print(id1 &lt; id2 &lt; id3)  # True - sortable!
+print(len(str(id1)))    # 19 digits (64-bit)
+</code></pre>
+<h3 id="extracting-metadata">§§SEG64§§</h3>
+<pre><code class="language-python">def parse_snowflake(id):
+    """Extract timestamp, machine_id, sequence từ Snowflake ID"""
+    
+    # Constants
+    epoch = 1577836800000
+    sequence_bits = 12
+    machine_id_bits = 10
+    
+    # Extract sequence
+    sequence = id &amp; ((1 &lt;&lt; sequence_bits) - 1)
+    
+    # Extract machine ID
+    id &gt;&gt;= sequence_bits
+    machine_id = id &amp; ((1 &lt;&lt; machine_id_bits) - 1)
+    
+    # Extract timestamp
+    id &gt;&gt;= machine_id_bits
+    timestamp_ms = id + epoch
+    
+    return {
+        'timestamp': timestamp_ms,
+        'datetime': datetime.fromtimestamp(timestamp_ms / 1000),
+        'machine_id': machine_id,
+        'sequence': sequence
+    }
+
+# Parse ID
+info = parse_snowflake(1234567890123456789)
+print(info)
+# {
+#     'timestamp': 1709567890123,
+#     'datetime': '2024-03-04 12:34:50',
+#     'machine_id': 1,
+#     'sequence': 789
+# }
+</code></pre>
+<h3 id="trade-offs-1">§§SEG65§§</h3>
+<pre><code>§§SEG66§§</code></pre>
+<h3 id="clock-skew-problem">§§SEG67§§</h3>
+<p>§§SEG68§§</p>
+<pre><code>§§SEG69§§</code></pre>
+<p>§§SEG70§§</p>
+<pre><code>§§SEG71§§</code></pre>
+<h3 id="khi-nào-dùng-snowflake">§§SEG72§§</h3>
+<pre><code>§§SEG73§§</code></pre>
+<p>§§SEG74§§</p>
+<p>§§SEG75§§</p>
+<p>§§SEG76§§</p>
+<ul>
+<li>§§SEG77§§</li>
+<li>§§SEG78§§</li>
+<li>§§SEG79§§</li>
+<li>§§SEG80§§</li>
+</ul>
+<h2 id="comparison-uuid-vs-snowflake">§§SEG81§§</h2>
+<pre><code>§§SEG82§§</code></pre>
+<p>§§SEG83§§</p>
+<pre><code class="language-python">def choose_id_strategy(requirements):
+    if requirements.simplicity_critical:
+        return "UUID"
+    
+    if requirements.need_ordering:
+        return "Snowflake"
+    
+    if requirements.db_performance_critical:
+        return "Snowflake"
+    
+    if requirements.cannot_manage_machine_ids:
+        return "UUID"
+    
+    if requirements.cannot_sync_clocks:
+        return "UUID"
+    
+    # Default
+    return "UUID"  # Safest choice
+</code></pre>
+<h2 id="the-event-ordering-problem">§§SEG84§§</h2>
+<p>§§SEG85§§</p>
+<h3 id="problem-statement">§§SEG86§§</h3>
+<pre><code>§§SEG87§§</code></pre>
+<h3 id="why-ordering-matters">§§SEG88§§</h3>
+<p>§§SEG89§§</p>
+<pre><code>§§SEG90§§</code></pre>
+<p>§§SEG91§§</p>
+<pre><code>§§SEG92§§</code></pre>
+<h3 id="solutions-to-ordering">§§SEG93§§</h3>
+<p>§§SEG94§§</p>
+<pre><code class="language-python">class LamportClock:
+    def __init__(self):
+        self.time = 0
+        self.lock = threading.Lock()
+    
+    def tick(self):
+        """Increment trước mỗi event"""
+        with self.lock:
+            self.time += 1
+            return self.time
+    
+    def update(self, received_time):
+        """Update khi nhận message từ process khác"""
+        with self.lock:
+            self.time = max(self.time, received_time) + 1
+            return self.time
+
+# Process A
+clock_a = LamportClock()
+time_1 = clock_a.tick()  # 1
+time_2 = clock_a.tick()  # 2
+
+# Process B nhận message từ A với time = 2
+clock_b = LamportClock()
+time_3 = clock_b.update(2)  # max(0, 2) + 1 = 3
+time_4 = clock_b.tick()     # 4
+
+# Guarantee: time_1 &lt; time_2 &lt; time_3 &lt; time_4
+</code></pre>
+<p>§§SEG95§§</p>
+<pre><code>§§SEG96§§</code></pre>
+<p>§§SEG97§§</p>
+<pre><code class="language-python">class VectorClock:
+    def __init__(self, process_id, num_processes):
+        self.process_id = process_id
+        self.clock = [0] * num_processes
+        self.lock = threading.Lock()
+    
+    def tick(self):
+        """Increment own counter"""
+        with self.lock:
+            self.clock[self.process_id] += 1
+            return self.clock.copy()
+    
+    def update(self, received_clock):
+        """Merge với received vector clock"""
+        with self.lock:
+            for i in range(len(self.clock)):
+                self.clock[i] = max(self.clock[i], received_clock[i])
+            self.clock[self.process_id] += 1
+            return self.clock.copy()
+    
+    def compare(self, other_clock):
+        """So sánh 2 vector clocks"""
+        less = all(self.clock[i] &lt;= other_clock[i] for i in range(len(self.clock)))
+        greater = all(self.clock[i] &gt;= other_clock[i] for i in range(len(self.clock)))
+        
+        if less and not greater:
+            return "BEFORE"  # self happened before other
+        elif greater and not less:
+            return "AFTER"   # self happened after other
+        elif self.clock == other_clock:
+            return "EQUAL"
+        else:
+            return "CONCURRENT"  # Cannot determine order
+
+# 3 processes
+clock_a = VectorClock(0, 3)  # Process A
+clock_b = VectorClock(1, 3)  # Process B
+clock_c = VectorClock(2, 3)  # Process C
+
+# Process A events
+event_1 = clock_a.tick()  # [1, 0, 0]
+event_2 = clock_a.tick()  # [2, 0, 0]
+
+# Process B nhận message từ A
+event_3 = clock_b.update(event_2)  # [2, 1, 0]
+
+# Process C độc lập
+event_4 = clock_c.tick()  # [0, 0, 1]
+
+# Compare
+clock_b.compare(event_4)  # "CONCURRENT" - cannot order!
+</code></pre>
+<p>§§SEG98§§</p>
+<p>§§SEG99§§</p>
+<pre><code class="language-python">class HybridLogicalClock:
+    def __init__(self):
+        self.pt = 0  # Physical time
+        self.lc = 0  # Logical counter
+        self.lock = threading.Lock()
+    
+    def now(self):
+        """Generate timestamp cho event"""
+        with self.lock:
+            pt_new = self._physical_time()
+            
+            if pt_new &gt; self.pt:
+                self.pt = pt_new
+                self.lc = 0
+            else:
+                self.lc += 1
+            
+            return (self.pt, self.lc)
+    
+    def update(self, received_pt, received_lc):
+        """Update khi nhận message"""
+        with self.lock:
+            pt_new = self._physical_time()
+            
+            if received_pt &gt; self.pt and received_pt &gt; pt_new:
+                self.pt = received_pt
+                self.lc = received_lc + 1
+            elif received_pt == pt_new and received_pt == self.pt:
+                self.lc = max(self.lc, received_lc) + 1
+            elif pt_new &gt; self.pt and pt_new &gt; received_pt:
+                self.pt = pt_new
+                self.lc = 0
+            else:
+                self.lc += 1
+            
+            return (self.pt, self.lc)
+    
+    def _physical_time(self):
+        return int(time.time() * 1000)  # milliseconds
+
+# Usage
+hlc = HybridLogicalClock()
+
+event_1 = hlc.now()  # (1709567890123, 0)
+event_2 = hlc.now()  # (1709567890124, 0)
+event_3 = hlc.now()  # (1709567890124, 1) - same ms, increment lc
+
+# Compare
+event_1 &lt; event_2 &lt; event_3  # ✓ Total order preserved
+</code></pre>
+<p>§§SEG100§§</p>
+<pre><code>§§SEG101§§</code></pre>
+<h2 id="ordering-vs-uniqueness-trade-off">§§SEG102§§</h2>
+<p>§§SEG103§§</p>
+<pre><code>§§SEG104§§</code></pre>
+<p>§§SEG105§§</p>
+<pre><code>§§SEG106§§</code></pre>
+<h2 id="practical-recommendations">§§SEG107§§</h2>
+<h3 id="for-most-applications">§§SEG108§§</h3>
+<p>§§SEG109§§</p>
+<pre><code class="language-python">import uuid
+
+# UUID v7: Time-ordered, globally unique
+id = uuid.uuid7()
+
+Simple as UUID v4
+Time-ordered like Snowflake
+No configuration needed
+Standard library support
+Good database performance
+</code></pre>
+<h3 id="for-high-scale-systems">§§SEG110§§</h3>
+<p>§§SEG111§§</p>
+<pre><code>§§SEG112§§</code></pre>
+<h3 id="for-strict-ordering-requirements">§§SEG113§§</h3>
+<p>§§SEG114§§</p>
+<pre><code>§§SEG115§§</code></pre>
+<h3 id="anti-patterns-to-avoid">§§SEG116§§</h3>
+<pre><code>§§SEG117§§</code></pre>
+<h2 id="real-world-examples">§§SEG118§§</h2>
+<p>§§SEG119§§</p>
+<pre><code>§§SEG120§§</code></pre>
+<p>§§SEG121§§</p>
+<pre><code>§§SEG122§§</code></pre>
+<p>§§SEG123§§</p>
+<pre><code>§§SEG124§§</code></pre>
+<p>§§SEG125§§</p>
+<pre><code>§§SEG126§§</code></pre>
+<h2 id="key-takeaways">§§SEG127§§</h2>
+<p>§§SEG128§§</p>
+<pre><code>§§SEG129§§</code></pre>
+<p>§§SEG130§§</p>
+<pre><code>§§SEG131§§</code></pre>
+<p>§§SEG132§§</p>
+<pre><code>§§SEG133§§</code></pre>
+<p>§§SEG134§§</p>
+<pre><code>§§SEG135§§</code></pre>
+<p>§§SEG136§§</p>
+<ol>
+<li>§§SEG137§§</li>
+<li>§§SEG138§§</li>
+<li>§§SEG139§§</li>
+<li>§§SEG140§§</li>
+<li>§§SEG141§§</li>
+</ol>
+<p>§§SEG142§§</p>
+<p>§§SEG143§§</p>
+<p>§§SEG144§§</p></article>

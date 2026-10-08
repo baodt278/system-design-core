@@ -1,0 +1,274 @@
+@185
+**Cực nhanh** (chỉ chuyển tiếp gói tin đơn giản)
+**⟦Độ trễ|Latency⟧ thấp** (+5-10ms)
+**Không phụ thuộc giao thức** (hoạt động với bất kỳ giao thức TCP/UDP nào)
+**⟦Thông lượng|Throughput⟧ cao** (hàng triệu kết nối/giây)
+@187
+Không thể định tuyến dựa trên URL
+Không thể định tuyến dựa trên ⟦tiêu đề|headers⟧
+Không thể sửa đổi ⟦yêu cầu|requests⟧/⟦phản hồi|responses⟧
+Khả năng "thông minh" hạn chế
+@188
+**⟦Tình huống sử dụng|Use cases⟧:**
+@189
+Các giao thức không phải HTTP (⟦cơ sở dữ liệu|databases⟧, ứng dụng TCP tuỳ biến)
+@190
+Yêu cầu ⟦hiệu năng|performance⟧ cực cao
+@191
+Định tuyến đơn giản (mọi ⟦lưu lượng|traffic⟧ đến cùng một nhóm ⟦máy chủ phía sau|backends⟧)
+@192
+Máy chủ game, VoIP
+@193
+**Công cụ ví dụ:**
+@195
+HAProxy (chế độ TCP)
+@196
+IPVS (trong nhân Linux)
+@197
+⟦Cân Bằng Tải|Load Balancing⟧ ⟦Tầng 7|Layer 7⟧ (⟦Tầng Ứng Dụng|Application Layer⟧)
+@198
+**Hoạt động ở:** cấp độ HTTP/HTTPS
+@199
+**Thông tin có thể thấy:**
+@200
+Mọi thứ mà ⟦tầng 4|Layer 4⟧ có
+@201
+Phương thức HTTP (GET, POST, PUT, DELETE)
+@202
+Đường dẫn URL và ⟦tham số truy vấn|query parameters⟧
+@203
+⟦Tiêu đề|Headers⟧ HTTP (User-Agent, cookies, ⟦tiêu đề tuỳ biến|custom headers⟧)
+@204
+⟦Thân yêu cầu|Request body⟧
+@205
+Thông tin SSL/TLS
+@206
+**Cách hoạt động:**
+@207
+sequenceDiagram
+    participant C as Client
+    participant L7 as L7 Load Balancer
+    participant S as Server
+
+    C->>L7: Yêu cầu HTTPS<br/>POST /api/users
+    Note over L7: Kết thúc TCP<br/>Phân tích HTTP<br/>Đọc URL, header<br/>Ra quyết định định tuyến
+    L7->>S: Yêu cầu HTTP mới
+    S->>L7: Phản hồi HTTP
+    Note over L7: Có thể sửa phản hồi<br/>Thêm header, v.v.
+    L7->>C: Chuyển tiếp phản hồi
+@208
+**Ví dụ quy tắc định tuyến:**
+@209
+**Tính năng nâng cao:**
+@211
+**⟦Định tuyến thông minh|Intelligent routing⟧** (URL, ⟦tiêu đề|headers⟧, cookies)
+**Ra quyết định dựa trên nội dung**
+**Có thể sửa đổi ⟦yêu cầu|requests⟧/⟦phản hồi|responses⟧**
+**⟦Kết thúc SSL|SSL termination⟧** (giảm tải việc mã hoá cho các ⟦máy chủ phía sau|backends⟧)
+**Hoàn hảo cho ⟦vi dịch vụ|microservices⟧**
+@213
+**Chậm hơn** (xử lý nhiều hơn)
+**⟦Độ trễ|Latency⟧ cao hơn** (+10-50ms)
+**Chỉ hoạt động với HTTP/HTTPS**
+**Tốn CPU hơn**
+@214
+**⟦Tình huống sử dụng|Use cases⟧:**
+@215
+Ứng dụng web
+@216
+⟦Kiến trúc vi dịch vụ|Microservices architecture⟧
+@217
+⟦Định tuyến dựa trên nội dung|Content-based routing⟧
+@218
+⟦Thử nghiệm A/B|A/B testing⟧
+@219
+⟦Triển khai canary|Canary deployments⟧
+@220
+**Công cụ ví dụ:**
+@223
+HAProxy (chế độ HTTP)
+@226
+Bảng So Sánh
+@227
+Tiêu chí             | Tầng 4              | Tầng 7
+---------------------|---------------------|------------------
+Tốc độ               | Rất nhanh           | Chậm hơn
+Độ trễ               | +5-10ms             | +10-50ms
+Định tuyến           | Chỉ IP:Port         | URL, header, v.v.
+Giao thức hỗ trợ     | Mọi TCP/UDP         | Chỉ HTTP/HTTPS
+Kết thúc SSL         | Không               | Có
+Kiểm tra nội dung    | Không               | Có
+Sửa đổi yêu cầu      | Không               | Có
+Vi dịch vụ           | Không lý tưởng      | Hoàn hảo
+Chi phí (xử lý)      | Thấp                | Cao
+Tình huống dùng      | Định tuyến đơn giản | Định tuyến thông minh
+
+@228
+⟦Khung Ra Quyết Định|Decision Framework⟧
+@229
+Chọn Tầng 4 khi:
+ Cần hiệu năng tối đa
+ Hàng triệu kết nối
+ Giao thức không phải HTTP (cơ sở dữ liệu, game, VoIP)
+ Định tuyến đơn giản (mọi lưu lượng đến cùng một nhóm máy chủ)
+ Từng mili giây đều quan trọng
+
+Chọn Tầng 7 khi:
+ Ứng dụng web / API
+ Vi dịch vụ (định tuyến theo đường dẫn)
+ Cần kết thúc SSL (SSL termination)
+ Định tuyến dựa trên nội dung
+ Cần sửa đổi yêu cầu/phản hồi
+ Thử nghiệm A/B / Triển khai canary
+
+@230
+**Khuyến nghị của tôi:**
+@231
+Với ứng dụng web: **Mặc định dùng ⟦tầng 7|Layer 7⟧** (Application Load Balancer).
+@232
+Sự linh hoạt và tính năng > chênh lệch nhỏ về ⟦độ trễ|latency⟧.
+@233
+Chỉ xuống ⟦tầng 4|Layer 4⟧ khi có yêu cầu ⟦hiệu năng|performance⟧ đã được chứng minh hoặc khi dùng giao thức không phải HTTP.
+@234
+Ví Dụ Kiến Trúc Thực Tế
+@235
+Hãy xem một hệ thống ⟦thương mại điện tử|e-commerce⟧ thực tế.
+@236
+**⟦Yêu cầu|Requirements⟧:**
+@237
+100.000 ⟦yêu cầu|requests⟧/giây
+@238
+Nhiều ⟦dịch vụ|services⟧ (Web, API, Quản trị, Thanh toán)
+@239
+⟦Người dùng|Users⟧ toàn cầu
+@240
+⟦Thời gian hoạt động|Uptime⟧ 99,99%
+@241
+**Kiến trúc:**
+@242
+flowchart TB
+    Internet[Internet]
+
+    subgraph "Tầng biên"
+        CDN[CloudFlare CDN<br/>Tài nguyên tĩnh]
+        DNS[GeoDNS]
+    end
+
+    subgraph "Vùng Mỹ"
+        L7_US[LB tầng 7<br/>AWS ALB]
+
+        subgraph "Dịch vụ Mỹ"
+            Web_US[Máy chủ Web<br/>×10]
+            API_US[Máy chủ API<br/>×20]
+            Admin_US[Máy chủ quản trị<br/>×2]
+        end
+
+        L7_US -->|/*| Web_US
+        L7_US -->|/api/*| API_US
+        L7_US -->|/admin/*| Admin_US
+    end
+
+    subgraph "Vùng châu Á"
+        L7_Asia[LB tầng 7<br/>AWS ALB]
+
+        subgraph "Dịch vụ châu Á"
+            Web_Asia[Máy chủ Web<br/>×10]
+            API_Asia[Máy chủ API<br/>×20]
+        end
+
+        L7_Asia -->|/*| Web_Asia
+        L7_Asia -->|/api/*| API_Asia
+    end
+
+    Internet --> CDN
+    Internet --> DNS
+    DNS -->|Người dùng Mỹ| L7_US
+    DNS -->|Người dùng châu Á| L7_Asia
+@243
+**Chi tiết cấu hình:**
+@244
+**Tại sao thiết kế như vậy:**
+@245
+**GeoDNS**: Định tuyến ⟦người dùng|users⟧ đến vùng gần nhất (⟦độ trễ|latency⟧ thấp)
+@246
+**CDN**: Phục vụ ⟦tài nguyên tĩnh|static assets⟧ (hình ảnh, CSS, JS) từ ⟦điểm biên|edge⟧ (nhanh)
+@247
+**⟦Bộ cân bằng tải tầng 7|Layer 7 LB⟧**: ⟦Định tuyến thông minh|Intelligent routing⟧ theo đường dẫn URL
+@248
+**Các ⟦nhóm máy chủ|pools⟧ khác nhau**: Cô lập (phần quản trị tách biệt khỏi phần công khai)
+@249
+**Các thuật toán khác nhau**:
+@250
+Web: Round Robin (các ⟦yêu cầu|requests⟧ tương tự nhau)
+@251
+API: Least Connections (thời gian xử lý biến động)
+@252
+**⟦Kiểm tra sức khoẻ|Health checks⟧**: Tự động gỡ bỏ các ⟦máy chủ|servers⟧ không khoẻ mạnh
+@253
+**⟦Danh sách IP cho phép|IP whitelist⟧**: Bảo mật cho trang quản trị
+@254
+Những Điểm Cốt Lõi
+@255
+**⟦Cân bằng tải|Load balancing⟧ giải quyết:**
+@256
+Giới hạn ⟦năng lực|capacity⟧ của một ⟦máy chủ|server⟧ duy nhất
+@257
+⟦Điểm lỗi duy nhất|Single point of failure⟧
+@258
+Yêu cầu về ⟦tính sẵn sàng cao|high availability⟧
+@259
+Phân bố theo địa lý
+@260
+**Các thuật toán cốt lõi:**
+@261
+**Round Robin**: Đơn giản, lựa chọn mặc định, phân phối đều
+@262
+**Least Connections**: Tốt hơn khi các ⟦yêu cầu|requests⟧ có thời gian xử lý khác nhau, ⟦kết nối kéo dài|long-lived connections⟧
+@263
+**Weighted Round Robin**: Khi các ⟦máy chủ|servers⟧ có cấu hình khác nhau
+@264
+**IP Hash**: Duy trì ⟦phiên|session⟧ (nhưng ⟦kho lưu phiên dùng chung|shared session store⟧ tốt hơn)
+@265
+**⟦Kiểm tra sức khoẻ|Health checks⟧ cực kỳ quan trọng:**
+@266
+Ngăn định tuyến đến các ⟦máy chủ|servers⟧ đã chết
+@267
+Kiểm tra cả các ⟦thành phần phụ thuộc|dependencies⟧, không chỉ ⟦máy chủ|server⟧
+@268
+⟦Thời gian chờ|Timeout⟧ phù hợp (2-5 giây)
+@269
+Logic ⟦thử lại|retry⟧ để tránh ⟦chập chờn|flapping⟧
+@270
+**⟦Tầng 4|Layer 4⟧ và ⟦Tầng 7|Layer 7⟧:**
+@271
+**⟦Tầng 4|Layer 4⟧**: Nhanh, đơn giản, mọi giao thức, định tuyến hạn chế
+@272
+**⟦Tầng 7|Layer 7⟧**: Thông minh, linh hoạt, chỉ HTTP, thân thiện với ⟦vi dịch vụ|microservices⟧
+@273
+**Mặc định dùng ⟦tầng 7|Layer 7⟧ cho ứng dụng web**
+@274
+**⟦Thực hành tốt nhất|Best practices⟧:**
+@275
+Bắt đầu đơn giản (Round Robin + ⟦kiểm tra sức khoẻ|health checks⟧)
+@276
+Đo lường trước khi tối ưu thuật toán
+@277
+Dùng nhiều ⟦bộ cân bằng tải|load balancers⟧ (tránh ⟦điểm lỗi duy nhất|SPOF⟧)
+@278
+⟦Giám sát|Monitor⟧ các ⟦chỉ số|metrics⟧ (tần suất ⟦yêu cầu|request⟧, ⟦độ trễ|latency⟧, tỷ lệ lỗi)
+@279
+Kiểm thử các ⟦kịch bản|scenarios⟧ ⟦chuyển đổi dự phòng|failover⟧
+@280
+**Tự hỏi khi thiết kế:**
+@281
+*Thuật toán nào phù hợp với ⟦mẫu yêu cầu|request pattern⟧?*
+@282
+*⟦Kiểm tra sức khoẻ|Health checks⟧ có phát hiện ⟦sự cố|failures⟧ chính xác không?*
+@283
+*⟦Bộ cân bằng tải|Load balancer⟧ có phải là ⟦điểm lỗi duy nhất|SPOF⟧ không?*
+@284
+*Cần ⟦tầng 4|Layer 4⟧ hay ⟦tầng 7|Layer 7⟧?*
+@285
+⟦Cân bằng tải|Load balancing⟧ không phải là thứ tuỳ chọn. Nó là **nền tảng của ⟦hệ thống phân tán|distributed systems⟧**.
+@286
+Nắm vững nó = hệ thống của bạn ⟦có khả năng mở rộng|scalable⟧ và ⟦đáng tin cậy|reliable⟧.

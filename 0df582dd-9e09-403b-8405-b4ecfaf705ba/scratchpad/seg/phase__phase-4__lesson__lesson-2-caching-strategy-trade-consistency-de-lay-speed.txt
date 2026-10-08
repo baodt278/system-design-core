@@ -1,0 +1,735 @@
+@0 h1
+Caching Strategy - Trade Consistency Để Lấy Speed
+@1 p
+Có một câu nói nổi tiếng trong system design:
+@2 p
+**"There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton**
+@3 p
+Caching nghe đơn giản: lưu data vào memory để đọc nhanh hơn. Nhưng khi implement thực tế, bạn sẽ gặp hàng tá câu hỏi khó:
+@4 li
+Cache ở đâu? Application? Database? CDN?
+@5 li
+Khi nào update cache? Ngay lập tức hay lazy?
+@6 li
+Khi nào xóa cache? Làm sao biết data đã stale?
+@7 li
+Cache bao nhiêu data? RAM có giới hạn mà
+@8 li
+Chuyện gì xảy ra khi cache và database không sync?
+@9 p
+**Đây chính là lý do caching strategy quan trọng.**
+@10 p
+Lesson này dạy bạn tư duy caching như một architect - hiểu các pattern, biết khi nào dùng pattern nào, và quan trọng nhất: **hiểu trade-off giữa performance và consistency.**
+@11 h2
+Tại Sao Caching Hoạt Động?
+@12 p
+Trước khi học strategy, phải hiểu **tại sao** caching lại hiệu quả đến vậy.
+@13 h3
+Locality of Reference
+@14 p
+**Dữ liệu được truy cập gần đây có khả năng cao sẽ được truy cập lại.**
+@15 p
+**Ví dụ thực tế:**
+@16 li
+Facebook: Bạn refresh newsfeed 10 lần/phút → cùng một posts
+@17 li
+E-commerce: Sản phẩm hot (iPhone mới) được xem hàng triệu lần
+@18 li
+News site: Breaking news được đọc bởi hàng triệu người
+@19 p
+**Thay vì query database 1 triệu lần, cache lần đầu → serve 999,999 lần từ memory.**
+@20 h3
+Speed Difference Between Storage Layers
+@21 pre
+RAM (cache):        ~100 nanoseconds
+SSD (database):     ~100 microseconds (1000x chậm hơn)
+HDD:                ~10 milliseconds (100,000x chậm hơn)
+Network (remote):   ~100 milliseconds (1,000,000x chậm hơn)
+
+@22 p
+**Cache hit = 1000x - 1,000,000x nhanh hơn.**
+@23 p
+Đây là lý do tại sao caching có impact khổng lồ lên performance.
+@24 h3
+The 80/20 Rule (Pareto Principle)
+@25 p
+**80% requests truy cập 20% data.**
+@26 li
+YouTube: 20% video chiếm 80% views (viral videos)
+@27 li
+Reddit: 20% posts ở frontpage có 80% traffic
+@28 li
+API: 20% endpoints nhận 80% requests
+@29 p
+**Chỉ cần cache 20% data hot, bạn đã giải quyết 80% traffic.**
+@30 p
+**Mental model:** Caching không phải cache tất cả. Là cache đúng data.
+@31 h2
+Cache-Aside Pattern (Lazy Loading)
+@32 p
+Đây là pattern phổ biến nhất và đơn giản nhất.
+@33 h3
+Flow Hoạt Động
+@34 pre
+sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+    
+    App->>Cache: 1. Check cache
+    alt Cache Hit
+        Cache-->>App: 2a. Return data
+    else Cache Miss
+        Cache-->>App: 2b. Cache miss
+        App->>DB: 3. Query database
+        DB-->>App: 4. Return data
+        App->>Cache: 5. Write to cache
+        App-->>App: 6. Return data
+    end
+@35 p
+**Step by step:**
+@36 li
+Application check cache trước
+@37 li
+**Cache hit:** Return data từ cache (fast path)
+@38 li
+**Cache miss:** Query database
+@39 li
+Write data vào cache
+@40 li
+Return data cho user
+@41 h3
+Code Example
+@42 h3
+Ưu Điểm
+@43 p
+**Đơn giản và dễ implement**
+@44 li
+Logic rõ ràng
+@45 li
+Dễ debug
+@46 li
+Application control hoàn toàn
+@47 p
+**Cache chỉ chứa data được request**
+@48 li
+Không waste memory cho data không dùng
+@49 li
+Cache tự nhiên warm up theo traffic pattern
+@50 p
+**Resilient với cache failure**
+@51 li
+Cache down → app vẫn hoạt động (chậm hơn thôi)
+@52 li
+Không có single point of failure
+@53 h3
+Nhược Điểm
+@54 p
+**Cache miss penalty cao**
+@55 li
+Request đầu tiên luôn chậm (query DB + write cache)
+@56 li
+Stampede problem: nhiều requests cùng cache miss → query DB nhiều lần
+@57 p
+**Data có thể stale**
+@58 li
+Cache không tự động update khi DB thay đổi
+@59 li
+Phải rely vào TTL hoặc manual invalidation
+@60 h3
+Khi Nào Dùng Cache-Aside
+@61 p
+**Phù hợp với:**
+@62 li
+Read-heavy workload
+@63 li
+Data không thay đổi thường xuyên
+@64 li
+Application cần control cache logic
+@65 li
+Tolerate eventual consistency
+@66 p
+**Ví dụ use case:**
+@67 li
+User profile (ít thay đổi)
+@68 li
+Product catalog
+@69 li
+Configuration data
+@70 li
+Blog posts
+@71 h2
+Write-Through Pattern
+@72 p
+Write-through giải quyết vấn đề consistency của cache-aside.
+@73 h3
+Flow Hoạt Động
+@74 pre
+sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+    
+    Note over App,DB: READ Flow
+    App->>Cache: 1. Read from cache
+    alt Cache Hit
+        Cache-->>App: Return data
+    else Cache Miss
+        App->>DB: 2. Read from DB
+        DB-->>App: 3. Return data
+        App->>Cache: 4. Write to cache
+    end
+    
+    Note over App,DB: WRITE Flow
+    App->>Cache: 1. Write to cache
+    Cache->>DB: 2. Write to database
+    DB-->>Cache: 3. Confirm write
+    Cache-->>App: 4. Confirm write
+@75 p
+**Key difference:** Khi write data, application write vào cache → cache write vào database.
+@76 p
+**Cache luôn sync với database.**
+@77 h3
+Code Example
+@78 h3
+Ưu Điểm
+@79 p
+**Data consistency cao**
+@80 li
+Cache và database luôn sync
+@81 li
+Không có stale data problem
+@82 p
+**Read performance tốt**
+@83 li
+Data luôn có sẵn trong cache
+@84 li
+Không có cache miss trên data mới write
+@85 h3
+Nhược Điểm
+@86 p
+**Write latency cao**
+@87 li
+Mỗi write phải đợi cả cache + database
+@88 li
+Slow path cho write operations
+@89 p
+**Write-heavy workload không hiệu quả**
+@90 li
+Cache được update nhưng có thể không được read
+@91 li
+Waste effort nếu data không hot
+@92 p
+**Cache failure = write failure**
+@93 li
+Cache down → không thể write
+@94 li
+Tăng dependency và risk
+@95 h3
+Khi Nào Dùng Write-Through
+@96 p
+**Phù hợp với:**
+@97 li
+Cần strong consistency
+@98 li
+Read-after-write pattern (write rồi read ngay)
+@99 li
+Critical data không được phép stale
+@100 p
+**Ví dụ use case:**
+@101 li
+Financial transactions
+@102 li
+Inventory management
+@103 li
+Session data
+@104 li
+Shopping cart
+@105 h2
+Write-Behind Pattern (Write-Back)
+@106 p
+Write-behind optimize write performance bằng cách write async.
+@107 h3
+Flow Hoạt Động
+@108 pre
+sequenceDiagram
+    participant App
+    participant Cache
+    participant Queue
+    participant DB
+    
+    Note over App,DB: WRITE Flow
+    App->>Cache: 1. Write to cache (fast)
+    Cache-->>App: 2. Return immediately
+    Cache->>Queue: 3. Queue write async
+    
+    Note over Queue,DB: Background Process
+    Queue->>DB: 4. Batch write to DB
+    DB-->>Queue: 5. Confirm
+@109 p
+**Key difference:** Application chỉ write vào cache → return ngay. Cache tự sync xuống database sau (async).
+@110 h3
+Ưu Điểm
+@111 p
+**Write performance cực cao**
+@112 li
+Application chỉ write vào memory
+@113 li
+Latency thấp nhất có thể
+@114 p
+**Batch writes**
+@115 li
+Cache có thể gộp nhiều writes lại
+@116 li
+Giảm database load dramatically
+@117 p
+**Throughput cao**
+@118 li
+Hệ thống handle được write-heavy workload
+@119 li
+Database không bị overwhelm
+@120 h3
+Nhược Điểm
+@121 p
+**Risk mất data**
+@122 li
+Cache crash trước khi sync → data mất
+@123 li
+Cần replication cho cache layer
+@124 p
+**Consistency phức tạp**
+@125 li
+Cache có data mới, database có data cũ
+@126 li
+Read từ database trực tiếp sẽ stale
+@127 p
+**Implementation phức tạp**
+@128 li
+Cần queue system
+@129 li
+Cần handle retry, failure
+@130 li
+Cần monitoring
+@131 h3
+Khi Nào Dùng Write-Behind
+@132 p
+**Phù hợp với:**
+@133 li
+Write-heavy applications
+@134 li
+Tolerate eventual consistency
+@135 li
+Có infra để handle complexity
+@136 p
+**Ví dụ use case:**
+@137 li
+Analytics data collection
+@138 li
+Logging systems
+@139 li
+Social media likes/views counter
+@140 li
+Gaming leaderboards
+@141 h2
+Cache Invalidation - Hard Problem Của Caching
+@142 p
+**"Cache invalidation is one of the hardest problems in computer science."**
+@143 p
+Vấn đề: Làm sao biết khi nào cache đã stale và cần refresh?
+@144 h3
+Strategy 1: Time-Based (TTL)
+@145 p
+**Set expiration time cho mỗi cache entry.**
+@146 p
+**Ưu điểm:**
+@147 li
+Đơn giản
+@148 li
+Tự động cleanup
+@149 li
+Predictable behavior
+@150 p
+**Nhược điểm:**
+@151 li
+Data có thể stale trong TTL window
+@152 li
+Hard to pick right TTL value
+@153 li
+Cache miss surge khi nhiều keys expire cùng lúc
+@154 p
+**Best practice:**
+@155 li
+Add random jitter để tránh thundering herd
+@156 h3
+Strategy 2: Event-Based Invalidation
+@157 p
+**Invalidate cache khi data thay đổi.**
+@158 p
+**Ưu điểm:**
+@159 li
+Data luôn fresh
+@160 li
+Không có stale data window
+@161 p
+**Nhược điểm:**
+@162 li
+Phức tạp khi có nhiều places update data
+@163 li
+Cache miss sau invalidation (cold start)
+@164 li
+Hard to track all dependencies
+@165 h3
+Strategy 3: Version-Based Invalidation
+@166 p
+**Dùng version number trong cache key.**
+@167 p
+**Ưu điểm:**
+@168 li
+Old cache tự nhiên invalid (không match version)
+@169 li
+Không cần explicit delete
+@170 li
+Dễ rollback
+@171 p
+**Nhược điểm:**
+@172 li
+Cần maintain version metadata
+@173 li
+More cache keys (memory usage)
+@174 h3
+Reality Check: Combine Strategies
+@175 p
+**Thực tế, architect dùng combination:**
+@176 li
+**TTL làm safety net:** Đảm bảo data không stale quá lâu
+@177 li
+**Event-based cho critical paths:** User update profile → invalidate ngay
+@178 li
+**Version cho complex dependencies:** Product có nhiều related data
+@179 p
+**Không có perfect solution. Pick trade-off phù hợp.**
+@180 h2
+Cache Eviction Policies - Khi Cache Đầy
+@181 p
+RAM có giới hạn. Khi cache đầy, phải xóa data cũ.
+@182 p
+**Câu hỏi: Xóa cache entry nào?**
+@183 h3
+LRU (Least Recently Used)
+@184 p
+**Xóa entry lâu nhất không được access.**
+@185 p
+**Logic:**
+@186 li
+Mỗi cache hit → move entry lên top
+@187 li
+Khi cache đầy → xóa entry ở bottom (lâu nhất không dùng)
+@188 p
+**Khi nào dùng:**
+@189 li
+Access pattern temporal (recent data được dùng lại)
+@190 li
+General purpose caching
+@191 li
+Default choice cho most cases
+@192 p
+**Ví dụ:** News site - Breaking news (recent) được read nhiều.
+@193 h3
+LFU (Least Frequently Used)
+@194 p
+**Xóa entry có frequency thấp nhất.**
+@195 p
+**Logic:**
+@196 li
+Track số lần mỗi entry được access
+@197 li
+Khi cache đầy → xóa entry ít được dùng nhất
+@198 p
+**Khi nào dùng:**
+@199 li
+Hot data không đổi theo time (always popular)
+@200 li
+Long-lived cache
+@201 p
+**Ví dụ:** E-commerce - Sản phẩm bestseller luôn hot, không phụ thuộc temporal.
+@202 h3
+FIFO (First In First Out)
+@203 p
+**Xóa entry cũ nhất (theo thứ tự insert).**
+@204 p
+Đơn giản nhưng ít dùng vì không consider access pattern.
+@205 h3
+Comparison
+@206 th
+Policy
+@207 th
+Evict
+@208 th
+Best For
+@209 th
+Overhead
+@210 td
+LRU
+@211 td
+Lâu nhất không dùng
+@212 td
+Temporal access
+@213 td
+Medium
+@214 td
+LFU
+@215 td
+Ít được dùng nhất
+@216 td
+Long-term popular
+@217 td
+High
+@218 td
+FIFO
+@219 td
+Cũ nhất
+@220 td
+Simple cases
+@221 td
+Low
+@222 p
+**Reality:** Redis default dùng **approximation LRU** (fast + efficient).
+@223 h2
+Multi-Layer Caching - Defense In Depth
+@224 p
+Caching không chỉ một layer. Hệ thống lớn có nhiều cache layers.
+@225 h3
+Layer 1: Browser Cache
+@226 p
+**Cache ở client browser.**
+@227 p
+**Ưu điểm:**
+@228 li
+Không có network request
+@229 li
+Fastest possible
+@230 li
+Reduce server load
+@231 p
+**Dùng cho:**
+@232 li
+Static assets (CSS, JS, images)
+@233 li
+Immutable content
+@234 h3
+Layer 2: CDN Cache
+@235 p
+**Cache ở edge locations gần user.**
+@236 pre
+User (Vietnam) → CDN (Singapore) → Origin (US)
+
+@237 p
+**Ưu điểm:**
+@238 li
+Reduce latency (geographic)
+@239 li
+Reduce origin server load
+@240 li
+Handle traffic spikes
+@241 p
+**Dùng cho:**
+@242 li
+Images, videos
+@243 li
+Static HTML pages
+@244 li
+Public content
+@245 h3
+Layer 3: Application Cache (Redis/Memcached)
+@246 p
+**Cache ở application layer.**
+@247 p
+**Ưu điểm:**
+@248 li
+Flexible (custom logic)
+@249 li
+Shared across app servers
+@250 li
+Fast lookup
+@251 p
+**Dùng cho:**
+@252 li
+API responses
+@253 li
+Database query results
+@254 li
+Session data
+@255 li
+Computed data
+@256 h3
+Layer 4: Database Cache (Query Cache)
+@257 p
+**Cache ở database layer.**
+@258 p
+MySQL query cache, PostgreSQL shared buffers, etc.
+@259 p
+**Ưu điểm:**
+@260 li
+Transparent (application không cần biết)
+@261 li
+Optimize repeated queries
+@262 p
+**Dùng cho:**
+@263 li
+Expensive queries
+@264 li
+Aggregations
+@265 li
+Join results
+@266 h3
+Multi-Layer Strategy
+@267 pre
+flowchart TD
+    User[User Request]
+    Browser[Browser Cache]
+    CDN[CDN Cache]
+    AppCache[Application Cache]
+    DB[Database]
+    
+    User --> Browser
+    Browser -->|Miss| CDN
+    CDN -->|Miss| AppCache
+    AppCache -->|Miss| DB
+    
+    DB -->|Store| AppCache
+    AppCache -->|Store| CDN
+    CDN -->|Store| Browser
+@268 p
+**Request flow:**
+@269 li
+Check browser cache → hit = instant
+@270 li
+Miss → check CDN → hit = fast
+@271 li
+Miss → check application cache → hit = good
+@272 li
+Miss → query database → slow but acceptable
+@273 p
+**Mỗi layer đều giảm load cho layer sau.**
+@274 h2
+Cache Patterns So Sánh
+@275 th
+Pattern
+@276 th
+Write Perf
+@277 th
+Read Perf
+@278 th
+Consistency
+@279 th
+Complexity
+@280 td
+Cache-Aside
+@281 td
+Fast
+@282 td
+Good
+@283 td
+Eventual
+@284 td
+Low
+@285 td
+Write-Through
+@286 td
+Slow
+@287 td
+Best
+@288 td
+Strong
+@289 td
+Medium
+@290 td
+Write-Behind
+@291 td
+Best
+@292 td
+Best
+@293 td
+Eventual
+@294 td
+High
+@295 p
+**Không có best pattern. Chỉ có right pattern cho use case.**
+@296 h2
+Mental Model: Performance = Trade Consistency For Speed
+@297 p
+**Core insight của caching:**
+@298 p
+**Bạn đang trade consistency để lấy speed.**
+@299 li
+Cache-aside: Accept stale data trong TTL window
+@300 li
+Write-through: Sacrifice write speed để có consistency
+@301 li
+Write-behind: Accept risk mất data để có extreme speed
+@302 p
+**Không có free lunch.**
+@303 p
+Architect giỏi biết:
+@304 li
+Use case cần consistency level nào?
+@305 li
+Trade-off nào acceptable?
+@306 li
+Risk nào có thể mitigate?
+@307 p
+**Example decisions:**
+@308 p
+**E-commerce product price:**
+@309 li
+Cần strong consistency → Write-through
+@310 li
+Stale price = wrong order = loss money
+@311 p
+**Social media like count:**
+@312 li
+Accept eventual consistency → Write-behind
+@313 li
+Stale count vài giây = acceptable
+@314 li
+Extreme write throughput = critical
+@315 p
+**Blog posts:**
+@316 li
+Accept stale → Cache-aside với TTL
+@317 li
+Content ít thay đổi
+@318 li
+Performance matters hơn real-time
+@319 h2
+Key Takeaways
+@320 p
+**1. Caching works vì locality of reference**
+@321 p
+80% traffic hit 20% data. Cache đúng 20% đó.
+@322 p
+**2. Ba pattern chính: Cache-Aside, Write-Through, Write-Behind**
+@323 p
+Mỗi pattern trade-off khác nhau. Pick based on use case.
+@324 p
+**3. Cache invalidation is hard**
+@325 p
+Combine TTL, event-based, version-based. Không có perfect solution.
+@326 p
+**4. Cache eviction: LRU cho temporal, LFU cho long-term popular**
+@327 p
+Redis default LRU works cho most cases.
+@328 p
+**5. Multi-layer caching: Browser → CDN → App → Database**
+@329 p
+Mỗi layer giảm load cho layer sau. Defense in depth.
+@330 p
+**6. Mental model: Trade consistency for speed**
+@331 p
+Hiểu trade-off, pick đúng level cho use case.
+@332 p
+**7. Cache là optimization, không phải requirement**
+@333 p
+Cache failure không được làm system fail. Always have fallback.
+@334 p
+**Remember: Great architects don't just add cache. They understand which data to cache, where to cache it, and what consistency guarantees they're giving up.**

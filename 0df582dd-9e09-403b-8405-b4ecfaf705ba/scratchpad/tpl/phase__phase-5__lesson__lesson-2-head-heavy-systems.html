@@ -1,0 +1,680 @@
+<article class="prose-ui"><h1 id="read-heavy-systems---design-cho-99-reads">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<ul>
+<li>§§SEG4§§</li>
+<li>§§SEG5§§</li>
+<li>§§SEG6§§</li>
+<li>§§SEG7§§</li>
+</ul>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<ul>
+<li>§§SEG10§§</li>
+<li>§§SEG11§§</li>
+<li>§§SEG12§§</li>
+<li>§§SEG13§§</li>
+</ul>
+<p>§§SEG14§§</p>
+<p>§§SEG15§§</p>
+<ul>
+<li>§§SEG16§§</li>
+<li>§§SEG17§§</li>
+<li>§§SEG18§§</li>
+<li>§§SEG19§§</li>
+</ul>
+<p>§§SEG20§§</p>
+<ul>
+<li>§§SEG21§§</li>
+<li>§§SEG22§§</li>
+<li>§§SEG23§§</li>
+</ul>
+<p>§§SEG24§§</p>
+<h2 id="read-heavy-characteristics">§§SEG25§§</h2>
+<h3 id="traffic-pattern">§§SEG26§§</h3>
+<p>§§SEG27§§</p>
+<pre><code>§§SEG28§§</code></pre>
+<p>§§SEG29§§</p>
+<pre><code>§§SEG30§§</code></pre>
+<h3 id="design-priorities">§§SEG31§§</h3>
+<p>§§SEG32§§</p>
+<p>§§SEG33§§</p>
+<ul>
+<li>§§SEG34§§</li>
+<li>§§SEG35§§</li>
+<li>§§SEG36§§</li>
+</ul>
+<p>§§SEG37§§</p>
+<ul>
+<li>§§SEG38§§</li>
+<li>§§SEG39§§</li>
+</ul>
+<p>§§SEG40§§</p>
+<ul>
+<li>§§SEG41§§</li>
+<li>§§SEG42§§</li>
+</ul>
+<p>§§SEG43§§</p>
+<ul>
+<li>§§SEG44§§</li>
+<li>§§SEG45§§</li>
+<li>§§SEG46§§</li>
+</ul>
+<h3 id="architecture-pattern">§§SEG47§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG48§§</code></pre>
+<p>§§SEG49§§</p>
+<h2 id="case-study-1-url-shortener-tinyurlbitly">§§SEG50§§</h2>
+<p>§§SEG51§§</p>
+<pre><code>§§SEG52§§</code></pre>
+<h3 id="capacity-estimation">§§SEG53§§</h3>
+<p>§§SEG54§§</p>
+<pre><code>§§SEG55§§</code></pre>
+<p>§§SEG56§§</p>
+<pre><code>§§SEG57§§</code></pre>
+<p>§§SEG58§§</p>
+<pre><code>§§SEG59§§</code></pre>
+<p>§§SEG60§§</p>
+<pre><code>§§SEG61§§</code></pre>
+<h3 id="id-generation-strategy">§§SEG62§§</h3>
+<p>§§SEG63§§</p>
+<ul>
+<li>§§SEG64§§</li>
+<li>§§SEG65§§</li>
+<li>§§SEG66§§</li>
+</ul>
+<h4 id="approach-1-hash--collision-detection">§§SEG67§§</h4>
+<pre><code class="language-python">import hashlib
+import base62
+
+def generate_short_id(long_url):
+    # Hash long URL
+    hash_bytes = hashlib.md5(long_url.encode()).digest()
+    
+    # Take first 8 bytes
+    hash_int = int.from_bytes(hash_bytes[:8], 'big')
+    
+    # Convert to base62
+    short_id = base62.encode(hash_int)[:7]
+    
+    # Check collision in database
+    if db.exists(short_id):
+        # Handle collision (add counter, retry)
+        short_id = handle_collision(long_url)
+    
+    return short_id
+</code></pre>
+<p>§§SEG68§§</p>
+<ul>
+<li>§§SEG69§§</li>
+<li>§§SEG70§§</li>
+</ul>
+<p>§§SEG71§§</p>
+<ul>
+<li>§§SEG72§§</li>
+<li>§§SEG73§§</li>
+</ul>
+<h4 id="approach-2-auto-increment-id--base62">§§SEG74§§</h4>
+<pre><code class="language-python">import base62
+
+def generate_short_id():
+    # Get next ID from database
+    id = db.get_next_id()  # Auto-increment
+    
+    # Convert to base62
+    short_id = base62.encode(id)
+    
+    return short_id
+
+# Example:
+# ID 1 → "1"
+# ID 62 → "10"
+# ID 3844 → "100"
+# ID 56800235584 → "zzzzzzz" (7 chars)
+</code></pre>
+<p>§§SEG75§§</p>
+<pre><code>§§SEG76§§</code></pre>
+<p>§§SEG77§§</p>
+<pre><code>§§SEG78§§</code></pre>
+<p>§§SEG79§§</p>
+<ul>
+<li>§§SEG80§§</li>
+<li>§§SEG81§§</li>
+<li>§§SEG82§§</li>
+</ul>
+<p>§§SEG83§§</p>
+<ul>
+<li>§§SEG84§§</li>
+<li>§§SEG85§§</li>
+</ul>
+<h4 id="approach-3-distributed-id-generation-production">§§SEG86§§</h4>
+<pre><code class="language-python"># Use Twitter Snowflake or similar
+def generate_short_id():
+    # Snowflake generates 64-bit ID
+    id = snowflake.generate()
+    
+    # Convert to base62
+    short_id = base62.encode(id)
+    
+    return short_id
+
+# Snowflake structure:
+# [timestamp: 41 bits][datacenter: 5 bits][machine: 5 bits][sequence: 12 bits]
+</code></pre>
+<p>§§SEG87§§</p>
+<ul>
+<li>§§SEG88§§</li>
+<li>§§SEG89§§</li>
+<li>§§SEG90§§</li>
+<li>§§SEG91§§</li>
+</ul>
+<p>§§SEG92§§</p>
+<h3 id="database-schema">§§SEG93§§</h3>
+<pre><code class="language-sql">-- URLs table
+CREATE TABLE urls (
+    short_id VARCHAR(7) PRIMARY KEY,
+    long_url VARCHAR(2048) NOT NULL,
+    user_id BIGINT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    expires_at TIMESTAMP NULL,
+    
+    INDEX idx_user_id (user_id),
+    INDEX idx_created_at (created_at)
+);
+
+-- Analytics table (separate for performance)
+CREATE TABLE url_clicks (
+    short_id VARCHAR(7),
+    clicked_at TIMESTAMP,
+    user_agent TEXT,
+    ip_address VARCHAR(45),
+    country VARCHAR(2),
+    
+    INDEX idx_short_id_time (short_id, clicked_at)
+) PARTITION BY RANGE (clicked_at);
+</code></pre>
+<p>§§SEG94§§</p>
+<ul>
+<li>§§SEG95§§</li>
+<li>§§SEG96§§</li>
+</ul>
+<h3 id="redirect-flow-optimized">§§SEG97§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG98§§</code></pre>
+<p>§§SEG99§§</p>
+<ol>
+<li>§§SEG100§§</li>
+<li>§§SEG101§§</li>
+<li>§§SEG102§§</li>
+</ol>
+<p>§§SEG103§§</p>
+<h3 id="api-implementation">§§SEG104§§</h3>
+<pre><code class="language-python">from flask import Flask, redirect, request
+import redis
+import hashlib
+
+app = Flask(__name__)
+cache = redis.Redis(host='redis', decode_responses=True)
+
+@app.route('/&lt;short_id&gt;')
+def redirect_url(short_id):
+    # Check cache first
+    long_url = cache.get(f"url:{short_id}")
+    
+    if not long_url:
+        # Cache miss - query database
+        url = db.query(
+            "SELECT long_url FROM urls WHERE short_id = ?",
+            short_id
+        )
+        
+        if not url:
+            return "URL not found", 404
+        
+        long_url = url['long_url']
+        
+        # Store in cache (24h TTL)
+        cache.setex(f"url:{short_id}", 86400, long_url)
+    
+    # Track analytics (async)
+    track_click.delay(short_id, request)
+    
+    # Redirect (301 permanent)
+    return redirect(long_url, code=301)
+
+@app.route('/api/shorten', methods=['POST'])
+def create_short_url():
+    long_url = request.json['url']
+    
+    # Validate URL
+    if not is_valid_url(long_url):
+        return {"error": "Invalid URL"}, 400
+    
+    # Generate short ID
+    short_id = generate_short_id(long_url)
+    
+    # Store in database
+    db.execute(
+        "INSERT INTO urls (short_id, long_url, user_id) VALUES (?, ?, ?)",
+        short_id, long_url, current_user.id
+    )
+    
+    # Warm cache
+    cache.setex(f"url:{short_id}", 86400, long_url)
+    
+    return {
+        "short_url": f"https://short.ly/{short_id}",
+        "long_url": long_url
+    }
+</code></pre>
+<h3 id="cache-strategy">§§SEG105§§</h3>
+<p>§§SEG106§§</p>
+<pre><code class="language-python"># Cache tiers
+class URLCache:
+    def __init__(self):
+        self.l1 = {}  # In-memory (application)
+        self.l2 = redis.Redis()  # Redis cluster
+        self.l3 = None  # CDN (edge)
+    
+    def get(self, short_id):
+        # L1: Application memory (microseconds)
+        if short_id in self.l1:
+            metrics.increment('cache.l1.hit')
+            return self.l1[short_id]
+        
+        # L2: Redis (milliseconds)
+        long_url = self.l2.get(f"url:{short_id}")
+        if long_url:
+            metrics.increment('cache.l2.hit')
+            self.l1[short_id] = long_url  # Populate L1
+            return long_url
+        
+        # L3: Database (tens of milliseconds)
+        metrics.increment('cache.miss')
+        long_url = db.get_url(short_id)
+        
+        if long_url:
+            # Populate all cache layers
+            self.l1[short_id] = long_url
+            self.l2.setex(f"url:{short_id}", 86400, long_url)
+        
+        return long_url
+</code></pre>
+<p>§§SEG107§§</p>
+<pre><code class="language-python"># LRU eviction in Redis
+redis_config = {
+    'maxmemory': '10gb',
+    'maxmemory-policy': 'allkeys-lru'
+}
+
+# Hot URLs stay cached
+# Cold URLs evicted automatically
+</code></pre>
+<p>§§SEG108§§</p>
+<pre><code class="language-python"># Warm cache with popular URLs
+def warm_cache():
+    popular_urls = db.query("""
+        SELECT short_id, long_url
+        FROM urls
+        WHERE created_at &gt; NOW() - INTERVAL '7 days'
+        ORDER BY click_count DESC
+        LIMIT 10000
+    """)
+    
+    for url in popular_urls:
+        cache.setex(f"url:{url['short_id']}", 86400, url['long_url'])
+</code></pre>
+<h3 id="analytics-pipeline-async">§§SEG109§§</h3>
+<p>§§SEG110§§</p>
+<p>§§SEG111§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG112§§</code></pre>
+<p>§§SEG113§§</p>
+<pre><code class="language-python">from celery import Celery
+
+app = Celery('tasks', broker='redis://localhost')
+
+@app.task
+def track_click(short_id, request_data):
+    # Extract analytics data
+    analytics = {
+        'short_id': short_id,
+        'clicked_at': datetime.now(),
+        'ip_address': request_data.remote_addr,
+        'user_agent': request_data.user_agent.string,
+        'referer': request_data.referrer,
+        'country': geoip.lookup(request_data.remote_addr)
+    }
+    
+    # Batch insert (better performance)
+    analytics_buffer.append(analytics)
+    
+    if len(analytics_buffer) &gt;= 1000:
+        db.bulk_insert('url_clicks', analytics_buffer)
+        analytics_buffer.clear()
+</code></pre>
+<p>§§SEG114§§</p>
+<pre><code class="language-python"># Write clicks in batches
+def batch_write_clicks():
+    while True:
+        clicks = queue.get_batch(size=5000)
+        
+        if clicks:
+            # Bulk insert (much faster)
+            db.bulk_insert("""
+                INSERT INTO url_clicks 
+                (short_id, clicked_at, ip_address, user_agent, country)
+                VALUES %s
+            """, clicks)
+            
+            # Update click counts
+            update_click_counts(clicks)
+        
+        time.sleep(1)
+</code></pre>
+<h3 id="sharding-strategy">§§SEG115§§</h3>
+<p>§§SEG116§§</p>
+<p>§§SEG117§§</p>
+<pre><code class="language-python">def get_shard(short_id):
+    # Hash short_id to determine shard
+    shard_num = hash(short_id) % NUM_SHARDS
+    return shards[shard_num]
+
+# Example: 4 shards
+# short_id "abc123" → hash → shard 2
+# short_id "xyz789" → hash → shard 3
+</code></pre>
+<p>§§SEG118§§</p>
+<ul>
+<li>§§SEG119§§</li>
+<li>§§SEG120§§</li>
+<li>§§SEG121§§</li>
+</ul>
+<p>§§SEG122§§</p>
+<ul>
+<li>§§SEG123§§</li>
+<li>§§SEG124§§</li>
+</ul>
+<p>§§SEG125§§</p>
+<pre><code class="language-python">def get_shard(user_id):
+    return shards[user_id % NUM_SHARDS]
+</code></pre>
+<p>§§SEG126§§</p>
+<ul>
+<li>§§SEG127§§</li>
+<li>§§SEG128§§</li>
+</ul>
+<p>§§SEG129§§</p>
+<ul>
+<li>§§SEG130§§</li>
+</ul>
+<h3 id="complete-architecture">§§SEG131§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG132§§</code></pre>
+<p>§§SEG133§§</p>
+<h3 id="key-optimizations">§§SEG134§§</h3>
+<p>§§SEG135§§</p>
+<pre><code class="language-python"># 301 = browser caches redirect
+return redirect(long_url, code=301)
+
+# Users won't hit server on subsequent visits
+</code></pre>
+<p>§§SEG136§§</p>
+<pre><code class="language-python"># Cache-Control header
+response.headers['Cache-Control'] = 'public, max-age=86400'
+</code></pre>
+<p>§§SEG137§§</p>
+<pre><code class="language-html">&lt;!-- In landing page --&gt;
+&lt;link rel="dns-prefetch" href="//short.ly"&gt;
+</code></pre>
+<p>§§SEG138§§</p>
+<pre><code class="language-python"># Reuse database connections
+db_pool = ConnectionPool(max_connections=100)
+</code></pre>
+<p>§§SEG139§§</p>
+<pre><code class="language-python"># Route reads to replicas
+if operation == 'read':
+    db = read_replica
+else:
+    db = primary_db
+</code></pre>
+<h2 id="case-study-2-content-delivery-system">§§SEG140§§</h2>
+<p>§§SEG141§§</p>
+<p>§§SEG142§§</p>
+<ul>
+<li>§§SEG143§§</li>
+<li>§§SEG144§§</li>
+<li>§§SEG145§§</li>
+<li>§§SEG146§§</li>
+</ul>
+<h3 id="multi-layer-caching">§§SEG147§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG148§§</code></pre>
+<p>§§SEG149§§</p>
+<ul>
+<li>§§SEG150§§</li>
+<li>§§SEG151§§</li>
+<li>§§SEG152§§</li>
+<li>§§SEG153§§</li>
+</ul>
+<h3 id="content-type-strategy">§§SEG154§§</h3>
+<p>§§SEG155§§</p>
+<pre><code class="language-http">Cache-Control: public, max-age=31536000, immutable
+</code></pre>
+<p>§§SEG156§§</p>
+<pre><code>§§SEG157§§</code></pre>
+<p>§§SEG158§§</p>
+<pre><code class="language-http">Cache-Control: public, max-age=300, s-maxage=3600
+</code></pre>
+<p>§§SEG159§§</p>
+<p>§§SEG160§§</p>
+<pre><code class="language-http">Cache-Control: public, max-age=60
+</code></pre>
+<p>§§SEG161§§</p>
+<h3 id="cache-invalidation">§§SEG162§§</h3>
+<p>§§SEG163§§</p>
+<p>§§SEG164§§</p>
+<pre><code class="language-python"># Short TTL for frequently updated content
+cache.setex('article:123', 300, article_html)  # 5 minutes
+</code></pre>
+<p>§§SEG165§§</p>
+<p>§§SEG166§§</p>
+<pre><code class="language-python"># Invalidate on update
+@app.route('/admin/article/&lt;id&gt;', methods=['PUT'])
+def update_article(id):
+    # Update database
+    db.update_article(id, data)
+    
+    # Invalidate all caches
+    cache.delete(f'article:{id}')
+    cdn.purge(f'/article/{id}')
+    
+    return {"status": "updated"}
+</code></pre>
+<p>§§SEG167§§</p>
+<p>§§SEG168§§</p>
+<pre><code class="language-python"># Include version in URL
+def article_url(article):
+    return f"/article/{article.id}?v={article.updated_at.timestamp()}"
+
+# Old URL cached, new URL = cache miss
+</code></pre>
+<p>§§SEG169§§</p>
+<p>§§SEG170§§</p>
+<pre><code class="language-python"># Static assets: versioned URLs
+/static/app.v123.js
+
+# HTML pages: short TTL + event invalidation
+cache.setex('page:home', 300, html)  # 5 min TTL
+on_update: cache.delete('page:home')  # Immediate
+
+# API: very short TTL
+cache.setex('api:posts', 60, json)  # 1 min TTL
+</code></pre>
+<h3 id="database-modeling-for-reads">§§SEG171§§</h3>
+<p>§§SEG172§§</p>
+<pre><code class="language-sql">-- Normalized (slow - requires JOIN)
+SELECT a.*, u.name, u.avatar
+FROM articles a
+JOIN users u ON a.author_id = u.id
+WHERE a.id = 123;
+
+-- Denormalized (fast - single query)
+CREATE TABLE articles (
+    id BIGINT PRIMARY KEY,
+    title VARCHAR(200),
+    content TEXT,
+    author_id BIGINT,
+    author_name VARCHAR(100),  -- Denormalized
+    author_avatar VARCHAR(255), -- Denormalized
+    created_at TIMESTAMP
+);
+
+SELECT * FROM articles WHERE id = 123;
+</code></pre>
+<p>§§SEG173§§</p>
+<p>§§SEG174§§</p>
+<pre><code class="language-sql">-- Pre-computed popular articles
+CREATE MATERIALIZED VIEW popular_articles AS
+SELECT 
+    a.*,
+    COUNT(v.id) as view_count,
+    COUNT(c.id) as comment_count
+FROM articles a
+LEFT JOIN views v ON a.id = v.article_id
+LEFT JOIN comments c ON a.id = c.article_id
+WHERE a.published_at &gt; NOW() - INTERVAL '7 days'
+GROUP BY a.id
+ORDER BY view_count DESC
+LIMIT 100;
+
+-- Refresh periodically
+REFRESH MATERIALIZED VIEW popular_articles;
+</code></pre>
+<p>§§SEG175§§</p>
+<h3 id="global-deployment">§§SEG176§§</h3>
+<p>§§SEG177§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG178§§</code></pre>
+<p>§§SEG179§§</p>
+<ul>
+<li>§§SEG180§§</li>
+<li>§§SEG181§§</li>
+</ul>
+<p>§§SEG182§§</p>
+<ul>
+<li>§§SEG183§§</li>
+<li>§§SEG184§§</li>
+</ul>
+<h3 id="image-optimization">§§SEG185§§</h3>
+<p>§§SEG186§§</p>
+<p>§§SEG187§§</p>
+<pre><code class="language-html">&lt;img 
+    src="/images/hero.jpg"
+    srcset="
+        /images/hero-320w.jpg 320w,
+        /images/hero-640w.jpg 640w,
+        /images/hero-1024w.jpg 1024w
+    "
+    sizes="(max-width: 640px) 100vw, 640px"
+&gt;
+</code></pre>
+<p>§§SEG188§§</p>
+<p>§§SEG189§§</p>
+<pre><code class="language-python"># Serve WebP to supporting browsers
+def serve_image(image_id):
+    accepts_webp = 'image/webp' in request.headers.get('Accept', '')
+    
+    if accepts_webp:
+        return f"/images/{image_id}.webp"
+    else:
+        return f"/images/{image_id}.jpg"
+</code></pre>
+<p>§§SEG190§§</p>
+<p>§§SEG191§§</p>
+<pre><code class="language-html">&lt;img src="placeholder.jpg" data-src="actual-image.jpg" loading="lazy"&gt;
+</code></pre>
+<p>§§SEG192§§</p>
+<p>§§SEG193§§</p>
+<pre><code>§§SEG194§§</code></pre>
+<p>§§SEG195§§</p>
+<h2 id="cache-first-thinking">§§SEG196§§</h2>
+<p>§§SEG197§§</p>
+<h3 id="traditional-flow">§§SEG198§§</h3>
+<pre><code>§§SEG199§§</code></pre>
+<p>§§SEG200§§</p>
+<h3 id="cache-first-flow">§§SEG201§§</h3>
+<pre><code>§§SEG202§§</code></pre>
+<p>§§SEG203§§</p>
+<h3 id="design-questions">§§SEG204§§</h3>
+<p>§§SEG205§§</p>
+<p>§§SEG206§§</p>
+<pre><code>§§SEG207§§</code></pre>
+<p>§§SEG208§§</p>
+<pre><code>§§SEG209§§</code></pre>
+<p>§§SEG210§§</p>
+<pre><code>§§SEG211§§</code></pre>
+<p>§§SEG212§§</p>
+<pre><code>§§SEG213§§</code></pre>
+<p>§§SEG214§§</p>
+<pre><code>§§SEG215§§</code></pre>
+<h3 id="cache-warming">§§SEG216§§</h3>
+<p>§§SEG217§§</p>
+<pre><code class="language-python"># Warm cache on deploy
+def warm_cache():
+    # Popular articles
+    articles = db.query("""
+        SELECT id, rendered_html
+        FROM articles
+        WHERE view_count &gt; 1000
+        ORDER BY view_count DESC
+        LIMIT 1000
+    """)
+    
+    for article in articles:
+        cache.setex(
+            f'article:{article.id}',
+            3600,
+            article.rendered_html
+        )
+    
+    # User sessions
+    sessions = db.query("SELECT * FROM active_sessions")
+    for session in sessions:
+        cache.setex(f'session:{session.id}', 1800, session.data)
+</code></pre>
+<p>§§SEG218§§</p>
+<h2 id="key-patterns-summary">§§SEG219§§</h2>
+<h3 id="pattern-1-multi-layer-cache">§§SEG220§§</h3>
+<pre><code>§§SEG221§§</code></pre>
+<p>§§SEG222§§</p>
+<h3 id="pattern-2-async-analytics">§§SEG223§§</h3>
+<pre><code>§§SEG224§§</code></pre>
+<p>§§SEG225§§</p>
+<h3 id="pattern-3-denormalization">§§SEG226§§</h3>
+<pre><code>§§SEG227§§</code></pre>
+<p>§§SEG228§§</p>
+<h3 id="pattern-4-read-replicas">§§SEG229§§</h3>
+<pre><code>§§SEG230§§</code></pre>
+<p>§§SEG231§§</p>
+<h3 id="pattern-5-permanent-redirects">§§SEG232§§</h3>
+<pre><code>§§SEG233§§</code></pre>
+<p>§§SEG234§§</p>
+<h2 id="key-takeaways">§§SEG235§§</h2>
+<p>§§SEG236§§</p>
+<p>§§SEG237§§</p>
+<p>§§SEG238§§</p>
+<p>§§SEG239§§</p>
+<p>§§SEG240§§</p>
+<p>§§SEG241§§</p>
+<p>§§SEG242§§</p>
+<p>§§SEG243§§</p>
+<p>§§SEG244§§</p>
+<p>§§SEG245§§</p>
+<p>§§SEG246§§</p>
+<p>§§SEG247§§</p>
+<p>§§SEG248§§</p>
+<p>§§SEG249§§</p>
+<p>§§SEG250§§</p>
+<p>§§SEG251§§</p>
+<p>§§SEG252§§</p>
+<p>§§SEG253§§</p>
+<p>§§SEG254§§</p>
+<p>§§SEG255§§</p>
+<hr>
+<p>§§SEG256§§</p></article>

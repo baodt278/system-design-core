@@ -1,0 +1,668 @@
+@0 h1
+System Thinking Framework: Nhìn Hệ Thống Như Một Tổng Thể
+@1 p
+Tôi còn nhớ lần đầu tiên nhìn vào codebase của một hệ thống lớn.
+@2 p
+Hàng trăm files. Chục microservices. Database, cache, queues, APIs...
+@3 p
+Tôi hỏi senior: *"Làm sao anh hiểu được hết những cái này?"*
+@4 p
+Anh ấy cười: *"Em không cần hiểu từng dòng code. Em cần hiểu hệ thống như một **tổng thể**."*
+@5 p
+Tôi: *"Nghĩa là sao ạ?"*
+@6 p
+Anh ấy vẽ một diagram đơn giản:
+@7 pre
+User → API → Cache → Database
+              ↓
+            Queue → Worker
+
+@8 p
+*"Đây là cả hệ thống. Data flow từ User, qua API, check Cache, query Database, async jobs vào Queue. Hiểu flow này quan trọng hơn hiểu từng function."*
+@9 p
+**Đó là lần đầu tiên tôi học về System Thinking.**
+@10 h2
+Tại Sao Phải Think in Systems?
+@11 h3
+The Problem: Thinking in Code
+@12 p
+Hầu hết developers think như này:
+@13 p
+Bạn thấy: function, cache logic, database query.
+@14 p
+**Nhưng bạn không thấy:**
+@15 li
+Request flow từ đâu đến?
+@16 li
+Response đi về đâu?
+@17 li
+Cache fail thì sao?
+@18 li
+Database slow thì sao?
+@19 li
+Scale như thế nào?
+@20 h3
+The Solution: System-Level View
+@21 p
+System thinking nhìn như này:
+@22 pre
+sequenceDiagram
+    participant User
+    participant API
+    participant Cache
+    participant DB
+    
+    User->>API: GET /users/123
+    API->>Cache: Check user:123
+    
+    alt Cache Hit
+        Cache-->>API: Return user data
+        API-->>User: 200 OK (50ms)
+    else Cache Miss
+        Cache-->>API: Not found
+        API->>DB: SELECT * FROM users
+        DB-->>API: User data
+        API->>Cache: Store user:123
+        API-->>User: 200 OK (200ms)
+    end
+@23 p
+*System view: Thấy được flow, interactions, và failure scenarios*
+@24 p
+**Thấy sự khác biệt chưa?**
+@25 p
+System thinking giúp bạn:
+@26 li
+Hiểu data flow
+@27 li
+Spot bottlenecks
+@28 li
+Design for failure
+@29 li
+Scale intelligently
+@30 li
+Debug production issues
+@31 h2
+The Universal System Pattern
+@32 p
+**Mọi system đều follow một pattern cơ bản:**
+@33 pre
+Input → Processing → Storage → Output
+
+@34 pre
+graph LR
+    INPUT[Input<br/>Request/Event] --> PROCESS[Processing<br/>Business Logic]
+    PROCESS --> STORAGE[Storage<br/>Persist Data]
+    STORAGE --> OUTPUT[Output<br/>Response/Action]
+    
+    style INPUT fill:#51cf66
+    style PROCESS fill:#ffd43b
+    style STORAGE fill:#ff6b6b
+    style OUTPUT fill:#339af0
+@35 p
+*Universal pattern: Mọi system đều nhận input, xử lý, lưu trữ, và trả output*
+@36 h3
+Examples of This Pattern
+@37 p
+**Web Application:**
+@38 pre
+Input: User clicks "Submit Order"
+Processing: Validate, calculate total, check inventory
+Storage: Save order to database
+Output: Show confirmation page
+
+@39 p
+**Messaging System:**
+@40 pre
+Input: User sends message
+Processing: Encrypt, route to recipient
+Storage: Store in message queue
+Output: Deliver to recipient's device
+
+@41 p
+**Analytics Pipeline:**
+@42 pre
+Input: Events from applications
+Processing: Aggregate, transform data
+Storage: Write to data warehouse
+Output: Update dashboards
+
+@43 p
+**Video Platform:**
+@44 pre
+Input: User uploads video
+Processing: Encode to multiple formats
+Storage: Save to object storage (S3)
+Output: Video available for streaming
+
+@45 p
+**Key insight:** Hiểu pattern này → Hiểu mọi system.
+@46 h2
+Core System Components
+@47 p
+**Mọi web system đều có 6 components cơ bản:**
+@48 h3
+Component 1: Client (Input Layer)
+@49 p
+**Vai trò:** Initiate requests, receive responses
+@50 pre
+Types:
+- Web browser (JavaScript)
+- Mobile app (iOS/Android)
+- Desktop app
+- Other services (API clients)
+
+Characteristics:
+- Không đáng tin cậy (user có thể modify)
+- Không kiểm soát được (network, device)
+- Stateful (có local state)
+
+Key principle: NEVER trust client input
+
+@51 p
+**Example flow:**
+@52 pre
+User action:
+1. User clicks "Login"
+2. Browser sends POST /login with credentials
+3. Waits for response
+4. Renders result
+
+What can go wrong:
+- User modifies request (change user_id)
+- Network timeout
+- Slow response
+- Device crashes
+
+System must handle all these!
+
+@53 h3
+Component 2: API (Processing Layer)
+@54 p
+**Vai trò:** Handle requests, execute business logic, orchestrate data flow
+@55 pre
+Responsibilities:
+- Validate input (client không tin cậy!)
+- Execute business rules
+- Coordinate between services
+- Format response
+- Handle errors
+
+Characteristics:
+- Stateless (nên là stateless!)
+- Horizontally scalable
+- Contains business logic
+
+Technology examples:
+- REST API (Express, FastAPI, Spring)
+- GraphQL API
+- gRPC services
+
+@56 p
+**Example:**
+@57 h3
+Component 3: Database (Storage Layer)
+@58 p
+**Vai trò:** Persist data reliably
+@59 pre
+Types:
+- Relational (PostgreSQL, MySQL)
+  → Structured data, transactions
+  
+- NoSQL (MongoDB, Cassandra)
+  → Flexible schema, horizontal scale
+  
+- Time-series (InfluxDB, TimescaleDB)
+  → Metrics, logs, events
+
+Characteristics:
+- ACID properties (SQL) or eventual consistency (NoSQL)
+- Slower than memory (disk I/O)
+- Usually the bottleneck
+- Data must survive crashes
+
+Key principle: Source of truth
+
+@60 p
+**When to use what:**
+@61 pre
+SQL (PostgreSQL):
+✓ Need transactions
+✓ Complex relationships
+✓ Data integrity critical
+Example: E-commerce, banking
+
+NoSQL (MongoDB):
+✓ Flexible schema
+✓ Horizontal scaling
+✓ Simple queries
+Example: User profiles, content
+
+Time-series (InfluxDB):
+✓ Metrics/monitoring
+✓ IoT sensor data
+✓ Time-based queries
+Example: Observability, analytics
+
+@62 h3
+Component 4: Cache (Performance Layer)
+@63 p
+**Vai trò:** Store frequently accessed data in memory
+@64 pre
+Why cache?
+- Memory: 100 nanoseconds
+- SSD: 150 microseconds (1,500x slower)
+- HDD: 10 milliseconds (100,000x slower)
+
+→ Cache = Speed up reads dramatically
+
+Common implementations:
+- Redis (most popular)
+- Memcached (simple key-value)
+- Application-level (in-process)
+
+Characteristics:
+- Volatile (data can be lost)
+- Limited capacity (expensive RAM)
+- Stale data possible
+- Cache invalidation is hard
+
+Key principle: Cache is optimization, not source of truth
+
+@65 p
+**Cache patterns:**
+@66 h3
+Component 5: Queue (Async Layer)
+@67 p
+**Vai trò:** Decouple services, enable async processing
+@68 pre
+Why queues?
+- Long-running tasks (don't block user)
+- Traffic spikes (buffer requests)
+- Service decoupling (sender doesn't need receiver online)
+- Retry logic (handle failures)
+
+Common implementations:
+- RabbitMQ (message broker)
+- Kafka (event streaming)
+- AWS SQS (managed queue)
+- Redis (simple queue)
+
+Characteristics:
+- Asynchronous (fire and forget)
+- At-least-once delivery (usually)
+- Ordered or unordered
+- Persistent or in-memory
+
+Key principle: Use for work that can be delayed
+
+@69 p
+**Example:**
+@70 h3
+Component 6: Storage (File Layer)
+@71 p
+**Vai trò:** Store large files (images, videos, documents)
+@72 pre
+Why separate from database?
+- Databases bad for large files
+- Need scalability (terabytes/petabytes)
+- Need CDN integration
+- Cost optimization
+
+Common implementations:
+- S3 (AWS object storage)
+- Google Cloud Storage
+- Azure Blob Storage
+- MinIO (self-hosted S3-compatible)
+
+Characteristics:
+- Cheap (compared to database)
+- Scalable (unlimited storage)
+- Durable (99.999999999% durability)
+- Slow for small files (latency overhead)
+
+Key principle: Store metadata in DB, files in object storage
+
+@73 p
+**Example:**
+@74 h2
+Putting It All Together: System Architecture
+@75 p
+**Typical web application architecture:**
+@76 pre
+graph TB
+    subgraph Client Layer
+        WEB[Web Browser]
+        MOBILE[Mobile App]
+    end
+    
+    subgraph Edge Layer
+        CDN[CDN<br/>Static Assets]
+        LB[Load Balancer]
+    end
+    
+    subgraph Application Layer
+        API1[API Server 1]
+        API2[API Server 2]
+        API3[API Server N]
+    end
+    
+    subgraph Data Layer
+        CACHE[Redis Cache<br/>Fast Reads]
+        DB[(Database<br/>Source of Truth)]
+        S3[S3 Storage<br/>Large Files]
+    end
+    
+    subgraph Async Layer
+        QUEUE[Message Queue]
+        WORKER[Background Workers]
+    end
+    
+    WEB --> CDN
+    MOBILE --> CDN
+    WEB --> LB
+    MOBILE --> LB
+    LB --> API1 & API2 & API3
+    
+    API1 & API2 & API3 --> CACHE
+    API1 & API2 & API3 --> DB
+    API1 & API2 & API3 --> S3
+    API1 & API2 & API3 --> QUEUE
+    
+    QUEUE --> WORKER
+    WORKER --> DB
+    WORKER --> S3
+    
+    style CACHE fill:#51cf66
+    style DB fill:#ff6b6b
+    style QUEUE fill:#ffd43b
+@77 p
+*Complete system: Tất cả components work together*
+@78 h2
+Request Flow Example: User Updates Profile
+@79 p
+**Trace một request qua toàn bộ system:**
+@80 pre
+Step 1: User clicks "Save Profile"
+Component: Client (Browser)
+Action: POST /users/123 with new data
+
+Step 2: Request hits Load Balancer
+Component: Load Balancer
+Action: Route to API Server 2 (least connections)
+Time: +10ms
+
+Step 3: API validates and processes
+Component: API Server
+Actions:
+- Validate input (email format, etc.)
+- Check permissions (is user allowed?)
+- Sanitize data
+Time: +20ms
+
+Step 4: Update database
+Component: Database
+Actions:
+- Execute UPDATE query
+- Transaction commit
+- Confirm success
+Time: +100ms
+
+Step 5: Invalidate cache
+Component: Cache
+Actions:
+- Delete cache key "user:123"
+- Force fresh read next time
+Time: +5ms
+
+Step 6: Queue async tasks
+Component: Queue
+Actions:
+- Publish "user.updated" event
+- Non-blocking (returns immediately)
+Time: +2ms
+
+Step 7: Return response to user
+Component: API → Client
+Response: 200 OK
+Total time: 137ms (good UX!)
+
+Step 8: Background processing
+Component: Worker (async)
+Actions:
+- Send "profile updated" email
+- Update search index
+- Sync to analytics
+Time: Doesn't affect user experience
+
+@81 p
+**Key observations:**
+@82 pre
+✓ User gets response in 137ms (fast!)
+✓ Heavy work done async (email, indexing)
+✓ Cache invalidated (consistency)
+✓ Each component has clear role
+✓ Failures can be isolated
+
+This is system thinking in action!
+
+@83 h2
+The Mental Model: Input → Processing → Storage → Output
+@84 p
+**Apply to everything:**
+@85 h3
+Example 1: E-commerce Checkout
+@86 pre
+Input:
+- User clicks "Place Order"
+- Cart items, shipping address, payment
+
+Processing:
+- Validate inventory
+- Calculate total (items + tax + shipping)
+- Process payment
+- Generate order ID
+
+Storage:
+- Save order to database
+- Store payment receipt in S3
+- Cache order details
+
+Output:
+- Confirmation page to user
+- Email confirmation (async via queue)
+- Notification to warehouse (async)
+
+@87 h3
+Example 2: Social Media Post
+@88 pre
+Input:
+- User writes post + uploads photo
+
+Processing:
+- Sanitize text (remove bad words)
+- Resize/compress photo
+- Generate post ID
+
+Storage:
+- Save post to database
+- Upload photo to S3
+- Cache hot posts (trending)
+
+Output:
+- Show post to user
+- Fanout to followers (async via queue)
+- Update feed cache (async)
+
+@89 h3
+Example 3: Video Upload
+@90 pre
+Input:
+- User uploads video file
+
+Processing:
+- Validate file (format, size)
+- Generate thumbnail
+- Queue encoding job
+
+Storage:
+- Save original to S3
+- Save metadata to database
+- Store encoding job in queue
+
+Output:
+- Show "Processing..." to user
+- Email when ready (async)
+- Multiple resolutions in S3 (async)
+
+@91 p
+**Pattern is consistent across all systems!**
+@92 h2
+Common System Patterns
+@93 h3
+Pattern 1: Read-Heavy System
+@94 pre
+Characteristics:
+- 90%+ reads, < 10% writes
+- Examples: News site, documentation, social media feed
+
+Optimization:
+- Aggressive caching (Redis)
+- CDN for static content
+- Database read replicas
+- Cache-first architecture
+
+Architecture:
+Client → CDN (90% hits) → Load Balancer → API → Cache (95% hits) → Database (5% hits)
+
+Result: 99.5% requests never hit database!
+
+@95 h3
+Pattern 2: Write-Heavy System
+@96 pre
+Characteristics:
+- 50%+ writes
+- Examples: Analytics, logging, IoT sensors
+
+Optimization:
+- Write buffering (queue)
+- Batch processing
+- Write-optimized database (Cassandra)
+- Async everything
+
+Architecture:
+Client → API → Queue → Worker → Database (batched writes)
+
+Result: Handle 100K writes/sec with buffering
+
+@97 h3
+Pattern 3: Real-Time System
+@98 pre
+Characteristics:
+- Low latency critical (< 100ms)
+- Examples: Chat, gaming, trading
+
+Optimization:
+- WebSocket connections
+- In-memory everything
+- Geographic distribution
+- Minimal processing
+
+Architecture:
+Client ←→ WebSocket Server → Redis (pub/sub) → Database (eventual)
+
+Result: Sub-50ms message delivery
+
+@99 h2
+Debugging with System Thinking
+@100 p
+**When production issue happens:**
+@101 h3
+Before System Thinking:
+@102 pre
+"API is slow. Let me check the code..."
+*Reads 1000 lines of code*
+*No idea where problem is*
+
+@103 h3
+After System Thinking:
+@104 pre
+"API is slow. Let me trace the request:
+
+1. Client → API: 50ms (normal)
+2. API → Cache: 2ms (normal)
+3. API → Database: 5000ms (PROBLEM!)
+4. Database → API: 2ms
+5. API → Client: 10ms
+
+Bottleneck: Database query taking 5 seconds
+
+Next: Check database
+- Slow query log
+- Missing index?
+- Lock contention?
+
+Found: Missing index on user_id
+Fix: CREATE INDEX idx_user_id
+Result: Query now 50ms"
+
+→ Solved in 10 minutes!
+
+@105 p
+**System thinking = Structured debugging approach**
+@106 h2
+Key Takeaways
+@107 p
+**System = Components + Interactions**
+@108 pre
+6 core components:
+1. Client (input layer)
+2. API (processing layer)
+3. Database (storage layer)
+4. Cache (performance layer)
+5. Queue (async layer)
+6. Storage (file layer)
+
+Each has specific role
+Together form complete system
+
+@109 p
+**Universal pattern:**
+@110 pre
+Input → Processing → Storage → Output
+
+Every system follows this
+Understand pattern → Understand systems
+
+@111 p
+**System thinking benefits:**
+@112 pre
+✓ See the big picture
+✓ Identify bottlenecks faster
+✓ Design better architectures
+✓ Debug production issues
+✓ Communicate with team
+✓ Make informed trade-offs
+
+@113 p
+**Mental shift:**
+@114 pre
+From: "How does this function work?"
+To: "How does request flow through system?"
+
+From: "What does this code do?"
+To: "What is the role of this component?"
+
+From: "Fix this bug"
+To: "Which component is causing issue?"
+
+@115 p
+**Remember:**
+@116 pre
+Code is implementation detail
+System is the big picture
+
+Master code → Good developer
+Master systems → Good architect
+
+You need both, but system view comes first
+

@@ -1,0 +1,215 @@
+@0
+ID Phân Tán Và ⟦Thứ Tự|Ordering⟧: Vấn Đề Định Danh Trong Hệ Thống Phân Tán
+@1
+Tôi còn nhớ ⟦lỗi|bug⟧ đầu tiên khiến tôi phải thức trắng đêm vì ⟦hệ thống phân tán|distributed systems⟧.
+@2
+Chúng tôi vừa ⟦chuyển đổi|migrate⟧ từ ⟦hệ thống nguyên khối|monolith⟧ sang ⟦vi dịch vụ|microservices⟧. Mọi thứ chạy ngon lành trên máy cá nhân. ⟦Triển khai|Deploy⟧ lên ⟦môi trường thực tế|production⟧... hỗn loạn.
+@3
+Các đơn hàng bị trùng ID. ⟦Người dùng|Users⟧ phàn nàn "tôi đặt 1 món nhưng thấy 2 đơn hàng". Các ⟦ràng buộc|constraints⟧ của ⟦cơ sở dữ liệu|database⟧ liên tục báo lỗi.
+@4
+Nguyên nhân gốc rễ? ID ⟦tự tăng|auto-increment⟧.
+@5
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ nhìn tôi: *"Em biết tại sao ⟦tự tăng|auto-increment⟧ không hoạt động trong ⟦hệ thống phân tán|distributed systems⟧ chưa?"*
+@7
+Đó là đêm tôi học về việc ⟦sinh ID phân tán|distributed ID generation⟧. Và đó là một trong những vấn đề tinh vi nhất nhưng cũng quan trọng nhất trong hệ thống phân tán.
+@8
+Tại Sao ⟦Tự Tăng|Auto-Increment⟧ Thất Bại?
+@9
+⟦Hệ Thống Nguyên Khối|Monolith⟧: ⟦Tự Tăng|Auto-Increment⟧ Hoạt Động Hoàn Hảo
+@10
+**Tại sao nó hoạt động:**
+@11
+Một cơ sở dữ liệu duy nhất = Một nguồn sự thật duy nhất
+Bộ máy cơ sở dữ liệu đảm bảo tính duy nhất
+Cơ chế khoá ngăn chặn trùng lặp
+Đơn giản vô cùng
+
+@12
+Hệ Thống Phân Tán: ⟦Tự Tăng|Auto-Increment⟧ Thất Bại
+@13
+graph TB
+    APP1[Dịch vụ đơn hàng 1] --> DB1[Mảnh CSDL 1]
+    APP2[Dịch vụ đơn hàng 2] --> DB2[Mảnh CSDL 2]
+    APP3[Dịch vụ đơn hàng 3] --> DB3[Mảnh CSDL 3]
+
+    DB1 -->|id = 1, 2, 3| CONFLICT[Xung đột ID!]
+    DB2 -->|id = 1, 2, 3| CONFLICT
+    DB3 -->|id = 1, 2, 3| CONFLICT
+
+    style CONFLICT fill:#ff6b6b
+@14
+*Ba ⟦mảnh|shards⟧ cơ sở dữ liệu độc lập, mỗi mảnh tự sinh ID ⟦tự tăng|auto-increment⟧ riêng → Xung đột!*
+@15
+**Vấn đề:**
+@16
+Mảnh CSDL 1: id = 1, 2, 3, 4, ...
+Mảnh CSDL 2: id = 1, 2, 3, 4, ...  (TRÙNG LẶP!)
+Mảnh CSDL 3: id = 1, 2, 3, 4, ...  (TRÙNG LẶP!)
+
+→ Cùng một ID trên các mảnh khác nhau
+→ Gộp dữ liệu = thảm hoạ
+→ Khoá ngoại bị hỏng
+→ Khoá bộ nhớ đệm xung đột
+
+@17
+**Tác động trong thực tế:**
+@18
+Tôi từng thấy một trang thương mại điện tử dính lỗi này:
+@19
+Người dùng A đặt sản phẩm X → id = 123 (⟦mảnh|shard⟧ 1)
+@20
+Người dùng B đặt sản phẩm Y → id = 123 (⟦mảnh|shard⟧ 2)
+@21
+Hệ thống gộp các đơn hàng → Xung đột
+@22
+Người dùng A nhận sản phẩm của Người dùng B
+@23
+Thảm hoạ!
+@24
+**Bài học rút ra:** ⟦Tự tăng|Auto-increment⟧ chỉ hoạt động với một cơ sở dữ liệu duy nhất. ⟦Hệ thống phân tán|Distributed systems⟧ cần cách tiếp cận khác.
+@25
+Các ⟦Yêu Cầu|Requirements⟧ Đối Với ID Phân Tán
+@26
+Trước khi đi vào các giải pháp, hãy hiểu các ⟦yêu cầu|requirements⟧.
+@27
+**Bắt buộc phải có:**
+@28
+1. Duy nhất trên toàn cục
+   - ID phải là duy nhất trên TẤT CẢ các dịch vụ/mảnh
+   - Không xung đột dù được sinh ra ở đâu
+
+2. Tính sẵn sàng cao
+   - Sinh ID không cần phối hợp giữa các nút
+   - Không có điểm lỗi duy nhất
+   - Vẫn hoạt động khi xảy ra phân vùng mạng
+
+3. Hiệu năng cao
+   - Sinh nhanh (< 1ms)
+   - Không chặn
+   - Hàng triệu ID/giây
+
+@29
+**Nên có:**
+@30
+4. Gần đúng theo thứ tự thời gian
+   - ID mới > ID cũ
+   - Hữu ích cho việc sắp xếp, gỡ lỗi
+   - Không cần thứ tự hoàn hảo
+
+5. Gọn nhẹ
+   - 64 bit thay vì 128 bit
+   - Tiết kiệm lưu trữ, bộ nhớ
+   - So sánh nhanh hơn
+
+6. Con người đọc được
+   - Có thể gỡ lỗi
+   - Trích xuất siêu dữ liệu (dấu thời gian, machine ID)
+
+@31
+**Thực tế của sự đánh đổi:**
+@32
+Không có giải pháp nào thoả mãn được tất cả. Phải lựa chọn dựa trên thứ tự ưu tiên.
+@33
+Giải Pháp 1: UUID (Universally Unique Identifier - Định Danh Duy Nhất Toàn Cục)
+@34
+Khái Niệm
+@35
+**UUID = số ngẫu nhiên 128 bit, được đảm bảo duy nhất trên toàn cục**
+@36
+Định dạng: 8-4-4-4-12 chữ số thập lục phân
+Ví dụ: 550e8400-e29b-41d4-a716-446655440000
+
+Tổng số UUID có thể có: 2^128 ≈ 3.4 × 10^38
+(Nhiều hơn số nguyên tử trong vũ trụ!)
+
+@37
+**Các phiên bản:**
+@38
+UUID v1: Dấu thời gian + địa chỉ MAC
+UUID v4: Ngẫu nhiên (phổ biến nhất)
+UUID v7: Sắp theo dấu thời gian (mới nhất, tốt nhất cho cơ sở dữ liệu)
+
+@39
+Cài Đặt
+@40
+**Không cần phối hợp:**
+@41
+Dịch vụ 1 sinh ra: 550e8400-e29b-41d4-a716-446655440000
+Dịch vụ 2 sinh ra: 7c9e6679-7425-40de-944b-e07fc1f90ae7
+Dịch vụ 3 sinh ra: 9e107d9d-372b-4d16-a86a-3a0f8e4f0c3d
+
+Tất cả đều duy nhất, không xung đột!
+
+@42
+⟦Sự Đánh Đổi|Trade-offs⟧
+@43
+Ưu điểm:
+- Cực kỳ đơn giản để cài đặt
+- Không cần phối hợp
+- Thực sự duy nhất trên toàn cục
+- Hoạt động cả khi ngoại tuyến
+- Là tiêu chuẩn của ngành
+
+Nhược điểm:
+- 128 bit (lớn gấp đôi 64 bit)
+- Không sắp xếp được (thứ tự ngẫu nhiên)
+- Hiệu năng cơ sở dữ liệu kém (chèn ngẫu nhiên)
+- Con người khó đọc
+- Khó gỡ lỗi
+
+@44
+Tác Động Đến ⟦Hiệu Năng|Performance⟧ Cơ Sở Dữ Liệu
+@45
+**Vấn đề với UUID ngẫu nhiên:**
+@46
+Cấu trúc chỉ mục B-tree:
+       [middle]
+      /        \
+  [left]      [right]
+
+Chèn tuần tự (tự tăng):
+→ Luôn chèn vào lá ngoài cùng bên phải
+→ Không phải tách trang
+→ Nhanh!
+
+UUID ngẫu nhiên:
+→ Chèn ngẫu nhiên khắp cây
+→ Tách trang thường xuyên
+→ Phân mảnh dữ liệu trên đĩa
+→ Chèn chậm hơn 2-3 lần
+
+@47
+**Đo hiệu năng (PostgreSQL):**
+@48
+Auto-increment INT:  100,000 lượt chèn = 2.3 giây
+UUID v4:            100,000 lượt chèn = 7.1 giây  (chậm hơn 3 lần)
+UUID v7:            100,000 lượt chèn = 2.8 giây  (gần bằng INT!)
+
+@49
+**Giải pháp:** UUID v7 (sắp theo dấu thời gian)
+@51
+Sử dụng UUID khi:
+✓ Sự đơn giản quan trọng nhất
+✓ Không cần sắp xếp theo ID
+✓ Lưu trữ/bộ nhớ không phải là ràng buộc
+✓ Muốn dùng tiêu chuẩn của ngành
+✓ Cần ID thực sự ngẫu nhiên (bảo mật)
+
+Tránh UUID khi:
+✗ Hiệu năng cơ sở dữ liệu là yếu tố sống còn
+✗ Cần ID sắp theo thời gian
+✗ Bị ràng buộc về lưu trữ (di động, IoT)
+✗ Cần ID con người đọc được
+
+@52
+**Quan điểm cá nhân:**
+@53
+UUID là lựa chọn mặc định an toàn. Khi không chắc nên dùng gì, hãy dùng UUID (tốt nhất là v7).
+@54
+Chỉ tối ưu theo hướng khác khi có những ⟦yêu cầu|requirements⟧ cụ thể.
+@55
+Giải Pháp 2: Twitter Snowflake
+@56
+Khái Niệm
+@57
+**Snowflake = ID 64 bit, sắp theo thời gian, duy nhất trên toàn cục**

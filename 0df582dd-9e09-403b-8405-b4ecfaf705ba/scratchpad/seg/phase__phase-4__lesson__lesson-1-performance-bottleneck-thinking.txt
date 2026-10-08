@@ -1,0 +1,556 @@
+@0 h1
+Performance & Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn
+@1 p
+Khi hệ thống bắt đầu chậm, nhiều developer nghĩ ngay: "Thêm server!". Nhưng đây là sai lầm phổ biến nhất trong system design.
+@2 p
+**Scaling không phải là thêm resource. Scaling là tìm và loại bỏ bottleneck.**
+@3 p
+Nếu bạn không biết đâu là điểm nghẽn, việc thêm server chỉ là lãng phí tiền. Đôi khi thêm 10 server vẫn không giải quyết được vấn đề vì bottleneck nằm ở database, không phải application server.
+@4 p
+Lesson này dạy bạn **tư duy performance từ góc nhìn architect** - cách nhìn hệ thống như một pipeline, tìm điểm nghẽn, và quyết định đúng cách scale.
+@5 h2
+Tại Sao Phải Học Bottleneck Thinking Trước?
+@6 p
+Trước khi học CDN, caching, database sharding... bạn cần hiểu:
+@7 p
+**Mỗi kỹ thuật scale đều giải quyết một loại bottleneck cụ thể.**
+@8 li
+CDN giải quyết bottleneck ở **network latency & bandwidth**
+@9 li
+Caching giải quyết bottleneck ở **database read load**
+@10 li
+Sharding giải quyết bottleneck ở **database write throughput**
+@11 li
+Message queue giải quyết bottleneck ở **sync processing time**
+@12 p
+Nếu không biết tìm bottleneck, bạn sẽ áp dụng giải pháp sai → lãng phí effort + tiền bạc.
+@13 p
+**Mental model đúng:**
+@14 li
+Measure → tìm bottleneck
+@15 li
+Understand root cause
+@16 li
+Pick giải pháp phù hợp
+@17 li
+Measure lại
+@18 p
+Không phải: nghe người ta dùng Redis → mình cũng dùng Redis.
+@19 h2
+Scalability Dimensions - 3 Chiều Của Performance
+@20 p
+Khi nói về performance, hệ thống có 3 chiều bạn phải quan tâm:
+@21 h3
+1. Compute (CPU/Processing Power)
+@22 p
+Đây là khả năng xử lý của server - tính toán, logic, algorithms.
+@23 p
+**Bottleneck ở compute khi:**
+@24 li
+CPU usage cao (>80%)
+@25 li
+Application server chậm vì business logic phức tạp
+@26 li
+Image processing, video encoding, ML inference chạy lâu
+@27 p
+**Giải pháp:**
+@28 li
+Vertical scaling: nâng cấp CPU mạnh hơn
+@29 li
+Horizontal scaling: thêm application server + load balancer
+@30 li
+Async processing: đẩy heavy task sang queue
+@31 h3
+2. Storage (Disk I/O & Data Volume)
+@32 p
+Khả năng đọc/ghi dữ liệu và lượng data bạn cần lưu.
+@33 p
+**Bottleneck ở storage khi:**
+@34 li
+Disk I/O chậm (HDD vs SSD khác biệt lớn)
+@35 li
+Database query chậm vì data size lớn
+@36 li
+Full table scan trên bảng hàng triệu records
+@37 p
+**Giải pháp:**
+@38 li
+Upgrade storage: HDD → SSD → NVMe
+@39 li
+Database indexing
+@40 li
+Database sharding (chia data ra nhiều server)
+@41 li
+Archiving old data
+@42 h3
+3. Network (Bandwidth & Latency)
+@43 p
+Tốc độ truyền tải dữ liệu giữa các component.
+@44 p
+**Bottleneck ở network khi:**
+@45 li
+Transfer file lớn (video, images)
+@46 li
+User ở xa server (geographic latency)
+@47 li
+Bandwidth bị limit (nhiều request cùng lúc)
+@48 p
+**Giải pháp:**
+@49 li
+CDN: cache static content gần user
+@50 li
+Compression: giảm data size
+@51 li
+Reduce payload: chỉ trả về data cần thiết
+@52 li
+Multiple regions: deploy server gần user
+@53 pre
+flowchart TB
+    subgraph Compute
+        CPU[CPU Usage]
+        Logic[Business Logic]
+    end
+    
+    subgraph Storage
+        Disk[Disk I/O]
+        Data[Data Volume]
+    end
+    
+    subgraph Network
+        BW[Bandwidth]
+        Latency[Geographic Latency]
+    end
+    
+    System[System Performance] --> Compute
+    System --> Storage
+    System --> Network
+@54 p
+**Bottleneck có thể nằm ở bất kỳ dimension nào. Task của architect là tìm ra dimension nào đang limit hệ thống.**
+@55 h2
+Throughput vs Latency - Hai Metrics Quan Trọng Nhất
+@56 p
+Khi measure performance, có 2 metrics bạn phải hiểu rõ:
+@57 h3
+Throughput (Requests Per Second)
+@58 p
+**Throughput = số lượng request hệ thống xử lý được trong 1 giây.**
+@59 p
+Ví dụ:
+@60 li
+API handle 1000 req/s
+@61 li
+Database process 500 writes/s
+@62 li
+Queue consume 10,000 messages/s
+@63 p
+**Throughput cao = hệ thống xử lý được nhiều traffic.**
+@64 h3
+Latency (Response Time)
+@65 p
+**Latency = thời gian để hoàn thành 1 request.**
+@66 p
+Ví dụ:
+@67 li
+API response time: 100ms
+@68 li
+Database query time: 50ms
+@69 li
+Network round trip: 200ms
+@70 p
+**Latency thấp = user experience tốt.**
+@71 h3
+Trade-off Giữa Throughput và Latency
+@72 p
+Đây là điểm khó: **không phải lúc nào cũng optimize được cả hai.**
+@73 p
+**Case 1: Tăng throughput → có thể tăng latency**
+@74 p
+Khi bạn cho phép API xử lý nhiều request cùng lúc (tăng concurrency), mỗi request có thể phải chờ lâu hơn vì resource bị share.
+@75 pre
+Trước: 100 req/s, latency 50ms
+Sau: 500 req/s, latency 200ms
+
+@76 p
+Throughput tăng 5x, nhưng latency tăng 4x.
+@77 p
+**Case 2: Giảm latency → có thể giảm throughput**
+@78 p
+Khi bạn optimize từng request chạy nhanh hơn (giảm latency), có thể phải giảm số request xử lý đồng thời.
+@79 p
+**Architect decision:**
+@80 li
+E-commerce: latency quan trọng (user trải nghiệm)
+@81 li
+Analytics system: throughput quan trọng (xử lý bulk data)
+@82 li
+Payment system: cả hai đều quan trọng
+@83 p
+Bạn phải biết business cần gì để quyết định optimize direction.
+@84 h2
+Vertical vs Horizontal Scaling - Hai Cách Scale Cơ Bản
+@85 h3
+Vertical Scaling (Scale Up)
+@86 p
+**Nâng cấp server hiện tại: CPU mạnh hơn, RAM nhiều hơn, disk nhanh hơn.**
+@87 p
+**Ưu điểm:**
+@88 li
+Đơn giản: không cần thay đổi code
+@89 li
+Không có distributed system complexity
+@90 li
+Phù hợp với monolithic app
+@91 p
+**Nhược điểm:**
+@92 li
+Có giới hạn vật lý (không thể mua CPU vô hạn)
+@93 li
+Expensive: server càng mạnh càng đắt exponentially
+@94 li
+Single point of failure: server die → toàn bộ hệ thống down
+@95 p
+**Khi nào dùng vertical scaling:**
+@96 li
+Hệ thống nhỏ, traffic chưa cao
+@97 li
+Database cần consistency cao (khó scale horizontal)
+@98 li
+Quick fix tạm thời
+@99 h3
+Horizontal Scaling (Scale Out)
+@100 p
+**Thêm nhiều server cùng xử lý: 1 server → 5 servers → 50 servers.**
+@101 p
+**Ưu điểm:**
+@102 li
+Không có giới hạn lý thuyết (thêm server liên tục)
+@103 li
+Cost effective: nhiều server nhỏ rẻ hơn 1 server lớn
+@104 li
+High availability: 1 server die, còn lại vẫn hoạt động
+@105 p
+**Nhược điểm:**
+@106 li
+Phức tạp: cần load balancer, session management, data consistency
+@107 li
+Không phải component nào cũng scale được horizontal (database khó)
+@108 li
+Development effort cao
+@109 p
+**Khi nào dùng horizontal scaling:**
+@110 li
+Hệ thống lớn, traffic cao
+@111 li
+Cần high availability
+@112 li
+Stateless application (API, microservices)
+@113 pre
+flowchart LR
+    subgraph Vertical["Vertical Scaling"]
+        V1[Small Server] -->|Upgrade| V2[Bigger Server]
+    end
+    
+    subgraph Horizontal["Horizontal Scaling"]
+        H1[Server 1]
+        H2[Server 2]
+        H3[Server 3]
+        LB[Load Balancer] --> H1
+        LB --> H2
+        LB --> H3
+    end
+@114 p
+**Reality:** Hầu hết hệ thống lớn dùng **cả hai** - vertical cho database, horizontal cho application layer.
+@115 h2
+Amdahl's Law - Tại Sao Không Thể Scale Vô Hạn
+@116 p
+**Amdahl's Law nói rằng: Speedup của hệ thống bị giới hạn bởi phần không thể parallelize.**
+@117 p
+Giả sử một request có flow:
+@118 li
+Parse request: 10ms (có thể parallel)
+@119 li
+Database query: 80ms (có thể parallel)
+@120 li
+Serialize response: 10ms (**KHÔNG thể parallel - bottleneck**)
+@121 p
+**Total time: 100ms**
+@122 p
+Khi bạn scale horizontal:
+@123 li
+Parse: 10ms → 5ms (2x faster)
+@124 li
+Database: 80ms → 40ms (2x faster)
+@125 li
+Serialize: 10ms → **vẫn 10ms** (không thể parallel)
+@126 p
+**Total time: 55ms (chỉ cải thiện 1.8x, không phải 2x)**
+@127 p
+**Serialize response chính là bottleneck.** Dù bạn thêm bao nhiêu server, step này vẫn giữ nguyên.
+@128 p
+**Practical insight:**
+@129 p
+Khi bạn scale và không thấy improvement tuyến tính → tìm phần không parallel được (serialization, critical section, single-threaded logic).
+@130 p
+**Architect thinking:** Không phải cứ thêm server là hệ thống nhanh hơn. Bạn phải tìm phần nào đang block parallel execution.
+@131 h2
+Bottleneck Identification Process - Quy Trình Tìm Điểm Nghẽn
+@132 p
+Đây là quy trình thực tế architect dùng để tìm bottleneck:
+@133 h3
+Step 1: Define Performance Goal
+@134 p
+Trước khi tìm bottleneck, phải biết target là gì.
+@135 p
+**Không rõ ràng:**
+@136 li
+"Hệ thống phải nhanh"
+@137 p
+**Rõ ràng:**
+@138 li
+API response time < 200ms for 95th percentile
+@139 li
+Handle 10,000 req/s sustained
+@140 li
+Database query < 50ms average
+@141 p
+**Không có goal = không biết đâu là bottleneck.**
+@142 h3
+Step 2: Measure Current State
+@143 p
+Đo tất cả metrics quan trọng:
+@144 p
+**Application layer:**
+@145 li
+Request rate (req/s)
+@146 li
+Response time (p50, p95, p99)
+@147 li
+Error rate
+@148 li
+CPU & memory usage
+@149 p
+**Database layer:**
+@150 li
+Query time
+@151 li
+Connection pool usage
+@152 li
+Slow query log
+@153 li
+Disk I/O
+@154 p
+**Network:**
+@155 li
+Bandwidth usage
+@156 li
+Latency between services
+@157 li
+Packet loss
+@158 p
+**Tool:** Prometheus, Grafana, DataDog, New Relic, CloudWatch.
+@159 h3
+Step 3: Identify The Constraint
+@160 p
+Nhìn vào metrics → tìm component nào đang maxed out.
+@161 p
+**Ví dụ thực tế:**
+@162 pre
+API server: CPU 40%, Memory 50% → OK
+Load balancer: CPU 10% → OK
+Database: CPU 95%, query time 500ms → BOTTLENECK!
+
+@163 p
+→ Bottleneck ở database, không phải API server.
+@164 p
+**Thêm API server sẽ không giải quyết vấn đề.**
+@165 h3
+Step 4: Understand Root Cause
+@166 p
+Tìm được bottleneck chưa đủ. Phải hiểu **tại sao** nó bottleneck.
+@167 p
+Database CPU cao có thể vì:
+@168 li
+Missing index → full table scan
+@169 li
+Bad query (N+1 problem)
+@170 li
+Data volume quá lớn
+@171 li
+Too many connections
+@172 p
+**Phải dig deeper để biết giải pháp đúng.**
+@173 h3
+Step 5: Pick The Right Solution
+@174 p
+Mỗi root cause có giải pháp khác nhau:
+@175 th
+Root Cause
+@176 th
+Solution
+@177 td
+Missing index
+@178 td
+Add index
+@179 td
+N+1 query
+@180 td
+Query optimization, eager loading
+@181 td
+High read load
+@182 td
+Read replica, caching
+@183 td
+High write load
+@184 td
+Sharding, queue async writes
+@185 td
+Large dataset
+@186 td
+Archiving, partitioning
+@187 p
+**Không có one-size-fits-all solution.**
+@188 h3
+Step 6: Test & Measure Again
+@189 p
+Sau khi apply solution:
+@190 li
+Load test lại
+@191 li
+Measure metrics
+@192 li
+Verify improvement
+@193 li
+Tìm bottleneck mới (thường có bottleneck tiếp theo)
+@194 p
+**Performance optimization là iterative process.**
+@195 pre
+flowchart TD
+    A[Define Goal] --> B[Measure Current State]
+    B --> C[Identify Constraint]
+    C --> D[Understand Root Cause]
+    D --> E[Pick Solution]
+    E --> F[Test & Measure]
+    F -->|New Bottleneck| C
+    F -->|Goal Met| G[Done]
+@196 h2
+Load Testing Thinking - Tìm Bottleneck Trước Khi Production
+@197 p
+Đừng đợi đến khi production down mới tìm bottleneck.
+@198 p
+**Load testing = simulate traffic để expose bottleneck sớm.**
+@199 h3
+Loại Load Test
+@200 p
+**1. Baseline test**
+@201 li
+Chạy với normal traffic
+@202 li
+Measure baseline metrics
+@203 li
+Hiểu behavior bình thường
+@204 p
+**2. Stress test**
+@205 li
+Tăng traffic từ từ
+@206 li
+Tìm breaking point
+@207 li
+Xem component nào fail trước
+@208 p
+**3. Spike test**
+@209 li
+Traffic tăng đột ngột (flash sale, viral post)
+@210 li
+Test auto-scaling
+@211 li
+Verify recovery
+@212 p
+**4. Soak test (Endurance test)**
+@213 li
+Chạy sustained load trong nhiều giờ
+@214 li
+Tìm memory leak, resource exhaustion
+@215 li
+Verify stability long-term
+@216 h3
+Tool: k6, JMeter, Gatling, Locust
+@217 p
+**Ví dụ k6 script:**
+@218 p
+**Quan sát metrics khi load tăng:**
+@219 li
+Response time có tăng không?
+@220 li
+Error rate có spike không?
+@221 li
+Component nào CPU/memory tăng nhanh?
+@222 p
+**Đó chính là bottleneck.**
+@223 h2
+Mental Model: Scale = Remove Bottleneck
+@224 p
+Ghi nhớ mental model này:
+@225 p
+**Scaling không phải là thêm resource ngẫu nhiên.**
+@226 p
+**Scaling = identify bottleneck → remove bottleneck → repeat.**
+@227 p
+Hệ thống như một pipeline. Water flow bị limit bởi **đoạn ống nhỏ nhất**.
+@228 pre
+[Wide pipe] → [NARROW PIPE] → [Wide pipe]
+                    ↑
+                Bottleneck
+
+@229 p
+Dù bạn mở rộng 2 đoạn pipe to ra, water flow vẫn bị limit bởi đoạn giữa.
+@230 p
+**Apply vào system:**
+@231 pre
+[API: 10k req/s] → [DB: 1k req/s] → [Response]
+                         ↑
+                    Bottleneck
+
+@232 p
+Thêm API server không giúp gì. Phải scale database hoặc thêm cache.
+@233 p
+**Architect mindset:**
+@234 li
+Hệ thống luôn có bottleneck
+@235 li
+Fix bottleneck hiện tại → bottleneck mới xuất hiện
+@236 li
+Optimization là continuous process
+@237 li
+Measure → Fix → Measure lại
+@238 h2
+Key Takeaways
+@239 p
+**1. Scalability có 3 dimensions: Compute, Storage, Network**
+@240 p
+Bottleneck có thể nằm ở bất kỳ dimension nào. Phải identify đúng.
+@241 p
+**2. Throughput ≠ Latency**
+@242 p
+Hai metrics khác nhau, có thể conflict. Biết business cần gì để optimize đúng direction.
+@243 p
+**3. Vertical scaling: đơn giản nhưng có limit. Horizontal scaling: unlimited nhưng phức tạp**
+@244 p
+Hầu hết hệ thống lớn dùng hybrid approach.
+@245 p
+**4. Amdahl's Law: Speedup bị giới hạn bởi phần không parallel được**
+@246 p
+Tìm critical section, serialization point là key.
+@247 p
+**5. Bottleneck identification process:**
+@248 p
+Define goal → Measure → Identify constraint → Root cause → Solution → Test lại.
+@249 p
+**6. Load testing giúp tìm bottleneck trước production**
+@250 p
+Stress test, spike test, soak test đều quan trọng.
+@251 p
+**7. Mental model: Scale = Remove bottleneck**
+@252 p
+Không phải add resource. Là tìm và loại bỏ constraint.
+@253 p
+Hãy nhớ: **Architect giỏi không phải người biết nhiều công nghệ. Là người biết tìm đúng bottleneck và pick đúng giải pháp.**

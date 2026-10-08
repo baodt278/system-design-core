@@ -1,0 +1,902 @@
+@0 h1
+Load Balancing: Traffic Distribution Trong Distributed Systems
+@1 h2
+TL;DR
+@2 li
+**Load balancing** là cơ chế phân phối traffic giữa nhiều instances để tăng **scalability** và **reliability**.
+@3 li
+Ở production, load balancer giúp giảm single point of failure, hỗ trợ zero-downtime deploy và giữ latency ổn định khi traffic tăng.
+@4 li
+Chọn thuật toán theo workload: `Round Robin`, `Least Connections`, `Weighted`, hoặc `IP Hash`.
+@5 li
+Với web/API hiện đại, Layer 7 thường là lựa chọn mặc định; Layer 4 phù hợp khi cần throughput cực cao hoặc non-HTTP protocols.
+@6 h2
+What Is Load Balancing?
+@7 p
+Load balancing trong system design là kỹ thuật phân phối request đến nhiều backend servers để tránh quá tải một node và tăng khả năng mở rộng hệ thống.
+@8 h2
+Why Does Load Balancing Matter?
+@9 li
+Tăng khả năng chịu tải khi traffic tăng đột biến.
+@10 li
+Tăng độ sẵn sàng hệ thống khi một server bị lỗi.
+@11 li
+Giữ hiệu năng ổn định cho user trong môi trường distributed systems.
+@12 li
+Là nền tảng cho high-availability architecture trong production.
+@13 h2
+When Should You Use It?
+@14 li
+Khi một server không còn đủ capacity cho throughput hiện tại.
+@15 li
+Khi cần giảm downtime khi deploy.
+@16 li
+Khi hệ thống có nhiều service hoặc nhiều vùng (multi-region).
+@17 li
+Khi muốn cải thiện reliability và performance ở quy mô production.
+@18 h2
+How Does It Work?
+@19 li
+Client gửi request đến load balancer.
+@20 li
+Load balancer chọn backend server theo routing algorithm.
+@21 li
+Request được forward đến server đã chọn.
+@22 li
+Response trả về qua load balancer cho client.
+@23 h2
+Trade-offs Cần Nắm
+@24 li
+Layer 4 nhanh hơn nhưng ít ngữ cảnh routing.
+@25 li
+Layer 7 linh hoạt hơn nhưng tốn thêm processing.
+@26 li
+Sticky session giúp stateful flow nhưng làm giảm phân phối đều.
+@27 li
+Thuật toán đơn giản dễ vận hành hơn nhưng có thể không tối ưu cho workload phức tạp.
+@28 h2
+Key Terms (AI/SEO Quick Definitions)
+@29 li
+**Scalability:** khả năng hệ thống tăng công suất khi traffic tăng.
+@30 li
+**Reliability:** khả năng hệ thống tiếp tục hoạt động ổn định khi có lỗi.
+@31 li
+**Latency:** thời gian từ lúc gửi request đến khi nhận response.
+@32 li
+**Throughput:** số lượng request hệ thống xử lý được trong một đơn vị thời gian.
+@33 p
+Bạn đã học components và communication patterns. Giờ là lúc đi sâu vào một trong những components quan trọng nhất: **Load Balancer**.
+@34 p
+Tôi còn nhớ ngày Black Friday đầu tiên của startup tôi từng làm. Traffic tăng 50x. Single server? Chết ngay lập tức.
+@35 p
+Chúng tôi panic add thêm 5 servers. Nhưng rồi nhận ra: **Làm sao traffic biết đi đến server nào?**
+@36 p
+Đó là lúc tôi thực sự hiểu giá trị của load balancer. Không phải chỉ là "phân phối traffic". Mà là **làm cho distributed system hoạt động như một thể thống nhất**.
+@37 h2
+Tại Sao Load Balancing Tồn Tại?
+@38 h3
+Vấn Đề Cơ Bản: Single Server Limits
+@39 pre
+flowchart TB
+    subgraph "Single Server Architecture"
+        C1[Client 1] --> S[Server<br/>Max: 1000 req/s]
+        C2[Client 2] --> S
+        C3[Client 3] --> S
+        C4[...] --> S
+        C5[Client N] --> S
+    end
+    
+    style S fill:#ff6b6b
+@40 p
+**Scenario thực tế:**
+@41 pre
+Server capacity: 1,000 requests/second
+Normal traffic: 800 req/s (80% capacity) 
+Black Friday traffic: 5,000 req/s 
+
+Result:
+- Response time: 200ms → 15 seconds
+- Timeouts everywhere
+- Server crash
+- Revenue loss
+
+@42 h3
+Solution 1: Vertical Scaling (Scale Up)
+@43 pre
+Upgrade server:
+4 CPU cores → 16 cores
+8GB RAM → 64GB RAM
+Cost: $200/month → $1,200/month
+
+Result: Handle 4,000 req/s
+Problem: Vẫn thiếu 1,000 req/s
+        Và... không thể upgrade mãi mãi
+
+@44 p
+**Limitations:**
+@45 li
+Có giới hạn vật lý (không thể mua CPU vô hạn)
+@46 li
+Expensive (cost không linear)
+@47 li
+Single point of failure (server die = hệ thống chết)
+@48 li
+Downtime khi upgrade
+@49 h3
+Solution 2: Horizontal Scaling (Scale Out)
+@50 pre
+flowchart TB
+    subgraph "Multi-Server Architecture"
+        C1[Client 1] --> LB[Load Balancer]
+        C2[Client 2] --> LB
+        C3[Client 3] --> LB
+        C4[...] --> LB
+        C5[Client N] --> LB
+        
+        LB --> S1[Server 1<br/>1000 req/s]
+        LB --> S2[Server 2<br/>1000 req/s]
+        LB --> S3[Server 3<br/>1000 req/s]
+        LB --> S4[Server 4<br/>1000 req/s]
+        LB --> S5[Server 5<br/>1000 req/s]
+    end
+    
+    style LB fill:#51cf66
+@51 p
+**Result:**
+@52 pre
+5 servers × 1,000 req/s = 5,000 req/s total capacity
+Cost: 5 × $200 = $1,000/month
+Can add more servers infinitely
+
+@53 p
+**Nhưng có vấn đề:**
+@54 p
+Với 5 servers, **client gửi request đến server nào?**
+@55 p
+Ai quyết định? Làm sao distribute đều?
+@56 p
+→ Đó chính là **nhiệm vụ của Load Balancer**.
+@57 h2
+Load Balancer Là Gì?
+@58 p
+**Definition:**
+@59 p
+Load balancer là component ngồi giữa clients và servers, nhận tất cả incoming requests và phân phối chúng đều (hoặc thông minh) giữa multiple backend servers.
+@60 p
+**Simple analogy:**
+@61 p
+Imagine quầy check-in sân bay:
+@62 pre
+Khách hàng đến → Nhân viên điều phối → Quầy check-in
+(clients)        (load balancer)      (servers)
+
+Nhân viên: "Quầy 3 đang trống, mời anh qua đây"
+
+@63 p
+**Technical flow:**
+@64 pre
+sequenceDiagram
+    participant C as Client
+    participant LB as Load Balancer
+    participant S1 as Server 1
+    participant S2 as Server 2
+    participant S3 as Server 3
+    
+    C->>LB: HTTP Request
+    Note over LB: Choose server<br/>based on algorithm
+    LB->>S2: Forward request
+    S2->>S2: Process request
+    S2->>LB: Response
+    LB->>C: Forward response
+@65 p
+*Load balancer nhận request, chọn server theo algorithm, forward request, nhận response, return về client.*
+@66 h2
+Benefits Của Load Balancing
+@67 h3
+Benefit 1: Increased Capacity
+@68 pre
+Before: 1 server = 1,000 req/s
+After:  10 servers = 10,000 req/s
+
+Linear scaling (thêm server = thêm capacity)
+
+@69 h3
+Benefit 2: High Availability
+@70 pre
+flowchart LR
+    LB[Load Balancer]
+    S1[Server 1<br/> Healthy]
+    S2[Server 2<br/> Down]
+    S3[Server 3<br/> Healthy]
+    
+    LB --> S1
+    LB -.X S2
+    LB --> S3
+    
+    style S2 fill:#ff6b6b
+    style S1 fill:#51cf66
+    style S3 fill:#51cf66
+@71 p
+*Khi Server 2 die, load balancer tự động remove nó khỏi pool và route traffic đến servers còn lại.*
+@72 p
+**Without LB:**
+@73 pre
+Server dies → Users get errors → Downtime
+
+@74 p
+**With LB:**
+@75 pre
+Server dies → LB detects → Routes to healthy servers
+→ Users không bị ảnh hưởng
+→ Zero downtime
+
+@76 h3
+Benefit 3: Zero-Downtime Deployment
+@77 pre
+Traditional deployment:
+1. Stop server
+2. Deploy new code
+3. Start server
+→ Downtime: 2-5 minutes
+
+With Load Balancer:
+1. Remove Server 1 from pool
+2. Deploy to Server 1
+3. Add Server 1 back
+4. Repeat for Server 2, 3, 4, 5...
+→ Downtime: 0 seconds
+
+@78 p
+**Rolling deployment strategy:**
+@79 pre
+flowchart TD
+    Start[Start Deployment] --> R1[Remove Server 1 from LB]
+    R1 --> D1[Deploy to Server 1]
+    D1 --> H1[Health check Server 1]
+    H1 --> A1[Add Server 1 back to LB]
+    A1 --> R2[Remove Server 2 from LB]
+    R2 --> D2[Deploy to Server 2]
+    D2 --> Done[All servers updated]
+@80 h3
+Benefit 4: Geographic Distribution
+@81 pre
+Users in US → US Load Balancer → US Servers (low latency)
+Users in Europe → EU Load Balancer → EU Servers (low latency)
+Users in Asia → Asia Load Balancer → Asia Servers (low latency)
+
+@82 p
+**Impact:**
+@83 pre
+Without geo-distribution:
+User in Brazil → Server in Singapore → 400ms latency
+
+With geo-distribution:
+User in Brazil → Server in São Paulo → 20ms latency
+
+20x improvement!
+
+@84 h2
+Load Balancing Algorithms
+@85 p
+Đây là phần quan trọng nhất: **Làm thế nào load balancer quyết định request nào đi server nào?**
+@86 h3
+Algorithm 1: Round Robin
+@87 p
+**How it works:**
+@88 p
+Distribute requests tuần tự, mỗi server nhận một request theo vòng tròn.
+@89 pre
+flowchart LR
+    LB[Load Balancer]
+    S1[Server A]
+    S2[Server B]
+    S3[Server C]
+    
+    LB -->|Request 1| S1
+    LB -->|Request 2| S2
+    LB -->|Request 3| S3
+    LB -->|Request 4| S1
+    LB -->|Request 5| S2
+@90 p
+**Code concept:**
+@91 p
+**Ưu điểm:**
+@92 p
+Cực kỳ đơn giản
+Phân phối đều về số lượng requests
+Không cần track state
+Low overhead
+@93 p
+**Nhược điểm:**
+@94 p
+Không quan tâm server load hiện tại
+Không biết request nào heavy, nhẹ
+Giả định tất cả requests và servers giống nhau
+@95 p
+**Problem scenario:**
+@96 pre
+Request 1 → Server A: Upload 5GB file (takes 10 minutes)
+Request 2 → Server B: Get user profile (takes 10ms)
+Request 3 → Server C: Get user profile (takes 10ms)
+Request 4 → Server A: Get user profile (waits behind upload...)
+
+Server A: Overloaded (handling heavy request)
+Server B, C: Idle (finished quick requests)
+
+Round Robin không biết server A đang bận!
+
+@97 p
+**Khi nào dùng:**
+@98 p
+Requests có execution time tương tự nhau
+Servers có specs giống nhau
+Simple use cases
+Default choice khi bắt đầu
+@99 h3
+Algorithm 2: Least Connections
+@100 p
+**How it works:**
+@101 p
+Route request đến server có **ít active connections nhất**.
+@102 pre
+flowchart TB
+    LB[Load Balancer<br/>Tracks connections]
+    
+    S1[Server A<br/>10 connections]
+    S2[Server B<br/>5 connections]
+    S3[Server C<br/>8 connections]
+    
+    LB -->|New request goes here| S2
+    
+    style S2 fill:#51cf66
+@103 p
+**Code concept:**
+@104 p
+**Ưu điểm:**
+@105 p
+Cân bằng load tốt hơn Round Robin
+Adapt với requests có execution time khác nhau
+Hiệu quả cho long-lived connections
+@106 p
+**Nhược điểm:**
+@107 p
+Phức tạp hơn (phải track connections)
+Overhead để update state
+Cần synchronization giữa multiple LB instances
+@108 p
+**Khi nào dùng:**
+@109 p
+Requests có execution time rất khác nhau
+WebSocket connections
+Long-polling
+File uploads/downloads
+Streaming
+@110 p
+**Personal experience:**
+@111 p
+Tôi từng có API với 2 loại endpoints:
+@112 pre
+GET /users/{id} → 10ms execution time
+POST /reports/generate → 60 seconds execution time
+
+@113 p
+Dùng Round Robin → Servers nhận reports bị stuck, servers khác idle.
+@114 p
+Switch sang Least Connections → Load balanced đều, response time cải thiện 5x.
+@115 h3
+Algorithm 3: Weighted Round Robin
+@116 p
+**Problem statement:**
+@117 p
+Servers có specs khác nhau. Round Robin treat tất cả servers như nhau → waste capacity.
+@118 pre
+Server A: 16GB RAM, 8 CPU cores (powerful)
+Server B: 8GB RAM, 4 CPU cores (normal)
+Server C: 8GB RAM, 4 CPU cores (normal)
+
+Round Robin: Mỗi server nhận same số requests
+→ Server A under-utilized
+→ Server B, C might be overloaded
+
+@119 p
+**Solution: Assign weights**
+@120 p
+**Request flow:**
+@121 pre
+flowchart LR
+    LB[Load Balancer]
+    
+    S1[Server A<br/>Weight: 4]
+    S2[Server B<br/>Weight: 2]
+    S3[Server C<br/>Weight: 2]
+    
+    LB -->|Req 1,2,3,4| S1
+    LB -->|Req 5,6| S2
+    LB -->|Req 7,8| S3
+@122 p
+**Implementation concept:**
+@123 p
+**Ưu điểm:**
+@124 p
+Utilize powerful servers hiệu quả hơn
+Flexible resource allocation
+Cost-effective (mix server types)
+@125 p
+**Nhược điểm:**
+@126 p
+Phải configure weights manually
+Cần adjust weights khi thêm/bớt servers
+Không dynamic (không adapt real-time load)
+@127 p
+**Khi nào dùng:**
+@128 p
+Servers có specs khác nhau
+Mix của spot instances và reserved instances (cloud)
+Gradual migration (old servers weight thấp, new servers weight cao)
+@129 h3
+Algorithm 4: IP Hash (Consistent Hashing)
+@130 p
+**How it works:**
+@131 p
+Hash client IP address và map to server. Same client → Same server.
+@132 p
+**Diagram:**
+@133 pre
+flowchart TB
+    C1[Client<br/>IP: 192.168.1.100] -->|Hash → 0| S1[Server A]
+    C2[Client<br/>IP: 192.168.1.101] -->|Hash → 2| S3[Server C]
+    C3[Client<br/>IP: 192.168.1.102] -->|Hash → 1| S2[Server B]
+    C1b[Same Client<br/>IP: 192.168.1.100] -->|Hash → 0| S1
+@134 p
+*Same client IP luôn hash to same server.*
+@135 p
+**Ưu điểm:**
+@136 p
+Session persistence (sticky sessions)
+Server-side caching efficient (same user → same server → cache hit)
+Stateful applications work
+@137 p
+**Nhược điểm:**
+@138 p
+Uneven distribution nếu một số clients gửi nhiều requests
+Khi add/remove server → hash changes → sessions lost
+No load balancing nếu một client spam requests
+@139 p
+**Khi nào dùng:**
+@140 p
+Need session affinity
+WebSocket connections
+Server-side caching per user
+Legacy apps không support distributed sessions
+@141 p
+**Better alternative:**
+@142 p
+Thay vì IP Hash, dùng **shared session store** (Redis):
+@143 h2
+Health Checks: Tránh Route Đến Dead Servers
+@144 p
+**Problem:**
+@145 pre
+Server 2 crashes
+Load Balancer không biết
+Continues routing 33% traffic to Server 2
+Users get errors
+
+@146 p
+**Solution: Health Checks**
+@147 p
+Load balancer ping servers định kỳ để verify health.
+@148 pre
+sequenceDiagram
+    participant LB as Load Balancer
+    participant S1 as Server 1
+    participant S2 as Server 2
+    participant S3 as Server 3
+    
+    loop Every 10 seconds
+        LB->>S1: GET /health
+        S1->>LB: 200 OK 
+        
+        LB->>S2: GET /health
+        Note over S2: Server crashed
+        S2--xLB: Timeout 
+        
+        LB->>S3: GET /health
+        S3->>LB: 200 OK 
+    end
+    
+    Note over LB: Remove Server 2<br/>from pool
+@149 h3
+Health Check Implementation
+@150 p
+**Server-side endpoint:**
+@151 p
+**Load Balancer side:**
+@152 h3
+Health Check Best Practices
+@153 p
+**Practice 1: Check dependencies, không chỉ server**
+@154 p
+**Practice 2: Appropriate timeout**
+@155 pre
+Too short (500ms):
+- False negatives (server healthy but slow response)
+- Remove healthy servers unnecessarily
+
+Too long (30s):
+- False positives (server dead but take 30s to detect)
+- Users get errors for 30s
+
+Sweet spot: 2-5 seconds
+
+@156 p
+**Practice 3: Retry logic**
+@157 p
+**Reason:** Avoid flapping (server removed → added → removed → added...).
+@158 p
+**Practice 4: Graceful degradation**
+@159 p
+**Personal lesson:**
+@160 p
+Tôi từng set health check timeout = 500ms. Database có spike latency lên 800ms (vẫn healthy, chỉ slow).
+@161 p
+Load balancer detect ALL servers unhealthy → Remove all → No servers available → **Complete outage**.
+@162 p
+Lesson: Health checks phải distinguish "slow" vs "dead".
+@163 h2
+Layer 4 vs Layer 7 Load Balancing
+@164 p
+Đây là concept nhiều người confused. Hãy phân tích rõ ràng.
+@165 h3
+OSI Model Quick Recap
+@166 pre
+Layer 7: Application (HTTP, FTP, SMTP)
+Layer 6: Presentation (SSL/TLS)
+Layer 5: Session
+Layer 4: Transport (TCP, UDP)
+Layer 3: Network (IP)
+Layer 2: Data Link (Ethernet)
+Layer 1: Physical
+
+@167 h3
+Layer 4 Load Balancing (Transport Layer)
+@168 p
+**Operates at:** TCP/UDP level
+@169 p
+**Information available:**
+@170 li
+Source IP address
+@171 li
+Destination IP address
+@172 li
+Source port
+@173 li
+Destination port
+@174 p
+**Cannot see:**
+@175 li
+HTTP headers
+@176 li
+URL path
+@177 li
+Cookies
+@178 li
+Request body
+@179 li
+Application-level data
+@180 p
+**How it works:**
+@181 pre
+sequenceDiagram
+    participant C as Client
+    participant L4 as L4 Load Balancer
+    participant S as Server
+    
+    C->>L4: TCP SYN
+    Note over L4: Look at IP:Port only<br/>Choose server
+    L4->>S: Forward TCP connection
+    S->>L4: TCP SYN-ACK
+    L4->>C: Forward response
+    
+    Note over C,S: Entire TCP connection<br/>forwarded to server
+@182 p
+**Example:**
+@183 pre
+All traffic to port 443 → Backend HTTPS servers
+All traffic to port 5432 → PostgreSQL replicas
+All traffic to port 6379 → Redis cluster
+
+Simple port-based routing
+
+@184 p
+**Ưu điểm:**
+@185 p
+**Cực nhanh** (simple packet forwarding)
+**Low latency** (+5-10ms)
+**Protocol-agnostic** (works với bất kỳ TCP/UDP protocol)
+**High throughput** (millions connections/second)
+@186 p
+**Nhược điểm:**
+@187 p
+Không thể route based on URL
+Không thể route based on headers
+Không thể modify requests/responses
+Limited intelligence
+@188 p
+**Use cases:**
+@189 li
+Non-HTTP protocols (databases, custom TCP apps)
+@190 li
+Extreme performance requirements
+@191 li
+Simple routing (all traffic to same backends)
+@192 li
+Gaming servers, VoIP
+@193 p
+**Example tools:**
+@194 li
+AWS Network Load Balancer (NLB)
+@195 li
+HAProxy (TCP mode)
+@196 li
+IPVS (Linux kernel)
+@197 h3
+Layer 7 Load Balancing (Application Layer)
+@198 p
+**Operates at:** HTTP/HTTPS level
+@199 p
+**Information available:**
+@200 li
+Everything Layer 4 has
+@201 li
+HTTP method (GET, POST, PUT, DELETE)
+@202 li
+URL path and query parameters
+@203 li
+HTTP headers (User-Agent, cookies, custom headers)
+@204 li
+Request body
+@205 li
+SSL/TLS information
+@206 p
+**How it works:**
+@207 pre
+sequenceDiagram
+    participant C as Client
+    participant L7 as L7 Load Balancer
+    participant S as Server
+    
+    C->>L7: HTTPS request<br/>POST /api/users
+    Note over L7: Terminate TCP<br/>Parse HTTP<br/>Read URL, headers<br/>Make routing decision
+    L7->>S: New HTTP request
+    S->>L7: HTTP response
+    Note over L7: Can modify response<br/>Add headers, etc.
+    L7->>C: Forward response
+@208 p
+**Example routing rules:**
+@209 p
+**Advanced features:**
+@210 p
+**Ưu điểm:**
+@211 p
+**Intelligent routing** (URL, headers, cookies)
+**Content-based decisions**
+**Can modify requests/responses**
+**SSL termination** (offload encryption từ backends)
+**Perfect for microservices**
+@212 p
+**Nhược điểm:**
+@213 p
+**Slower** (more processing)
+**Higher latency** (+10-50ms)
+**Only works với HTTP/HTTPS**
+**More CPU intensive**
+@214 p
+**Use cases:**
+@215 li
+Web applications
+@216 li
+Microservices architecture
+@217 li
+Content-based routing
+@218 li
+A/B testing
+@219 li
+Canary deployments
+@220 p
+**Example tools:**
+@221 li
+AWS Application Load Balancer (ALB)
+@222 li
+Nginx
+@223 li
+HAProxy (HTTP mode)
+@224 li
+Traefik
+@225 li
+Envoy
+@226 h3
+Comparison Table
+@227 pre
+Feature              | Layer 4        | Layer 7
+---------------------|----------------|------------------
+Speed                | Very fast      | Slower
+Latency              | +5-10ms        | +10-50ms
+Routing              | IP:Port only   | URL, headers, etc.
+Protocol support     | Any TCP/UDP    | HTTP/HTTPS only
+SSL termination      | No             | Yes
+Content inspection   | No             | Yes
+Request modification | No             | Yes
+Microservices        | Not ideal      | Perfect
+Cost (processing)    | Low            | High
+Use case             | Simple routing | Smart routing
+
+@228 h3
+Decision Framework
+@229 pre
+Choose Layer 4 when:
+ Need maximum performance
+ Millions of connections
+ Non-HTTP protocols (database, gaming, VoIP)
+ Simple routing (all traffic to same backends)
+ Every millisecond matters
+
+Choose Layer 7 when:
+ Web applications / APIs
+ Microservices (route by path)
+ Need SSL termination
+ Content-based routing
+ Need to modify requests/responses
+ A/B testing / Canary deployments
+
+@230 p
+**My recommendation:**
+@231 p
+Cho web applications: **Default to Layer 7** (Application Load Balancer).
+@232 p
+Flexibility và features > small latency difference.
+@233 p
+Chỉ drop xuống Layer 4 khi có proven performance requirements hoặc non-HTTP protocols.
+@234 h2
+Real-World Architecture Example
+@235 p
+Hãy xem một e-commerce system thực tế.
+@236 p
+**Requirements:**
+@237 li
+100,000 requests/second
+@238 li
+Multiple services (Web, API, Admin, Payments)
+@239 li
+Global users
+@240 li
+99.99% uptime
+@241 p
+**Architecture:**
+@242 pre
+flowchart TB
+    Internet[Internet]
+    
+    subgraph "Edge Layer"
+        CDN[CloudFlare CDN<br/>Static assets]
+        DNS[GeoDNS]
+    end
+    
+    subgraph "US Region"
+        L7_US[Layer 7 LB<br/>AWS ALB]
+        
+        subgraph "Services US"
+            Web_US[Web Servers<br/>×10]
+            API_US[API Servers<br/>×20]
+            Admin_US[Admin Servers<br/>×2]
+        end
+        
+        L7_US -->|/*| Web_US
+        L7_US -->|/api/*| API_US
+        L7_US -->|/admin/*| Admin_US
+    end
+    
+    subgraph "Asia Region"
+        L7_Asia[Layer 7 LB<br/>AWS ALB]
+        
+        subgraph "Services Asia"
+            Web_Asia[Web Servers<br/>×10]
+            API_Asia[API Servers<br/>×20]
+        end
+        
+        L7_Asia -->|/*| Web_Asia
+        L7_Asia -->|/api/*| API_Asia
+    end
+    
+    Internet --> CDN
+    Internet --> DNS
+    DNS -->|US users| L7_US
+    DNS -->|Asia users| L7_Asia
+@243 p
+**Configuration details:**
+@244 p
+**Why this design:**
+@245 li
+**GeoDNS**: Route users to nearest region (low latency)
+@246 li
+**CDN**: Serve static assets (images, CSS, JS) from edge (fast)
+@247 li
+**Layer 7 LB**: Intelligent routing by URL path
+@248 li
+**Different pools**: Isolation (admin separate từ public)
+@249 li
+**Different algorithms**:
+@250 li
+Web: Round Robin (requests similar)
+@251 li
+API: Least Connections (vary in time)
+@252 li
+**Health checks**: Auto-remove unhealthy servers
+@253 li
+**IP whitelist**: Security for admin panel
+@254 h2
+Key Takeaways
+@255 p
+**Load balancing solves:**
+@256 li
+Single server capacity limits
+@257 li
+Single point of failure
+@258 li
+High availability requirements
+@259 li
+Geographic distribution
+@260 p
+**Core algorithms:**
+@261 li
+**Round Robin**: Simple, default choice, even distribution
+@262 li
+**Least Connections**: Better khi requests vary, long-lived connections
+@263 li
+**Weighted Round Robin**: Khi servers có specs khác nhau
+@264 li
+**IP Hash**: Session persistence (nhưng shared session store tốt hơn)
+@265 p
+**Health checks are critical:**
+@266 li
+Prevent routing to dead servers
+@267 li
+Check dependencies, not just server
+@268 li
+Appropriate timeout (2-5s)
+@269 li
+Retry logic to avoid flapping
+@270 p
+**Layer 4 vs Layer 7:**
+@271 li
+**Layer 4**: Fast, simple, any protocol, limited routing
+@272 li
+**Layer 7**: Smart, flexible, HTTP only, microservices-friendly
+@273 li
+**Default to Layer 7 cho web apps**
+@274 p
+**Best practices:**
+@275 li
+Start simple (Round Robin + health checks)
+@276 li
+Measure before optimizing algorithm
+@277 li
+Multiple load balancers (avoid SPOF)
+@278 li
+Monitor metrics (request rate, latency, error rate)
+@279 li
+Test failover scenarios
+@280 p
+**Tự hỏi khi design:**
+@281 li
+*Thuật toán nào phù hợp với request pattern?*
+@282 li
+*Health checks có detect failures correctly không?*
+@283 li
+*Load balancer có là SPOF không?*
+@284 li
+*Cần Layer 4 hay Layer 7?*
+@285 p
+Load balancing không phải là optional. Nó là **foundation của distributed systems**.
+@286 p
+Master nó tốt = hệ thống của bạn scalable và reliable.

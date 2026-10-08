@@ -1,0 +1,108 @@
+@0 h2
+1) Giới thiệu Phase
+@1 p
+Phase 2 là nơi bạn học các khối hạ tầng cốt lõi phía sau một hệ thống hiện đại.
+@2 p
+Ở production, scale không đến từ application code đơn thuần. Scale đến từ cách bạn phối hợp load balancing, cache, database và async processing thành một kiến trúc nhất quán.
+@3 h2
+2) Vì sao phase này tồn tại
+@4 p
+Một ứng dụng chạy được chưa phải là một hệ thống production.
+@5 p
+Hệ thống ở quy mô thật cần:
+@6 li
+Lớp hạ tầng để xử lý traffic tăng đột biến.
+@7 li
+Lớp tối ưu hiệu năng để giảm độ trễ và tải backend.
+@8 li
+Cơ chế tách dịch vụ để giảm coupling và tăng độ bền.
+@9 li
+Cách kết hợp component đúng để giữ reliability khi scale.
+@10 p
+Nắm chắc building blocks ở phase này là điều kiện cần trước khi đi vào distributed systems ở phase sau.
+@11 h2
+3) Learning Objectives
+@12 li
+Hiểu các thành phần hạ tầng cốt lõi trong hệ thống hiện đại.
+@13 li
+Hiểu các lớp tối ưu hiệu năng ở production.
+@14 li
+Hiểu cơ chế decoupling dịch vụ bằng async processing.
+@15 li
+Hiểu cách xử lý dữ liệu và traffic khi hệ thống tăng trưởng.
+@16 li
+Hiểu cách tích hợp component và đánh giá trade-off tổng thể.
+@17 h2
+4) Bạn sẽ học gì trong phase này
+@18 li
+**Traffic distribution:** phân phối tải để tăng ổn định và khả năng mở rộng.
+@19 li
+**Caching layer:** dùng cache để giảm latency và bảo vệ backend.
+@20 li
+**Data scaling:** chọn chiến lược scale dữ liệu theo access pattern.
+@21 li
+**Async processing:** tách luồng đồng bộ và bất đồng bộ phù hợp với workload.
+@22 li
+**Service decoupling:** giảm phụ thuộc trực tiếp giữa các dịch vụ.
+@23 li
+**Component integration:** ghép các khối hạ tầng thành hệ thống có thể vận hành.
+@24 li
+**System trade-offs:** cân bằng hiệu năng, chi phí, độ phức tạp và tính ổn định.
+@25 h2
+5) Lessons Overview
+@26 h3
+Lesson 1 — Load Balancing — Traffic Distribution Trong Distributed Systems
+@27 li
+**Mục tiêu:** hiểu cách phân phối request giữa nhiều instance/service.
+@28 li
+**Bạn nhận được:** tư duy chọn chiến lược balancing theo pattern traffic và reliability.
+@29 h3
+Lesson 2 — Caching (Performance Layer)
+@30 li
+**Mục tiêu:** hiểu cache như một lớp hiệu năng trong kiến trúc production.
+@31 li
+**Bạn nhận được:** cách giảm latency, giảm tải database và kiểm soát invalidation hợp lý.
+@32 h3
+Lesson 3 — Database Scaling
+@33 li
+**Mục tiêu:** nắm các hướng scale dữ liệu theo tăng trưởng thực tế.
+@34 li
+**Bạn nhận được:** nền tảng để chọn giữa vertical/horizontal scaling và tối ưu truy cập dữ liệu.
+@35 h3
+Lesson 4 — Message Queues & Async Processing — Decoupling Services
+@36 li
+**Mục tiêu:** hiểu cách dùng queue để tách luồng xử lý và giảm coupling.
+@37 li
+**Bạn nhận được:** tư duy thiết kế pipeline xử lý bất đồng bộ có khả năng chịu tải tốt hơn.
+@38 h3
+Lesson 5 — Integration & Trade-off Thinking — Kết Hợp Components Thành Hệ Thống
+@39 li
+**Mục tiêu:** học cách phối hợp nhiều building block thành một kiến trúc thống nhất.
+@40 li
+**Bạn nhận được:** khả năng đánh giá trade-off ở cấp hệ thống thay vì từng component riêng lẻ.
+@41 h2
+6) Kết quả sau khi hoàn thành Phase 2
+@42 p
+Bạn có thể:
+@43 li
+Giải thích rõ vì sao chọn từng thành phần hạ tầng trong một thiết kế.
+@44 li
+Lập luận hướng scale phù hợp với traffic và dữ liệu.
+@45 li
+Đánh giá trade-off hiệu năng giữa cache, queue, database và service boundaries.
+@46 li
+Hiểu cách các component tương tác với nhau trong hệ thống production.
+@47 h2
+7) Chuẩn bị cho Phase 3
+@48 p
+Phase 2 cho bạn nền tảng hạ tầng và tư duy tích hợp component.
+@49 p
+Sang **Phase 3 — Distributed Systems Fundamentals**, bạn sẽ đi sâu vào:
+@50 li
+consistency model,
+@51 li
+fault tolerance,
+@52 li
+distributed coordination,
+@53 li
+và các thách thức reliability ở hệ phân tán.

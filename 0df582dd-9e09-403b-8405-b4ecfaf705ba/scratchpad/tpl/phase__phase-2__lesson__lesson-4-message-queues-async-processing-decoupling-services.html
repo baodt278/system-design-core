@@ -1,0 +1,545 @@
+<article class="prose-ui"><h1 id="message-queues--async-processing-decoupling-services">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<ol>
+<li>§§SEG3§§</li>
+<li>§§SEG4§§</li>
+<li>§§SEG5§§</li>
+<li>§§SEG6§§</li>
+<li>§§SEG7§§</li>
+</ol>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<p>§§SEG10§§</p>
+<p>§§SEG11§§</p>
+<p>§§SEG12§§</p>
+<h2 id="tại-sao-cần-async-processing">§§SEG13§§</h2>
+<h3 id="the-synchronous-problem">§§SEG14§§</h3>
+<p>§§SEG15§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG16§§</code></pre>
+<p>§§SEG17§§</p>
+<p>§§SEG18§§</p>
+<pre><code>§§SEG19§§</code></pre>
+<h3 id="the-async-solution">§§SEG20§§</h3>
+<p>§§SEG21§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG22§§</code></pre>
+<p>§§SEG23§§</p>
+<p>§§SEG24§§</p>
+<pre><code>§§SEG25§§</code></pre>
+<h2 id="message-queue-fundamentals">§§SEG26§§</h2>
+<h3 id="core-concepts">§§SEG27§§</h3>
+<p>§§SEG28§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG29§§</code></pre>
+<p>§§SEG30§§</p>
+<p>§§SEG31§§</p>
+<pre><code>§§SEG32§§</code></pre>
+<h3 id="simple-example">§§SEG33§§</h3>
+<pre><code class="language-python"># Producer: API server
+from queue import MessageQueue
+
+queue = MessageQueue('video-processing')
+
+def upload_video(video_file):
+    # Save video nhanh
+    video_id = save_to_storage(video_file)
+    
+    # Add job to queue
+    queue.publish({
+        'job': 'process_video',
+        'video_id': video_id,
+        'tasks': ['thumbnail', 'transcode_720p', 'transcode_1080p']
+    })
+    
+    # Return ngay cho user
+    return {
+        'status': 'processing',
+        'video_id': video_id,
+        'message': 'Video is being processed'
+    }
+
+# Consumer: Background worker
+def worker():
+    while True:
+        # Poll for messages
+        message = queue.consume()
+        
+        if message:
+            video_id = message['video_id']
+            
+            # Process tasks
+            generate_thumbnail(video_id)
+            transcode_720p(video_id)
+            transcode_1080p(video_id)
+            
+            # Acknowledge message processed
+            queue.ack(message)
+</code></pre>
+<p>§§SEG34§§</p>
+<pre><code>§§SEG35§§</code></pre>
+<h2 id="queue-vs-pubsub-hai-patterns-khác-nhau">§§SEG36§§</h2>
+<h3 id="queue-pattern-point-to-point">§§SEG37§§</h3>
+<p>§§SEG38§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG39§§</code></pre>
+<p>§§SEG40§§</p>
+<p>§§SEG41§§</p>
+<pre><code>§§SEG42§§</code></pre>
+<p>§§SEG43§§</p>
+<pre><code>§§SEG44§§</code></pre>
+<p>§§SEG45§§</p>
+<pre><code class="language-python"># Queue: email-queue
+# 3 workers compete for jobs
+
+# Producer
+queue.publish({'to': 'user@example.com', 'subject': 'Welcome'})
+
+# Consumer 1 might get it
+# OR Consumer 2 might get it  
+# OR Consumer 3 might get it
+# Only ONE processes it
+</code></pre>
+<h3 id="pubsub-pattern-publish-subscribe">§§SEG46§§</h3>
+<p>§§SEG47§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG48§§</code></pre>
+<p>§§SEG49§§</p>
+<p>§§SEG50§§</p>
+<pre><code>§§SEG51§§</code></pre>
+<p>§§SEG52§§</p>
+<pre><code>§§SEG53§§</code></pre>
+<p>§§SEG54§§</p>
+<pre><code class="language-python"># Topic: order.placed
+# All subscribers receive event
+
+# Publisher
+pubsub.publish('order.placed', {
+    'order_id': 12345,
+    'user_id': 67890,
+    'amount': 99.99
+})
+
+# Subscriber 1: Email Service
+# Sends order confirmation email
+
+# Subscriber 2: Inventory Service  
+# Updates stock count
+
+# Subscriber 3: Analytics Service
+# Records sale
+
+# Subscriber 4: Shipping Service
+# Creates shipping label
+
+# ALL 4 receive and process the event
+</code></pre>
+<h3 id="trade-off-comparison">§§SEG55§§</h3>
+<pre><code>§§SEG56§§</code></pre>
+<p>§§SEG57§§</p>
+<pre><code>§§SEG58§§</code></pre>
+<h2 id="delivery-guarantees-critical-understanding">§§SEG59§§</h2>
+<h3 id="the-guarantee-spectrum">§§SEG60§§</h3>
+<p>§§SEG61§§</p>
+<pre><code>§§SEG62§§</code></pre>
+<pre><code>§§SEG63§§</code></pre>
+<p>§§SEG64§§</p>
+<pre><code>§§SEG65§§</code></pre>
+<pre><code>§§SEG66§§</code></pre>
+<p>§§SEG67§§</p>
+<pre><code>§§SEG68§§</code></pre>
+<pre><code>§§SEG69§§</code></pre>
+<h3 id="idempotency-the-practical-solution">§§SEG70§§</h3>
+<p>§§SEG71§§</p>
+<pre><code class="language-python"># Non-idempotent operation
+def process_payment(order_id, amount):
+    charge_credit_card(amount)  # Charge twice if retry!
+    
+# Message delivered twice:
+# 1st: Charge $100 ✓
+# 2nd: Charge $100 again! ✗
+# User charged $200
+</code></pre>
+<p>§§SEG72§§</p>
+<pre><code class="language-python"># Idempotent operation
+def process_payment(order_id, amount):
+    # Check if already processed
+    if payment_exists(order_id):
+        return  # Skip, already done
+    
+    charge_credit_card(amount)
+    record_payment(order_id)  # Mark as processed
+
+# Message delivered twice:
+# 1st: Charge $100, record ✓
+# 2nd: Check → Already done, skip ✓
+# User charged $100 (correct!)
+</code></pre>
+<p>§§SEG73§§</p>
+<pre><code class="language-python"># Technique 1: Unique message ID
+def process_message(message):
+    message_id = message['id']
+    
+    if redis.exists(f"processed:{message_id}"):
+        return  # Already processed
+    
+    # Do work
+    do_actual_work(message)
+    
+    # Mark as processed
+    redis.set(f"processed:{message_id}", "1", ex=86400)  # 24h TTL
+
+# Technique 2: Database unique constraint
+def create_order(order_data):
+    try:
+        db.execute("""
+            INSERT INTO orders (order_id, user_id, amount)
+            VALUES (?, ?, ?)
+        """, order_data)
+    except UniqueConstraintError:
+        # Already exists, idempotent ✓
+        pass
+
+# Technique 3: Update operations (naturally idempotent)
+def update_user_status(user_id, status):
+    db.execute("""
+        UPDATE users SET status = ?
+        WHERE user_id = ?
+    """, status, user_id)
+    
+    # Running twice = same result ✓
+</code></pre>
+<p>§§SEG74§§</p>
+<p>§§SEG75§§</p>
+<p>§§SEG76§§</p>
+<h2 id="dead-letter-queue-dlq-handle-failures">§§SEG77§§</h2>
+<h3 id="the-poison-message-problem">§§SEG78§§</h3>
+<pre><code class="language-python"># Worker consuming messages
+while True:
+    message = queue.consume()
+    
+    try:
+        process(message)
+        queue.ack(message)
+    except Exception as e:
+        # Message fails → Retry
+        # Retry fails again
+        # Retry fails again
+        # ...infinite loop!
+        # Queue blocked!
+</code></pre>
+<p>§§SEG79§§</p>
+<pre><code>§§SEG80§§</code></pre>
+<h3 id="dlq-solution">§§SEG81§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG82§§</code></pre>
+<p>§§SEG83§§</p>
+<p>§§SEG84§§</p>
+<pre><code class="language-python">class MessageProcessor:
+    MAX_RETRIES = 3
+    
+    def process_message(self, message):
+        try:
+            # Attempt processing
+            result = do_work(message)
+            
+            # Success → Acknowledge
+            queue.ack(message)
+            return result
+            
+        except Exception as e:
+            # Increment retry count
+            retry_count = message.get('retry_count', 0) + 1
+            
+            if retry_count &lt; self.MAX_RETRIES:
+                # Retry
+                message['retry_count'] = retry_count
+                queue.nack(message)  # Return to queue
+                
+                log.warning(f"Message retry {retry_count}/{self.MAX_RETRIES}")
+            else:
+                # Max retries exceeded → DLQ
+                dlq.publish(message)
+                queue.ack(message)  # Remove from main queue
+                
+                log.error(f"Message moved to DLQ after {self.MAX_RETRIES} retries")
+                alert.send("DLQ message", message)
+</code></pre>
+<p>§§SEG85§§</p>
+<pre><code class="language-python"># Monitor DLQ regularly
+def check_dlq():
+    dlq_size = dlq.size()
+    
+    if dlq_size &gt; 10:
+        alert.send(f"DLQ has {dlq_size} messages!")
+    
+    # Sample messages for debugging
+    messages = dlq.peek(5)
+    for msg in messages:
+        log.info(f"DLQ message: {msg}")
+        analyze_failure(msg)
+
+# Run every hour
+schedule.every(1).hour.do(check_dlq)
+</code></pre>
+<p>§§SEG86§§</p>
+<pre><code>§§SEG87§§</code></pre>
+<h2 id="real-world-scenarios">§§SEG88§§</h2>
+<h3 id="scenario-1-e-commerce-order-processing">§§SEG89§§</h3>
+<p>§§SEG90§§</p>
+<pre><code class="language-python">def place_order(order_data):
+    # All in one request
+    validate_inventory(order_data)     # 200ms
+    charge_payment(order_data)         # 2s
+    update_inventory(order_data)       # 500ms
+    create_shipping_label(order_data)  # 3s
+    send_confirmation_email(order_data) # 1s
+    update_analytics(order_data)       # 300ms
+    
+    return {"status": "success"}       # After 7 seconds!
+</code></pre>
+<p>§§SEG91§§</p>
+<pre><code class="language-python">def place_order(order_data):
+    # Critical path only
+    validate_inventory(order_data)  # 200ms
+    charge_payment(order_data)      # 2s
+    
+    # Everything else → Queue
+    queue.publish({
+        'event': 'order.placed',
+        'order_id': order_data['id']
+    })
+    
+    return {"status": "success"}    # After 2.2 seconds!
+
+# Background workers
+@queue.consumer('order.placed')
+def handle_order_placed(event):
+    order_id = event['order_id']
+    
+    update_inventory(order_id)
+    create_shipping_label(order_id)
+    send_confirmation_email(order_id)
+    update_analytics(order_id)
+</code></pre>
+<p>§§SEG92§§</p>
+<pre><code>§§SEG93§§</code></pre>
+<h3 id="scenario-2-notification-system">§§SEG94§§</h3>
+<p>§§SEG95§§</p>
+<pre><code>§§SEG96§§</code></pre>
+<p>§§SEG97§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG98§§</code></pre>
+<p>§§SEG99§§</p>
+<pre><code class="language-python"># API publishes event
+def send_notification(user_id, message):
+    pubsub.publish('notifications', {
+        'user_id': user_id,
+        'message': message,
+        'channels': ['push', 'email']
+    })
+    
+    return {"status": "queued"}  # Instant response
+
+# Push worker
+@pubsub.subscribe('notifications')
+def send_push(event):
+    if 'push' in event['channels']:
+        try:
+            push_service.send(event['user_id'], event['message'])
+            metrics.increment('push.success')
+        except Exception as e:
+            metrics.increment('push.failure')
+            raise  # Retry
+
+# Email worker (independent)
+@pubsub.subscribe('notifications')
+def send_email(event):
+    if 'email' in event['channels']:
+        try:
+            email_service.send(event['user_id'], event['message'])
+            metrics.increment('email.success')
+        except Exception as e:
+            metrics.increment('email.failure')
+            raise  # Retry
+</code></pre>
+<h3 id="scenario-3-image-processing-pipeline">§§SEG100§§</h3>
+<p>§§SEG101§§</p>
+<pre><code>§§SEG102§§</code></pre>
+<p>§§SEG103§§</p>
+<pre><code class="language-python"># Step 1: Upload
+def upload_image(image_file):
+    image_id = save_original(image_file)
+    
+    queue.publish('image.uploaded', {
+        'image_id': image_id,
+        'format': 'jpg'
+    })
+    
+    return {"image_id": image_id, "status": "processing"}
+
+# Step 2: Resize
+@queue.consumer('image.uploaded')
+def resize_image(event):
+    image_id = event['image_id']
+    
+    resized = resize(image_id, width=1200)
+    save(resized, f"{image_id}_resized")
+    
+    queue.publish('image.resized', {
+        'image_id': image_id
+    })
+
+# Step 3: Compress
+@queue.consumer('image.resized')
+def compress_image(event):
+    image_id = event['image_id']
+    
+    compressed = compress(f"{image_id}_resized", quality=85)
+    save(compressed, f"{image_id}_compressed")
+    
+    queue.publish('image.compressed', {
+        'image_id': image_id
+    })
+
+# Step 4: Watermark
+@queue.consumer('image.compressed')
+def add_watermark(event):
+    image_id = event['image_id']
+    
+    watermarked = add_watermark(f"{image_id}_compressed")
+    save(watermarked, f"{image_id}_final")
+    
+    queue.publish('image.ready', {
+        'image_id': image_id,
+        'url': upload_to_cdn(f"{image_id}_final")
+    })
+
+# Step 5: Notify
+@queue.consumer('image.ready')
+def notify_user(event):
+    send_notification(event['image_id'], event['url'])
+</code></pre>
+<p>§§SEG104§§</p>
+<pre><code>§§SEG105§§</code></pre>
+<h2 id="best-practices">§§SEG106§§</h2>
+<h3 id="1-message-design">§§SEG107§§</h3>
+<pre><code class="language-python"># BAD: Large message
+queue.publish({
+    'user': {
+        # Entire user object (10KB)
+        'id': 123,
+        'name': 'John',
+        'email': '...',
+        # ... 50 more fields
+    },
+    'order': {
+        # Entire order (20KB)
+    }
+})
+
+# GOOD: Reference only
+queue.publish({
+    'user_id': 123,
+    'order_id': 456
+})
+
+# Consumer fetches what it needs
+@queue.consumer
+def process(event):
+    user = db.get_user(event['user_id'])
+    order = db.get_order(event['order_id'])
+</code></pre>
+<p>§§SEG108§§</p>
+<ul>
+<li>§§SEG109§§</li>
+<li>§§SEG110§§</li>
+<li>§§SEG111§§</li>
+</ul>
+<h3 id="2-error-handling">§§SEG112§§</h3>
+<pre><code class="language-python">@queue.consumer
+def process_message(message):
+    try:
+        result = do_work(message)
+        queue.ack(message)
+        
+    except TemporaryError as e:
+        # Transient error → Retry
+        log.warning(f"Temporary error: {e}, will retry")
+        queue.nack(message)  # Requeue
+        
+    except PermanentError as e:
+        # Permanent error → DLQ
+        log.error(f"Permanent error: {e}, moving to DLQ")
+        dlq.publish(message)
+        queue.ack(message)
+        
+    except Exception as e:
+        # Unknown error → Investigate
+        log.exception(f"Unknown error: {e}")
+        alert.send("Unknown queue error", message, e)
+        queue.nack(message)
+</code></pre>
+<h3 id="3-monitoring">§§SEG113§§</h3>
+<pre><code class="language-python"># Track queue metrics
+metrics.gauge('queue.size', queue.size())
+metrics.gauge('queue.oldest_message_age', queue.oldest_age())
+metrics.gauge('dlq.size', dlq.size())
+
+metrics.histogram('message.processing_time', processing_time)
+metrics.increment('message.success')
+metrics.increment('message.failure')
+
+# Alerts
+if queue.size() &gt; 10000:
+    alert.send("Queue backlog!")
+
+if queue.oldest_age() &gt; 3600:  # 1 hour
+    alert.send("Messages stuck in queue!")
+
+if dlq.size() &gt; 100:
+    alert.send("Too many DLQ messages!")
+</code></pre>
+<h3 id="4-backpressure-handling">§§SEG114§§</h3>
+<pre><code class="language-python"># Consumer rate limiting
+class RateLimitedConsumer:
+    def __init__(self, max_per_second=100):
+        self.rate_limiter = RateLimiter(max_per_second)
+    
+    def consume(self):
+        while True:
+            # Wait if rate limit exceeded
+            self.rate_limiter.wait()
+            
+            message = queue.consume()
+            if message:
+                self.process(message)
+
+# Circuit breaker pattern
+class CircuitBreaker:
+    def __init__(self):
+        self.failures = 0
+        self.state = 'closed'  # closed, open, half-open
+    
+    def call(self, func):
+        if self.state == 'open':
+            raise Exception("Circuit breaker open")
+        
+        try:
+            result = func()
+            self.failures = 0
+            return result
+        except Exception:
+            self.failures += 1
+            if self.failures &gt;= 5:
+                self.state = 'open'
+            raise
+</code></pre>
+<h2 id="key-takeaways">§§SEG115§§</h2>
+<p>§§SEG116§§</p>
+<pre><code>§§SEG117§§</code></pre>
+<p>§§SEG118§§</p>
+<pre><code>§§SEG119§§</code></pre>
+<p>§§SEG120§§</p>
+<pre><code>§§SEG121§§</code></pre>
+<p>§§SEG122§§</p>
+<pre><code>§§SEG123§§</code></pre>
+<p>§§SEG124§§</p>
+<pre><code>§§SEG125§§</code></pre>
+<p>§§SEG126§§</p>
+<p>§§SEG127§§</p>
+<p>§§SEG128§§</p></article>

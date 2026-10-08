@@ -1,0 +1,696 @@
+@0
+Khái Niệm Quan Trọng Trong ⟦Thiết Kế Hệ Thống|System Design⟧
+@1
+Sau khi học về các ⟦thành phần|components⟧, các ⟦mẫu giao tiếp|communication patterns⟧ và ⟦luồng dữ liệu|data flow⟧, giờ là lúc củng cố kiến thức bằng những khái niệm quan trọng nhất trong ⟦thiết kế hệ thống|system design⟧.
+@2
+Tôi còn nhớ lần đầu tiên PM hỏi: *"Hệ thống của chúng ta có đạt 99,9% ⟦thời gian hoạt động|uptime⟧ không?"*
+@3
+Tôi trả lời: *"Có chứ, ⟦máy chủ|server⟧ hiếm khi sập mà."*
+@4
+Anh ấy cười: *"Em có biết 99,9% nghĩa là gì không? Và ⟦chi phí|cost⟧ để đạt 99,99% là bao nhiêu?"*
+@5
+Tôi im lặng. Đó là lúc tôi nhận ra: **Không hiểu rõ các khái niệm = Không thể đưa ra quyết định đúng.**
+@6
+Bài này sẽ đi sâu vào 4 khái niệm mà mọi ⟦kiến trúc sư|architect⟧ phải nắm vững.
+@7
+Tại Sao Các Khái Niệm Này Quan Trọng?
+@8
+Trong các buổi ⟦phỏng vấn|interviews⟧ ⟦thiết kế hệ thống|system design⟧, bạn sẽ nghe:
+@9
+*"Hãy thiết kế một hệ thống có ⟦độ trễ|latency⟧ thấp và ⟦thông lượng|throughput⟧ cao."*
+@10
+Nếu bạn không hiểu rõ ⟦độ trễ|latency⟧ và ⟦thông lượng|throughput⟧, bạn sẽ thiết kế sai. Hoặc tệ hơn, thiết kế đúng nhưng không giải thích được.
+@11
+Trong thực tế:
+@12
+**⟦Độ trễ|Latency⟧** quyết định ⟦trải nghiệm người dùng|user experience⟧
+@13
+**⟦Thông lượng|Throughput⟧** quyết định ⟦năng lực hệ thống|system capacity⟧
+@14
+**⟦Tính sẵn sàng|Availability⟧** quyết định SLA với khách hàng
+@15
+**⟦Định lý CAP|CAP Theorem⟧** quyết định việc lựa chọn ⟦cơ sở dữ liệu|database⟧
+@16
+**Hiểu các khái niệm = Đưa ra quyết định có cơ sở.**
+@17
+⟦Độ Trễ|Latency⟧ và ⟦Thông Lượng|Throughput⟧: Hai ⟦Chỉ Số|Metrics⟧ Khác Nhau
+@19
+**⟦Độ trễ|Latency⟧:**
+@20
+Thời gian để xử lý **1 ⟦yêu cầu|request⟧**
+@21
+Đơn vị: mili giây (ms)
+@22
+Góc nhìn người dùng: "Tôi phải đợi bao lâu?"
+@23
+**⟦Thông lượng|Throughput⟧:**
+@24
+Số ⟦yêu cầu|requests⟧ xử lý được **trong 1 giây**
+@25
+Đơn vị: yêu cầu/giây (req/s) hoặc ⟦giao dịch|transactions⟧/giây (TPS)
+@26
+Góc nhìn hệ thống: "Hệ thống xử lý được bao nhiêu ⟦yêu cầu|requests⟧ cùng lúc?"
+@28
+Nhiều người nghĩ: *"⟦Độ trễ|Latency⟧ thấp = ⟦Thông lượng|Throughput⟧ cao."*
+@29
+**Sai rồi.** Chúng là hai thứ độc lập.
+@30
+Phép So Sánh Đời Thực
+@31
+**Xe buýt:**
+@32
+Độ trễ: CAO (đợi xe buýt, xe dừng nhiều điểm)
+- Từ nhà đến công ty: 60 phút
+
+Thông lượng: CAO (chở nhiều người cùng lúc)
+- 1 xe buýt chở 50 người
+- 1 giờ có 10 chuyến = 500 người/giờ
+
+@34
+Độ trễ: THẤP (đi ngay, đường thẳng)
+- Từ nhà đến công ty: 20 phút
+
+Thông lượng: THẤP (chỉ chở 4 người)
+- 1 taxi chở 4 người
+- 1 giờ có 3 chuyến = 12 người/giờ
+
+@35
+Ví Dụ Trong ⟦Thiết Kế Hệ Thống|System Design⟧
+@36
+**Kịch bản 1: Hệ thống ⟦xử lý theo lô|Batch Processing⟧**
+@37
+**Kịch bản 2: ⟦Xử lý song song|Parallel Processing⟧**
+@38
+**Bài học:** Tăng ⟦thông lượng|throughput⟧ bằng ⟦song song hoá|parallelization⟧, nhưng ⟦độ trễ|latency⟧ của từng phần tử không thay đổi.
+@39
+Sơ Đồ: ⟦Độ Trễ|Latency⟧ và ⟦Thông Lượng|Throughput⟧
+@40
+graph TB
+    subgraph "Độ trễ thấp, thông lượng thấp"
+        A1[Yêu cầu] --> B1[Xử lý 10ms]
+        B1 --> C1[Phản hồi]
+        D1[Chỉ 1 yêu cầu mỗi lần]
+        D1 --> E1[Thông lượng: 100 req/s]
+    end
+
+    subgraph "Độ trễ thấp, thông lượng cao"
+        A2[Yêu cầu 1] --> B2[Xử lý 10ms]
+        A3[Yêu cầu 2] --> B3[Xử lý 10ms]
+        A4[Yêu cầu 3] --> B4[Xử lý 10ms]
+        F2[100 worker song song]
+        F2 --> G2[Thông lượng: 10,000 req/s]
+    end
+@41
+*⟦Độ trễ|Latency⟧ = thời gian xử lý 1 ⟦yêu cầu|request⟧. ⟦Thông lượng|Throughput⟧ = số lượng ⟦yêu cầu|requests⟧ xử lý được đồng thời.*
+@42
+Các ⟦Đánh Đổi|Trade-offs⟧
+@43
+**Tối ưu cho ⟦độ trễ|latency⟧:**
+@44
+Kỹ thuật:
+- Lưu đệm (giảm số lần gọi CSDL)
+- Chỉ mục cơ sở dữ liệu
+- CDN (giảm độ trễ mạng)
+- Tối ưu mã
+
+Chi phí:
+- Độ phức tạp
+- Chi phí hạ tầng
+
+@45
+**Tối ưu cho ⟦thông lượng|throughput⟧:**
+@46
+Kỹ thuật:
+- Mở rộng theo chiều ngang (thêm máy chủ)
+- Xử lý bất đồng bộ (hàng đợi)
+- Gộp kết nối (connection pooling)
+- Cân bằng tải
+
+Chi phí:
+- Nhiều máy chủ hơn = chi phí cao hơn
+- Độ phức tạp của hệ thống phân tán
+
+@48
+**Ưu tiên ⟦độ trễ|Latency⟧ khi:**
+@49
+Các tính năng hướng tới người dùng (phản hồi API, tải trang)
+@50
+Ứng dụng ⟦thời gian thực|real-time⟧ (game, gọi video)
+@51
+⟦Trải nghiệm người dùng|User experience⟧ là yếu tố then chốt
+@52
+**Ưu tiên ⟦thông lượng|Throughput⟧ khi:**
+@53
+⟦Xử lý theo lô|Batch processing⟧ (⟦đường ống dữ liệu|data pipelines⟧)
+@54
+⟦Tác vụ nền|Background jobs⟧
+@55
+Hệ thống khối lượng lớn (hàng triệu ⟦yêu cầu|requests⟧)
+@56
+**Lý tưởng:** ⟦Độ trễ|Latency⟧ thấp VÀ ⟦thông lượng|throughput⟧ cao. Nhưng thường phải ⟦đánh đổi|trade-off⟧.
+@57
+Góc Nhìn Cá Nhân
+@58
+Tôi từng tối ưu một API từ 500ms xuống 50ms (cải thiện ⟦độ trễ|latency⟧ gấp 10 lần).
+@59
+Người dùng hài lòng? Có.
+@60
+Nhưng ⟦thông lượng|throughput⟧ vẫn chỉ 1.000 req/s. Khi ⟦lưu lượng|traffic⟧ ⟦tăng đột biến|spike⟧ lên 5.000 req/s → Hệ thống quá tải.
+@61
+**Bài học rút ra:** Tối ưu cả hai. Nhưng phải biết đâu là ⟦điểm nghẽn|bottleneck⟧ thực sự.
+@62
+⟦Tính Sẵn Sàng|Availability⟧: Bạn Cần Bao Nhiêu "Số 9"?
+@64
+**⟦Tính sẵn sàng|Availability⟧ (tính khả dụng):** Phần trăm thời gian hệ thống hoạt động bình thường.
+@65
+Tính sẵn sàng = Thời gian hoạt động / (Thời gian hoạt động + Thời gian ngừng hoạt động)
+
+@66
+Các Mức ⟦Tính Sẵn Sàng|Availability⟧
+@67
+Mức
+@68
+⟦Tính sẵn sàng|Availability⟧
+@69
+⟦Thời gian ngừng hoạt động|Downtime⟧/năm
+@70
+⟦Thời gian ngừng hoạt động|Downtime⟧/tháng
+@71
+⟦Tình huống sử dụng|Use Case⟧
+@74
+36,5 ngày
+@76
+Phát triển/Kiểm thử
+@78
+"Hai số 9"
+@79
+3,65 ngày
+@80
+7,2 giờ
+@81
+Công cụ nội bộ
+@82
+99,9%
+@83
+"Ba số 9"
+@84
+8,76 giờ
+@86
+Thương mại điện tử
+@87
+99,99%
+@88
+"Bốn số 9"
+@90
+4,3 phút
+@91
+Ngân hàng, thanh toán
+@92
+99,999%
+@93
+"Năm số 9"
+@94
+5,26 phút
+@96
+Hệ thống sống còn
+@98
+**99% và 99,9%:**
+@99
+99%: 7.2 giờ ngừng hoạt động/tháng
+→ Có thể sập trọn một ngày làm việc
+→ Chấp nhận được cho công cụ quản trị nội bộ
+
+99.9%: 43 phút ngừng hoạt động/tháng
+→ Sập < 1 giờ/tháng
+→ Mức tối thiểu cho ứng dụng hướng tới khách hàng
+
+@100
+**99,9% và 99,99%:**
+@101
+99.9%: 43 phút ngừng hoạt động/tháng
+→ Khung bảo trì hằng tuần vẫn ổn
+
+99.99%: 4.3 phút ngừng hoạt động/tháng
+→ Không thể lên lịch bảo trì
+→ Cần triển khai không gián đoạn (zero-downtime)
+
+@102
+⟦Chi Phí|Cost⟧ Của Mỗi "Số 9"
+@103
+**Sự thật then chốt:** Mỗi "số 9" thêm vào, ⟦chi phí|cost⟧ tăng gấp đôi (hoặc hơn).
+@104
+99%:
+- 1 máy chủ
+- Không có dự phòng
+- Chi phí: $100/tháng
+
+99.9%:
+- Nhiều máy chủ
+- Bộ cân bằng tải
+- Giám sát
+- Chi phí: $500/tháng
+
+99.99%:
+- Triển khai đa vùng
+- Tự động chuyển đổi dự phòng
+- Đội trực 24/7
+- Chi phí: $5,000/tháng
+
+99.999%:
+- Hạ tầng toàn cầu
+- Kỹ thuật hỗn loạn (chaos engineering)
+- Đội SRE chuyên trách
+- Chi phí: $50,000+/tháng
+
+@106
+**"Bạn THỰC SỰ cần bao nhiêu số 9?"**
+@107
+Tư duy sai:
+"Chúng ta cần 99.999% vì muốn tốt nhất"
+
+Tư duy đúng:
+"Chúng ta cần 99.9% vì:
+- Đây là trang thương mại điện tử
+- Ngừng hoạt động 43 phút/tháng là chấp nhận được
+- Khách hàng không bị ảnh hưởng lớn
+- Chi phí cho 99.99% tăng 10 lần nhưng lợi ích chỉ thêm 40 phút/tháng"
+
+@108
+Ví Dụ Thực Tế
+@109
+**Stripe (Thanh toán):**
+@110
+Mục tiêu: 99,99%+ (4 số 9)
+@111
+Tại sao? ⟦Giao dịch|Transactions⟧ tài chính, khách hàng phụ thuộc vào nó
+@112
+⟦Chi phí|Cost⟧: Xứng đáng vì ⟦thời gian ngừng hoạt động|downtime⟧ = doanh thu bị mất của các nhà bán hàng
+@113
+**Blog cá nhân:**
+@114
+Mục tiêu: 99% là ổn
+@115
+Tại sao? Không quan trọng, người đọc có thể quay lại sau
+@116
+⟦Chi phí|Cost⟧: Tiết kiệm tiền ⟦hạ tầng|infrastructure⟧
+@118
+Mục tiêu: 99,9%+
+@119
+Tại sao? Dịch vụ giải trí hướng tới khách hàng
+@120
+Chiến lược: ⟦Suy giảm có kiểm soát|Graceful degradation⟧ (một số tính năng lỗi, ứng dụng vẫn chạy)
+@121
+Làm Sao Để Đạt ⟦Tính Sẵn Sàng Cao|High Availability⟧
+@122
+**Các khối xây dựng:**
+@123
+**⟦Dự phòng|Redundancy⟧**
+@124
+Một máy chủ: 1 máy lỗi = sập 100%
+Nhiều máy chủ: 1 máy lỗi = các máy khác gánh thay
+
+@125
+**⟦Cân bằng tải|Load Balancing⟧**
+@126
+Phân phối lưu lượng → Không có điểm lỗi duy nhất
+
+@127
+**⟦Kiểm tra sức khoẻ|Health Checks⟧**
+@128
+Phát hiện sự cố nhanh → Chuyển hướng lưu lượng đi nơi khác
+
+@129
+**⟦Tự động mở rộng|Auto-scaling⟧**
+@130
+Xử lý lưu lượng tăng đột biến → Không bị quá tải
+
+@131
+**⟦Triển khai đa vùng|Multi-region Deployment⟧**
+@132
+1 vùng sập → Chuyển đổi dự phòng sang vùng khác
+
+@133
+**⟦Giám sát|Monitoring⟧ & ⟦Cảnh báo|Alerting⟧**
+@134
+Phát hiện vấn đề trước khi người dùng nhận ra
+
+@135
+Sơ Đồ: Kiến Trúc ⟦Tính Sẵn Sàng|Availability⟧
+@136
+graph TB
+    subgraph "Tính sẵn sàng 99%"
+        U1[Người dùng] --> S1[Một máy chủ]
+        S1 --> D1[Một CSDL]
+        Note1[1 máy chủ lỗi = sập 100%]
+    end
+
+    subgraph "Tính sẵn sàng 99.9%"
+        U2[Người dùng] --> LB[Bộ cân bằng tải]
+        LB --> S2[Máy chủ 1]
+        LB --> S3[Máy chủ 2]
+        S2 --> DB2[CSDL]
+        S3 --> DB2
+        Note2[1 máy chủ lỗi = các máy khác vẫn chạy]
+    end
+
+    subgraph "Tính sẵn sàng 99.99%"
+        U3[Người dùng] --> DNS[DNS đa vùng]
+        DNS --> R1[Vùng 1]
+        DNS --> R2[Vùng 2]
+        R1 --> LB1[LB + Máy chủ]
+        R2 --> LB2[LB + Máy chủ]
+        Note3[1 vùng sập = chuyển đổi dự phòng]
+    end
+@137
+*Càng nhiều "số 9", càng cần nhiều ⟦dự phòng|redundancy⟧ và ⟦độ phức tạp|complexity⟧ càng cao.*
+@138
+Quan Điểm Mạnh Mẽ Của Tôi
+@139
+**Đừng ⟦thiết kế thừa|over-engineer⟧.**
+@140
+Hãy bắt đầu với 99,9%. Đủ cho hầu hết doanh nghiệp.
+@141
+Chỉ nhắm tới 99,99%+ khi:
+@142
+Nhu cầu đã được chứng minh (khách hàng phàn nàn về ⟦thời gian ngừng hoạt động|downtime⟧)
+@143
+Tác động tài chính rõ ràng
+@144
+Ngân sách cho phép
+@145
+Hãy nhớ: **⟦Tính sẵn sàng|Availability⟧ hoàn hảo là điều không thể.** Ngay cả AWS, Google cũng có ⟦sự cố ngừng dịch vụ|outages⟧.
+@146
+⟦Định Lý CAP|CAP Theorem⟧: Chọn 2 Trong 3
+@148
+⟦Định lý CAP|CAP Theorem⟧ nói rằng trong một ⟦hệ thống phân tán|distributed system⟧, bạn chỉ có thể đảm bảo 2/3:
+@149
+**C (⟦Tính nhất quán|Consistency⟧):** Mọi thao tác đọc đều nhận được lần ghi gần nhất (hoặc lỗi)
+@150
+**A (⟦Tính sẵn sàng|Availability⟧):** Mọi ⟦yêu cầu|request⟧ đều nhận được ⟦phản hồi|response⟧ (không lỗi)
+@151
+**P (⟦Khả năng chịu phân vùng|Partition Tolerance⟧):** Hệ thống vẫn hoạt động khi có ⟦phân vùng mạng|network partition⟧
+@153
+**Điểm mấu chốt:** ⟦Phân vùng mạng|Network partitions⟧ LUÔN xảy ra trong ⟦hệ thống phân tán|distributed systems⟧.
+@154
+Server A <--X--> Server B
+(Phân vùng mạng: không giao tiếp được với nhau)
+
+Khi phân vùng xảy ra, bạn PHẢI chọn:
+- Tính nhất quán: Từ chối yêu cầu cho đến khi phân vùng được khắc phục
+- Tính sẵn sàng: Chấp nhận yêu cầu nhưng dữ liệu có thể không nhất quán
+
+@155
+**Vì P (⟦Khả năng chịu phân vùng|Partition Tolerance⟧) là BẮT BUỘC → Thực tế bạn chỉ chọn giữa C hoặc A.**
+@156
+Hệ Thống CP: ⟦Tính Nhất Quán|Consistency⟧ + ⟦Khả Năng Chịu Phân Vùng|Partition Tolerance⟧
+@157
+**Hành vi:**
+@158
+Phân vùng mạng xảy ra
+→ Hệ thống từ chối thao tác ghi để duy trì tính nhất quán
+→ Người dùng thấy lỗi
+→ Khi phân vùng được khắc phục, dữ liệu nhất quán
+
+@159
+**Ví dụ:**
+@160
+Hệ thống ngân hàng
+@161
+Xử lý thanh toán
+@162
+Quản lý tồn kho (ngăn ⟦bán vượt tồn kho|overselling⟧)
+@163
+HBase, MongoDB (trong một số cấu hình)
+@164
+**⟦Đánh đổi|Trade-off⟧:**
+@165
+Dữ liệu luôn đúng
+Tính sẵn sàng thấp hơn (lỗi trong lúc phân vùng)
+
+@166
+**⟦Tình huống sử dụng|Use case⟧:**
+@167
+Số dư tài khoản ngân hàng
+Người dùng A: Rút $100
+Người dùng B: Kiểm tra số dư
+
+CP đảm bảo:
+→ Số dư luôn đúng
+→ Không có tiền "ma"
+→ Có thể tạm thời báo lỗi
+
+@168
+Hệ Thống AP: ⟦Tính Sẵn Sàng|Availability⟧ + ⟦Khả Năng Chịu Phân Vùng|Partition Tolerance⟧
+@169
+**Hành vi:**
+@170
+Phân vùng mạng xảy ra
+→ Hệ thống chấp nhận đọc/ghi ở cả hai phía
+→ Người dùng không bao giờ thấy lỗi
+→ Khi phân vùng được khắc phục, dữ liệu có thể xung đột
+
+@171
+**Ví dụ:**
+@172
+⟦Bảng tin|Feeds⟧ mạng xã hội (Facebook, Twitter)
+@175
+Giỏ hàng
+@176
+**⟦Đánh đổi|Trade-off⟧:**
+@177
+Luôn sẵn sàng
+Nhất quán cuối cùng (tạm thời không nhất quán)
+
+@178
+**⟦Tình huống sử dụng|Use case⟧:**
+@179
+Số lượt thích trên Facebook
+Người dùng A thấy: 100 lượt thích
+Người dùng B thấy: 99 lượt thích (khác trung tâm dữ liệu)
+
+AP cho phép:
+→ Cả hai người dùng đều thấy dữ liệu
+→ Số đếm cuối cùng sẽ đồng bộ
+→ Chấp nhận việc tạm thời không nhất quán
+
+@180
+Sơ Đồ: Các ⟦Đánh Đổi|Trade-offs⟧ Trong CAP
+@181
+graph TB
+    subgraph "CA - Bất khả thi trong hệ thống phân tán"
+        CA[Nhất quán + Sẵn sàng]
+        CA --> IMP[Đòi hỏi không có phân vùng<br/>Không thực tế]
+    end
+
+    subgraph "CP - Chọn tính nhất quán"
+        CP[Nhất quán + Chịu phân vùng]
+        CP --> Bank[Hệ thống ngân hàng]
+        CP --> Inv[Tồn kho]
+        CP --> Pay[Thanh toán]
+        Note1[Có thể trả về lỗi<br/>Dữ liệu luôn đúng]
+    end
+
+    subgraph "AP - Chọn tính sẵn sàng"
+        AP[Sẵn sàng + Chịu phân vùng]
+        AP --> Social[Mạng xã hội]
+        AP --> DNS[DNS]
+        AP --> Cart[Giỏ hàng]
+        Note2[Luôn phản hồi<br/>Có thể tạm thời không nhất quán]
+    end
+@182
+*Trong ⟦hệ thống phân tán|distributed systems⟧, ⟦phân vùng mạng|network partition⟧ luôn xảy ra → chọn C hoặc A.*
+@183
+Chọn Như Thế Nào?
+@184
+**⟦Khung tư duy|Framework⟧:**
+@185
+**Những câu hỏi cần đặt ra:**
+@186
+**Nếu dữ liệu sai, người dùng bị ảnh hưởng như thế nào?**
+@187
+Nghiêm trọng (tiền, tồn kho) → CP
+@188
+Nhỏ (số lượt thích, lượt xem) → AP
+@189
+**Nếu hệ thống sập, người dùng bị ảnh hưởng như thế nào?**
+@190
+Không thể hoạt động → AP
+@191
+Có thể chờ được → CP
+@192
+**Người dùng có nhận ra sự không nhất quán không?**
+@193
+Có và họ quan tâm → CP
+@194
+Không, hoặc họ không quan tâm → AP
+@195
+Ví Dụ Thực Tế
+@196
+**Trang sản phẩm thương mại điện tử:**
+@197
+Thông tin sản phẩm: AP
+- Mô tả sản phẩm, hình ảnh
+- Nhất quán cuối cùng là ổn
+- Trải nghiệm người dùng: luôn tải được
+
+Số lượng tồn kho: CP
+- Phải chính xác để tránh bán vượt tồn kho
+- Thà hiện "hết hàng" còn hơn bán thứ bạn không có
+
+Giỏ hàng: AP
+- Người dùng thêm sản phẩm, thấy ngay lập tức
+- Giỏ hàng có thể nhất quán cuối cùng giữa các thiết bị
+
+@198
+**Ứng dụng ngân hàng:**
+@199
+Số dư tài khoản: CP
+- Lúc nào cũng phải chính xác
+- Báo lỗi trong lúc bảo trì là chấp nhận được
+- Không bao giờ hiển thị số dư sai
+
+Lịch sử giao dịch: CP
+- Phải đúng và đúng thứ tự
+- Là dấu vết kiểm toán tài chính
+
+Vị trí ATM: AP
+- Có thể nhất quán cuối cùng
+- Dữ liệu cũ không phải vấn đề nghiêm trọng
+
+@200
+⟦Khung Tư Duy|Framework⟧ Cá Nhân Của Tôi
+@201
+**90% tính năng có thể là AP.** Người dùng thích một hệ thống chạy được (dù dữ liệu hơi cũ) hơn là gặp lỗi.
+@202
+Chỉ chọn CP khi:
+@203
+Có liên quan đến tiền
+@204
+Đặt chỗ tồn kho/tài nguyên
+@205
+Yêu cầu pháp lý/kiểm toán
+@206
+**Sai lầm phổ biến:** Áp dụng CP quá đà. ⟦Lập trình viên|Developers⟧ nghĩ *"phải nhất quán"* cho mọi tính năng.
+@207
+**Thực tế:** ⟦Bảng tin|Feed⟧ Facebook không cần CP. Lượt thích Instagram không cần CP. Số email đã đọc không cần CP.
+@208
+**Hãy tự hỏi:** *"Điều tệ nhất có thể xảy ra nếu dữ liệu sai trong 5 giây là gì?"*
+@209
+Nếu câu trả lời là *"không có gì nghiêm trọng"* → AP là ổn.
+@210
+Kết Hợp Các Khái Niệm
+@211
+Các khái niệm này không độc lập. Chúng tác động qua lại lẫn nhau.
+@212
+Ví Dụ: Thiết Kế API Chịu ⟦Lưu Lượng|Traffic⟧ Cao
+@213
+**⟦Yêu cầu|Requirements⟧:**
+@214
+Xử lý 100.000 req/s (⟦thông lượng|throughput⟧)
+@215
+Thời gian phản hồi < 100ms (⟦độ trễ|latency⟧)
+@216
+99,9% ⟦thời gian hoạt động|uptime⟧ (⟦tính sẵn sàng|availability⟧)
+@217
+⟦Giao dịch|Transactions⟧ tài chính (cần ⟦tính nhất quán|consistency⟧)
+@218
+**Các quyết định thiết kế:**
+@219
+Yêu cầu thông lượng (100K req/s):
+→ Cần mở rộng theo chiều ngang
+→ Nhiều máy chủ ứng dụng
+→ Cân bằng tải
+
+Yêu cầu độ trễ (< 100ms):
+→ Cần tầng bộ nhớ đệm
+→ Chỉ mục cơ sở dữ liệu
+→ Truy vấn được tối ưu
+
+Yêu cầu tính sẵn sàng (99.9%):
+→ Triển khai nhiều máy chủ
+→ Kiểm tra sức khoẻ
+→ Tự động chuyển đổi dự phòng
+
+Yêu cầu tính nhất quán (CP):
+→ Cơ sở dữ liệu nhất quán mạnh
+→ Giao dịch ACID
+→ Có thể hy sinh một phần tính sẵn sàng khi xảy ra phân vùng
+
+@220
+**Các ⟦đánh đổi|Trade-offs⟧:**
+@221
+Thông lượng cao + Độ trễ thấp:
+→ Cần lưu đệm (độ phức tạp)
+→ Thêm hạ tầng (chi phí)
+
+Tính sẵn sàng cao + Nhất quán mạnh:
+→ Xung đột theo định lý CAP
+→ Chọn tính nhất quán (CP)
+→ Chấp nhận thỉnh thoảng không sẵn sàng
+
+@222
+Sơ Đồ: Thiết Kế Hệ Thống Tích Hợp
+@223
+graph LR
+    C[Máy khách<br/>100K req/s] --> LB[Bộ cân bằng tải<br/>Tính sẵn sàng cao]
+    LB --> S1[Máy chủ 1]
+    LB --> S2[Máy chủ 2]
+    LB --> S3[Máy chủ 3]
+
+    S1 --> Cache[Bộ nhớ đệm Redis<br/>Độ trễ thấp]
+    S2 --> Cache
+    S3 --> Cache
+
+    Cache --> DB[(PostgreSQL<br/>CP - Nhất quán)]
+
+    Mon[Giám sát<br/>SLA 99.9%] -.-> LB
+    Mon -.-> Cache
+    Mon -.-> DB
+@224
+*Mỗi ⟦thành phần|component⟧ giải quyết một yếu tố khác nhau: ⟦thông lượng|throughput⟧, ⟦độ trễ|latency⟧, ⟦tính sẵn sàng|availability⟧, ⟦tính nhất quán|consistency⟧.*
+@225
+Những Điểm Cốt Lõi
+@226
+**⟦Độ trễ|Latency⟧ và ⟦thông lượng|Throughput⟧:**
+@227
+**⟦Độ trễ|Latency⟧:** Thời gian xử lý 1 ⟦yêu cầu|request⟧
+@228
+**⟦Thông lượng|Throughput⟧:** Số ⟦yêu cầu|requests⟧ xử lý được mỗi giây
+@229
+Hai ⟦chỉ số|metrics⟧ độc lập, tối ưu riêng
+@230
+Thường phải ⟦đánh đổi|trade-off⟧ giữa hai thứ
+@231
+**⟦Tính sẵn sàng|Availability⟧:**
+@232
+**99%:** 7,2 giờ ngừng hoạt động/tháng - công cụ nội bộ
+@233
+**99,9%:** 43 phút ngừng hoạt động/tháng - thương mại điện tử
+@234
+**99,99%:** 4,3 phút ngừng hoạt động/tháng - ngân hàng
+@235
+Mỗi "số 9" làm ⟦chi phí|cost⟧ tăng gấp đôi
+@236
+Đừng ⟦thiết kế thừa|over-engineer⟧: chọn mức phù hợp với nhu cầu kinh doanh
+@237
+**⟦Định lý CAP|CAP Theorem⟧:**
+@238
+**CP (⟦Nhất quán|Consistency⟧ + ⟦Chịu phân vùng|Partition⟧):** Ngân hàng, thanh toán
+@239
+**AP (⟦Sẵn sàng|Availability⟧ + ⟦Chịu phân vùng|Partition⟧):** Mạng xã hội, ⟦lưu đệm|caching⟧
+@240
+⟦Phân vùng mạng|Network partitions⟧ luôn xảy ra → chọn C hoặc A
+@241
+Mặc định chọn AP cho hầu hết tính năng
+@242
+**⟦Khung Ra Quyết Định|Decision Framework⟧:**
+@243
+Đo lường ⟦yêu cầu|requirements⟧ cụ thể (bằng con số, không phải cảm giác)
+@244
+Hiểu các ⟦đánh đổi|trade-offs⟧ của mỗi lựa chọn
+@245
+Lựa chọn dựa trên các ưu tiên kinh doanh
+@246
+⟦Giám sát|Monitor⟧ và điều chỉnh
+@247
+**Quan trọng nhất:** Không có giải pháp hoàn hảo. Hiểu các khái niệm → Đưa ra những ⟦đánh đổi|trade-offs⟧ có cơ sở.

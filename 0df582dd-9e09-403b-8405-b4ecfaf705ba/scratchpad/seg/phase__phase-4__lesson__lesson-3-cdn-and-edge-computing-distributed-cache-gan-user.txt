@@ -1,0 +1,775 @@
+@0 h1
+CDN & Edge Computing - Distributed Cache Gần User
+@1 p
+Bạn có một API server ở Singapore. User ở Brazil truy cập website → latency 300ms chỉ để network round trip.
+@2 p
+Không quan trọng code của bạn tối ưu thế nào. **Physics không thể cheat được.**
+@3 p
+Ánh sáng đi qua fiber optic có tốc độ giới hạn. Distance từ Singapore → Brazil = ~18,000km. Round trip = minimum ~240ms, thực tế 300-400ms vì routing.
+@4 p
+**Giải pháp duy nhất: Đưa content gần user hơn.**
+@5 p
+Đây chính là lý do CDN (Content Delivery Network) tồn tại.
+@6 p
+Lesson này dạy bạn:
+@7 li
+CDN architecture thực tế
+@8 li
+Cách optimize static và dynamic content
+@9 li
+Cache invalidation ở edge
+@10 li
+Edge computing - chạy logic gần user
+@11 li
+Khi nào CDN thực sự cần thiết
+@12 h2
+CDN Là Gì? (Không Chỉ Là Cache)
+@13 p
+**CDN = Distributed cache system deployed globally at edge locations.**
+@14 p
+Nhưng CDN không chỉ là cache đơn thuần. CDN là:
+@15 p
+**1. Geographic distribution**
+@16 li
+Servers ở nhiều locations trên thế giới
+@17 li
+User tự động route đến server gần nhất
+@18 p
+**2. Specialized caching**
+@19 li
+Optimize cho static content (images, videos, CSS, JS)
+@20 li
+Handle massive concurrent requests
+@21 li
+Tiered cache architecture
+@22 p
+**3. Network optimization**
+@23 li
+Better routing than public internet
+@24 li
+TCP connection optimization
+@25 li
+HTTP/2, HTTP/3 support
+@26 p
+**4. Security layer**
+@27 li
+DDoS protection
+@28 li
+WAF (Web Application Firewall)
+@29 li
+SSL/TLS termination
+@30 p
+**Mental model:** CDN = cache layer + network layer + security layer ở edge.
+@31 h2
+CDN Architecture - Từ Origin Đến Edge
+@32 pre
+flowchart TB
+    subgraph Users["Users Worldwide"]
+        U1[User Vietnam]
+        U2[User Brazil]
+        U3[User Europe]
+    end
+    
+    subgraph Edge["Edge Locations"]
+        E1[Edge Singapore]
+        E2[Edge São Paulo]
+        E3[Edge Frankfurt]
+    end
+    
+    subgraph Regional["Regional POPs"]
+        R1[Regional Asia]
+        R2[Regional Americas]
+        R3[Regional EU]
+    end
+    
+    Origin[Origin Server]
+    
+    U1 --> E1
+    U2 --> E2
+    U3 --> E3
+    
+    E1 -->|Cache Miss| R1
+    E2 -->|Cache Miss| R2
+    E3 -->|Cache Miss| R3
+    
+    R1 -->|Cache Miss| Origin
+    R2 -->|Cache Miss| Origin
+    R3 -->|Cache Miss| Origin
+@33 p
+**Tiered CDN architecture (ví dụ Cloudflare, Akamai):**
+@34 h3
+Tier 1: Edge Locations (200+ locations)
+@35 p
+**Ở gần user nhất.**
+@36 li
+User request đến edge gần nhất (latency thấp nhất)
+@37 li
+Cache static content
+@38 li
+Handle majority of requests
+@39 h3
+Tier 2: Regional POPs (Point of Presence)
+@40 p
+**Aggregation layer.**
+@41 li
+Edge miss → check regional
+@42 li
+Reduce load to origin
+@43 li
+Shield origin từ spike traffic
+@44 h3
+Tier 3: Origin Server
+@45 p
+**Your actual server.**
+@46 li
+Chỉ serve khi cả edge + regional miss
+@47 li
+Protected từ direct traffic
+@48 li
+Handle dynamic content generation
+@49 p
+**Flow thực tế:**
+@50 pre
+User (Vietnam) 
+  → Edge (Singapore) [HIT - 10ms] ✅
+  
+User (Thailand)
+  → Edge (Bangkok) [MISS]
+  → Regional (Asia) [HIT - 50ms] ✅
+  
+User (Myanmar - new location)
+  → Edge (Myanmar) [MISS]
+  → Regional (Asia) [MISS]
+  → Origin (Singapore) [200ms] ⚠️
+
+@51 p
+**90%+ requests serve từ edge/regional. Origin chỉ handle <10%.**
+@52 h2
+Cache Headers - Control CDN Behavior
+@53 p
+CDN caching behavior được control bởi HTTP headers.
+@54 h3
+Cache-Control Header
+@55 p
+**Quan trọng nhất để control caching.**
+@56 p
+**Directives:**
+@57 p
+**public**
+@58 li
+Content có thể cache bởi bất kỳ ai (CDN, browser, proxy)
+@59 li
+Dùng cho public content
+@60 p
+**private**
+@61 li
+Chỉ browser cache, CDN không cache
+@62 li
+Dùng cho user-specific content
+@63 p
+**max-age=<seconds>**
+@64 li
+Cache valid trong bao lâu
+@65 li
+`max-age=3600` = cache 1 hour
+@66 p
+**s-maxage=<seconds>**
+@67 li
+Override max-age cho shared cache (CDN)
+@68 li
+Browser dùng max-age, CDN dùng s-maxage
+@69 p
+**immutable**
+@70 li
+Content sẽ không bao giờ thay đổi
+@71 li
+CDN không cần revalidate
+@72 p
+**no-cache**
+@73 li
+Phải revalidate với origin mỗi request
+@74 li
+Cache có thể store nhưng must check
+@75 p
+**no-store**
+@76 li
+Không cache gì cả
+@77 li
+Sensitive data
+@78 h3
+Practical Examples
+@79 p
+**Static assets (CSS/JS với versioning):**
+@80 li
+Cache 1 năm
+@81 li
+Không bao giờ thay đổi (vì có version trong URL)
+@82 li
+`style.abc123.css` → change code → `style.def456.css`
+@83 p
+**Images:**
+@84 li
+Cache 1 ngày
+@85 li
+Revalidate sau đó
+@86 p
+**API responses (cacheable):**
+@87 li
+Browser cache 5 phút
+@88 li
+CDN cache 10 phút
+@89 li
+Eventual consistency acceptable
+@90 p
+**User-specific data:**
+@91 li
+Chỉ browser cache
+@92 li
+Must verify mỗi request
+@93 p
+**Sensitive data:**
+@94 li
+Không cache anywhere
+@95 h3
+ETag & Conditional Requests
+@96 p
+**ETag = fingerprint của content.**
+@97 p
+**Revalidation flow:**
+@98 pre
+sequenceDiagram
+    participant Browser
+    participant CDN
+    participant Origin
+    
+    Note over Browser,Origin: Initial Request
+    Browser->>CDN: GET /image.jpg
+    CDN->>Origin: GET /image.jpg
+    Origin-->>CDN: 200 OK, ETag: "abc123"
+    CDN-->>Browser: 200 OK, ETag: "abc123"
+    
+    Note over Browser,Origin: Revalidation (after max-age)
+    Browser->>CDN: GET /image.jpg<br/>If-None-Match: "abc123"
+    CDN->>Origin: If-None-Match: "abc123"
+    Origin-->>CDN: 304 Not Modified
+    CDN-->>Browser: 304 Not Modified
+@99 p
+**304 Not Modified = content chưa thay đổi, dùng lại cache.**
+@100 p
+Bandwidth saving: Không transfer lại full content.
+@101 h2
+Static vs Dynamic Content - Caching Strategy
+@102 h3
+Static Content
+@103 p
+**Content không thay đổi hoặc ít thay đổi.**
+@104 p
+**Examples:**
+@105 li
+Images, videos
+@106 li
+CSS, JavaScript files
+@107 li
+Fonts
+@108 li
+PDFs, documents
+@109 p
+**CDN strategy:**
+@110 p
+**Cache hit rate: 95%+**
+@111 p
+**Best practices:**
+@112 li
+**Versioned URLs:** `app.v123.js` thay vì `app.js`
+@113 li
+**Content hashing:** `bundle.abc123.js`
+@114 li
+**Separate domain:** `static.example.com` (cookie-free)
+@115 h3
+Dynamic Content
+@116 p
+**Content personalized hoặc thay đổi thường xuyên.**
+@117 p
+**Examples:**
+@118 li
+User dashboard
+@119 li
+API responses
+@120 li
+Personalized recommendations
+@121 li
+Real-time data
+@122 p
+**Challenge:** Mỗi user khác nhau, cache không hiệu quả?
+@123 p
+**Solution: Smart caching strategies.**
+@124 h4
+Strategy 1: Cache Common Parts
+@125 p
+Template cache, user data fetch riêng.
+@126 h4
+Strategy 2: Vary Header
+@127 p
+CDN cache separate copies based on vary header.
+@128 p
+**Ví dụ:**
+@129 li
+Desktop vs mobile: different HTML
+@130 li
+Logged in vs logged out: different content
+@131 h4
+Strategy 3: Edge Side Includes (ESI)
+@132 p
+CDN assemble page từ multiple parts:
+@133 li
+Static parts: cached long
+@134 li
+Dynamic parts: cached short hoặc bypass
+@135 h2
+Cache Invalidation Ở CDN - The Hard Problem
+@136 p
+**Problem:** Content thay đổi ở origin, CDN vẫn serve stale data.
+@137 h3
+Solution 1: Purge API
+@138 p
+**Explicitly tell CDN to delete cache.**
+@139 p
+**Khi nào dùng:**
+@140 li
+Update critical content
+@141 li
+User upload new profile picture
+@142 li
+Product price change
+@143 p
+**Nhược điểm:**
+@144 li
+Không instant (propagation delay)
+@145 li
+API rate limits
+@146 li
+Complexity trong application
+@147 h3
+Solution 2: Cache Busting (Versioned URLs)
+@148 p
+**Thay đổi URL khi content thay đổi.**
+@149 p
+**Better: Content hash**
+@150 p
+**Ưu điểm:**
+@151 li
+Không cần purge API
+@152 li
+Instant update
+@153 li
+Old version vẫn accessible (rollback)
+@154 p
+**Đây là best practice cho static assets.**
+@155 h3
+Solution 3: Short TTL + Stale-While-Revalidate
+@156 p
+**Behavior:**
+@157 li
+Fresh cho 60 seconds
+@158 li
+Stale 60s-1day: serve stale, async revalidate
+@159 li
+After 1 day: must revalidate
+@160 p
+**Trade-off:** Accept eventual consistency để có performance.
+@161 h3
+Solution 4: Surrogate Keys (Advanced)
+@162 p
+**Tag related content với keys.**
+@163 p
+**Purge by tag:**
+@164 p
+Purge multiple URLs cùng lúc without knowing exact URLs.
+@165 h2
+Edge Computing - Chạy Logic Gần User
+@166 p
+**CDN evolution: Từ cache → compute.**
+@167 p
+Edge computing = chạy code ở edge locations, không chỉ cache.
+@168 h3
+Use Cases
+@169 h4
+1. A/B Testing Ở Edge
+@170 p
+**Benefit:** Không cần backend xử lý A/B logic.
+@171 h4
+2. Authentication/Authorization Ở Edge
+@172 p
+**Benefit:** Block unauthorized requests ở edge, protect origin.
+@173 h4
+3. Request Routing & Transformation
+@174 p
+**Blue-green deployment, canary release ở edge.**
+@175 h4
+4. API Response Transformation
+@176 p
+**Benefit:** Origin trả raw data, edge customize cho từng region.
+@177 h4
+5. Geolocation-Based Content
+@178 p
+**Serve localized content without hitting origin.**
+@179 h3
+Edge Computing Platforms
+@180 p
+**Cloudflare Workers**
+@181 li
+V8 isolates (fast cold start)
+@182 li
+Global network
+@183 li
+Free tier: 100k requests/day
+@184 p
+**AWS Lambda@Edge**
+@185 li
+Run với CloudFront
+@186 li
+Full Lambda capabilities
+@187 li
+More expensive
+@188 p
+**Fastly Compute@Edge**
+@189 li
+WebAssembly
+@190 li
+Low latency
+@191 p
+**Vercel Edge Functions**
+@192 li
+Built-in với Next.js
+@193 li
+Simple deployment
+@194 h3
+Limitations Of Edge Computing
+@195 p
+**1. Limited compute time**
+@196 li
+Workers: 50ms CPU time (free), 50-200ms (paid)
+@197 li
+Cannot run long-running tasks
+@198 p
+**2. Limited memory**
+@199 li
+Workers: 128MB memory limit
+@200 li
+Cannot load large datasets
+@201 p
+**3. No persistent storage**
+@202 li
+Stateless functions
+@203 li
+Cannot store data locally
+@204 p
+**4. Cold start (depending on platform)**
+@205 li
+Lambda@Edge có cold start
+@206 li
+Workers không (V8 isolates)
+@207 p
+**Edge computing phù hợp cho lightweight transformations, không phải heavy processing.**
+@208 h2
+Geo Routing - Intelligent Traffic Distribution
+@209 p
+**Geo routing = route user đến server gần nhất dựa trên location.**
+@210 h3
+DNS-Based Geo Routing
+@211 p
+**Route 53, Cloudflare DNS:**
+@212 pre
+User Vietnam → DNS query
+→ Returns Singapore server IP (35.240.x.x)
+
+User US → DNS query  
+→ Returns US server IP (34.120.x.x)
+
+@213 p
+**Latency-based routing:**
+@214 li
+Measure latency từ user location đến các servers
+@215 li
+Return server nhanh nhất
+@216 p
+**Geolocation-based routing:**
+@217 li
+Based on user IP location
+@218 li
+Return closest geographic server
+@219 h3
+Anycast Routing
+@220 p
+**Single IP address, multiple locations.**
+@221 pre
+CDN IP: 104.16.0.0
+
+User Vietnam → reaches Singapore POP
+User Brazil → reaches São Paulo POP
+
+@222 p
+**Network routes traffic đến nearest POP automatically.**
+@223 p
+**Benefit:**
+@224 li
+Simple (1 IP cho all locations)
+@225 li
+Automatic failover
+@226 li
+DDoS mitigation
+@227 h3
+Active-Active Multi-Region
+@228 p
+**Deploy application ở multiple regions, route intelligently.**
+@229 pre
+flowchart TB
+    subgraph Users
+        U1[Users Asia]
+        U2[Users Americas]
+        U3[Users Europe]
+    end
+    
+    subgraph Regions
+        R1[Singapore Region]
+        R2[US Region]
+        R3[EU Region]
+    end
+    
+    DB1[(Database Replica)]
+    DB2[(Database Replica)]
+    DB3[(Database Replica)]
+    
+    U1 --> R1
+    U2 --> R2
+    U3 --> R3
+    
+    R1 --> DB1
+    R2 --> DB2
+    R3 --> DB3
+    
+    DB1 -.->|Replicate| DB2
+    DB2 -.->|Replicate| DB3
+    DB3 -.->|Replicate| DB1
+@230 p
+**Benefits:**
+@231 li
+Low latency worldwide
+@232 li
+High availability (failover to other region)
+@233 p
+**Challenges:**
+@234 li
+Data consistency (replication lag)
+@235 li
+Cost (multiple regions)
+@236 li
+Complexity
+@237 h2
+Khi Nào Cần CDN? (Decision Framework)
+@238 p
+CDN không phải lúc nào cũng cần thiết. Đây là decision framework:
+@239 h3
+Bạn CẦN CDN khi:
+@240 p
+**1. Global user base**
+@241 li
+Users ở nhiều countries/continents
+@242 li
+Latency matter cho UX
+@243 p
+**2. Static content heavy**
+@244 li
+Images, videos chiếm majority traffic
+@245 li
+High bandwidth usage
+@246 p
+**3. Traffic spikes**
+@247 li
+Flash sales, viral content
+@248 li
+Cần DDoS protection
+@249 p
+**4. Performance critical**
+@250 li
+E-commerce (conversion rate phụ thuộc vào speed)
+@251 li
+Media sites (video streaming)
+@252 h3
+Bạn KHÔNG CẦN CDN khi:
+@253 p
+**1. Local user base only**
+@254 li
+Tất cả users ở 1 country
+@255 li
+Single region đủ
+@256 p
+**2. Dynamic content only**
+@257 li
+API-only backend
+@258 li
+Không có static assets
+@259 p
+**3. Low traffic**
+@260 li
+<1000 users/day
+@261 li
+Cost không justify
+@262 p
+**4. B2B internal tools**
+@263 li
+Limited users
+@264 li
+Performance không critical
+@265 h3
+Middle Ground: Partial CDN
+@266 p
+**CDN chỉ cho static assets, dynamic content direct to origin.**
+@267 pre
+Static (images/CSS/JS) → CDN
+API requests → Direct to origin
+
+@268 p
+**Simple, cost-effective, significant benefit.**
+@269 h2
+CDN Providers Comparison
+@270 th
+Provider
+@271 th
+Global POPs
+@272 th
+Strengths
+@273 th
+Pricing
+@274 td
+Cloudflare
+@275 td
+300+
+@276 td
+DDoS protection, Workers
+@277 td
+Free tier available
+@278 td
+AWS CloudFront
+@279 td
+450+
+@280 td
+AWS integration
+@281 td
+Pay-as-you-go
+@282 td
+Fastly
+@283 td
+70+
+@284 td
+Real-time purge, VCL
+@285 td
+Premium pricing
+@286 td
+Akamai
+@287 td
+4100+
+@288 td
+Enterprise, most POPs
+@289 td
+Expensive
+@290 td
+Bunny CDN
+@291 td
+100+
+@292 td
+Affordable
+@293 td
+$0.01/GB
+@294 p
+**Cloudflare = best choice cho most startups** (free tier generous, Workers powerful).
+@295 p
+**AWS CloudFront = best nếu đã dùng AWS** (tight integration).
+@296 p
+**Fastly = best cho enterprise với real-time needs.**
+@297 h2
+Best Practices - CDN Implementation
+@298 p
+**1. Version static assets**
+@299 p
+Immutable caching, instant updates.
+@300 p
+**2. Separate domain cho static content**
+@301 pre
+www.example.com (dynamic)
+static.example.com (CDN)
+
+@302 p
+Cookie-free domain, better caching.
+@303 p
+**3. Optimize images**
+@304 li
+WebP format
+@305 li
+Responsive images
+@306 li
+Lazy loading
+@307 p
+**4. Use cache headers properly**
+@308 p
+**5. Monitor cache hit rate**
+@309 li
+Target: 90%+ cho static content
+@310 li
+<80% = investigate cache config
+@311 p
+**6. Set up purge automation**
+@312 p
+**7. Test from multiple locations**
+@313 li
+Use tools: Pingdom, GTmetrix
+@314 li
+Verify edge performance
+@315 p
+**8. Enable HTTP/2 or HTTP/3**
+@316 li
+Multiplexing
+@317 li
+Header compression
+@318 li
+Better performance
+@319 h2
+Key Takeaways
+@320 p
+**1. CDN = distributed cache + network optimization ở edge**
+@321 p
+Không chỉ cache, còn routing, security, compute.
+@322 p
+**2. Tiered architecture: Edge → Regional → Origin**
+@323 p
+Majority requests serve từ edge, origin protected.
+@324 p
+**3. Cache headers control CDN behavior**
+@325 p
+`Cache-Control`, `ETag`, `Vary` - hiểu và dùng đúng.
+@326 p
+**4. Static content: long TTL + versioned URLs**
+@327 p
+Best practice cho immutable caching.
+@328 p
+**5. Dynamic content: smart caching strategies**
+@329 p
+ESI, vary header, stale-while-revalidate.
+@330 p
+**6. Cache invalidation: Purge API hoặc cache busting**
+@331 p
+Versioned URLs > purge API (simpler, instant).
+@332 p
+**7. Edge computing: lightweight logic gần user**
+@333 p
+A/B testing, auth, routing - không phải heavy processing.
+@334 p
+**8. Geo routing: latency-based hoặc geolocation-based**
+@335 p
+User tự động route đến server gần nhất.
+@336 p
+**9. Decision framework: Global + static content = cần CDN**
+@337 p
+Local + dynamic only = có thể skip.
+@338 p
+**Remember: CDN không phải magic bullet. Là trade-off giữa performance, consistency, và cost. Great architects biết khi nào cần, khi nào không cần.**

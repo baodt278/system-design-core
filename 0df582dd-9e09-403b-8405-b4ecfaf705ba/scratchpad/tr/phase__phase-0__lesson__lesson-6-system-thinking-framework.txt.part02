@@ -1,0 +1,342 @@
+@74
+Ghép Tất Cả Lại: ⟦Kiến Trúc Hệ Thống|System Architecture⟧
+@75
+**⟦Kiến trúc|Architecture⟧ điển hình của một ứng dụng web:**
+@76
+graph TB
+    subgraph Tầng máy khách
+        WEB[Trình duyệt web]
+        MOBILE[Ứng dụng di động]
+    end
+
+    subgraph Tầng biên
+        CDN[CDN<br/>Tài nguyên tĩnh]
+        LB[Bộ cân bằng tải]
+    end
+
+    subgraph Tầng ứng dụng
+        API1[Máy chủ API 1]
+        API2[Máy chủ API 2]
+        API3[Máy chủ API N]
+    end
+
+    subgraph Tầng dữ liệu
+        CACHE[Bộ nhớ đệm Redis<br/>Đọc nhanh]
+        DB[(CSDL<br/>Nguồn dữ liệu gốc)]
+        S3[Lưu trữ S3<br/>Tệp lớn]
+    end
+
+    subgraph Tầng bất đồng bộ
+        QUEUE[Hàng đợi thông điệp]
+        WORKER[Tiến trình xử lý nền]
+    end
+
+    WEB --> CDN
+    MOBILE --> CDN
+    WEB --> LB
+    MOBILE --> LB
+    LB --> API1 & API2 & API3
+
+    API1 & API2 & API3 --> CACHE
+    API1 & API2 & API3 --> DB
+    API1 & API2 & API3 --> S3
+    API1 & API2 & API3 --> QUEUE
+
+    QUEUE --> WORKER
+    WORKER --> DB
+    WORKER --> S3
+
+    style CACHE fill:#51cf66
+    style DB fill:#ff6b6b
+    style QUEUE fill:#ffd43b
+@77
+*Hệ thống hoàn chỉnh: Tất cả các ⟦thành phần|components⟧ phối hợp với nhau*
+@78
+Ví Dụ Về Luồng Yêu Cầu: Người Dùng Cập Nhật Hồ Sơ
+@79
+**Lần theo một ⟦yêu cầu|request⟧ đi qua toàn bộ hệ thống:**
+@80
+Bước 1: Người dùng nhấn "Lưu hồ sơ"
+Thành phần: Máy khách (Trình duyệt)
+Hành động: POST /users/123 kèm dữ liệu mới
+
+Bước 2: Yêu cầu đến bộ cân bằng tải
+Thành phần: Bộ cân bằng tải
+Hành động: Định tuyến đến Máy chủ API 2 (ít kết nối nhất)
+Thời gian: +10ms
+
+Bước 3: API kiểm tra hợp lệ và xử lý
+Thành phần: Máy chủ API
+Hành động:
+- Kiểm tra hợp lệ đầu vào (định dạng email, v.v.)
+- Kiểm tra quyền (người dùng có được phép không?)
+- Làm sạch dữ liệu
+Thời gian: +20ms
+
+Bước 4: Cập nhật cơ sở dữ liệu
+Thành phần: Cơ sở dữ liệu
+Hành động:
+- Thực thi truy vấn UPDATE
+- Cam kết giao dịch
+- Xác nhận thành công
+Thời gian: +100ms
+
+Bước 5: Vô hiệu hoá bộ nhớ đệm
+Thành phần: Bộ nhớ đệm
+Hành động:
+- Xoá khoá bộ nhớ đệm "user:123"
+- Buộc đọc dữ liệu mới ở lần sau
+Thời gian: +5ms
+
+Bước 6: Đưa các tác vụ bất đồng bộ vào hàng đợi
+Thành phần: Hàng đợi
+Hành động:
+- Xuất bản sự kiện "user.updated"
+- Không chặn (trả về ngay lập tức)
+Thời gian: +2ms
+
+Bước 7: Trả phản hồi cho người dùng
+Thành phần: API → Máy khách
+Phản hồi: 200 OK
+Tổng thời gian: 137ms (trải nghiệm người dùng tốt!)
+
+Bước 8: Xử lý nền
+Thành phần: Tiến trình xử lý (bất đồng bộ)
+Hành động:
+- Gửi email "hồ sơ đã được cập nhật"
+- Cập nhật chỉ mục tìm kiếm
+- Đồng bộ sang hệ thống phân tích
+Thời gian: Không ảnh hưởng đến trải nghiệm người dùng
+
+@81
+**Những nhận xét chính:**
+@82
+✓ Người dùng nhận phản hồi trong 137ms (nhanh!)
+✓ Công việc nặng được xử lý bất đồng bộ (email, lập chỉ mục)
+✓ Bộ nhớ đệm đã được vô hiệu hoá (tính nhất quán)
+✓ Mỗi thành phần có vai trò rõ ràng
+✓ Sự cố có thể được cô lập
+
+Đây chính là tư duy hệ thống trong thực tế!
+
+@83
+⟦Mô Hình Tư Duy|Mental Model⟧: Đầu Vào → Xử Lý → Lưu Trữ → Đầu Ra
+@84
+**Áp dụng cho mọi thứ:**
+@85
+Ví Dụ 1: Thanh Toán Thương Mại Điện Tử
+@86
+Đầu vào:
+- Người dùng nhấn "Đặt hàng"
+- Các món trong giỏ hàng, địa chỉ giao hàng, thông tin thanh toán
+
+Xử lý:
+- Kiểm tra tồn kho
+- Tính tổng tiền (hàng hoá + thuế + phí vận chuyển)
+- Xử lý thanh toán
+- Sinh mã đơn hàng
+
+Lưu trữ:
+- Lưu đơn hàng vào cơ sở dữ liệu
+- Lưu biên lai thanh toán vào S3
+- Lưu đệm chi tiết đơn hàng
+
+Đầu ra:
+- Trang xác nhận cho người dùng
+- Email xác nhận (bất đồng bộ qua hàng đợi)
+- Thông báo đến kho hàng (bất đồng bộ)
+
+@87
+Ví Dụ 2: Bài Đăng Mạng Xã Hội
+@88
+Đầu vào:
+- Người dùng viết bài + tải ảnh lên
+
+Xử lý:
+- Làm sạch văn bản (loại bỏ từ ngữ xấu)
+- Thay đổi kích thước/nén ảnh
+- Sinh mã bài đăng
+
+Lưu trữ:
+- Lưu bài đăng vào cơ sở dữ liệu
+- Tải ảnh lên S3
+- Lưu đệm các bài đăng "nóng" (đang thịnh hành)
+
+Đầu ra:
+- Hiển thị bài đăng cho người dùng
+- Phân phát (fan-out) đến người theo dõi (bất đồng bộ qua hàng đợi)
+- Cập nhật bộ nhớ đệm bảng tin (bất đồng bộ)
+
+@89
+Ví Dụ 3: Tải Video Lên
+@90
+Đầu vào:
+- Người dùng tải tệp video lên
+
+Xử lý:
+- Kiểm tra hợp lệ tệp (định dạng, kích thước)
+- Tạo ảnh thu nhỏ
+- Đưa tác vụ mã hoá vào hàng đợi
+
+Lưu trữ:
+- Lưu bản gốc vào S3
+- Lưu siêu dữ liệu vào cơ sở dữ liệu
+- Lưu tác vụ mã hoá trong hàng đợi
+
+Đầu ra:
+- Hiển thị "Đang xử lý..." cho người dùng
+- Gửi email khi sẵn sàng (bất đồng bộ)
+- Nhiều độ phân giải trong S3 (bất đồng bộ)
+
+@91
+**Mẫu này nhất quán trên mọi hệ thống!**
+@92
+Các Mẫu Hệ Thống Phổ Biến
+@93
+Mẫu 1: Hệ Thống ⟦Thiên Về Đọc|Read-Heavy⟧
+@94
+Đặc điểm:
+- Trên 90% là đọc, < 10% là ghi
+- Ví dụ: Trang tin tức, tài liệu, bảng tin mạng xã hội
+
+Tối ưu:
+- Lưu đệm triệt để (Redis)
+- CDN cho nội dung tĩnh
+- Bản sao chỉ đọc của cơ sở dữ liệu
+- Kiến trúc ưu tiên bộ nhớ đệm
+
+Kiến trúc:
+Máy khách → CDN (trúng 90%) → Bộ cân bằng tải → API → Bộ nhớ đệm (trúng 95%) → CSDL (5% còn lại)
+
+Kết quả: 99,5% yêu cầu không bao giờ chạm đến cơ sở dữ liệu!
+
+@95
+Mẫu 2: Hệ Thống ⟦Thiên Về Ghi|Write-Heavy⟧
+@96
+Đặc điểm:
+- Trên 50% là ghi
+- Ví dụ: Phân tích dữ liệu, ghi log, cảm biến IoT
+
+Tối ưu:
+- Đệm thao tác ghi (hàng đợi)
+- Xử lý theo lô
+- Cơ sở dữ liệu tối ưu cho ghi (Cassandra)
+- Bất đồng bộ mọi thứ
+
+Kiến trúc:
+Máy khách → API → Hàng đợi → Tiến trình xử lý → CSDL (ghi theo lô)
+
+Kết quả: Xử lý 100K lượt ghi/giây nhờ vùng đệm
+
+@97
+Mẫu 3: Hệ Thống ⟦Thời Gian Thực|Real-Time⟧
+@98
+Đặc điểm:
+- Độ trễ thấp là then chốt (< 100ms)
+- Ví dụ: Chat, trò chơi, giao dịch chứng khoán
+
+Tối ưu:
+- Kết nối WebSocket
+- Mọi thứ nằm trong bộ nhớ
+- Phân bố theo địa lý
+- Xử lý tối thiểu
+
+Kiến trúc:
+Máy khách ←→ Máy chủ WebSocket → Redis (pub/sub) → CSDL (nhất quán cuối cùng)
+
+Kết quả: Chuyển tin nhắn dưới 50ms
+
+@99
+Gỡ Lỗi Với Tư Duy Hệ Thống
+@100
+**Khi xảy ra sự cố trong ⟦môi trường thực tế|production⟧:**
+@101
+Trước Khi Có Tư Duy Hệ Thống:
+@102
+"API chậm quá. Để mình xem mã nguồn..."
+*Đọc 1000 dòng mã*
+*Không biết vấn đề nằm ở đâu*
+
+@103
+Sau Khi Có Tư Duy Hệ Thống:
+@104
+"API chậm quá. Để mình lần theo yêu cầu:
+
+1. Máy khách → API: 50ms (bình thường)
+2. API → Bộ nhớ đệm: 2ms (bình thường)
+3. API → CSDL: 5000ms (CÓ VẤN ĐỀ!)
+4. CSDL → API: 2ms
+5. API → Máy khách: 10ms
+
+Điểm nghẽn: Truy vấn cơ sở dữ liệu mất 5 giây
+
+Tiếp theo: Kiểm tra cơ sở dữ liệu
+- Log truy vấn chậm
+- Thiếu chỉ mục?
+- Tranh chấp khoá?
+
+Phát hiện: Thiếu chỉ mục trên user_id
+Sửa: CREATE INDEX idx_user_id
+Kết quả: Truy vấn giờ chỉ còn 50ms"
+
+→ Giải quyết trong 10 phút!
+
+@105
+**Tư duy hệ thống = Cách tiếp cận gỡ lỗi có cấu trúc**
+@106
+Những Điểm Cốt Lõi
+@107
+**Hệ thống = ⟦Thành phần|Components⟧ + ⟦Tương tác|Interactions⟧**
+@108
+6 thành phần cốt lõi:
+1. Máy khách (tầng đầu vào)
+2. API (tầng xử lý)
+3. Cơ sở dữ liệu (tầng lưu trữ)
+4. Bộ nhớ đệm (tầng hiệu năng)
+5. Hàng đợi (tầng bất đồng bộ)
+6. Lưu trữ (tầng tệp)
+
+Mỗi thành phần có vai trò riêng
+Cùng nhau tạo nên hệ thống hoàn chỉnh
+
+@109
+**Mẫu phổ quát:**
+@110
+Đầu vào → Xử lý → Lưu trữ → Đầu ra
+
+Mọi hệ thống đều tuân theo mẫu này
+Hiểu mẫu → Hiểu hệ thống
+
+@111
+**Lợi ích của tư duy hệ thống:**
+@112
+✓ Nhìn thấy bức tranh toàn cảnh
+✓ Xác định điểm nghẽn nhanh hơn
+✓ Thiết kế kiến trúc tốt hơn
+✓ Gỡ lỗi các vấn đề trong môi trường thực tế
+✓ Giao tiếp với nhóm
+✓ Đưa ra các đánh đổi có cơ sở
+
+@113
+**Chuyển đổi tư duy:**
+@114
+Từ: "Hàm này hoạt động thế nào?"
+Sang: "Yêu cầu đi qua hệ thống như thế nào?"
+
+Từ: "Đoạn mã này làm gì?"
+Sang: "Vai trò của thành phần này là gì?"
+
+Từ: "Sửa lỗi này"
+Sang: "Thành phần nào đang gây ra vấn đề?"
+
+@115
+**Hãy nhớ:**
+@116
+Mã nguồn là chi tiết triển khai
+Hệ thống là bức tranh toàn cảnh
+
+Làm chủ mã nguồn → Lập trình viên giỏi
+Làm chủ hệ thống → Kiến trúc sư giỏi
+
+Bạn cần cả hai, nhưng góc nhìn hệ thống phải đi trước
+

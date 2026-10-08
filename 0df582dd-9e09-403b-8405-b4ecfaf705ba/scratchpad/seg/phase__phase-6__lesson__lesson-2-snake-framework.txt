@@ -1,0 +1,881 @@
+@0 h1
+SNAKE Framework: Methodology Để Ace System Design Interview
+@1 p
+Tôi còn nhớ lần đầu tiên làm system design interview.
+@2 p
+Interviewer: *"Thiết kế YouTube."*
+@3 p
+Tôi: *"Uhm... YouTube... video... cần database... cần CDN... cần..."*
+@4 p
+Tôi vẽ vài boxes, nói về microservices, mention Kafka. 30 phút trôi qua trong confusion.
+@5 p
+Interviewer: *"Em có structure approach không?"*
+@6 p
+Tôi: *"... Không ạ."*
+@7 p
+**Tôi fail interview đó.**
+@8 p
+Không phải vì thiếu kiến thức. Mà vì **không có methodology rõ ràng**.
+@9 p
+Sau đó, tôi học SNAKE framework từ một senior architect. Đó là game changer.
+@10 p
+SNAKE = **S**cope → **N**umbers → **A**PI → **K**ey components → **E**laborate
+@11 p
+Framework này transform cách tôi approach system design interviews. Và nó sẽ transform cách bạn approach.
+@12 h2
+Tại Sao Cần Framework?
+@13 h3
+The Problem With No Structure
+@14 p
+**Without framework:**
+@15 pre
+Interviewer: "Design Twitter"
+
+Candidate brain:
+"Twitter... tweets... users... followers... feed... 
+database... NoSQL? SQL? Cache? Microservices?
+Kafka? Redis? Wait, should I start with database?
+Or API? Or architecture? Aaah..."
+
+→ Jump around randomly
+→ Miss critical requirements
+→ Waste time on irrelevant details
+→ No clear narrative
+→ Interviewer confused
+
+@16 p
+**With framework (SNAKE):**
+@17 pre
+Interviewer: "Design Twitter"
+
+Candidate:
+"Let me clarify requirements first (Scope)
+Then estimate scale (Numbers)
+Define API contracts (API)
+Design high-level architecture (Key components)
+Deep dive critical parts (Elaborate)"
+
+→ Clear progression
+→ Cover all aspects
+→ Structured thinking
+→ Easy to follow
+→ Interviewer impressed
+
+@18 p
+**Key insight:** System design interviews test **thinking process**, không chỉ knowledge.
+@19 p
+Framework shows bạn có systematic approach to problem-solving.
+@20 h2
+SNAKE Framework Overview
+@21 pre
+graph LR
+    S[S - Scope<br/>5-8 min] --> N[N - Numbers<br/>5-8 min]
+    N --> A[A - API<br/>5-8 min]
+    A --> K[K - Key Components<br/>10-15 min]
+    K --> E[E - Elaborate<br/>10-15 min]
+    
+    style S fill:#ff6b6b
+    style N fill:#ffd43b
+    style A fill:#51cf66
+    style K fill:#339af0
+    style E fill:#e599f7
+@22 p
+*SNAKE framework: 5 steps với time allocation rõ ràng cho 45-phút interview*
+@23 p
+**Total time budget: 45 minutes**
+@24 pre
+Scope:          5-8 minutes  (Clarify requirements)
+Numbers:        5-8 minutes  (Estimate scale)
+API:            5-8 minutes  (Define interfaces)
+Key Components: 10-15 minutes (High-level design)
+Elaborate:      10-15 minutes (Deep dive)
+Buffer:         5 minutes     (Unexpected questions)
+
+@25 p
+**Mỗi step có mục đích rõ ràng. Không skip steps.**
+@26 h2
+S - Scope: Clarify Requirements
+@27 p
+**Goal: Understand problem deeply trước khi design**
+@28 h3
+What to Clarify
+@29 p
+**1. Functional Requirements (What system does)**
+@30 p
+**2. Non-Functional Requirements (How system performs)**
+@31 p
+**3. Constraints**
+@32 h3
+How to Ask (Communication Skills Matter!)
+@33 p
+**Bad approach:**
+@34 pre
+Candidate: "How many users?"
+Interviewer: "You tell me."
+Candidate: "Umm... 1 million?"
+Interviewer: "..."
+
+→ Passive, không show thinking
+
+@35 p
+**Good approach:**
+@36 pre
+Candidate: "Let me clarify the scale. For a Twitter-like system,
+I'm thinking we're designing for:
+- 200M monthly active users
+- 100M daily active users  
+- 500M tweets per day
+- Read-heavy workload (95% reads, 5% writes)
+
+Does this match your expectation, or should I adjust?"
+
+Interviewer: "That sounds reasonable."
+
+→ Show assumptions, invite feedback
+→ Demonstrate thinking process
+
+@37 h3
+Scope Checklist
+@38 p
+**Verify bạn đã clarify:**
+@39 pre
+☑ Core features identified
+☑ Nice-to-have features noted
+☑ Out-of-scope explicitly stated
+☑ Scale numbers agreed upon
+☑ Performance requirements clear
+☑ Consistency requirements understood
+☑ Constraints acknowledged
+
+@40 p
+**Time spent: 5-8 minutes**
+@41 p
+**Don't rush this. Strong foundation = better design.**
+@42 h2
+N - Numbers: Back-of-Envelope Calculations
+@43 p
+**Goal: Quantify scale để inform design decisions**
+@44 h3
+What to Calculate
+@45 p
+**1. Traffic Estimates**
+@46 p
+**2. Storage Estimates**
+@47 p
+**3. Bandwidth Estimates**
+@48 p
+**4. Memory Estimates (Caching)**
+@49 h3
+Why Numbers Matter
+@50 p
+**Numbers inform design decisions:**
+@51 pre
+Calculation reveals:
+- Read:Write = 5:1 → Cache strategy critical
+- 7.2 GB/s media → Must use CDN
+- 219 TB/5yr → Sharding needed eventually
+- 36K req/s → Need load balancing
+- 12 TB cache → Distributed Redis cluster
+
+Without calculations:
+→ Guessing
+→ Over-engineer hoặc under-engineer
+→ No justification for decisions
+
+@52 h3
+Numbers Checklist
+@53 pre
+☑ Traffic (reads, writes, peak)
+☑ Storage (current, growth)
+☑ Bandwidth (in, out, media)
+☑ Memory (cache requirements)
+☑ Read:Write ratio identified
+☑ Growth projections noted
+
+@54 p
+**Time spent: 5-8 minutes**
+@55 p
+**Show your math! Write on whiteboard.**
+@56 h2
+A - API: Define Interfaces
+@57 p
+**Goal: Design API contracts trước khi implement internals**
+@58 h3
+Why API First?
+@59 p
+**API design forces clarity:**
+@60 pre
+Vague: "System cho phép users post và xem tweets"
+
+Clear API:
+POST /tweets
+GET /feed
+GET /tweets/{id}
+POST /tweets/{id}/like
+
+→ Concrete, testable, discussable
+
+@61 h3
+RESTful API Design
+@62 p
+**Example: Twitter**
+@63 h3
+API Design Principles
+@64 p
+**1. Consistent naming**
+@65 p
+**2. Versioning**
+@66 p
+**3. Pagination**
+@67 p
+**4. Error responses**
+@68 h3
+API Checklist
+@69 pre
+☑ Core endpoints defined
+☑ Request/response formats specified
+☑ HTTP methods appropriate
+☑ Authentication mentioned
+☑ Pagination strategy chosen
+☑ Error handling noted
+☑ Rate limiting considered
+
+@70 p
+**Time spent: 5-8 minutes**
+@71 p
+**Don't over-detail. High-level contracts sufficient.**
+@72 h2
+K - Key Components: High-Level Architecture
+@73 p
+**Goal: Draw the boxes và arrows**
+@74 h3
+Components to Include
+@75 p
+**Standard web system components:**
+@76 pre
+graph TB
+    subgraph Client Layer
+        WEB[Web App]
+        MOBILE[Mobile App]
+    end
+    
+    subgraph Edge Layer
+        CDN[CDN]
+        LB[Load Balancer]
+    end
+    
+    subgraph Application Layer
+        API[API Servers]
+        FANOUT[Fanout Service]
+    end
+    
+    subgraph Data Layer
+        CACHE[Redis Cache]
+        DB[(Database)]
+        S3[Object Storage]
+    end
+    
+    subgraph Async Layer
+        QUEUE[Message Queue]
+        WORKER[Workers]
+    end
+    
+    WEB --> CDN
+    MOBILE --> CDN
+    CDN --> LB
+    LB --> API
+    API --> CACHE
+    API --> DB
+    API --> QUEUE
+    QUEUE --> FANOUT
+    FANOUT --> CACHE
+    API --> S3
+    WORKER --> DB
+    
+    style API fill:#51cf66
+    style CACHE fill:#ffd43b
+    style DB fill:#ff6b6b
+@77 p
+*High-level architecture cho Twitter-like system với các components chính*
+@78 h3
+Component Descriptions
+@79 p
+**Mỗi component cần brief explanation:**
+@80 h3
+Data Flow
+@81 p
+**Show critical paths:**
+@82 pre
+Write path (Post tweet):
+1. User → API Server
+2. API → Save to Database
+3. API → Publish to Kafka
+4. Fanout worker → Update followers' feeds in Cache
+5. Return success to user
+
+Read path (Load feed):
+1. User → API Server
+2. API → Check Cache (Redis)
+3. Cache hit → Return cached feed
+4. Cache miss → Query Database → Update cache
+5. Return feed to user
+
+@83 h3
+Call Out Key Decisions
+@84 p
+**Highlight critical choices:**
+@85 pre
+Decision 1: Fanout on write (hybrid)
+- Normal users: Pre-compute feeds (fast reads)
+- Celebrities: Query on demand (avoid fanout explosion)
+Trade-off: Write amplification vs read performance
+
+Decision 2: Sharded PostgreSQL
+- Shard by user_id
+- 50 shards initially
+Trade-off: Complexity vs scale
+
+Decision 3: Redis for timeline cache
+- Store 1000 recent tweets per user
+- No expiry (explicit invalidation)
+Trade-off: Memory cost vs performance
+
+@86 h3
+Key Components Checklist
+@87 pre
+☑ All major components drawn
+☑ Connections shown with arrows
+☑ Each component has purpose
+☑ Technology choices mentioned
+☑ Data flow explained
+☑ Critical paths highlighted
+☑ Key decisions called out
+
+@88 p
+**Time spent: 10-15 minutes**
+@89 p
+**This is the meat of interview. Spend time here.**
+@90 h2
+E - Elaborate: Deep Dive
+@91 p
+**Goal: Show expertise trên specific parts**
+@92 h3
+What to Deep Dive
+@93 p
+**Interviewer often guides:**
+@94 pre
+Interviewer: "Can you elaborate on the fanout service?"
+Interviewer: "How do you handle the celebrity problem?"
+Interviewer: "What about database schema?"
+Interviewer: "How do you ensure feed consistency?"
+
+@95 p
+**Nếu không hỏi, bạn pick:**
+@96 pre
+"Let me deep dive into a few critical parts:
+1. Fanout strategy
+2. Database schema
+3. Caching approach"
+
+@97 h3
+Deep Dive Examples
+@98 p
+**Example 1: Fanout Strategy**
+@99 p
+**Explain trade-offs:**
+@100 pre
+Why hybrid?
+- Write amplification problem: Celebrity with 10M followers
+  → 10M cache updates per tweet = too expensive
+  
+- Read performance: Normal users (< 10K followers)
+  → Pre-compute feeds = < 10ms reads
+  
+Trade-off: Slight inconsistency for celebrity tweets
+(eventual consistency within seconds) is acceptable
+
+@101 p
+**Example 2: Database Schema**
+@102 p
+**Explain sharding:**
+@103 pre
+Sharding strategy:
+- tweets: Shard by user_id (co-locate user's tweets)
+- follows: Shard by follower_id (fast follower lookups)
+- likes: Shard by tweet_id (fast like counts)
+
+Why this sharding?
+- Most queries are user-centric
+- "Get user's tweets" → Single shard query
+- "Get feed" → Query followees (may be cross-shard, but cached)
+
+Trade-off: Cross-shard queries needed for some operations
+
+@104 p
+**Example 3: Bottlenecks & Solutions**
+@105 h3
+Elaborate Checklist
+@106 pre
+☑ Deep dive 2-3 critical components
+☑ Show implementation details
+☑ Explain algorithms/logic
+☑ Discuss trade-offs
+☑ Address bottlenecks
+☑ Mention failure handling
+☑ Show monitoring strategy
+
+@107 p
+**Time spent: 10-15 minutes**
+@108 p
+**Depth matters here. Show expertise.**
+@109 h2
+Time Management: 45-Minute Flow
+@110 p
+**Strict time discipline wins interviews.**
+@111 pre
+gantt
+    title 45-Minute Interview Timeline
+    dateFormat mm
+    axisFormat %M min
+    
+    section SNAKE
+    Scope (Requirements)      :s1, 00, 7m
+    Numbers (Calculations)    :s2, after s1, 7m
+    API (Interfaces)          :s3, after s2, 7m
+    Key Components (Architecture) :s4, after s3, 12m
+    Elaborate (Deep Dive)     :s5, after s4, 12m
+@112 p
+*Time allocation cho mỗi phase trong 45-phút interview*
+@113 h3
+Phase-by-Phase Timing
+@114 p
+**Minutes 0-7: Scope**
+@115 pre
+What to do:
+✓ Ask clarifying questions
+✓ List functional requirements
+✓ Confirm non-functional requirements
+✓ State assumptions
+
+What NOT to do:
+✗ Jump into design
+✗ Skip requirements
+✗ Assume too much
+
+@116 p
+**Minutes 7-14: Numbers**
+@117 pre
+What to do:
+✓ Write calculations on board
+✓ Estimate traffic (read/write)
+✓ Calculate storage
+✓ Identify read:write ratio
+
+What NOT to do:
+✗ Skip calculations
+✗ Guess without math
+✗ Over-precise (approximation OK)
+
+@118 p
+**Minutes 14-21: API**
+@119 pre
+What to do:
+✓ Define 4-6 core endpoints
+✓ Show request/response
+✓ Mention authentication
+✓ Note pagination
+
+What NOT to do:
+✗ Design every endpoint
+✗ Over-detail request bodies
+✗ Debate REST vs GraphQL
+
+@120 p
+**Minutes 21-33: Key Components**
+@121 pre
+What to do:
+✓ Draw architecture diagram
+✓ Label all components
+✓ Show data flow
+✓ Explain key decisions
+
+What NOT to do:
+✗ Draw too detailed
+✗ Include every possible component
+✗ Skip explanations
+
+@122 p
+**Minutes 33-45: Elaborate**
+@123 pre
+What to do:
+✓ Deep dive 2-3 parts
+✓ Show implementation
+✓ Discuss trade-offs
+✓ Address failure scenarios
+
+What NOT to do:
+✗ Try to cover everything
+✗ Get stuck on one part
+✗ Ignore interviewer hints
+
+@124 h3
+Time Management Tips
+@125 p
+**1. Wear a watch**
+@126 pre
+Glance at watch periodically
+7 min → Should finish Scope
+14 min → Should finish Numbers
+21 min → Should finish API
+
+If behind schedule → Speed up
+If ahead → Add more depth
+
+@127 p
+**2. Pace yourself verbally**
+@128 pre
+"Let me spend 5 minutes on requirements..."
+"I'll do quick calculations..."
+"Let me draw the architecture, should take 10 minutes..."
+
+→ Shows time awareness
+→ Sets expectations
+
+@129 p
+**3. Know when to move on**
+@130 pre
+Interviewer: "That's good enough for now, let's move on"
+→ Don't argue, move on
+
+You're stuck on something for 3+ minutes
+→ Say "Let me come back to this" and move on
+
+@131 p
+**4. Save buffer time**
+@132 pre
+Finish by minute 40
+→ 5 minutes buffer for:
+   - Questions
+   - Unexpected deep dives
+   - Clarifications
+   - Mistakes to fix
+
+@133 h2
+Common Mistakes & How to Avoid
+@134 h3
+Mistake 1: Jumping to Solution
+@135 pre
+Bad:
+Interviewer: "Design Twitter"
+Candidate: "OK so we'll use microservices, Kafka, 
+           Cassandra, and..."
+
+→ No requirements gathering
+→ No calculations
+→ Solution-first thinking
+
+@136 pre
+Good:
+Interviewer: "Design Twitter"
+Candidate: "Let me first clarify requirements.
+           What's the expected scale?
+           Which features are priority?
+           ..."
+
+→ Systematic approach
+→ Shows thinking process
+
+@137 h3
+Mistake 2: Over-Engineering
+@138 pre
+Bad:
+"We'll use Kubernetes, Kafka, Cassandra, 
+microservices, service mesh, event sourcing, CQRS..."
+
+→ Buzzword bingo
+→ Complexity without justification
+
+@139 pre
+Good:
+"Given 100K users initially, I'd start with:
+- Monolithic application
+- PostgreSQL
+- Redis for caching
+- Simple architecture
+
+We can add complexity as we scale to millions."
+
+→ Right-sized solution
+→ Evolution path clear
+
+@140 h3
+Mistake 3: Ignoring Interviewer
+@141 pre
+Bad:
+Interviewer: "How do you handle celebrity users?"
+Candidate: "Let me first finish explaining the database..."
+
+→ Not listening
+→ Missing guidance
+
+@142 pre
+Good:
+Interviewer: "How do you handle celebrity users?"
+Candidate: "Great question. Let me address that.
+           For celebrities with > 10K followers,
+           I'd use pull model instead of push..."
+
+→ Responsive
+→ Flexible
+
+@143 h3
+Mistake 4: No Trade-off Discussion
+@144 pre
+Bad:
+"We use cache because it's fast."
+
+→ Surface-level
+→ No depth
+
+@145 pre
+Good:
+"We use cache for reads because:
+- 95% read traffic
+- Sub-10ms latency required
+
+Trade-off:
+- Additional complexity
+- Stale data possible (mitigated with TTL)
+- Memory cost (~$10K/month for 10TB Redis)
+
+But trade-off is worth it for performance gains."
+
+→ Shows understanding
+→ Justifies decisions
+
+@146 h3
+Mistake 5: Silent Design
+@147 pre
+Bad:
+[Draws on whiteboard silently for 5 minutes]
+
+→ Interviewer doesn't know what you're thinking
+→ Can't provide hints
+
+@148 pre
+Good:
+"I'm drawing the high-level architecture.
+ Starting with client layer, then API servers,
+ then data layer. I'll connect them with arrows
+ to show data flow..."
+
+→ Think out loud
+→ Engaging interviewer
+
+@149 h2
+Answer Structure Template
+@150 p
+**Use this template cho mọi system design problem:**
+@151 pre
+1. SCOPE (5-8 min)
+   "Let me clarify requirements..."
+   
+   Functional:
+   - Feature 1
+   - Feature 2
+   - Out of scope: X, Y
+   
+   Non-functional:
+   - X million users
+   - Y requests/second
+   - Z latency requirement
+   
+2. NUMBERS (5-8 min)
+   "Let me estimate scale..."
+   
+   Traffic:
+   - Read: X req/s
+   - Write: Y req/s
+   - Ratio: R:W
+   
+   Storage:
+   - Daily: A GB
+   - Yearly: B TB
+   
+   Bandwidth:
+   - In: C MB/s
+   - Out: D GB/s
+   
+3. API (5-8 min)
+   "Let me define key APIs..."
+   
+   POST /resource
+   GET /resource/{id}
+   ...
+   
+4. KEY COMPONENTS (10-15 min)
+   "Let me draw architecture..."
+   
+   [Draw diagram]
+   
+   Components:
+   - Load Balancer: ...
+   - API Servers: ...
+   - Cache: ...
+   - Database: ...
+   
+   Data flow:
+   - Write path: ...
+   - Read path: ...
+   
+   Key decisions:
+   - Decision 1 + trade-off
+   - Decision 2 + trade-off
+   
+5. ELABORATE (10-15 min)
+   "Let me deep dive into..."
+   
+   [Pick 2-3 parts]
+   
+   Part 1: Implementation details
+   Part 2: Trade-off analysis
+   Part 3: Failure handling
+   
+6. WRAP UP (if time)
+   "To summarize..."
+   
+   Bottlenecks:
+   - Bottleneck 1 → Solution
+   - Bottleneck 2 → Solution
+   
+   Monitoring:
+   - Metric 1
+   - Metric 2
+   
+   Future improvements:
+   - Enhancement 1
+   - Enhancement 2
+
+@152 h2
+Practice Exercise
+@153 p
+**Try SNAKE với problem này:**
+@154 p
+**Problem: Design URL Shortener (bit.ly)**
+@155 p
+**Your turn:**
+@156 pre
+Time yourself: 45 minutes
+
+S - Scope:
+Write down:
+- Functional requirements (3-5 items)
+- Non-functional requirements (scale, latency, etc.)
+- Assumptions
+Time: 7 minutes
+
+N - Numbers:
+Calculate:
+- Traffic (reads, writes)
+- Storage (5 years)
+- Bandwidth
+Time: 7 minutes
+
+A - API:
+Design:
+- POST /shorten
+- GET /{shortCode}
+- Maybe 1-2 more
+Time: 7 minutes
+
+K - Key Components:
+Draw:
+- Architecture diagram
+- Label components
+- Show data flow
+Time: 12 minutes
+
+E - Elaborate:
+Deep dive:
+- Short code generation algorithm
+- Database schema
+- Caching strategy
+Time: 12 minutes
+
+Total: 45 minutes
+
+@157 p
+**Self-review:**
+@158 pre
+Did you:
+☑ Cover all SNAKE steps?
+☑ Manage time well?
+☑ Show calculations?
+☑ Justify decisions?
+☑ Discuss trade-offs?
+☑ Think out loud?
+
+@159 h2
+Key Takeaways
+@160 p
+**SNAKE framework = Structure for success**
+@161 pre
+S - Scope:        Clarify before designing
+N - Numbers:      Calculate to justify
+A - API:          Define contracts early
+K - Key Components: Show architecture thinking
+E - Elaborate:    Demonstrate depth
+
+@162 p
+**Time management critical:**
+@163 pre
+45 minutes flies by
+Strict discipline needed
+Watch the clock
+Know when to move on
+
+@164 p
+**Communication matters as much as knowledge:**
+@165 pre
+Think out loud
+Engage interviewer
+Be flexible
+Show reasoning, not just answers
+
+@166 p
+**Common success pattern:**
+@167 pre
+Strong Scope + Numbers → Clear requirements
+→ Informed API design
+→ Well-justified architecture
+→ Deep technical dive
+→ Pass interview ✓
+
+@168 p
+**Practice makes perfect:**
+@169 pre
+SNAKE framework feels awkward at first
+After 5-10 practice sessions → Natural
+After 20+ sessions → Muscle memory
+
+Practice problems:
+- Twitter
+- Instagram
+- Uber
+- Netflix
+- Ticketmaster
+- WhatsApp
+
+@170 p
+**Remember:**
+@171 pre
+Interview tests process, not perfection
+Perfect architecture doesn't exist
+Show thinking > Show knowledge
+Justify decisions > Apply patterns
+Communicate clearly > Know everything
+
+@172 p
+**SNAKE framework đưa bạn từ chaotic rambling → structured thinking.**
+@173 p
+Master framework này. Practice relentlessly. Ace interviews.

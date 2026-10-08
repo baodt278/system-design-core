@@ -1,0 +1,816 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Architecture Evolution Mindset - Start Simple, Scale Gradually | Phase 5 — Real-World Architecture Patterns | System Design Core</title><meta name="description" content="Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti patterns tránh, và trade off thinking. Hi"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset"/><meta property="og:title" content="Architecture Evolution Mindset - Start Simple, Scale Gradually | Phase 5 — Real-World Architecture Patterns"/><meta property="og:description" content="Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti patterns tránh, và trade off thinking. Hi"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Architecture Evolution Mindset - Start Simple, Scale Gradually | Phase 5 — Real-World Architecture Patterns"/><meta name="twitter:description" content="Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti patterns tránh, và trade off thinking. Hi"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 5 — Real-World Architecture Patterns</p><p class="mt-3 text-xl font-semibold text-ink">Architecture Evolution Mindset - Start Simple, Scale Gradually</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti-patterns tránh, và trade-off thinking. Hiểu khi nào nên chuyển đổi architecture và tránh over-engineering.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Architecture Evolution Mindset - Start Simple, Scale Gradually</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-5/lesson/lesson-2-head-heavy-systems"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Read-Heavy Systems - Design Cho 99% Reads</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-5/lesson/lesson-3-social-feed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-5">Phase 5 — Real-World Architecture Patterns</a></li><li>/</li><li aria-current="page" class="text-ink">Architecture Evolution Mindset - Start Simple, Scale Gradually</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Architecture Evolution Mindset - Start Simple, Scale Gradually</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti-patterns tránh, và trade-off thinking. Hiểu khi nào nên chuyển đổi architecture và tránh over-engineering.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Architecture Evolution Mindset - Start Simple, Scale Gradually"><article class="prose-ui"><h1 id="architecture-evolution-mindset---start-simple-scale-gradually">Architecture Evolution Mindset - Start Simple, Scale Gradually</h1>
+<p>Có một sai lầm phổ biến mà developer mắc phải khi học system design:</p>
+<p><strong>Học về microservices, Kubernetes, event-driven architecture → Nghĩ rằng mọi project đều cần những thứ này ngay từ đầu.</strong></p>
+<p><strong>Đây là over-engineering - và nó kills startups.</strong></p>
+<p>Bạn có biết:</p>
+<ul>
+<li><strong>Instagram:</strong> Monolith Django app khi được Facebook mua với $1 billion</li>
+<li><strong>Shopify:</strong> Monolith Rails app đến khi có hàng triệu merchants</li>
+<li><strong>Stack Overflow:</strong> Monolith .NET app serve hàng tỷ requests/month</li>
+<li><strong>GitHub:</strong> Monolith Rails app đến khi có 40+ million users</li>
+</ul>
+<p><strong>Họ không bắt đầu với microservices. Họ evolved từ simple đến complex khi CẦN THIẾT.</strong></p>
+<p>Lesson này - arguably quan trọng nhất trong Phase 5 - dạy bạn <strong>architecture evolution mindset</strong>:</p>
+<ul>
+<li>Khi nào dùng monolith, khi nào migrate</li>
+<li>Scale triggers thực tế</li>
+<li>Anti-patterns phải tránh</li>
+<li>Trade-off thinking</li>
+</ul>
+<p><strong>Mental model:</strong> &quot;Start simple, evolve gradually&quot; - không phải &quot;Start complex vì sợ scale sau này&quot;.</p>
+<h2 id="architecture-evolution-stages">Architecture Evolution Stages</h2>
+<p><strong>Architecture không phải binary choice (monolith hay microservices). Là spectrum.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    MVP[MVP&lt;br/&gt;Monolith] --&gt; Scaled[Scaled&lt;br/&gt;Monolith]
+    Scaled --&gt; Modular[Modular&lt;br/&gt;Monolith]
+    Modular --&gt; Micro[Microservices]
+    
+    style MVP fill:#90EE90
+    style Scaled fill:#FFD700
+    style Modular fill:#FFA500
+    style Micro fill:#FF6347</code></pre>
+<p><strong>Mỗi stage phù hợp với scale và team size khác nhau.</strong></p>
+<h3 id="stage-1-mvp-monolith-0-10k-users">Stage 1: MVP Monolith (0-10K Users)</h3>
+<p><strong>Single codebase, single database, single deployment.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    Users[Users] --&gt; LB[Load Balancer]
+    LB --&gt; App[Application Server&lt;br/&gt;Rails/Django/Express]
+    App --&gt; DB[(Database)]
+    App --&gt; Cache[(Redis)]</code></pre>
+<p><strong>Characteristics:</strong></p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Fastest development velocity</li>
+<li>Simple deployment (git push)</li>
+<li>Easy debugging (1 codebase)</li>
+<li>No distributed system complexity</li>
+<li>Low operational overhead</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Single point of failure</li>
+<li>All code couples together</li>
+<li>Hard to scale specific parts</li>
+<li>One language/framework limitation</li>
+</ul>
+<p><strong>Tech stack example:</strong></p>
+<pre><code>Frontend: React/Vue (served by same server)
+Backend: Rails/Django/Laravel/Express
+Database: PostgreSQL/MySQL
+Cache: Redis
+Deployment: Heroku/Railway/single VPS
+</code></pre>
+<p><strong>Khi nào dùng:</strong></p>
+<ul>
+<li>Pre-product-market-fit</li>
+<li>Startup &lt;10 engineers</li>
+<li>Traffic &lt;100 req/s</li>
+<li>Proving concept</li>
+</ul>
+<p><strong>Real examples:</strong></p>
+<ul>
+<li>Basecamp (still monolith at massive scale)</li>
+<li>Shopify (started monolith)</li>
+<li>GitHub (started monolith)</li>
+</ul>
+<h3 id="stage-2-scaled-monolith-10k-100k-users">Stage 2: Scaled Monolith (10K-100K Users)</h3>
+<p><strong>Same codebase, thêm servers + database optimization.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    Users[Users] --&gt; LB[Load Balancer]
+    
+    subgraph AppServers[Application Tier]
+        App1[App Server 1]
+        App2[App Server 2]
+        App3[App Server 3]
+    end
+    
+    LB --&gt; App1
+    LB --&gt; App2
+    LB --&gt; App3
+    
+    App1 --&gt; Primary[(Primary DB)]
+    App2 --&gt; Primary
+    App3 --&gt; Primary
+    
+    Primary -.Replicate.-&gt; Replica1[(Read Replica 1)]
+    Primary -.Replicate.-&gt; Replica2[(Read Replica 2)]
+    
+    App1 --&gt; Replica1
+    App2 --&gt; Replica2
+    App3 --&gt; Replica1</code></pre>
+<p><strong>Changes từ Stage 1:</strong></p>
+<p><strong>Infrastructure:</strong></p>
+<ul>
+<li>Horizontal scaling (multiple app servers)</li>
+<li>Database read replicas</li>
+<li>CDN cho static assets</li>
+<li>Redis cluster cho sessions</li>
+</ul>
+<p><strong>Code optimization:</strong></p>
+<ul>
+<li>Query optimization</li>
+<li>N+1 fixes</li>
+<li>Caching layer</li>
+<li>Background jobs (Sidekiq/Celery)</li>
+</ul>
+<p><strong>Still monolith, nhưng scaled.</strong></p>
+<p><strong>Khi nào migrate đến stage này:</strong></p>
+<ul>
+<li>Traffic 100-1000 req/s</li>
+<li>Single server CPU &gt;70% consistently</li>
+<li>Response time degrading</li>
+<li>Team 10-30 engineers</li>
+</ul>
+<p><strong>Cost vs complexity:</strong></p>
+<pre><code>Stage 1: $50-200/month
+Stage 2: $500-2000/month
+Complexity: +20%
+</code></pre>
+<p><strong>Reasonable trade-off cho growth.</strong></p>
+<h3 id="stage-3-modular-monolith-100k-1m-users">Stage 3: Modular Monolith (100K-1M Users)</h3>
+<p><strong>Single deployment, nhưng code organized thành modules.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    subgraph Monolith[&quot;Modular Monolith&quot;]
+        Auth[Auth Module]
+        Users[Users Module]
+        Orders[Orders Module]
+        Payments[Payments Module]
+        
+        Auth -.-&gt;|Well-defined API| Users
+        Users -.-&gt;|Well-defined API| Orders
+        Orders -.-&gt;|Well-defined API| Payments
+    end
+    
+    Monolith --&gt; DB[(Shared Database)]</code></pre>
+<p><strong>Module structure:</strong></p>
+<pre><code>/app
+  /modules
+    /auth
+      - controllers/
+      - services/
+      - models/
+      - api.ts (public interface)
+    /users
+      - controllers/
+      - services/
+      - models/
+      - api.ts
+    /orders
+      - controllers/
+      - services/
+      - models/
+      - api.ts
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Modules communicate qua well-defined APIs</li>
+<li>No direct database access across modules</li>
+<li>Clear boundaries</li>
+<li>Preparation cho microservices (nếu cần)</li>
+</ul>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Team ownership (team A owns auth module)</li>
+<li>Easier testing (isolated modules)</li>
+<li>Can extract to microservice later</li>
+<li>Still monolith simplicity</li>
+</ul>
+<p><strong>Khi nào dùng:</strong></p>
+<ul>
+<li>Team 30-100 engineers</li>
+<li>Complex domain logic</li>
+<li>Preparing for potential microservices</li>
+<li>Want team autonomy nhưng chưa ready cho microservices</li>
+</ul>
+<p><strong>Real examples:</strong></p>
+<ul>
+<li>Shopify (modular monolith trước khi microservices)</li>
+<li>Basecamp (current architecture)</li>
+</ul>
+<h3 id="stage-4-microservices-1m-users">Stage 4: Microservices (1M+ Users)</h3>
+<p><strong>Multiple independent services, mỗi service có database riêng.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    subgraph Gateway
+        API[API Gateway]
+    end
+    
+    subgraph Services
+        Auth[Auth Service]
+        Users[Users Service]
+        Orders[Orders Service]
+        Payments[Payment Service]
+    end
+    
+    subgraph Databases
+        AuthDB[(Auth DB)]
+        UsersDB[(Users DB)]
+        OrdersDB[(Orders DB)]
+        PaymentDB[(Payment DB)]
+    end
+    
+    API --&gt; Auth
+    API --&gt; Users
+    API --&gt; Orders
+    API --&gt; Payments
+    
+    Auth --&gt; AuthDB
+    Users --&gt; UsersDB
+    Orders --&gt; OrdersDB
+    Payments --&gt; PaymentDB
+    
+    Orders -.HTTP.-&gt; Users
+    Orders -.HTTP.-&gt; Payments</code></pre>
+<p><strong>Characteristics:</strong></p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Independent scaling</li>
+<li>Independent deployment</li>
+<li>Technology flexibility</li>
+<li>Team autonomy</li>
+<li>Fault isolation</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Distributed system complexity</li>
+<li>Network latency</li>
+<li>Data consistency challenges</li>
+<li>Operational overhead</li>
+<li>Testing complexity</li>
+<li>Deployment complexity</li>
+</ul>
+<p><strong>Khi nào migrate:</strong></p>
+<p><strong>Migrate khi:</strong></p>
+<ul>
+<li>Team &gt;100 engineers</li>
+<li>Clear domain boundaries</li>
+<li>Different scaling needs per module</li>
+<li>Organizational bottleneck với monolith</li>
+<li>Budget + expertise cho complexity</li>
+</ul>
+<p><strong>KHÔNG migrate khi:</strong></p>
+<ul>
+<li>Team &lt;30 engineers</li>
+<li>Vague domain boundaries</li>
+<li>Premature optimization</li>
+<li>Chưa có DevOps expertise</li>
+<li>Budget limited</li>
+</ul>
+<p><strong>Cost jump:</strong></p>
+<pre><code>Modular monolith: $2k-5k/month
+Microservices: $10k-50k+/month
+
+Infrastructure + DevOps team + monitoring + orchestration
+</code></pre>
+<p><strong>Complexity jump: 10x.</strong></p>
+<h2 id="scale-triggers---khi-nào-evolve">Scale Triggers - Khi Nào Evolve?</h2>
+<p><strong>Không evolve vì trend. Evolve vì pain points.</strong></p>
+<h3 id="trigger-1-performance-bottleneck">Trigger 1: Performance Bottleneck</h3>
+<p><strong>Symptom:</strong></p>
+<pre><code>Single bottleneck component:
+- Image processing: 80% CPU
+- Rest of app: 20% CPU
+</code></pre>
+<p><strong>Solution:</strong> Extract image processing service.</p>
+<pre><code>Before: Monolith handles images
+After: Separate image service
+  → Scale independently
+  → Use GPU instances
+  → Don&#x27;t waste resources on other parts
+</code></pre>
+<p><strong>Decision criteria:</strong></p>
+<ul>
+<li>Bottleneck clearly isolated</li>
+<li>Different resource needs (CPU vs memory vs GPU)</li>
+<li>Extract giải quyết problem</li>
+</ul>
+<h3 id="trigger-2-team-scaling-bottleneck">Trigger 2: Team Scaling Bottleneck</h3>
+<p><strong>Symptom:</strong></p>
+<pre><code>Team size: 50 engineers
+Deployment frequency: 1x/week
+Merge conflicts: Daily
+Waiting for deploys: Hours
+</code></pre>
+<p><strong>Everyone stepping on each other&#x27;s toes.</strong></p>
+<p><strong>Solution:</strong> Split codebase theo team ownership.</p>
+<pre><code>Team Auth: Auth service
+Team Payments: Payment service
+Team Orders: Order service
+
+Each team deploys independently
+</code></pre>
+<p><strong>Decision criteria:</strong></p>
+<ul>
+<li>Team &gt;30-50 engineers</li>
+<li>Organizational structure clear</li>
+<li>Teams have distinct domains</li>
+</ul>
+<h3 id="trigger-3-different-scaling-requirements">Trigger 3: Different Scaling Requirements</h3>
+<p><strong>Symptom:</strong></p>
+<pre><code>Orders service: 10 req/s
+Image processing: 1000 req/s
+Payment: 50 req/s
+</code></pre>
+<p><strong>Scaling entire monolith wastes resources.</strong></p>
+<p><strong>Solution:</strong> Extract high-traffic service.</p>
+<pre><code>Image processing → Separate service
+  → Scale to 20 instances
+Rest of app → 3 instances
+
+Cost saving + better performance
+</code></pre>
+<h3 id="trigger-4-technology-limitations">Trigger 4: Technology Limitations</h3>
+<p><strong>Symptom:</strong></p>
+<pre><code>Main app: Ruby (good for CRUD)
+ML model: Need Python
+Real-time: Need Node.js/Go
+</code></pre>
+<p><strong>Solution:</strong> Polyglot architecture.</p>
+<pre><code>Main app: Ruby on Rails
+ML service: Python + TensorFlow
+WebSocket service: Node.js
+</code></pre>
+<p><strong>Different tools cho different jobs.</strong></p>
+<h3 id="non-triggers-không-nên-migrate">Non-Triggers (Không Nên Migrate)</h3>
+<p><strong>&quot;We might scale in the future&quot;</strong></p>
+<p>Premature optimization. YAGNI (You Aren&#x27;t Gonna Need It).</p>
+<p><strong>&quot;Microservices are best practice&quot;</strong></p>
+<p>Best practice cho who? Netflix? You&#x27;re not Netflix.</p>
+<p><strong>&quot;Resume-driven development&quot;</strong></p>
+<p>Learning Kubernetes không justify project complexity.</p>
+<p><strong>&quot;Monolith feels messy&quot;</strong></p>
+<p>Clean up code structure. Modular monolith. Don&#x27;t jump to microservices.</p>
+<h2 id="migration-strategy---evolve-gradually">Migration Strategy - Evolve Gradually</h2>
+<p><strong>NEVER rewrite toàn bộ hệ thống.</strong></p>
+<h3 id="strangler-fig-pattern">Strangler Fig Pattern</h3>
+<p><strong>Gradually replace monolith, piece by piece.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    Users[Users]
+    Router[Router/Gateway]
+    
+    subgraph New[&quot;New Services&quot;]
+        AuthNew[Auth Service&lt;br/&gt;Migrated]
+        PaymentNew[Payment Service&lt;br/&gt;Migrated]
+    end
+    
+    subgraph Old[&quot;Monolith&quot;]
+        Users2[Users Module&lt;br/&gt;⏳ Not yet]
+        Orders2[Orders Module&lt;br/&gt;⏳ Not yet]
+    end
+    
+    Users --&gt; Router
+    Router --&gt;|/auth/*| AuthNew
+    Router --&gt;|/payment/*| PaymentNew
+    Router --&gt;|/users/*| Old
+    Router --&gt;|/orders/*| Old</code></pre>
+<p><strong>Process:</strong></p>
+<p><strong>Phase 1:</strong> Pick module to extract (least coupled)</p>
+<pre><code>Candidate: Payment service
+Dependencies: Low
+Impact: High value
+</code></pre>
+<p><strong>Phase 2:</strong> Build new service</p>
+<pre><code>Replicate functionality
+Add tests
+Feature parity
+</code></pre>
+<p><strong>Phase 3:</strong> Route traffic gradually</p>
+<pre><code>Week 1: 5% traffic to new service
+Week 2: 25%
+Week 3: 50%
+Week 4: 100%
+</code></pre>
+<p><strong>Phase 4:</strong> Deprecate old code</p>
+<pre><code>Monitor for errors
+Remove from monolith
+Celebrate 🎉
+</code></pre>
+<p><strong>Phase 5:</strong> Repeat cho module tiếp theo</p>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Low risk (gradual rollout)</li>
+<li>Easy rollback</li>
+<li>Learn from each migration</li>
+<li>Business continuity</li>
+</ul>
+<h3 id="anti-pattern-big-bang-rewrite">Anti-Pattern: Big Bang Rewrite</h3>
+<p><strong>KHÔNG LÀM:</strong></p>
+<pre><code>1. Stop feature development
+2. Rewrite everything to microservices
+3. Big bang deployment
+4. Hope it works
+</code></pre>
+<p><strong>Tại sao fail:</strong></p>
+<ul>
+<li>6-12 months development freeze</li>
+<li>Business loses competitive edge</li>
+<li>Requirements change during rewrite</li>
+<li>Bugs in new system</li>
+<li>Can&#x27;t rollback easily</li>
+</ul>
+<p><strong>Famous failures:</strong></p>
+<ul>
+<li>Netscape (rewrote browser, lost to IE)</li>
+<li>Friendster (rewrote, lost to Facebook)</li>
+</ul>
+<p><strong>Rule:</strong> Evolve, don&#x27;t rewrite.</p>
+<h2 id="anti-patterns---tránh-những-sai-lầm-này">Anti-Patterns - Tránh Những Sai Lầm Này</h2>
+<h3 id="anti-pattern-1-premature-microservices">Anti-Pattern 1: Premature Microservices</h3>
+<p><strong>Scenario:</strong></p>
+<pre><code>Startup: 3 engineers, 0 users
+Architecture: 15 microservices, Kubernetes, Kafka
+</code></pre>
+<p><strong>Problem:</strong></p>
+<ul>
+<li>Development velocity: glacial</li>
+<li>Debugging: nightmare</li>
+<li>Operational overhead: overwhelming</li>
+<li>Product-market-fit: never found</li>
+</ul>
+<p><strong>Cost:</strong></p>
+<ul>
+<li>3 months setup infrastructure</li>
+<li>6 months fight with complexity</li>
+<li>Startup runs out of money</li>
+<li>Game over</li>
+</ul>
+<p><strong>Right approach:</strong></p>
+<pre><code>Startup: 3 engineers, 0 users
+Architecture: Monolith, Heroku, PostgreSQL
+
+Product-market-fit: 6 months
+Growth: Add features fast
+Scale: Later problem
+</code></pre>
+<h3 id="anti-pattern-2-kubernetes-for-everything">Anti-Pattern 2: Kubernetes For Everything</h3>
+<p><strong>Scenario:</strong></p>
+<pre><code>Traffic: 10 req/s
+Team: 5 engineers
+Stack: Kubernetes cluster
+</code></pre>
+<p><strong>Problem:</strong></p>
+<ul>
+<li>Kubernetes learning curve: steep</li>
+<li>Operational complexity: high</li>
+<li>Cost: $500+/month (vs $50 Heroku)</li>
+<li>Value delivered: zero</li>
+</ul>
+<p><strong>When Kubernetes makes sense:</strong></p>
+<ul>
+<li>Traffic &gt;1000 req/s</li>
+<li>Team with DevOps expertise</li>
+<li>Complex deployment requirements</li>
+<li>Multi-cloud strategy</li>
+</ul>
+<p><strong>Before Kubernetes, try:</strong></p>
+<ul>
+<li>Heroku/Railway/Render</li>
+<li>AWS Elastic Beanstalk</li>
+<li>Google App Engine</li>
+<li>Simple VPS + Docker Compose</li>
+</ul>
+<h3 id="anti-pattern-3-shared-database-across-services">Anti-Pattern 3: Shared Database Across Services</h3>
+<p><strong>Scenario:</strong></p>
+<pre><code>Microservices architecture
+All services → Same database
+</code></pre>
+<p><strong>Problem:</strong></p>
+<ul>
+<li>Tight coupling (defeats microservices purpose)</li>
+<li>Schema changes break everything</li>
+<li>Can&#x27;t scale databases independently</li>
+<li>Transaction complexity</li>
+</ul>
+<p><strong>Right approach:</strong></p>
+<pre><code>Each service → Own database
+Communication via APIs/events
+</code></pre>
+<p><strong>Nếu shared database → bạn không có microservices, có distributed monolith.</strong></p>
+<h3 id="anti-pattern-4-nano-services">Anti-Pattern 4: Nano-Services</h3>
+<p><strong>Scenario:</strong></p>
+<pre><code>User service
+UserAuth service
+UserProfile service
+UserSettings service
+UserPreferences service
+</code></pre>
+<p><strong>Too many tiny services.</strong></p>
+<p><strong>Problem:</strong></p>
+<ul>
+<li>Network overhead</li>
+<li>Operational complexity</li>
+<li>Hard to understand flow</li>
+<li>Deployment nightmare</li>
+</ul>
+<p><strong>Right granularity:</strong></p>
+<pre><code>User service (handles all user logic)
+  ↳ Auth
+  ↳ Profile
+  ↳ Settings
+  ↳ Preferences
+</code></pre>
+<p><strong>Service boundary = business capability, not function.</strong></p>
+<h3 id="anti-pattern-5-wrong-optimization">Anti-Pattern 5: Wrong Optimization</h3>
+<p><strong>Scenario:</strong></p>
+<pre><code>Optimize: Sharding database
+Problem: Actually slow queries (missing indexes)
+
+Optimize: Add caching layer
+Problem: Actually N+1 queries
+
+Optimize: Microservices
+Problem: Actually monolith code mess
+</code></pre>
+<p><strong>Measure first, optimize second.</strong></p>
+<p><strong>Process:</strong></p>
+<ol>
+<li>Identify bottleneck (metrics)</li>
+<li>Understand root cause (profiling)</li>
+<li>Pick simplest solution</li>
+<li>Measure improvement</li>
+<li>Repeat</li>
+</ol>
+<p><strong>KHÔNG skip step 1 và 2.</strong></p>
+<h2 id="system-design-thinking-flow">System Design Thinking Flow</h2>
+<p><strong>Structured approach cho architecture decisions.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    Start[Problem Statement] --&gt; Req[1. Requirements&lt;br/&gt;Functional + Non-functional]
+    Req --&gt; Est[2. Estimation&lt;br/&gt;Scale + Storage + Bandwidth]
+    Est --&gt; Bottle[3. Identify Bottlenecks&lt;br/&gt;Traffic + Data + Processing]
+    Bottle --&gt; Trade[4. Trade-offs&lt;br/&gt;Consistency vs Availability&lt;br/&gt;Cost vs Performance]
+    Trade --&gt; Design[5. Architecture Design&lt;br/&gt;Start simple&lt;br/&gt;Add complexity as needed]
+    Design --&gt; Valid[6. Validate&lt;br/&gt;Does it solve problem?&lt;br/&gt;Can it scale?]
+    Valid --&gt;|No| Trade
+    Valid --&gt;|Yes| Final[Final Design]</code></pre>
+<h3 id="step-1-requirements">Step 1: Requirements</h3>
+<p><strong>Functional requirements:</strong></p>
+<pre><code>What the system does:
+- Users can upload photos
+- Users can view feed
+- Users can follow others
+</code></pre>
+<p><strong>Non-functional requirements:</strong></p>
+<pre><code>How well it does it:
+- 10M daily active users
+- p99 latency &lt; 200ms
+- 99.9% availability
+- Photo upload &lt; 5 seconds
+</code></pre>
+<h3 id="step-2-estimation">Step 2: Estimation</h3>
+<p><strong>Back-of-envelope calculations:</strong></p>
+<pre><code>Traffic:
+- 10M DAU
+- Each user: 20 requests/day
+- Total: 200M requests/day
+- Peak: 200M / 86400 * 3 = ~7000 req/s
+
+Storage:
+- 1M photos uploaded/day
+- Average photo: 2MB
+- Daily storage: 2TB/day
+- Annual: 730TB
+
+Bandwidth:
+- Upload: 2TB/day = 23 MB/s
+- Read:write ratio: 10:1
+- Download: 230 MB/s
+</code></pre>
+<p><strong>Informs architecture decisions.</strong></p>
+<h3 id="step-3-bottlenecks">Step 3: Bottlenecks</h3>
+<p><strong>Based on estimations:</strong></p>
+<pre><code>7000 req/s → Need load balancing
+2TB/day upload → Need object storage (S3)
+High read traffic → Need CDN + caching
+</code></pre>
+<p><strong>Anticipate problems early.</strong></p>
+<h3 id="step-4-trade-offs">Step 4: Trade-offs</h3>
+<p><strong>Every decision = trade-off.</strong></p>
+<pre><code>Cache photos?
+  Pros: Fast access, reduce load
+  Cons: Storage cost, cache invalidation
+  Decision: Yes, cache hot photos (20% photos = 80% traffic)
+
+Strong consistency?
+  Pros: Always correct data
+  Cons: Higher latency, complex
+  Decision: Eventual consistency OK (social feed)
+
+Microservices?
+  Pros: Independent scaling
+  Cons: Complexity, cost
+  Decision: Start monolith, extract later if needed
+</code></pre>
+<p><strong>Explicit trade-off thinking.</strong></p>
+<h3 id="step-5-design">Step 5: Design</h3>
+<p><strong>Start simple:</strong></p>
+<pre><code>MVP (0-100K users):
+  - Monolith (Rails/Django)
+  - PostgreSQL
+  - Redis cache
+  - S3 for photos
+  - CDN
+
+Evolution triggers:
+  - &gt;1M users → Add read replicas
+  - &gt;5M users → Consider modular monolith
+  - &gt;10M users → Evaluate microservices
+</code></pre>
+<p><strong>Plan evolution, don&#x27;t build for 10M users on day 1.</strong></p>
+<h3 id="step-6-validate">Step 6: Validate</h3>
+<p><strong>Questions to ask:</strong></p>
+<pre><code>Does it meet requirements?
+  - Functional: ✅
+  - Non-functional: (at current scale)
+
+Can it scale?
+  - To 10x traffic: Yes (add servers)
+  - To 100x traffic: Need re-architecture
+
+Is it too complex?
+  - Team can build: ✅
+  - Team can operate: ✅
+
+Cost reasonable?
+  - MVP: $200/month ✅
+  - At scale: $5k/month ✅
+</code></pre>
+<h2 id="trade-off-mindset">Trade-off Mindset</h2>
+<p><strong>Every architecture decision = trade-off. No perfect solution.</strong></p>
+<h3 id="trade-off-1-performance-vs-complexity">Trade-off 1: Performance vs Complexity</h3>
+<p><strong>Example: Caching</strong></p>
+<pre><code>No cache:
+  - Simple code
+  - Slow reads (every request → database)
+  - High database load
+
+With cache:
+  - Complex (cache invalidation)
+  - Fast reads (memory access)
+  - Lower database load
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<ul>
+<li>Read-heavy? → Cache worth it</li>
+<li>Write-heavy? → Cache less value</li>
+<li>Budget for complexity? → Cache OK</li>
+<li>Team expertise? → Simple first</li>
+</ul>
+<h3 id="trade-off-2-consistency-vs-availability">Trade-off 2: Consistency vs Availability</h3>
+<p><strong>CAP theorem reminder:</strong></p>
+<pre><code>Strong consistency:
+  - Always correct data
+  - May be unavailable (wait for sync)
+  - Lower throughput
+
+Eventual consistency:
+  - High availability
+  - Temporarily stale data
+  - Higher throughput
+</code></pre>
+<p><strong>Decision:</strong></p>
+<ul>
+<li>Bank account: Strong consistency</li>
+<li>Social media feed: Eventual consistency</li>
+<li>Shopping cart: Session-based (middle ground)</li>
+</ul>
+<h3 id="trade-off-3-cost-vs-scale">Trade-off 3: Cost vs Scale</h3>
+<p><strong>Example: Database</strong></p>
+<pre><code>Single PostgreSQL:
+  - Cost: $50/month
+  - Scale: ~1000 req/s
+  - Simple
+
+Sharded PostgreSQL:
+  - Cost: $500/month
+  - Scale: ~10,000 req/s
+  - Complex
+
+Managed service (Aurora):
+  - Cost: $2000/month
+  - Scale: ~50,000 req/s
+  - Easier than sharding
+</code></pre>
+<p><strong>Pick based on current needs + budget.</strong></p>
+<h3 id="trade-off-4-development-speed-vs-flexibility">Trade-off 4: Development Speed vs Flexibility</h3>
+<p><strong>Framework choice:</strong></p>
+<pre><code>Rails/Django:
+  - Fast development
+  - Conventions (less decisions)
+  - Monolith-friendly
+
+Go/Node microservices:
+  - Slower initial development
+  - More flexibility
+  - Microservices-friendly
+</code></pre>
+<p><strong>Early stage: Speed wins.</strong><br/>
+<strong>Mature product: Flexibility matters.</strong></p>
+<h3 id="trade-off-matrix">Trade-off Matrix</h3>
+<p><strong>Common decisions:</strong></p>
+<table><thead><tr><th>Decision</th><th>Simple</th><th>Complex</th><th>When Complex Worth It</th></tr></thead><tbody><tr><td>Monolith vs Microservices</td><td>Monolith</td><td>Microservices</td><td>Team &gt;50, clear domains</td></tr><tr><td>SQL vs NoSQL</td><td>SQL</td><td>NoSQL</td><td>Massive scale, flexible schema</td></tr><tr><td>Sync vs Async</td><td>Sync</td><td>Async</td><td>High latency operations</td></tr><tr><td>Single DB vs Sharding</td><td>Single</td><td>Sharding</td><td>&gt;10K writes/s</td></tr><tr><td>Self-hosted vs Managed</td><td>Self</td><td>Managed</td><td>Team &lt;10, focus on product</td></tr></tbody></table>
+<h2 id="mental-model-start-simple-evolve-gradually">Mental Model: Start Simple, Evolve Gradually</h2>
+<p><strong>Core principle của good architecture.</strong></p>
+<h3 id="the-principle">The Principle</h3>
+<p><strong>&quot;Premature optimization is the root of all evil.&quot; - Donald Knuth</strong></p>
+<p><strong>Applied to architecture:</strong></p>
+<pre><code>Don&#x27;t build for scale you don&#x27;t have
+Don&#x27;t solve problems you don&#x27;t have yet
+Don&#x27;t add complexity until pain is real
+</code></pre>
+<p><strong>Why?</strong></p>
+<p><strong>1. Requirements change</strong></p>
+<pre><code>Week 1: Building Instagram clone
+Week 10: Pivot to B2B analytics
+Week 20: Pivot to AI chatbot
+
+Complex architecture → wasted effort
+</code></pre>
+<p><strong>2. Scale assumptions wrong</strong></p>
+<pre><code>Plan: 1M users in year 1
+Reality: 10K users
+
+Over-engineered for ghost town
+</code></pre>
+<p><strong>3. Team learning</strong></p>
+<pre><code>Monolith:
+  - Ship features fast
+  - Learn user needs
+  - Iterate quickly
+
+Microservices:
+  - Fight with infrastructure
+  - Slow feature development
+  - Miss market window
+</code></pre>
+<h3 id="the-evolution-path">The Evolution Path</h3>
+<p><strong>Healthy progression:</strong></p>
+<pre><code>Month 1-3: MVP monolith
+  → Validate idea
+  → Get users
+  
+Month 3-12: Scaled monolith
+  → Optimize performance
+  → Add infrastructure (CDN, cache, replicas)
+  
+Year 1-2: Modular monolith
+  → Clean up architecture
+  → Prepare for team scaling
+  
+Year 2+: Selective microservices
+  → Extract bottlenecks
+  → Independent scaling where needed
+</code></pre>
+<p><strong>Unhealthy progression:</strong></p>
+<pre><code>Month 1: 15 microservices, Kubernetes
+Month 2: Fighting infrastructure
+Month 3: Out of money
+</code></pre>
+<h3 id="decision-framework">Decision Framework</h3>
+<p><strong>When faced with architecture choice:</strong></p>
+<pre><code>Question: Should we use [complex solution]?
+
+Ask:
+1. Do we have the problem it solves? (YES/NO)
+2. Have we tried simpler solutions? (YES/NO)
+3. Do we have expertise? (YES/NO)
+4. Do we have budget? (YES/NO)
+
+If ANY answer is NO → Don&#x27;t do it yet
+</code></pre>
+<p><strong>Examples:</strong></p>
+<pre><code>&quot;Should we use Kubernetes?&quot;
+- Have scaling problem? NO → Wait
+- Tried managed platforms? NO → Try Heroku first
+- Have DevOps expertise? NO → Learn on simpler platform
+- Have budget ($500+/month)? NO → Use cheaper options
+
+&quot;Should we split to microservices?&quot;
+- Have team scaling problem? NO → Wait
+- Tried modular monolith? NO → Refactor monolith first
+- Have clear service boundaries? NO → Not ready
+- Have budget for complexity? NO → Stay monolith
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>1. Architecture evolves: Monolith → Scaled → Modular → Microservices</strong></p>
+<p>Each stage appropriate cho scale và team size khác nhau.</p>
+<p><strong>2. Monolith không phải bad word</strong></p>
+<p>Shopify, GitHub, Basecamp scale massively với monolith. Start simple.</p>
+<p><strong>3. Migration triggers phải real pain, không speculation</strong></p>
+<p>Performance bottleneck, team scaling, different resource needs.</p>
+<p><strong>4. Strangler fig pattern &gt; big bang rewrite</strong></p>
+<p>Migrate gradually, piece by piece. Low risk, easy rollback.</p>
+<p><strong>5. Anti-patterns: Premature microservices, Kubernetes overkill, shared databases</strong></p>
+<p>Avoid complexity không cần thiết. Measure problem trước khi solve.</p>
+<p><strong>6. System design flow: Requirements → Estimation → Bottlenecks → Trade-offs → Design</strong></p>
+<p>Structured thinking process cho architecture decisions.</p>
+<p><strong>7. Every decision = trade-off</strong></p>
+<p>Performance vs complexity, consistency vs availability, cost vs scale.</p>
+<p><strong>8. Start simple, evolve gradually</strong></p>
+<p>Don&#x27;t build cho scale you don&#x27;t have. YAGNI principle.</p>
+<p><strong>9. Validate assumptions với data</strong></p>
+<p>Measure traffic, profile performance, understand real bottlenecks.</p>
+<p><strong>10. Team expertise matters more than technology</strong></p>
+<p>Simple stack team knows &gt; complex stack team struggles với.</p>
+<hr/>
+<p>Nhưng luôn nhớ: <strong>patterns là tools, không phải requirements. Dùng khi cần, không vì trend.</strong></p>
+<p><strong>Remember: Instagram was acquired for $1 billion as a monolith. Complexity doesn&#x27;t create value - solving user problems does. Start simple, evolve when pain is real, and always question if added complexity is worth it.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-5/lesson/lesson-2-head-heavy-systems">Read-Heavy Systems - Design Cho 99% Reads<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-5\",\"lesson\",\"lesson-1-architecture-evolution-mindset\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-5\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-1-architecture-evolution-mindset\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 5 — Real-World Architecture Patterns\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti-patterns tránh, và trade-off thinking. Hiểu khi nào nên chuyển đổi architecture và tránh over-engineering.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-architecture-evolution-mindset\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually\"}]]}]}],[\"$\",\"li\",\"lesson-2-head-heavy-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-2-head-heavy-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Read-Heavy Systems - Design Cho 99% Reads\"}]]}]}],[\"$\",\"li\",\"lesson-3-social-feed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-3-social-feed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5\",\"className\":\"hover:text-ink\",\"children\":\"Phase 5 — Real-World Architecture Patterns\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],\"$L24\"]}]}],\"$L25\",\"$L26\",\"$L27\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually\"}]\n25:[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti-patterns tránh, và trade-off thinking. Hiểu khi nào nên chuyển đổi architecture và tránh over-engineering.\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset\",\"title\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually\",\"description\":\"Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti-patterns tránh, và trade-off thinking. Hiểu khi nào nên chuyển đổi architecture và tránh over-engineering.\",\"className\":\"sm:shrink-0\"}]]}]}]\n26:[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Architecture Evolution Mindset - Start Simple, Scale Gradually\",\"children\":\"$L29\"}]\n27:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[null,[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5/lesson/lesson-2-head-heavy-systems\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Read-Heavy Systems - Design Cho 99% Reads\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]\n"])</script><script>self.__next_f.push([1,"2a:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"architecture-evolution-mindset---start-simple-scale-gradually\",\"children\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Có một sai lầm phổ biến mà developer mắc phải khi học system design:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Học về microservices, Kubernetes, event-driven architecture → Nghĩ rằng mọi project đều cần những thứ này ngay từ đầu.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Đây là over-engineering - và nó kills startups.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Bạn có biết:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Instagram:\"}],\" Monolith Django app khi được Facebook mua với $1 billion\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Shopify:\"}],\" Monolith Rails app đến khi có hàng triệu merchants\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Stack Overflow:\"}],\" Monolith .NET app serve hàng tỷ requests/month\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"GitHub:\"}],\" Monolith Rails app đến khi có 40+ million users\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Họ không bắt đầu với microservices. Họ evolved từ simple đến complex khi CẦN THIẾT.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Lesson này - arguably quan trọng nhất trong Phase 5 - dạy bạn \",[\"$\",\"strong\",null,{\"children\":\"architecture evolution mindset\"}],\":\"]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Khi nào dùng monolith, khi nào migrate\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Scale triggers thực tế\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Anti-patterns phải tránh\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Trade-off thinking\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Mental model:\"}],\" \\\"Start simple, evolve gradually\\\" - không phải \\\"Start complex vì sợ scale sau này\\\".\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"architecture-evolution-stages\",\"children\":\"Architecture Evolution Stages\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architecture không phải binary choice (monolith hay microservices). Là spectrum.\"}]}],\"\\n\",[\"$\",\"$L2a\",null,{\"chart\":\"flowchart LR\\n    MVP[MVP\u003cbr/\u003eMonolith] --\u003e Scaled[Scaled\u003cbr/\u003eMonolith]\\n    Scaled --\u003e Modular[Modular\u003cbr/\u003eMonolith]\\n    Modular --\u003e Micro[Microservices]\\n    \\n    style MVP fill:#90EE90\\n    style Scaled fill:#FFD700\\n    style Modular fill:#FFA500\\n    style Micro fill:#FF6347\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mỗi stage phù hợp với scale và team size khác nhau.\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"stage-1-mvp-monolith-0-10k-users\",\"children\":\"Stage 1: MVP Monolith (0-10K Users)\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Single codebase, single database, single deployment.\"}]}],\"\\n\",[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    Users[Users] --\u003e LB[Load Balancer]\\n    LB --\u003e App[Application Server\u003cbr/\u003eRails/Django/Express]\\n    App --\u003e DB[(Database)]\\n    App --\u003e Cache[(Redis)]\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Characteristics:\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fastest development velocity\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple deployment (git push)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Easy debugging (1 codebase)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"No distributed system complexity\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Low operational overhead\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Single point of failure\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"All code couples together\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Hard to scale specific parts\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"One language/framework limitation\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tech stack example:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Frontend: React/Vue (served by same server)\\nBackend: Rails/Django/Laravel/Express\\nDatabase: PostgreSQL/MySQL\\nCache: Redis\\nDeployment: Heroku/Railway/single VPS\\n\"}]}],\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\",\"\\n\",\"$Lc9\",\"\\n\",\"$Lca\",\"\\n\",\"$Lcb\",\"\\n\",\"$Lcc\",\"\\n\",\"$Lcd\",\"\\n\",\"$Lce\",\"\\n\",\"$Lcf\",\"\\n\",\"$Ld0\",\"\\n\",\"$Ld1\",\"\\n\",\"$Ld2\",\"\\n\",\"$Ld3\",\"\\n\",\"$Ld4\",\"\\n\",\"$Ld5\",\"\\n\",\"$Ld6\",\"\\n\",\"$Ld7\",\"\\n\",\"$Ld8\",\"\\n\",\"$Ld9\",\"\\n\",\"$Lda\",\"\\n\",\"$Ldb\",\"\\n\",\"$Ldc\",\"\\n\",\"$Ldd\",\"\\n\",\"$Lde\",\"\\n\",\"$Ldf\",\"\\n\",\"$Le0\",\"\\n\",\"$Le1\",\"\\n\",\"$Le2\",\"\\n\",\"$Le3\",\"\\n\",\"$Le4\",\"\\n\",\"$Le5\",\"\\n\",\"$Le6\",\"\\n\",\"$Le7\",\"\\n\",\"$Le8\",\"\\n\",\"$Le9\",\"\\n\",\"$Lea\",\"\\n\",\"$Leb\",\"\\n\",\"$Lec\",\"\\n\",\"$Led\",\"\\n\",\"$Lee\",\"\\n\",\"$Lef\",\"\\n\",\"$Lf0\",\"\\n\",\"$Lf1\",\"\\n\",\"$Lf2\",\"\\n\",\"$Lf3\",\"\\n\",\"$Lf4\",\"\\n\",\"$Lf5\",\"\\n\",\"$Lf6\",\"\\n\",\"$Lf7\",\"\\n\",\"$Lf8\",\"\\n\",\"$Lf9\",\"\\n\",\"$Lfa\",\"\\n\",\"$Lfb\",\"\\n\",\"$Lfc\",\"\\n\",\"$Lfd\",\"\\n\",\"$Lfe\",\"\\n\",\"$Lff\",\"\\n\",\"$L100\",\"\\n\",\"$L101\",\"\\n\",\"$L102\",\"\\n\",\"$L103\",\"\\n\",\"$L104\",\"\\n\",\"$L105\",\"\\n\",\"$L106\",\"\\n\",\"$L107\",\"\\n\",\"$L108\",\"\\n\",\"$L109\",\"\\n\",\"$L10a\",\"\\n\",\"$L10b\",\"\\n\",\"$L10c\",\"\\n\",\"$L10d\",\"\\n\",\"$L10e\",\"\\n\",\"$L10f\",\"\\n\",\"$L110\",\"\\n\",\"$L111\",\"\\n\",\"$L112\",\"\\n\",\"$L113\",\"\\n\",\"$L114\",\"\\n\",\"$L115\",\"\\n\",\"$L116\",\"\\n\",\"$L117\",\"\\n\",\"$L118\",\"\\n\",\"$L119\",\"\\n\",\"$L11a\",\"\\n\",\"$L11b\",\"\\n\",\"$L11c\",\"\\n\",\"$L11d\",\"\\n\",\"$L11e\",\"\\n\",\"$L11f\",\"\\n\",\"$L120\",\"\\n\",\"$L121\",\"\\n\",\"$L122\",\"\\n\",\"$L123\",\"\\n\",\"$L124\"]}]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n2c:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Pre-product-market-fit\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Startup \u003c10 engineers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Traffic \u003c100 req/s\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Proving concept\"}],\"\\n\"]}]\n2d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real examples:\"}]}]\n2e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Basecamp (still monolith at massive scale)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Shopify (started monolith)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"GitHub (started monolith)\"}],\"\\n\"]}]\n2f:[\"$\",\"h3\",null,{\"id\":\"stage-2-scaled-monolith-10k-100k-users\",\"children\":\"Stage 2: Scaled Monolith (10K-100K Users)\"}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Same codebase, thêm servers + database optimization.\"}]}]\n31:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    Users[Users] --\u003e LB[Load Balancer]\\n    \\n    subgraph AppServers[Application Tier]\\n        App1[App Server 1]\\n        App2[App Server 2]\\n        App3[App Server 3]\\n    end\\n    \\n    LB --\u003e App1\\n    LB --\u003e App2\\n    LB --\u003e App3\\n    \\n    App1 --\u003e Primary[(Primary DB)]\\n    App2 --\u003e Primary\\n    App3 --\u003e Primary\\n    \\n    Primary -.Replicate.-\u003e Replica1[(Read Replica 1)]\\n    Primary -.Replicate.-\u003e Replica2[(Read Replica 2)]\\n    \\n    App1 --\u003e Replica1\\n    App2 --\u003e Replica2\\n    App3 --\u003e Replica1\"}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Changes từ Stage 1:\"}]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Infrastructure:\"}]}]\n34:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Horizontal scaling (multiple app servers)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database read replicas\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"CDN cho static assets\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Redis cluster cho sessions\"}],\"\\n\"]}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Code optimization:\"}]}]\n36:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Query optimization\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"N+1 fixes\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Caching layer\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Background jobs (Sidekiq/Celery)\"}],\"\\n\"]}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Still monolith, nhưng scaled.\"}]}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào migrate đến stage này:\"}]}]\n39:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Traffic 100-1000 req/s\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Single server CPU \u003e70% consistently\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Response time degrading\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team 10-30 engineers\"}],\"\\n\"]}]\n3a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cost vs complexity:\"}]}]\n3b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Stage 1: $50-200/month\\nStage 2: $500-2000/month\\nComplexity: +20%\\n\"}]}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Reasonable trade-off cho growth.\"}]}]\n3d:[\"$\",\"h3\",null,{\"id\":\"stage-3-modular-monolith-100k-1m-users\",\"children\":\"Stage 3: Modular Monolith (100K-1M Users)\"}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Single deployment, nhưng code organized thành modules.\"}]}]\n3f:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    subgraph Monolith[\\\"Modular Monolith\\\"]\\n        Auth[Auth Module]\\n        Users[Users Module]\\n        Orders[Orders Module]\\n        Payments[Payments Module]\\n        \\n        Auth -.-\u003e|Well-defined API| Users\\n        Users -.-\u003e|Well-defined API| Orders\\n        Orders -.-\u003e|Well-defined API| Payments\\n    end\\n    \\n    Monolith --\u003e DB[(Shared Database)]\"}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Module structure:\"}]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"/app\\n  /modules\\n    /auth\\n      - controllers/\\n      - services/\\n      - models/\\n      - api.ts (public interface)\\n    /users\\n      - controllers/\\n      - services/\\n      - models/\\n      - ap"])</script><script>self.__next_f.push([1,"i.ts\\n    /orders\\n      - controllers/\\n      - services/\\n      - models/\\n      - api.ts\\n\"}]}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rules:\"}]}]\n43:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Modules communicate qua well-defined APIs\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"No direct database access across modules\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Clear boundaries\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Preparation cho microservices (nếu cần)\"}],\"\\n\"]}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\n45:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team ownership (team A owns auth module)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Easier testing (isolated modules)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Can extract to microservice later\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Still monolith simplicity\"}],\"\\n\"]}]\n46:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n47:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team 30-100 engineers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complex domain logic\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Preparing for potential microservices\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Want team autonomy nhưng chưa ready cho microservices\"}],\"\\n\"]}]\n48:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real examples:\"}]}]\n49:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Shopify (modular monolith trước khi microservices)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Basecamp (current architecture)\"}],\"\\n\"]}]\n4a:[\"$\",\"h3\",null,{\"id\":\"stage-4-microservices-1m-users\",\"children\":\"Stage 4: Microservices (1M+ Users)\"}]\n4b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Multiple independent services, mỗi service có database riêng.\"}]}]\n4c:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    subgraph Gateway\\n        API[API Gateway]\\n    end\\n    \\n    subgraph Services\\n        Auth[Auth Service]\\n        Users[Users Service]\\n        Orders[Orders Service]\\n        Payments[Payment Service]\\n    end\\n    \\n    subgraph Databases\\n        AuthDB[(Auth DB)]\\n        UsersDB[(Users DB)]\\n        OrdersDB[(Orders DB)]\\n        PaymentDB[(Payment DB)]\\n    end\\n    \\n    API --\u003e Auth\\n    API --\u003e Users\\n    API --\u003e Orders\\n    API --\u003e Payments\\n    \\n    Auth --\u003e AuthDB\\n    Users --\u003e UsersDB\\n    Orders --\u003e OrdersDB\\n    Payments --\u003e PaymentDB\\n    \\n    Orders -.HTTP.-\u003e Users\\n    Orders -.HTTP.-\u003e Payments\"}]\n4d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Characteristics:\"}]}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n4f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Independent scaling\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Independent deployment\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Technology flexibility\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team autonomy\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fault isolation\"}],\"\\n\"]}]\n50:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n51:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Distributed system complexity\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Network latency\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Data consistency challenges\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Operational overhead\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Testing complexity\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Deployment complexity\"}],\"\\n\"]}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào migrate:\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Migrate khi:\"}]}]\n54:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team \u003e100 engineers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Clear domain boundaries\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Different scaling needs per module\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Organizational bottleneck với monolith\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Budget + expertise cho complexity\"}],\"\\n\"]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"KHÔNG migrate khi:\"}]}]\n56:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,"])</script><script>self.__next_f.push([1,"{\"children\":\"Team \u003c30 engineers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Vague domain boundaries\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Premature optimization\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Chưa có DevOps expertise\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Budget limited\"}],\"\\n\"]}]\n57:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cost jump:\"}]}]\n58:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Modular monolith: $2k-5k/month\\nMicroservices: $10k-50k+/month\\n\\nInfrastructure + DevOps team + monitoring + orchestration\\n\"}]}]\n59:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Complexity jump: 10x.\"}]}]\n5a:[\"$\",\"h2\",null,{\"id\":\"scale-triggers---khi-nào-evolve\",\"children\":\"Scale Triggers - Khi Nào Evolve?\"}]\n5b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không evolve vì trend. Evolve vì pain points.\"}]}]\n5c:[\"$\",\"h3\",null,{\"id\":\"trigger-1-performance-bottleneck\",\"children\":\"Trigger 1: Performance Bottleneck\"}]\n5d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptom:\"}]}]\n5e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Single bottleneck component:\\n- Image processing: 80% CPU\\n- Rest of app: 20% CPU\\n\"}]}]\n5f:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Solution:\"}],\" Extract image processing service.\"]}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Before: Monolith handles images\\nAfter: Separate image service\\n  → Scale independently\\n  → Use GPU instances\\n  → Don't waste resources on other parts\\n\"}]}]\n61:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision criteria:\"}]}]\n62:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bottleneck clearly isolated\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Different resource needs (CPU vs memory vs GPU)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Extract giải quyết problem\"}],\"\\n\"]}]\n63:[\"$\",\"h3\",null,{\"id\":\"trigger-2-team-scaling-bottleneck\",\"children\":\"Trigger 2: Team Scaling Bottleneck\"}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptom:\"}]}]\n65:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Team size: 50 engineers\\nDeployment frequency: 1x/week\\nMerge conflicts: Daily\\nWaiting for deploys: Hours\\n\"}]}]\n66:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Everyone stepping on each other's toes.\"}]}]\n67:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Solution:\"}],\" Split codebase theo team ownership.\"]}]\n68:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Team Auth: Auth service\\nTeam Payments: Payment service\\nTeam Orders: Order service\\n\\nEach team deploys independently\\n\"}]}]\n69:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision criteria:\"}]}]\n6a:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team \u003e30-50 engineers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Organizational structure clear\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Teams have distinct domains\"}],\"\\n\"]}]\n6b:[\"$\",\"h3\",null,{\"id\":\"trigger-3-different-scaling-requirements\",\"children\":\"Trigger 3: Different Scaling Requirements\"}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptom:\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Orders service: 10 req/s\\nImage processing: 1000 req/s\\nPayment: 50 req/s\\n\"}]}]\n6e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scaling entire monolith wastes resources.\"}]}]\n6f:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Solution:\"}],\" Extract high-traffic service.\"]}]\n70:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Image processing → Separate service\\n  → Scale to 20 instances\\nRest of app → 3 instances\\n\\nCost saving + better performance\\n\"}]}]\n71:[\"$\",\"h3\",null,{\"id\":\"trigger-4-technology-limitations\",\"children\":\"Trigger 4: Technology Limitations\"}]\n72:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptom:\"}]}]\n73:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Main app: Ruby (good for CRUD)\\nML model: Need Python\\nReal-time: Need Node.js/Go\\n\"}]}]\n74:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{"])</script><script>self.__next_f.push([1,"\"children\":\"Solution:\"}],\" Polyglot architecture.\"]}]\n75:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Main app: Ruby on Rails\\nML service: Python + TensorFlow\\nWebSocket service: Node.js\\n\"}]}]\n76:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Different tools cho different jobs.\"}]}]\n77:[\"$\",\"h3\",null,{\"id\":\"non-triggers-không-nên-migrate\",\"children\":\"Non-Triggers (Không Nên Migrate)\"}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"We might scale in the future\\\"\"}]}]\n79:[\"$\",\"p\",null,{\"children\":\"Premature optimization. YAGNI (You Aren't Gonna Need It).\"}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"Microservices are best practice\\\"\"}]}]\n7b:[\"$\",\"p\",null,{\"children\":\"Best practice cho who? Netflix? You're not Netflix.\"}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"Resume-driven development\\\"\"}]}]\n7d:[\"$\",\"p\",null,{\"children\":\"Learning Kubernetes không justify project complexity.\"}]\n7e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"Monolith feels messy\\\"\"}]}]\n7f:[\"$\",\"p\",null,{\"children\":\"Clean up code structure. Modular monolith. Don't jump to microservices.\"}]\n80:[\"$\",\"h2\",null,{\"id\":\"migration-strategy---evolve-gradually\",\"children\":\"Migration Strategy - Evolve Gradually\"}]\n81:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"NEVER rewrite toàn bộ hệ thống.\"}]}]\n82:[\"$\",\"h3\",null,{\"id\":\"strangler-fig-pattern\",\"children\":\"Strangler Fig Pattern\"}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Gradually replace monolith, piece by piece.\"}]}]\n84:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    Users[Users]\\n    Router[Router/Gateway]\\n    \\n    subgraph New[\\\"New Services\\\"]\\n        AuthNew[Auth Service\u003cbr/\u003eMigrated]\\n        PaymentNew[Payment Service\u003cbr/\u003eMigrated]\\n    end\\n    \\n    subgraph Old[\\\"Monolith\\\"]\\n        Users2[Users Module\u003cbr/\u003e⏳ Not yet]\\n        Orders2[Orders Module\u003cbr/\u003e⏳ Not yet]\\n    end\\n    \\n    Users --\u003e Router\\n    Router --\u003e|/auth/*| AuthNew\\n    Router --\u003e|/payment/*| PaymentNew\\n    Router --\u003e|/users/*| Old\\n    Router --\u003e|/orders/*| Old\"}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Process:\"}]}]\n86:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Phase 1:\"}],\" Pick module to extract (least coupled)\"]}]\n87:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Candidate: Payment service\\nDependencies: Low\\nImpact: High value\\n\"}]}]\n88:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Phase 2:\"}],\" Build new service\"]}]\n89:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Replicate functionality\\nAdd tests\\nFeature parity\\n\"}]}]\n8a:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Phase 3:\"}],\" Route traffic gradually\"]}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Week 1: 5% traffic to new service\\nWeek 2: 25%\\nWeek 3: 50%\\nWeek 4: 100%\\n\"}]}]\n8c:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Phase 4:\"}],\" Deprecate old code\"]}]\n8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Monitor for errors\\nRemove from monolith\\nCelebrate 🎉\\n\"}]}]\n8e:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Phase 5:\"}],\" Repeat cho module tiếp theo\"]}]\n8f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\n90:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Low risk (gradual rollout)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Easy rollback\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Learn from each migration\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Business continuity\"}],\"\\n\"]}]\n91:[\"$\",\"h3\",null,{\"id\":\"anti-pattern-big-bang-rewrite\",\"children\":\"Anti-Pattern: Big Bang Rewrite\"}]\n92:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"KHÔNG LÀM:\"}]}]\n93:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Stop feature development\\n2. Rewrite everything to microservices\\n3. Big bang deployment\\n4. Hope it works\\n\"}]}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tại sao fail:\"}]}]\n95:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\""])</script><script>self.__next_f.push([1,"children\":\"6-12 months development freeze\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Business loses competitive edge\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Requirements change during rewrite\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bugs in new system\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Can't rollback easily\"}],\"\\n\"]}]\n96:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Famous failures:\"}]}]\n97:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Netscape (rewrote browser, lost to IE)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Friendster (rewrote, lost to Facebook)\"}],\"\\n\"]}]\n98:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Rule:\"}],\" Evolve, don't rewrite.\"]}]\n99:[\"$\",\"h2\",null,{\"id\":\"anti-patterns---tránh-những-sai-lầm-này\",\"children\":\"Anti-Patterns - Tránh Những Sai Lầm Này\"}]\n9a:[\"$\",\"h3\",null,{\"id\":\"anti-pattern-1-premature-microservices\",\"children\":\"Anti-Pattern 1: Premature Microservices\"}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario:\"}]}]\n9c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Startup: 3 engineers, 0 users\\nArchitecture: 15 microservices, Kubernetes, Kafka\\n\"}]}]\n9d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\n9e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Development velocity: glacial\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Debugging: nightmare\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Operational overhead: overwhelming\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Product-market-fit: never found\"}],\"\\n\"]}]\n9f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cost:\"}]}]\na0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"3 months setup infrastructure\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"6 months fight with complexity\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Startup runs out of money\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Game over\"}],\"\\n\"]}]\na1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Right approach:\"}]}]\na2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Startup: 3 engineers, 0 users\\nArchitecture: Monolith, Heroku, PostgreSQL\\n\\nProduct-market-fit: 6 months\\nGrowth: Add features fast\\nScale: Later problem\\n\"}]}]\na3:[\"$\",\"h3\",null,{\"id\":\"anti-pattern-2-kubernetes-for-everything\",\"children\":\"Anti-Pattern 2: Kubernetes For Everything\"}]\na4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario:\"}]}]\na5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Traffic: 10 req/s\\nTeam: 5 engineers\\nStack: Kubernetes cluster\\n\"}]}]\na6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\na7:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Kubernetes learning curve: steep\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Operational complexity: high\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cost: $500+/month (vs $50 Heroku)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Value delivered: zero\"}],\"\\n\"]}]\na8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When Kubernetes makes sense:\"}]}]\na9:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Traffic \u003e1000 req/s\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team with DevOps expertise\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complex deployment requirements\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Multi-cloud strategy\"}],\"\\n\"]}]\naa:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Before Kubernetes, try:\"}]}]\nab:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Heroku/Railway/Render\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"AWS Elastic Beanstalk\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Google App Engine\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple VPS + Docker Compose\"}],\"\\n\"]}]\nac:[\"$\",\"h3\",null,{\"id\":\"anti-pattern-3-shared-database-across-services\",\"children\":\"Anti-Pattern 3: Shared Database Across Services\"}]\nad:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario:\"}]}]\nae:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Microservices architecture\\nAll services → Same database\\n\"}]}]\naf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\nb0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\""])</script><script>self.__next_f.push([1,",null,{\"children\":\"Tight coupling (defeats microservices purpose)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Schema changes break everything\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Can't scale databases independently\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Transaction complexity\"}],\"\\n\"]}]\nb1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Right approach:\"}]}]\nb2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Each service → Own database\\nCommunication via APIs/events\\n\"}]}]\nb3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nếu shared database → bạn không có microservices, có distributed monolith.\"}]}]\nb4:[\"$\",\"h3\",null,{\"id\":\"anti-pattern-4-nano-services\",\"children\":\"Anti-Pattern 4: Nano-Services\"}]\nb5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario:\"}]}]\nb6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User service\\nUserAuth service\\nUserProfile service\\nUserSettings service\\nUserPreferences service\\n\"}]}]\nb7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Too many tiny services.\"}]}]\nb8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\nb9:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Network overhead\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Operational complexity\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Hard to understand flow\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Deployment nightmare\"}],\"\\n\"]}]\nba:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Right granularity:\"}]}]\nbb:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User service (handles all user logic)\\n  ↳ Auth\\n  ↳ Profile\\n  ↳ Settings\\n  ↳ Preferences\\n\"}]}]\nbc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Service boundary = business capability, not function.\"}]}]\nbd:[\"$\",\"h3\",null,{\"id\":\"anti-pattern-5-wrong-optimization\",\"children\":\"Anti-Pattern 5: Wrong Optimization\"}]\nbe:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario:\"}]}]\nbf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Optimize: Sharding database\\nProblem: Actually slow queries (missing indexes)\\n\\nOptimize: Add caching layer\\nProblem: Actually N+1 queries\\n\\nOptimize: Microservices\\nProblem: Actually monolith code mess\\n\"}]}]\nc0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Measure first, optimize second.\"}]}]\nc1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Process:\"}]}]\nc2:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Identify bottleneck (metrics)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Understand root cause (profiling)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Pick simplest solution\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Measure improvement\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Repeat\"}],\"\\n\"]}]\nc3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"KHÔNG skip step 1 và 2.\"}]}]\nc4:[\"$\",\"h2\",null,{\"id\":\"system-design-thinking-flow\",\"children\":\"System Design Thinking Flow\"}]\nc5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Structured approach cho architecture decisions.\"}]}]\nc6:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TD\\n    Start[Problem Statement] --\u003e Req[1. Requirements\u003cbr/\u003eFunctional + Non-functional]\\n    Req --\u003e Est[2. Estimation\u003cbr/\u003eScale + Storage + Bandwidth]\\n    Est --\u003e Bottle[3. Identify Bottlenecks\u003cbr/\u003eTraffic + Data + Processing]\\n    Bottle --\u003e Trade[4. Trade-offs\u003cbr/\u003eConsistency vs Availability\u003cbr/\u003eCost vs Performance]\\n    Trade --\u003e Design[5. Architecture Design\u003cbr/\u003eStart simple\u003cbr/\u003eAdd complexity as needed]\\n    Design --\u003e Valid[6. Validate\u003cbr/\u003eDoes it solve problem?\u003cbr/\u003eCan it scale?]\\n    Valid --\u003e|No| Trade\\n    Valid --\u003e|Yes| Final[Final Design]\"}]\nc7:[\"$\",\"h3\",null,{\"id\":\"step-1-requirements\",\"children\":\"Step 1: Requirements\"}]\nc8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Functional requirements:\"}]}]\nc9:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"What the system does:\\n- Users can upload photos\\n- Users can view feed\\n- Users can follow others\\n\"}]}]\nca:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Non-functional requirements:\"}]}]\ncb:"])</script><script>self.__next_f.push([1,"[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"How well it does it:\\n- 10M daily active users\\n- p99 latency \u003c 200ms\\n- 99.9% availability\\n- Photo upload \u003c 5 seconds\\n\"}]}]\ncc:[\"$\",\"h3\",null,{\"id\":\"step-2-estimation\",\"children\":\"Step 2: Estimation\"}]\ncd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Back-of-envelope calculations:\"}]}]\nce:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Traffic:\\n- 10M DAU\\n- Each user: 20 requests/day\\n- Total: 200M requests/day\\n- Peak: 200M / 86400 * 3 = ~7000 req/s\\n\\nStorage:\\n- 1M photos uploaded/day\\n- Average photo: 2MB\\n- Daily storage: 2TB/day\\n- Annual: 730TB\\n\\nBandwidth:\\n- Upload: 2TB/day = 23 MB/s\\n- Read:write ratio: 10:1\\n- Download: 230 MB/s\\n\"}]}]\ncf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Informs architecture decisions.\"}]}]\nd0:[\"$\",\"h3\",null,{\"id\":\"step-3-bottlenecks\",\"children\":\"Step 3: Bottlenecks\"}]\nd1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Based on estimations:\"}]}]\nd2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"7000 req/s → Need load balancing\\n2TB/day upload → Need object storage (S3)\\nHigh read traffic → Need CDN + caching\\n\"}]}]\nd3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Anticipate problems early.\"}]}]\nd4:[\"$\",\"h3\",null,{\"id\":\"step-4-trade-offs\",\"children\":\"Step 4: Trade-offs\"}]\nd5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Every decision = trade-off.\"}]}]\nd6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Cache photos?\\n  Pros: Fast access, reduce load\\n  Cons: Storage cost, cache invalidation\\n  Decision: Yes, cache hot photos (20% photos = 80% traffic)\\n\\nStrong consistency?\\n  Pros: Always correct data\\n  Cons: Higher latency, complex\\n  Decision: Eventual consistency OK (social feed)\\n\\nMicroservices?\\n  Pros: Independent scaling\\n  Cons: Complexity, cost\\n  Decision: Start monolith, extract later if needed\\n\"}]}]\nd7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Explicit trade-off thinking.\"}]}]\nd8:[\"$\",\"h3\",null,{\"id\":\"step-5-design\",\"children\":\"Step 5: Design\"}]\nd9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Start simple:\"}]}]\nda:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"MVP (0-100K users):\\n  - Monolith (Rails/Django)\\n  - PostgreSQL\\n  - Redis cache\\n  - S3 for photos\\n  - CDN\\n\\nEvolution triggers:\\n  - \u003e1M users → Add read replicas\\n  - \u003e5M users → Consider modular monolith\\n  - \u003e10M users → Evaluate microservices\\n\"}]}]\ndb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Plan evolution, don't build for 10M users on day 1.\"}]}]\ndc:[\"$\",\"h3\",null,{\"id\":\"step-6-validate\",\"children\":\"Step 6: Validate\"}]\ndd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Questions to ask:\"}]}]\nde:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Does it meet requirements?\\n  - Functional: ✅\\n  - Non-functional: (at current scale)\\n\\nCan it scale?\\n  - To 10x traffic: Yes (add servers)\\n  - To 100x traffic: Need re-architecture\\n\\nIs it too complex?\\n  - Team can build: ✅\\n  - Team can operate: ✅\\n\\nCost reasonable?\\n  - MVP: $200/month ✅\\n  - At scale: $5k/month ✅\\n\"}]}]\ndf:[\"$\",\"h2\",null,{\"id\":\"trade-off-mindset\",\"children\":\"Trade-off Mindset\"}]\ne0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Every architecture decision = trade-off. No perfect solution.\"}]}]\ne1:[\"$\",\"h3\",null,{\"id\":\"trade-off-1-performance-vs-complexity\",\"children\":\"Trade-off 1: Performance vs Complexity\"}]\ne2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example: Caching\"}]}]\ne3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"No cache:\\n  - Simple code\\n  - Slow reads (every request → database)\\n  - High database load\\n\\nWith cache:\\n  - Complex (cache invalidation)\\n  - Fast reads (memory access)\\n  - Lower database load\\n\"}]}]\ne4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\ne5:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read-heavy? → Cache worth it\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Write-heav"])</script><script>self.__next_f.push([1,"y? → Cache less value\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Budget for complexity? → Cache OK\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Team expertise? → Simple first\"}],\"\\n\"]}]\ne6:[\"$\",\"h3\",null,{\"id\":\"trade-off-2-consistency-vs-availability\",\"children\":\"Trade-off 2: Consistency vs Availability\"}]\ne7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"CAP theorem reminder:\"}]}]\ne8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Strong consistency:\\n  - Always correct data\\n  - May be unavailable (wait for sync)\\n  - Lower throughput\\n\\nEventual consistency:\\n  - High availability\\n  - Temporarily stale data\\n  - Higher throughput\\n\"}]}]\ne9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision:\"}]}]\nea:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bank account: Strong consistency\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Social media feed: Eventual consistency\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Shopping cart: Session-based (middle ground)\"}],\"\\n\"]}]\neb:[\"$\",\"h3\",null,{\"id\":\"trade-off-3-cost-vs-scale\",\"children\":\"Trade-off 3: Cost vs Scale\"}]\nec:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example: Database\"}]}]\ned:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Single PostgreSQL:\\n  - Cost: $50/month\\n  - Scale: ~1000 req/s\\n  - Simple\\n\\nSharded PostgreSQL:\\n  - Cost: $500/month\\n  - Scale: ~10,000 req/s\\n  - Complex\\n\\nManaged service (Aurora):\\n  - Cost: $2000/month\\n  - Scale: ~50,000 req/s\\n  - Easier than sharding\\n\"}]}]\nee:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pick based on current needs + budget.\"}]}]\nef:[\"$\",\"h3\",null,{\"id\":\"trade-off-4-development-speed-vs-flexibility\",\"children\":\"Trade-off 4: Development Speed vs Flexibility\"}]\nf0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Framework choice:\"}]}]\nf1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Rails/Django:\\n  - Fast development\\n  - Conventions (less decisions)\\n  - Monolith-friendly\\n\\nGo/Node microservices:\\n  - Slower initial development\\n  - More flexibility\\n  - Microservices-friendly\\n\"}]}]\nf2:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Early stage: Speed wins.\"}],[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Mature product: Flexibility matters.\"}]]}]\nf3:[\"$\",\"h3\",null,{\"id\":\"trade-off-matrix\",\"children\":\"Trade-off Matrix\"}]\nf4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Common decisions:\"}]}]\n"])</script><script>self.__next_f.push([1,"f5:[\"$\",\"table\",null,{\"children\":[[\"$\",\"thead\",null,{\"children\":[\"$\",\"tr\",null,{\"children\":[[\"$\",\"th\",null,{\"children\":\"Decision\"}],[\"$\",\"th\",null,{\"children\":\"Simple\"}],[\"$\",\"th\",null,{\"children\":\"Complex\"}],[\"$\",\"th\",null,{\"children\":\"When Complex Worth It\"}]]}]}],[\"$\",\"tbody\",null,{\"children\":[[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Monolith vs Microservices\"}],[\"$\",\"td\",null,{\"children\":\"Monolith\"}],[\"$\",\"td\",null,{\"children\":\"Microservices\"}],[\"$\",\"td\",null,{\"children\":\"Team \u003e50, clear domains\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"SQL vs NoSQL\"}],[\"$\",\"td\",null,{\"children\":\"SQL\"}],[\"$\",\"td\",null,{\"children\":\"NoSQL\"}],[\"$\",\"td\",null,{\"children\":\"Massive scale, flexible schema\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Sync vs Async\"}],[\"$\",\"td\",null,{\"children\":\"Sync\"}],[\"$\",\"td\",null,{\"children\":\"Async\"}],[\"$\",\"td\",null,{\"children\":\"High latency operations\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Single DB vs Sharding\"}],[\"$\",\"td\",null,{\"children\":\"Single\"}],[\"$\",\"td\",null,{\"children\":\"Sharding\"}],[\"$\",\"td\",null,{\"children\":\"\u003e10K writes/s\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Self-hosted vs Managed\"}],[\"$\",\"td\",null,{\"children\":\"Self\"}],[\"$\",\"td\",null,{\"children\":\"Managed\"}],[\"$\",\"td\",null,{\"children\":\"Team \u003c10, focus on product\"}]]}]]}]]}]\n"])</script><script>self.__next_f.push([1,"f6:[\"$\",\"h2\",null,{\"id\":\"mental-model-start-simple-evolve-gradually\",\"children\":\"Mental Model: Start Simple, Evolve Gradually\"}]\nf7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core principle của good architecture.\"}]}]\nf8:[\"$\",\"h3\",null,{\"id\":\"the-principle\",\"children\":\"The Principle\"}]\nf9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"Premature optimization is the root of all evil.\\\" - Donald Knuth\"}]}]\nfa:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Applied to architecture:\"}]}]\nfb:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Don't build for scale you don't have\\nDon't solve problems you don't have yet\\nDon't add complexity until pain is real\\n\"}]}]\nfc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why?\"}]}]\nfd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Requirements change\"}]}]\nfe:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Week 1: Building Instagram clone\\nWeek 10: Pivot to B2B analytics\\nWeek 20: Pivot to AI chatbot\\n\\nComplex architecture → wasted effort\\n\"}]}]\nff:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Scale assumptions wrong\"}]}]\n100:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Plan: 1M users in year 1\\nReality: 10K users\\n\\nOver-engineered for ghost town\\n\"}]}]\n101:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Team learning\"}]}]\n102:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Monolith:\\n  - Ship features fast\\n  - Learn user needs\\n  - Iterate quickly\\n\\nMicroservices:\\n  - Fight with infrastructure\\n  - Slow feature development\\n  - Miss market window\\n\"}]}]\n103:[\"$\",\"h3\",null,{\"id\":\"the-evolution-path\",\"children\":\"The Evolution Path\"}]\n104:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Healthy progression:\"}]}]\n105:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Month 1-3: MVP monolith\\n  → Validate idea\\n  → Get users\\n  \\nMonth 3-12: Scaled monolith\\n  → Optimize performance\\n  → Add infrastructure (CDN, cache, replicas)\\n  \\nYear 1-2: Modular monolith\\n  → Clean up architecture\\n  → Prepare for team scaling\\n  \\nYear 2+: Selective microservices\\n  → Extract bottlenecks\\n  → Independent scaling where needed\\n\"}]}]\n106:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Unhealthy progression:\"}]}]\n107:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Month 1: 15 microservices, Kubernetes\\nMonth 2: Fighting infrastructure\\nMonth 3: Out of money\\n\"}]}]\n108:[\"$\",\"h3\",null,{\"id\":\"decision-framework\",\"children\":\"Decision Framework\"}]\n109:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When faced with architecture choice:\"}]}]\n10a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Question: Should we use [complex solution]?\\n\\nAsk:\\n1. Do we have the problem it solves? (YES/NO)\\n2. Have we tried simpler solutions? (YES/NO)\\n3. Do we have expertise? (YES/NO)\\n4. Do we have budget? (YES/NO)\\n\\nIf ANY answer is NO → Don't do it yet\\n\"}]}]\n10b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Examples:\"}]}]\n10c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Should we use Kubernetes?\\\"\\n- Have scaling problem? NO → Wait\\n- Tried managed platforms? NO → Try Heroku first\\n- Have DevOps expertise? NO → Learn on simpler platform\\n- Have budget ($500+/month)? NO → Use cheaper options\\n\\n\\\"Should we split to microservices?\\\"\\n- Have team scaling problem? NO → Wait\\n- Tried modular monolith? NO → Refactor monolith first\\n- Have clear service boundaries? NO → Not ready\\n- Have budget for complexity? NO → Stay monolith\\n\"}]}]\n10d:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n10e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Architecture evolves: Monolith → Scaled → Modular → Microservices\"}]}]\n10f:[\"$\",\"p\",null,{\"children\":\"Each stage appropriate cho scale và team size khác nhau.\"}]\n110:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Monolith không phải bad word\"}]}]\n111:[\"$\",\"p\",null,{\"children\":\"Shopify, "])</script><script>self.__next_f.push([1,"GitHub, Basecamp scale massively với monolith. Start simple.\"}]\n112:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Migration triggers phải real pain, không speculation\"}]}]\n113:[\"$\",\"p\",null,{\"children\":\"Performance bottleneck, team scaling, different resource needs.\"}]\n114:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Strangler fig pattern \u003e big bang rewrite\"}]}]\n115:[\"$\",\"p\",null,{\"children\":\"Migrate gradually, piece by piece. Low risk, easy rollback.\"}]\n116:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Anti-patterns: Premature microservices, Kubernetes overkill, shared databases\"}]}]\n117:[\"$\",\"p\",null,{\"children\":\"Avoid complexity không cần thiết. Measure problem trước khi solve.\"}]\n118:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"6. System design flow: Requirements → Estimation → Bottlenecks → Trade-offs → Design\"}]}]\n119:[\"$\",\"p\",null,{\"children\":\"Structured thinking process cho architecture decisions.\"}]\n11a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"7. Every decision = trade-off\"}]}]\n11b:[\"$\",\"p\",null,{\"children\":\"Performance vs complexity, consistency vs availability, cost vs scale.\"}]\n11c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"8. Start simple, evolve gradually\"}]}]\n11d:[\"$\",\"p\",null,{\"children\":\"Don't build cho scale you don't have. YAGNI principle.\"}]\n11e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"9. Validate assumptions với data\"}]}]\n11f:[\"$\",\"p\",null,{\"children\":\"Measure traffic, profile performance, understand real bottlenecks.\"}]\n120:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"10. Team expertise matters more than technology\"}]}]\n121:[\"$\",\"p\",null,{\"children\":\"Simple stack team knows \u003e complex stack team struggles với.\"}]\n122:[\"$\",\"hr\",null,{}]\n123:[\"$\",\"p\",null,{\"children\":[\"Nhưng luôn nhớ: \",[\"$\",\"strong\",null,{\"children\":\"patterns là tools, không phải requirements. Dùng khi cần, không vì trend.\"}]]}]\n124:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember: Instagram was acquired for $1 billion as a monolith. Complexity doesn't create value - solving user problems does. Start simple, evolve when pain is real, and always question if added complexity is worth it.\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"125:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually | Phase 5 — Real-World Architecture Patterns | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti patterns tránh, và trade off thinking. Hi\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually | Phase 5 — Real-World Architecture Patterns\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti patterns tránh, và trade off thinking. Hi\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Architecture Evolution Mindset - Start Simple, Scale Gradually | Phase 5 — Real-World Architecture Patterns\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học cách evolve architecture từ monolith đến microservices: MVP architecture, scale triggers, migration strategy, anti patterns tránh, và trade off thinking. Hi\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L125\",\"14\",{}]]\n"])</script></body></html>

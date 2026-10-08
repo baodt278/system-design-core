@@ -1,0 +1,838 @@
+@0 h1
+Database Scaling & Optimization - Từ Query Tuning Đến Sharding
+@1 p
+Trong hầu hết các hệ thống, database là **bottleneck lớn nhất**.
+@2 p
+Application server scale horizontal dễ dàng - thêm server, add load balancer, done. Nhưng database? Đây là hard problem.
+@3 p
+**Tại sao?**
+@4 p
+Database là **stateful**. Không thể đơn giản thêm database server và expect nó tự động work. Data phải sync, transactions phải consistent, queries phải coordinate.
+@5 p
+Khi database chậm, toàn bộ hệ thống chậm. Khi database down, toàn bộ hệ thống down.
+@6 p
+**Mental model quan trọng nhất:**
+@7 p
+**Database scaling không phải một giải pháp. Là progression từ optimization đơn giản → complex distributed patterns.**
+@8 p
+Lesson này dạy bạn:
+@9 li
+Query optimization & indexing (first line of defense)
+@10 li
+Read replicas (scale reads)
+@11 li
+Sharding (scale writes & storage)
+@12 li
+Khi nào dùng technique nào
+@13 li
+Trade-offs của từng approach
+@14 h2
+Tại Sao Database Là Bottleneck?
+@15 p
+Trước khi học scaling, hiểu tại sao database limit performance.
+@16 h3
+1. Disk I/O Bottleneck
+@17 p
+**Database lưu data trên disk. Disk chậm hơn RAM 1000x.**
+@18 pre
+RAM read:  ~100 nanoseconds
+SSD read:  ~100 microseconds (1000x chậm hơn)
+HDD read:  ~10 milliseconds (100,000x chậm hơn)
+
+@19 p
+**Every query = disk reads.**
+@20 p
+Query càng phức tạp → càng nhiều disk I/O → càng chậm.
+@21 h3
+2. ACID Guarantees
+@22 p
+**Database phải maintain consistency.**
+@23 li
+**Atomicity:** Transaction all-or-nothing
+@24 li
+**Consistency:** Data valid theo constraints
+@25 li
+**Isolation:** Concurrent transactions không conflict
+@26 li
+**Durability:** Committed data không mất
+@27 p
+**ACID có cost:**
+@28 li
+Locking (block concurrent access)
+@29 li
+Write-ahead log (extra writes)
+@30 li
+Transaction coordination (overhead)
+@31 p
+**Trade-off:** Correctness vs performance.
+@32 h3
+3. Single Writer Problem
+@33 p
+**Hầu hết RDBMS có single-writer architecture.**
+@34 p
+Chỉ 1 node handle writes để maintain consistency.
+@35 p
+Reads có thể scale (replicas), nhưng writes là bottleneck.
+@36 h3
+4. Data Growth
+@37 p
+**Data tăng → performance giảm.**
+@38 pre
+Table 1K rows:   Query 10ms
+Table 100K rows: Query 50ms
+Table 10M rows:  Query 5000ms
+
+@39 p
+Không có proper indexing, queries slow down exponentially.
+@40 p
+**Key insight:** Phải optimize trước khi scale. Scaling costly system vẫn costly.
+@41 h2
+Index Strategy - First Line Of Defense
+@42 p
+**Index là data structure giúp database tìm data nhanh hơn.**
+@43 p
+Không có index = full table scan (đọc toàn bộ rows).\n
+ Có index = direct lookup (như book index).
+@44 h3
+B-Tree Index (Default)
+@45 p
+**Most common index type.**
+@46 p
+**Structure:**
+@47 pre
+         [M]
+       /     \
+    [D]       [T]
+   /   \     /   \
+[A-C] [E-L] [N-S] [U-Z]
+
+@48 p
+**Lookup time:** O(log N) - cực nhanh với large datasets.
+@49 p
+**Khi nào dùng:**
+@50 li
+Columns trong WHERE clause
+@51 li
+JOIN keys
+@52 li
+ORDER BY columns
+@53 li
+Foreign keys
+@54 h3
+Composite Index
+@55 p
+**Index trên multiple columns.**
+@56 p
+**Hiệu quả cho:**
+@57 p
+**Rule: Index matching từ trái sang phải.**
+@58 h3
+Covering Index
+@59 p
+**Index chứa tất cả columns query cần.**
+@60 p
+**Benefit:** Database không cần access table, chỉ read index → cực nhanh.
+@61 h3
+Partial Index
+@62 p
+**Index subset of rows.**
+@63 p
+**Smaller index → faster lookups, less storage.**
+@64 h3
+Index Trade-offs
+@65 p
+**Too Many Indexes:**
+@66 li
+Slow writes (update all indexes)
+@67 li
+Storage overhead
+@68 li
+Query planner confusion
+@69 p
+**Too Few Indexes:**
+@70 li
+Slow reads (full table scans)
+@71 p
+**Balance:** Index high-traffic queries, monitor usage.
+@72 h2
+Query Optimization - Make Queries Faster
+@73 p
+Kể cả có index, bad queries vẫn chậm.
+@74 h3
+EXPLAIN ANALYZE - Your Best Friend
+@75 p
+**See query execution plan.**
+@76 p
+**Output:**
+@77 pre
+Limit  (cost=0.42..8.44 rows=10)
+  -> Index Scan using idx_orders_user_date on orders
+     Index Cond: (user_id = 123)
+     Rows Removed by Filter: 0
+Planning Time: 0.123 ms
+Execution Time: 0.456 ms
+
+@78 p
+**Look for:**
+@79 li
+**Seq Scan** (table scan) → add index
+@80 li
+**High cost** → optimize query
+@81 li
+**Rows removed by filter** → improve WHERE clause
+@82 h3
+SELECT * Is Evil
+@83 p
+**Bad:**
+@84 p
+Fetches tất cả columns (có thể 50 columns, nhiều KB data).
+@85 p
+**Good:**
+@86 p
+Chỉ fetch columns cần thiết.
+@87 p
+**Impact:**
+@88 li
+Less disk I/O
+@89 li
+Less network transfer
+@90 li
+Better cache utilization
+@91 h3
+Avoid OR In WHERE Clause
+@92 p
+**Bad:**
+@93 p
+Database phải scan 2 indexes hoặc full table scan.
+@94 p
+**Good:**
+@95 p
+2 separate index scans, then merge.
+@96 h3
+Use LIMIT
+@97 p
+**Bad:**
+@98 p
+Fetch millions of rows, sort tất cả.
+@99 p
+**Good:**
+@100 p
+Stop after 20 rows, không sort toàn bộ.
+@101 h3
+Avoid Functions In WHERE
+@102 p
+**Bad:**
+@103 p
+Cannot use index (function applied to column).
+@104 p
+**Good:**
+@105 p
+Index có thể dùng được.
+@106 h2
+N+1 Problem - Silent Performance Killer
+@107 p
+**N+1 là một trong những bugs phổ biến và nguy hiểm nhất.**
+@108 h3
+Problem
+@109 p
+**Total: 1 + 10 = 11 queries.**
+@110 p
+Với 100 users → 101 queries.\n
+ Với 1000 users → 1001 queries.
+@111 p
+**Mỗi query có latency 10ms → 1001 queries = 10 seconds!**
+@112 h3
+Solution 1: Eager Loading
+@113 p
+**1 query thay vì N+1.**
+@114 h3
+Solution 2: Batch Loading
+@115 p
+**2 queries total.**
+@116 h3
+Framework Solutions
+@117 p
+**Rails:**
+@118 p
+**Django:**
+@119 p
+**TypeORM:**
+@120 p
+**Always check generated SQL để avoid N+1.**
+@121 h2
+Denormalization - Trading Consistency For Performance
+@122 p
+**Normalization = avoid data duplication.**\n
+**Denormalization = intentionally duplicate data for performance.**
+@123 h3
+Example: Order Totals
+@124 p
+**Normalized (slow):**
+@125 p
+Expensive aggregation mỗi request.
+@126 p
+**Denormalized (fast):**
+@127 p
+**Trade-off:** Extra storage + update complexity để lấy read performance.
+@128 h3
+When To Denormalize
+@129 p
+**Denormalize khi:**
+@130 li
+Aggregations expensive
+@131 li
+Data ít thay đổi
+@132 li
+Read-heavy workload
+@133 p
+**Không denormalize khi:**
+@134 li
+Data thay đổi thường xuyên
+@135 li
+Synchronization phức tạp
+@136 li
+Strong consistency required
+@137 h3
+Materialized Views
+@138 p
+**Database-level denormalization.**
+@139 p
+Pre-computed results, query nhanh.
+@140 h2
+Read Replicas - Scale Reads Horizontally
+@141 p
+**Read replica = copy of primary database, handle read traffic.**
+@142 pre
+flowchart TB
+    subgraph Writes
+        App1[App Server] -->|Write| Primary[Primary DB]
+    end
+    
+    subgraph Reads
+        App2[App Server] -->|Read| Replica1[Read Replica 1]
+        App3[App Server] -->|Read| Replica2[Read Replica 2]
+        App4[App Server] -->|Read| Replica3[Read Replica 3]
+    end
+    
+    Primary -.->|Replicate| Replica1
+    Primary -.->|Replicate| Replica2
+    Primary -.->|Replicate| Replica3
+@143 h3
+How It Works
+@144 p
+**1. Primary database handle writes**
+@145 li
+All INSERT, UPDATE, DELETE → primary
+@146 p
+**2. Changes replicate to replicas**
+@147 li
+Async replication (usually)
+@148 li
+Binary log shipping (MySQL) hoặc WAL shipping (PostgreSQL)
+@149 p
+**3. Replicas handle reads**
+@150 li
+SELECT queries → replicas
+@151 li
+Distribute load across multiple replicas
+@152 h3
+Benefits
+@153 p
+**Scale read traffic:**
+@154 li
+Add replicas as read traffic grows
+@155 li
+Primary không bị overwhelm
+@156 p
+**Geographic distribution:**
+@157 li
+Replica ở Singapore cho Asia users
+@158 li
+Replica ở US cho US users
+@159 li
+Lower latency
+@160 p
+**Analytics queries:**
+@161 li
+Run expensive reports trên replica
+@162 li
+Không impact production traffic
+@163 h3
+Replication Lag
+@164 p
+**Problem: Replicas không instantly up-to-date.**
+@165 pre
+t=0: Write to primary (user.status = 'active')
+t=1: Read from replica (user.status = 'pending')  ← stale!
+t=2: Replication catches up (user.status = 'active')
+
+@166 p
+**Typical lag: 10-100ms, có thể cao hơn.**
+@167 h3
+Handling Replication Lag
+@168 p
+**1. Read-after-write consistency**
+@169 p
+**2. Session stickiness**
+@170 li
+User session luôn read từ same replica
+@171 li
+Consistent experience
+@172 p
+**3. Critical reads from primary**
+@173 h3
+Replication Types
+@174 p
+**Asynchronous (default):**
+@175 li
+Primary không đợi replica confirm
+@176 li
+Fast writes
+@177 li
+Risk: replica lag, potential data loss
+@178 p
+**Synchronous:**
+@179 li
+Primary đợi ít nhất 1 replica confirm
+@180 li
+Slower writes
+@181 li
+Strong consistency
+@182 p
+**Semi-synchronous:**
+@183 li
+Đợi 1 replica, others async
+@184 li
+Balance performance + durability
+@185 h2
+Sharding - Scale Writes & Storage
+@186 p
+**Sharding = chia database thành multiple databases, mỗi database chứa subset of data.**
+@187 p
+Đây là ultimate scaling solution, nhưng cũng phức tạp nhất.
+@188 h3
+Why Sharding?
+@189 p
+**Read replicas chỉ scale reads. Writes vẫn bottleneck ở primary.**
+@190 p
+**Sharding scale cả reads và writes:**
+@191 li
+Write traffic distribute across shards
+@192 li
+Storage distribute across shards
+@193 li
+Each shard nhỏ hơn → faster queries
+@194 h3
+Sharding Strategies
+@195 h4
+1. Range-Based Sharding
+@196 p
+**Chia data theo range of values.**
+@197 pre
+Shard 1: user_id 1-1000000
+Shard 2: user_id 1000001-2000000
+Shard 3: user_id 2000001-3000000
+
+@198 p
+**Pros:**
+@199 li
+Simple logic
+@200 li
+Range queries efficient
+@201 p
+**Cons:**
+@202 li
+Uneven distribution (hotspots)
+@203 li
+Hard to rebalance
+@204 h4
+2. Hash-Based Sharding
+@205 p
+**Hash key để determine shard.**
+@206 p
+**Pros:**
+@207 li
+Even distribution
+@208 li
+No hotspots
+@209 p
+**Cons:**
+@210 li
+Range queries phải query all shards
+@211 li
+Adding shards = re-hash (complex)
+@212 h4
+3. Geographic Sharding
+@213 p
+**Chia theo location.**
+@214 pre
+Shard 1: Asia users
+Shard 2: US users
+Shard 3: EU users
+
+@215 p
+**Pros:**
+@216 li
+Low latency (data gần users)
+@217 li
+Compliance (data residency laws)
+@218 p
+**Cons:**
+@219 li
+Uneven load
+@220 li
+Cross-region queries expensive
+@221 h4
+4. Entity-Based Sharding (Practical)
+@222 p
+**Chia theo business entity.**
+@223 pre
+Shard 1: Organization A's data
+Shard 2: Organization B's data
+Shard 3: Organization C's data
+
+@224 p
+**Best for multi-tenant applications.**
+@225 h3
+Sharding Challenges
+@226 p
+**1. Cross-shard queries**
+@227 p
+Phải query tất cả shards → aggregate results → slow.
+@228 p
+**Solution:** Avoid cross-shard queries bằng cách design shard key cẩn thận.
+@229 p
+**2. Cross-shard transactions**
+@230 p
+**Distributed transaction phức tạp.** Thường avoid bằng cách:
+@231 li
+Eventual consistency
+@232 li
+Saga pattern
+@233 li
+Compensating transactions
+@234 p
+**3. Rebalancing**
+@235 p
+Data grow không đều → một shard đầy trước.
+@236 p
+**Rebalancing = move data giữa shards.**
+@237 p
+Phức tạp, downtime risk, cần planning cẩn thận.
+@238 p
+**4. Joins**
+@239 p
+**Users ở shard A, orders ở shard B → không thể join.**
+@240 p
+**Solution:**
+@241 li
+Denormalize data
+@242 li
+Application-level joins
+@243 li
+Design schema để avoid cross-shard joins
+@244 h3
+Sharding Architecture Example
+@245 pre
+flowchart TB
+    App[Application Layer]
+    Router[Shard Router / Proxy]
+    
+    subgraph Shard1["Shard 1 (user_id: 0-999)"]
+        S1P[Primary]
+        S1R1[Replica 1]
+        S1R2[Replica 2]
+    end
+    
+    subgraph Shard2["Shard 2 (user_id: 1000-1999)"]
+        S2P[Primary]
+        S2R1[Replica 1]
+        S2R2[Replica 2]
+    end
+    
+    subgraph Shard3["Shard 3 (user_id: 2000-2999)"]
+        S3P[Primary]
+        S3R1[Replica 1]
+        S3R2[Replica 2]
+    end
+    
+    App --> Router
+    Router --> S1P
+    Router --> S2P
+    Router --> S3P
+    
+    S1P -.-> S1R1
+    S1P -.-> S1R2
+    S2P -.-> S2R1
+    S2P -.-> S2R2
+    S3P -.-> S3R1
+    S3P -.-> S3R2
+@246 p
+**Shard router** quyết định query đi đến shard nào dựa trên shard key.
+@247 h3
+When To Shard
+@248 p
+**Shard khi:**
+@249 li
+Write throughput vượt quá single database
+@250 li
+Storage vượt quá single server capacity
+@251 li
+Đã optimize queries, indexes, read replicas
+@252 li
+Business justifies complexity
+@253 p
+**Chưa nên shard khi:**
+@254 li
+Single database đủ handle traffic
+@255 li
+Chưa optimize queries
+@256 li
+Chưa dùng read replicas
+@257 li
+Team chưa có expertise
+@258 p
+**Rule of thumb:** Sharding là last resort. Exhaust simpler solutions trước.
+@259 h2
+Partitioning - Logical Sharding Within Single Database
+@260 p
+**Partitioning = chia table thành multiple physical partitions, nhưng vẫn 1 logical table.**
+@261 p
+Similar sharding, nhưng database-managed, không phải application.
+@262 h3
+Types Of Partitioning
+@263 h4
+Range Partitioning
+@264 p
+**Query automatically routed đến correct partition.**
+@265 h4
+Hash Partitioning
+@266 p
+**Even distribution across partitions.**
+@267 h4
+List Partitioning
+@268 h3
+Benefits Of Partitioning
+@269 p
+**1. Query performance**
+@270 li
+Partition pruning: chỉ scan relevant partitions
+@271 li
+Smaller indexes per partition
+@272 p
+**2. Maintenance**
+@273 li
+Drop old partitions thay vì DELETE (fast)
+@274 li
+Vacuum/analyze per partition
+@275 p
+**3. Archival**
+@276 li
+Move old partitions to slower storage
+@277 h3
+Partitioning vs Sharding
+@278 th
+Aspect
+@279 th
+Partitioning
+@280 th
+Sharding
+@281 td
+Scope
+@282 td
+Single database
+@283 td
+Multiple databases
+@284 td
+Complexity
+@285 td
+Low
+@286 td
+High
+@287 td
+Scale
+@288 td
+Limited
+@289 td
+Unlimited
+@290 td
+Management
+@291 td
+Database-managed
+@292 td
+Application-managed
+@293 td
+Transactions
+@294 td
+Easy
+@295 td
+Hard (distributed)
+@296 p
+**Partitioning = simpler sharding for single database.**
+@297 h2
+Database Scaling Progression
+@298 p
+**Không nhảy thẳng vào sharding. Follow progression:**
+@299 pre
+flowchart TD
+    Start[Single Database] --> Step1{Slow queries?}
+    Step1 -->|Yes| Optimize[Query Optimization<br/>+ Indexing]
+    Optimize --> Step2{Still slow?}
+    
+    Step2 -->|Read-heavy| Replicas[Add Read Replicas]
+    Step2 -->|Write-heavy| Partition[Partitioning]
+    
+    Replicas --> Step3{Replicas maxed?}
+    Partition --> Step3
+    
+    Step3 -->|Yes| Cache[Add Caching Layer]
+    Cache --> Step4{Still bottleneck?}
+    
+    Step4 -->|Yes| Shard[Sharding]
+    Shard --> Done[Scaled!]
+    
+    Step1 -->|No| Good[You're good!]
+    Step2 -->|No| Good
+    Step3 -->|No| Good
+    Step4 -->|No| Good
+@300 p
+**Mỗi step tăng complexity. Chỉ advance khi necessary.**
+@301 h2
+Practical Recommendations
+@302 h3
+1. Measure First
+@303 p
+**Don't guess. Measure.**
+@304 h3
+2. Low-Hanging Fruit First
+@305 p
+**Before sharding:**
+@306 li
+Add missing indexes
+@307 li
+Optimize queries
+@308 li
+Add read replicas
+@309 li
+Add caching
+@310 li
+Partition tables
+@311 p
+**Sharding chỉ khi exhausted simpler options.**
+@312 h3
+3. Design For Your Read/Write Ratio
+@313 p
+**Read-heavy (90% reads):**
+@314 li
+Read replicas + caching = giải quyết most problems
+@315 li
+Primary chỉ handle 10% writes
+@316 p
+**Write-heavy (50%+ writes):**
+@317 li
+Partitioning → sharding
+@318 li
+Async writes với queue
+@319 li
+Eventual consistency
+@320 h3
+4. Connection Pooling
+@321 p
+**Database connections expensive.**
+@322 p
+**Reuse connections, reduce overhead.**
+@323 h3
+5. Database-Specific Tuning
+@324 p
+**PostgreSQL:**
+@325 p
+**MySQL:**
+@326 p
+**Tune based on workload + hardware.**
+@327 h2
+Mental Model: Database Thường Là Bottleneck Lớn Nhất
+@328 p
+**Core insight:**
+@329 p
+**Application servers stateless → scale easy.**\n
+**Database stateful → scale hard.**
+@330 pre
+Add API server:     1 command, 5 minutes
+Add database shard: Weeks of planning + implementation
+
+@331 p
+**Architect priorities:**
+@332 p
+**Reduce database load:**
+@333 li
+Caching (90% cache hit = 10x less DB queries)
+@334 li
+Async processing (writes → queue)
+@335 li
+CDN (static content)
+@336 p
+**Optimize queries:**
+@337 li
+Proper indexes
+@338 li
+Avoid N+1
+@339 li
+EXPLAIN ANALYZE everything
+@340 p
+**Scale reads:**
+@341 li
+Read replicas
+@342 li
+Geographic distribution
+@343 p
+**Last resort - scale writes:**
+@344 li
+Partitioning
+@345 li
+Sharding
+@346 p
+**Great architects minimize database pressure, không rush vào complex scaling.**
+@347 h2
+Key Takeaways
+@348 p
+**1. Database là bottleneck lớn nhất trong most systems**
+@349 p
+Stateful, ACID guarantees, disk I/O limits.
+@350 p
+**2. Index strategy = first line of defense**
+@351 p
+Proper indexes có thể improve performance 100x-1000x.
+@352 p
+**3. Query optimization trước khi scaling**
+@353 p
+Bad queries trên scaled system vẫn bad. Optimize trước.
+@354 p
+**4. N+1 problem = silent killer**
+@355 p
+1000 queries thay vì 2. Always check generated SQL.
+@356 p
+**5. Denormalization = trade consistency for speed**
+@357 p
+Pre-compute expensive aggregations. Material views useful.
+@358 p
+**6. Read replicas scale reads horizontally**
+@359 p
+Add replicas as traffic grows. Handle replication lag properly.
+@360 p
+**7. Sharding = scale writes + storage, nhưng phức tạp**
+@361 p
+Cross-shard queries, transactions hard. Last resort.
+@362 p
+**8. Partitioning = simpler alternative to sharding**
+@363 p
+Database-managed, single server, good for most use cases.
+@364 p
+**9. Follow progression: optimize → replicas → partition → shard**
+@365 p
+Don't jump to sharding. Exhaust simpler solutions.
+@366 p
+**10. Measure, don't guess**
+@367 p
+Slow query log, monitoring metrics, EXPLAIN ANALYZE.
+@368 p
+**Remember: The best database scaling strategy is to need less database. Cache aggressively, optimize queries, and only scale when you've exhausted simpler options.**

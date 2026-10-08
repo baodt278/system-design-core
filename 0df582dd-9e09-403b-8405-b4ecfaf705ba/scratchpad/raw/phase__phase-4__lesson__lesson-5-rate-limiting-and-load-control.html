@@ -1,0 +1,914 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Rate Limiting &amp; Load Control - Protect System Khỏi Overload | Phase 4 — Scalability &amp; Performance | System Design Core</title><meta name="description" content="Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách pr"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control"/><meta property="og:title" content="Rate Limiting &amp; Load Control - Protect System Khỏi Overload | Phase 4 — Scalability &amp; Performance"/><meta property="og:description" content="Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách pr"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Rate Limiting &amp; Load Control - Protect System Khỏi Overload | Phase 4 — Scalability &amp; Performance"/><meta name="twitter:description" content="Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách pr"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 4 — Scalability &amp; Performance</p><p class="mt-3 text-xl font-semibold text-ink">Rate Limiting &amp; Load Control - Protect System Khỏi Overload</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách protect hệ thống khỏi traffic spikes và cascading failures.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-1-performance-bottleneck-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Performance &amp; Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-2-caching-strategy-trade-consistency-de-lay-speed"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Caching Strategy - Trade Consistency Để Lấy Speed</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">CDN &amp; Edge Computing - Distributed Cache Gần User</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-4-database-scaling-optimization"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Rate Limiting &amp; Load Control - Protect System Khỏi Overload</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging"><p class="text-xs text-ink-dim">Bài <!-- -->7</p><p class="mt-1 text-sm font-medium text-ink">Monitoring, Observability &amp; Performance Debugging - Measure To Scale</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-4">Phase 4 — Scalability &amp; Performance</a></li><li>/</li><li aria-current="page" class="text-ink">Rate Limiting &amp; Load Control - Protect System Khỏi Overload</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Rate Limiting &amp; Load Control - Protect System Khỏi Overload</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách protect hệ thống khỏi traffic spikes và cascading failures.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Rate Limiting &amp; Load Control - Protect System Khỏi Overload"><article class="prose-ui"><h1 id="rate-limiting--load-control---protect-system-khỏi-overload">Rate Limiting &amp; Load Control - Protect System Khỏi Overload</h1>
+<p>Bạn build một API hoàn hảo. Code clean, database optimized, infrastructure solid.</p>
+<p>Rồi một ngày, traffic spike 10x bất ngờ. Có thể là:</p>
+<ul>
+<li>Viral post trên social media</li>
+<li>Bot attack</li>
+<li>Bug ở client (infinite retry loop)</li>
+<li>Flash sale trong e-commerce</li>
+</ul>
+<p><strong>Hệ thống collapse. Database overwhelm. Servers crash. Toàn bộ service down.</strong></p>
+<p>Không phải vì architecture tồi. Là vì <strong>không có protection mechanisms.</strong></p>
+<p><strong>Mental model quan trọng:</strong> System phải biết protect itself. Không thể tin rằng traffic sẽ luôn reasonable.</p>
+<p>Lesson này dạy bạn:</p>
+<ul>
+<li>Rate limiting algorithms (token bucket, leaky bucket)</li>
+<li>Distributed rate limiting</li>
+<li>Backpressure &amp; load shedding</li>
+<li>Circuit breaker pattern</li>
+<li>Khi nào dùng technique nào</li>
+</ul>
+<h2 id="tại-sao-cần-rate-limiting">Tại Sao Cần Rate Limiting?</h2>
+<h3 id="problem-1-resource-exhaustion">Problem 1: Resource Exhaustion</h3>
+<p><strong>Mọi system có giới hạn.</strong></p>
+<pre><code>Database: 1000 connections
+API server: 10,000 concurrent requests
+Network: 1 Gbps bandwidth
+</code></pre>
+<p><strong>Vượt quá giới hạn → system crash.</strong></p>
+<p>Without rate limiting, một client có thể consume toàn bộ resources.</p>
+<h3 id="problem-2-cost-control">Problem 2: Cost Control</h3>
+<p><strong>Cloud services charge theo usage.</strong></p>
+<pre><code>API Gateway: $3.50 per million requests
+Lambda: $0.20 per million invocations
+Database: $0.10 per GB transfer
+</code></pre>
+<p><strong>Uncontrolled traffic = unlimited cost.</strong></p>
+<p>Bot attack có thể generate hàng triệu requests → bill $10,000 trong 1 ngày.</p>
+<h3 id="problem-3-abuse--security">Problem 3: Abuse &amp; Security</h3>
+<p><strong>Attackers exploit systems:</strong></p>
+<ul>
+<li>Brute force login (thử hàng nghìn passwords)</li>
+<li>Scraping data (crawl toàn bộ database)</li>
+<li>DDoS (overwhelm với junk traffic)</li>
+</ul>
+<p><strong>Rate limiting = first line of defense.</strong></p>
+<h3 id="problem-4-fair-usage">Problem 4: Fair Usage</h3>
+<p><strong>Một user không nên monopolize resources.</strong></p>
+<p>Trong multi-tenant system, 1 customer spam requests → impact tất cả customers.</p>
+<p><strong>Rate limiting đảm bảo fairness.</strong></p>
+<h3 id="use-cases">Use Cases</h3>
+<p><strong>API quotas:</strong></p>
+<ul>
+<li>Free tier: 1000 requests/day</li>
+<li>Pro tier: 100,000 requests/day</li>
+</ul>
+<p><strong>Login attempts:</strong></p>
+<ul>
+<li>5 failed attempts → lock account 15 minutes</li>
+</ul>
+<p><strong>Search queries:</strong></p>
+<ul>
+<li>10 searches/minute per user</li>
+</ul>
+<p><strong>File uploads:</strong></p>
+<ul>
+<li>100 MB/hour per user</li>
+</ul>
+<h2 id="rate-limiting-algorithms">Rate Limiting Algorithms</h2>
+<p>Có nhiều algorithms, mỗi cái phù hợp với use case khác nhau.</p>
+<h3 id="1-fixed-window-counter">1. Fixed Window Counter</h3>
+<p><strong>Simplest algorithm.</strong></p>
+<pre><code class="language-python">import time
+
+class FixedWindowRateLimiter:
+    def __init__(self, limit, window_seconds):
+        self.limit = limit
+        self.window = window_seconds
+        self.counter = 0
+        self.window_start = time.time()
+    
+    def allow_request(self):
+        now = time.time()
+        
+        # New window
+        if now - self.window_start &gt;= self.window:
+            self.counter = 0
+            self.window_start = now
+        
+        # Check limit
+        if self.counter &lt; self.limit:
+            self.counter += 1
+            return True
+        
+        return False
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code>Window: 1 minute
+Limit: 100 requests
+
+00:00-00:59: 100 requests ✅
+01:00-01:59: Reset counter, 100 requests ✅
+</code></pre>
+<p><strong>Problem: Window boundary issue</strong></p>
+<pre><code>00:59: 100 requests (max out)
+01:00: Reset
+01:01: 100 requests
+
+Total 200 requests trong 2 seconds! ⚠️
+</code></pre>
+<p><strong>Burst traffic ở window boundary bypass limit.</strong></p>
+<h3 id="2-sliding-window-log">2. Sliding Window Log</h3>
+<p><strong>Track timestamp của mỗi request.</strong></p>
+<pre><code class="language-python">from collections import deque
+import time
+
+class SlidingWindowLog:
+    def __init__(self, limit, window_seconds):
+        self.limit = limit
+        self.window = window_seconds
+        self.log = deque()
+    
+    def allow_request(self):
+        now = time.time()
+        
+        # Remove old requests outside window
+        while self.log and self.log[0] &lt;= now - self.window:
+            self.log.popleft()
+        
+        # Check limit
+        if len(self.log) &lt; self.limit:
+            self.log.append(now)
+            return True
+        
+        return False
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code>Window: 60 seconds
+Limit: 100 requests
+
+Request at 10:00:30
+→ Count requests từ 09:59:30 đến 10:00:30
+→ If &lt; 100, allow
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Accurate (no window boundary issue)</li>
+<li>Smooth rate limiting</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Memory intensive (store all timestamps)</li>
+<li>O(N) lookup time</li>
+</ul>
+<h3 id="3-sliding-window-counter-hybrid">3. Sliding Window Counter (Hybrid)</h3>
+<p><strong>Combine fixed window + sliding calculation.</strong></p>
+<pre><code class="language-python">import time
+
+class SlidingWindowCounter:
+    def __init__(self, limit, window_seconds):
+        self.limit = limit
+        self.window = window_seconds
+        self.current_window = {&quot;start&quot;: time.time(), &quot;count&quot;: 0}
+        self.prev_window_count = 0
+    
+    def allow_request(self):
+        now = time.time()
+        
+        # Calculate sliding count
+        elapsed = now - self.current_window[&quot;start&quot;]
+        
+        if elapsed &gt;= self.window:
+            # New window
+            self.prev_window_count = self.current_window[&quot;count&quot;]
+            self.current_window = {&quot;start&quot;: now, &quot;count&quot;: 0}
+            elapsed = 0
+        
+        # Weighted count from previous window
+        prev_weight = (self.window - elapsed) / self.window
+        estimated_count = (
+            self.prev_window_count * prev_weight +
+            self.current_window[&quot;count&quot;]
+        )
+        
+        if estimated_count &lt; self.limit:
+            self.current_window[&quot;count&quot;] += 1
+            return True
+        
+        return False
+</code></pre>
+<p><strong>Smooths out fixed window spikes với O(1) memory.</strong></p>
+<h3 id="4-token-bucket-most-popular">4. Token Bucket (MOST POPULAR)</h3>
+<p><strong>Bucket chứa tokens. Mỗi request consume 1 token.</strong></p>
+<pre><code class="language-python">import time
+
+class TokenBucket:
+    def __init__(self, capacity, refill_rate):
+        self.capacity = capacity        # Max tokens
+        self.tokens = capacity           # Current tokens
+        self.refill_rate = refill_rate   # Tokens per second
+        self.last_refill = time.time()
+    
+    def allow_request(self, tokens_needed=1):
+        now = time.time()
+        
+        # Refill tokens
+        elapsed = now - self.last_refill
+        tokens_to_add = elapsed * self.refill_rate
+        self.tokens = min(self.capacity, self.tokens + tokens_to_add)
+        self.last_refill = now
+        
+        # Check if enough tokens
+        if self.tokens &gt;= tokens_needed:
+            self.tokens -= tokens_needed
+            return True
+        
+        return False
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code>Capacity: 100 tokens
+Refill rate: 10 tokens/second
+
+Start: 100 tokens
+Request 1: 99 tokens (allow)
+Request 2: 98 tokens (allow)
+... (100 requests)
+Request 101: 0 tokens (reject) ❌
+
+Wait 1 second: +10 tokens
+Request 102: 9 tokens (allow) ✅
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Allow bursts (lợi dụng accumulated tokens)</li>
+<li>Smooth long-term rate</li>
+<li>Simple implementation</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Bursts có thể overwhelm downstream</li>
+</ul>
+<p><strong>Used by:</strong> AWS API Gateway, Kong, Nginx.</p>
+<h3 id="5-leaky-bucket">5. Leaky Bucket</h3>
+<p><strong>Bucket leak tokens at constant rate.</strong></p>
+<pre><code class="language-python">import time
+from collections import deque
+
+class LeakyBucket:
+    def __init__(self, capacity, leak_rate):
+        self.capacity = capacity      # Max queue size
+        self.leak_rate = leak_rate    # Requests processed per second
+        self.queue = deque()
+        self.last_leak = time.time()
+    
+    def allow_request(self):
+        now = time.time()
+        
+        # Leak (process) requests
+        elapsed = now - self.last_leak
+        leaks = int(elapsed * self.leak_rate)
+        
+        for _ in range(min(leaks, len(self.queue))):
+            self.queue.popleft()
+        
+        self.last_leak = now
+        
+        # Add request to queue
+        if len(self.queue) &lt; self.capacity:
+            self.queue.append(now)
+            return True
+        
+        return False
+</code></pre>
+<p><strong>Difference từ Token Bucket:</strong></p>
+<p><strong>Token Bucket:</strong> Bursty output (có thể send nhiều requests cùng lúc nếu có tokens)<br/>
+<strong>Leaky Bucket:</strong> Smooth output (constant rate, không có bursts)</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    subgraph TokenBucket[&quot;Token Bucket&quot;]
+        TB_Input[Requests] --&gt;|Variable rate| TB_Bucket[Bucket]
+        TB_Bucket --&gt;|Can burst| TB_Output[Output]
+    end
+    
+    subgraph LeakyBucket[&quot;Leaky Bucket&quot;]
+        LB_Input[Requests] --&gt;|Variable rate| LB_Queue[Queue]
+        LB_Queue --&gt;|Constant rate| LB_Output[Output]
+    end</code></pre>
+<p><strong>Token Bucket = rate limit input.</strong><br/>
+<strong>Leaky Bucket = rate limit output.</strong></p>
+<h3 id="algorithm-comparison">Algorithm Comparison</h3>
+<table><thead><tr><th>Algorithm</th><th>Memory</th><th>Accuracy</th><th>Bursts</th><th>Use Case</th></tr></thead><tbody><tr><td>Fixed Window</td><td>O(1)</td><td>Low</td><td>Yes</td><td>Simple quotas</td></tr><tr><td>Sliding Log</td><td>O(N)</td><td>High</td><td>No</td><td>Precise limiting</td></tr><tr><td>Sliding Counter</td><td>O(1)</td><td>Medium</td><td>No</td><td>Good balance</td></tr><tr><td>Token Bucket</td><td>O(1)</td><td>Good</td><td>Yes</td><td>Most APIs</td></tr><tr><td>Leaky Bucket</td><td>O(N)</td><td>Good</td><td>No</td><td>Traffic shaping</td></tr></tbody></table>
+<p><strong>Token Bucket = most popular vì balance simplicity + effectiveness.</strong></p>
+<h2 id="distributed-rate-limiting">Distributed Rate Limiting</h2>
+<p><strong>Problem:</strong> Multiple API servers, làm sao sync rate limits?</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    User[User]
+    LB[Load Balancer]
+    
+    subgraph Servers
+        S1[Server 1&lt;br/&gt;Local counter: 50]
+        S2[Server 2&lt;br/&gt;Local counter: 50]
+        S3[Server 3&lt;br/&gt;Local counter: 50]
+    end
+    
+    User --&gt; LB
+    LB --&gt; S1
+    LB --&gt; S2
+    LB --&gt; S3</code></pre>
+<p><strong>Limit: 100 req/min per user.</strong></p>
+<p>Nếu mỗi server track riêng → user có thể send 50 requests đến mỗi server = 150 total! ⚠️</p>
+<h3 id="solution-1-centralized-state-redis">Solution 1: Centralized State (Redis)</h3>
+<p><strong>Store counters trong shared Redis.</strong></p>
+<pre><code class="language-python">import redis
+import time
+
+class DistributedRateLimiter:
+    def __init__(self, redis_client, limit, window):
+        self.redis = redis_client
+        self.limit = limit
+        self.window = window
+    
+    def allow_request(self, user_id):
+        key = f&quot;rate_limit:{user_id}&quot;
+        current = self.redis.get(key)
+        
+        if current is None:
+            # First request
+            self.redis.setex(key, self.window, 1)
+            return True
+        
+        if int(current) &lt; self.limit:
+            self.redis.incr(key)
+            return True
+        
+        return False
+</code></pre>
+<p><strong>Token bucket in Redis:</strong></p>
+<pre><code class="language-python">def allow_request_token_bucket(self, user_id):
+    key = f&quot;token_bucket:{user_id}&quot;
+    now = time.time()
+    
+    # Lua script for atomic operation
+    lua_script = &quot;&quot;&quot;
+    local key = KEYS[1]
+    local capacity = tonumber(ARGV[1])
+    local refill_rate = tonumber(ARGV[2])
+    local now = tonumber(ARGV[3])
+    
+    local bucket = redis.call(&#x27;HMGET&#x27;, key, &#x27;tokens&#x27;, &#x27;last_refill&#x27;)
+    local tokens = tonumber(bucket[1]) or capacity
+    local last_refill = tonumber(bucket[2]) or now
+    
+    -- Refill tokens
+    local elapsed = now - last_refill
+    tokens = math.min(capacity, tokens + elapsed * refill_rate)
+    
+    if tokens &gt;= 1 then
+        tokens = tokens - 1
+        redis.call(&#x27;HMSET&#x27;, key, &#x27;tokens&#x27;, tokens, &#x27;last_refill&#x27;, now)
+        redis.call(&#x27;EXPIRE&#x27;, key, 3600)
+        return 1
+    else
+        return 0
+    end
+    &quot;&quot;&quot;
+    
+    return self.redis.eval(lua_script, 1, key, 
+                          self.capacity, self.refill_rate, now)
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Accurate cross-server</li>
+<li>Centralized logic</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Redis single point of failure</li>
+<li>Network latency per request</li>
+<li>Redis can be bottleneck</li>
+</ul>
+<h3 id="solution-2-eventually-consistent-gossip">Solution 2: Eventually Consistent (Gossip)</h3>
+<p><strong>Mỗi server maintain local state, sync periodically.</strong></p>
+<pre><code class="language-python">class EventuallyConsistentRateLimiter:
+    def __init__(self, limit, num_servers):
+        self.limit = limit
+        self.local_limit = limit // num_servers  # Divide among servers
+        self.local_counter = 0
+        self.global_counters = {}  # From other servers
+    
+    def allow_request(self, user_id):
+        # Check local limit first
+        if self.local_counter &lt; self.local_limit:
+            self.local_counter += 1
+            return True
+        
+        # Check global limit (eventual)
+        total = sum(self.global_counters.values()) + self.local_counter
+        return total &lt; self.limit
+    
+    def sync_with_peers(self):
+        # Gossip protocol: exchange counters with other servers
+        pass
+</code></pre>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>No single point of failure</li>
+<li>Low latency (local check)</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Not accurate (eventual consistency)</li>
+<li>Complex implementation</li>
+</ul>
+<h3 id="hybrid-approach-practical">Hybrid Approach (Practical)</h3>
+<p><strong>Local cache + Redis.</strong></p>
+<pre><code class="language-python">class HybridRateLimiter:
+    def __init__(self, redis_client, limit, window):
+        self.redis = redis_client
+        self.limit = limit
+        self.window = window
+        self.local_cache = {}
+        self.cache_ttl = 1  # 1 second cache
+    
+    def allow_request(self, user_id):
+        # Check local cache first
+        cache_entry = self.local_cache.get(user_id)
+        now = time.time()
+        
+        if cache_entry and now - cache_entry[&#x27;time&#x27;] &lt; self.cache_ttl:
+            if cache_entry[&#x27;count&#x27;] &lt; self.limit:
+                cache_entry[&#x27;count&#x27;] += 1
+                return True
+            return False
+        
+        # Cache miss or expired - check Redis
+        key = f&quot;rate_limit:{user_id}&quot;
+        current = self.redis.get(key)
+        
+        if current is None or int(current) &lt; self.limit:
+            count = self.redis.incr(key)
+            self.redis.expire(key, self.window)
+            
+            # Update local cache
+            self.local_cache[user_id] = {
+                &#x27;count&#x27;: count,
+                &#x27;time&#x27;: now
+            }
+            return True
+        
+        return False
+</code></pre>
+<p><strong>Balance accuracy + performance.</strong></p>
+<h2 id="rate-limiting-response-headers">Rate Limiting Response Headers</h2>
+<p><strong>Clients cần biết rate limit status.</strong></p>
+<p><strong>Standard headers:</strong></p>
+<pre><code class="language-http">HTTP/1.1 200 OK
+X-RateLimit-Limit: 1000           # Total limit
+X-RateLimit-Remaining: 950        # Requests remaining
+X-RateLimit-Reset: 1643990400     # Unix timestamp when resets
+
+HTTP/1.1 429 Too Many Requests
+Retry-After: 60                   # Seconds until retry
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1643990400
+</code></pre>
+<p><strong>Clients có thể:</strong></p>
+<ul>
+<li>Display quota to users</li>
+<li>Implement exponential backoff</li>
+<li>Schedule requests efficiently</li>
+</ul>
+<h2 id="backpressure---push-back-on-upstream">Backpressure - Push Back On Upstream</h2>
+<p><strong>Rate limiting protect system từ external traffic. Backpressure protect từ internal overload.</strong></p>
+<h3 id="the-problem">The Problem</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant API
+    participant Queue
+    participant Worker
+    participant DB
+    
+    API-&gt;&gt;Queue: Fast (1000 msg/s)
+    Queue-&gt;&gt;Worker: Medium (100 msg/s)
+    Worker-&gt;&gt;DB: Slow (10 query/s)
+    
+    Note over Queue: Queue grows infinitely!</code></pre>
+<p><strong>Producer nhanh hơn consumer → queue explode.</strong></p>
+<h3 id="solution-backpressure">Solution: Backpressure</h3>
+<p><strong>Slow down producer khi consumer overwhelmed.</strong></p>
+<pre><code class="language-python">class BackpressureQueue:
+    def __init__(self, max_size):
+        self.queue = []
+        self.max_size = max_size
+    
+    def push(self, item):
+        if len(self.queue) &gt;= self.max_size:
+            # Backpressure: Block or reject
+            raise QueueFullError(&quot;Queue full, slow down!&quot;)
+        
+        self.queue.append(item)
+    
+    def pop(self):
+        if self.queue:
+            return self.queue.pop(0)
+        return None
+</code></pre>
+<p><strong>API checks queue size:</strong></p>
+<pre><code class="language-python">@app.route(&#x27;/api/task&#x27;, methods=[&#x27;POST&#x27;])
+def create_task():
+    try:
+        queue.push(request.data)
+        return {&quot;status&quot;: &quot;queued&quot;}, 202
+    except QueueFullError:
+        return {&quot;error&quot;: &quot;System overloaded, try later&quot;}, 503
+</code></pre>
+<p><strong>503 Service Unavailable = backpressure signal.</strong></p>
+<h3 id="reactive-streams-backpressure">Reactive Streams Backpressure</h3>
+<p><strong>Modern approach: request-based pull.</strong></p>
+<pre><code class="language-python">class ReactiveStream:
+    def __init__(self, producer, consumer):
+        self.producer = producer
+        self.consumer = consumer
+        self.buffer = []
+        self.requested = 0
+    
+    def request(self, n):
+        # Consumer requests n items
+        self.requested += n
+        self.try_send()
+    
+    def try_send(self):
+        while self.requested &gt; 0 and self.buffer:
+            item = self.buffer.pop(0)
+            self.consumer.on_next(item)
+            self.requested -= 1
+    
+    def on_data(self, item):
+        # Producer sends data
+        if self.requested &gt; 0:
+            self.consumer.on_next(item)
+            self.requested -= 1
+        else:
+            # Buffer or drop
+            if len(self.buffer) &lt; MAX_BUFFER:
+                self.buffer.append(item)
+            else:
+                self.consumer.on_error(&quot;Backpressure limit&quot;)
+</code></pre>
+<p><strong>Consumer pulls data at its pace, not pushed.</strong></p>
+<h2 id="load-shedding---drop-traffic-to-survive">Load Shedding - Drop Traffic To Survive</h2>
+<p><strong>Khi hệ thống quá tải, reject requests để protect core functionality.</strong></p>
+<h3 id="priority-based-shedding">Priority-Based Shedding</h3>
+<p><strong>Not all requests equal importance.</strong></p>
+<pre><code class="language-python">class LoadShedder:
+    def __init__(self, max_load):
+        self.max_load = max_load
+        self.current_load = 0
+    
+    def allow_request(self, priority):
+        if self.current_load &lt; self.max_load:
+            return True
+        
+        # Overload: only allow high priority
+        if priority == &quot;critical&quot;:
+            return True
+        elif priority == &quot;high&quot; and self.current_load &lt; self.max_load * 1.1:
+            return True
+        else:
+            return False
+</code></pre>
+<p><strong>Example priorities:</strong></p>
+<pre><code class="language-python"># Critical: payment, checkout
+if allow_request(&quot;critical&quot;):
+    process_payment()
+
+# High: user profile update  
+if allow_request(&quot;high&quot;):
+    update_profile()
+
+# Low: analytics, logging
+if allow_request(&quot;low&quot;):
+    track_analytics()
+</code></pre>
+<p><strong>Shed low-priority traffic first.</strong></p>
+<h3 id="adaptive-shedding">Adaptive Shedding</h3>
+<p><strong>Shed based on system health metrics.</strong></p>
+<pre><code class="language-python">class AdaptiveLoadShedder:
+    def __init__(self):
+        self.error_rate = 0.0
+        self.latency_p99 = 0.0
+    
+    def should_shed_load(self):
+        # Shed if error rate high
+        if self.error_rate &gt; 0.05:  # 5% errors
+            return True
+        
+        # Shed if latency high
+        if self.latency_p99 &gt; 1000:  # 1 second
+            return True
+        
+        # Shed if CPU high
+        cpu_usage = psutil.cpu_percent()
+        if cpu_usage &gt; 90:
+            return True
+        
+        return False
+    
+    def calculate_shed_probability(self):
+        # Progressive shedding
+        if self.error_rate &lt; 0.01:
+            return 0.0  # No shedding
+        elif self.error_rate &lt; 0.05:
+            return 0.5  # Shed 50%
+        else:
+            return 0.9  # Shed 90%
+</code></pre>
+<p><strong>Gradual degradation thay vì hard cutoff.</strong></p>
+<h2 id="circuit-breaker---stop-calling-failing-services">Circuit Breaker - Stop Calling Failing Services</h2>
+<p><strong>Pattern để prevent cascading failures.</strong></p>
+<h3 id="the-problem-1">The Problem</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant API
+    participant ServiceA
+    participant ServiceB
+    
+    API-&gt;&gt;ServiceB: Request
+    ServiceB--&gt;&gt;API: Timeout (30s)
+    
+    API-&gt;&gt;ServiceB: Retry
+    ServiceB--&gt;&gt;API: Timeout (30s)
+    
+    Note over API: All threads blocked!&lt;br/&gt;API becomes unresponsive</code></pre>
+<p><strong>Service B down → API keep trying → API down too.</strong></p>
+<h3 id="circuit-breaker-states">Circuit Breaker States</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>stateDiagram-v2
+    [*] --&gt; Closed
+    Closed --&gt; Open: Failures exceed threshold
+    Open --&gt; HalfOpen: Timeout expires
+    HalfOpen --&gt; Closed: Success
+    HalfOpen --&gt; Open: Failure</code></pre>
+<p><strong>States:</strong></p>
+<p><strong>Closed (Normal):</strong></p>
+<ul>
+<li>Requests pass through</li>
+<li>Track failures</li>
+</ul>
+<p><strong>Open (Failed):</strong></p>
+<ul>
+<li>Reject requests immediately (fail fast)</li>
+<li>Don&#x27;t call failing service</li>
+<li>Return cached data or error</li>
+</ul>
+<p><strong>Half-Open (Testing):</strong></p>
+<ul>
+<li>Allow limited requests</li>
+<li>Test if service recovered</li>
+<li>Close if success, open if fail</li>
+</ul>
+<h3 id="implementation">Implementation</h3>
+<pre><code class="language-python">import time
+from enum import Enum
+
+class CircuitState(Enum):
+    CLOSED = &quot;closed&quot;
+    OPEN = &quot;open&quot;
+    HALF_OPEN = &quot;half_open&quot;
+
+class CircuitBreaker:
+    def __init__(self, failure_threshold=5, timeout=60, half_open_max=3):
+        self.failure_threshold = failure_threshold
+        self.timeout = timeout  # Seconds before trying again
+        self.half_open_max = half_open_max
+        
+        self.state = CircuitState.CLOSED
+        self.failure_count = 0
+        self.last_failure_time = None
+        self.half_open_attempts = 0
+    
+    def call(self, func, *args, **kwargs):
+        if self.state == CircuitState.OPEN:
+            # Check if timeout expired
+            if time.time() - self.last_failure_time &gt;= self.timeout:
+                self.state = CircuitState.HALF_OPEN
+                self.half_open_attempts = 0
+            else:
+                raise CircuitBreakerOpenError(&quot;Circuit breaker is open&quot;)
+        
+        try:
+            result = func(*args, **kwargs)
+            self.on_success()
+            return result
+        except Exception as e:
+            self.on_failure()
+            raise e
+    
+    def on_success(self):
+        if self.state == CircuitState.HALF_OPEN:
+            self.state = CircuitState.CLOSED
+        
+        self.failure_count = 0
+    
+    def on_failure(self):
+        self.failure_count += 1
+        self.last_failure_time = time.time()
+        
+        if self.state == CircuitState.HALF_OPEN:
+            self.state = CircuitState.OPEN
+        elif self.failure_count &gt;= self.failure_threshold:
+            self.state = CircuitState.OPEN
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-python">breaker = CircuitBreaker(failure_threshold=5, timeout=60)
+
+def call_external_service():
+    return breaker.call(external_api.get_data)
+
+try:
+    data = call_external_service()
+except CircuitBreakerOpenError:
+    # Service is down, use fallback
+    data = get_cached_data()
+</code></pre>
+<h3 id="benefits">Benefits</h3>
+<p><strong>1. Fail fast</strong></p>
+<ul>
+<li>Không waste time retry failing service</li>
+<li>Free up threads/resources</li>
+</ul>
+<p><strong>2. Give service time to recover</strong></p>
+<ul>
+<li>Stop hammering failed service</li>
+<li>Allow graceful recovery</li>
+</ul>
+<p><strong>3. Prevent cascading failures</strong></p>
+<ul>
+<li>One service down ≠ entire system down</li>
+</ul>
+<p><strong>4. Provide fallbacks</strong></p>
+<pre><code class="language-python">try:
+    data = call_external_service()
+except CircuitBreakerOpenError:
+    # Fallback strategies
+    data = get_cached_data()           # Use cache
+    data = get_default_data()          # Use defaults
+    data = call_backup_service()       # Alternate service
+</code></pre>
+<h2 id="bulkhead-pattern---isolate-failures">Bulkhead Pattern - Isolate Failures</h2>
+<p><strong>Don&#x27;t let one component consume all resources.</strong></p>
+<h3 id="thread-pool-bulkheads">Thread Pool Bulkheads</h3>
+<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor
+
+class BulkheadPattern:
+    def __init__(self):
+        # Separate thread pools for different services
+        self.service_a_pool = ThreadPoolExecutor(max_workers=10)
+        self.service_b_pool = ThreadPoolExecutor(max_workers=10)
+        self.service_c_pool = ThreadPoolExecutor(max_workers=10)
+    
+    def call_service_a(self, request):
+        return self.service_a_pool.submit(service_a.process, request)
+    
+    def call_service_b(self, request):
+        return self.service_b_pool.submit(service_b.process, request)
+</code></pre>
+<p><strong>Service B slow/hang → chỉ consume 10 threads của B pool.</strong></p>
+<p>Service A và C vẫn hoạt động bình thường.</p>
+<h3 id="connection-pool-bulkheads">Connection Pool Bulkheads</h3>
+<pre><code class="language-python"># Separate database connection pools
+db_pool_users = create_pool(max_connections=20)
+db_pool_orders = create_pool(max_connections=20)
+db_pool_analytics = create_pool(max_connections=10)
+
+# Analytics queries won&#x27;t starve user queries
+</code></pre>
+<h2 id="putting-it-all-together">Putting It All Together</h2>
+<p><strong>Comprehensive protection strategy:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    Request[Incoming Request]
+    
+    RL{Rate Limiting}
+    LB{Load Balancer}
+    CB{Circuit Breaker}
+    Service[Service]
+    DB[(Database)]
+    
+    Request --&gt; RL
+    RL --&gt;|Allow| LB
+    RL --&gt;|Reject| Deny[429 Too Many Requests]
+    
+    LB --&gt; CB
+    CB --&gt;|Closed/Half-Open| Service
+    CB --&gt;|Open| Fallback[Fallback Response]
+    
+    Service --&gt; DB
+    DB --&gt;|Slow| Shed[Load Shedding]
+    Shed --&gt;|Drop| Drop[503 Service Unavailable]</code></pre>
+<p><strong>Layers of protection:</strong></p>
+<ol>
+<li><strong>Rate limiting:</strong> Prevent abuse</li>
+<li><strong>Circuit breaker:</strong> Fail fast on downstream failures</li>
+<li><strong>Backpressure:</strong> Slow down when queues full</li>
+<li><strong>Load shedding:</strong> Drop traffic when overloaded</li>
+<li><strong>Bulkhead:</strong> Isolate failures</li>
+</ol>
+<p><strong>Defense in depth.</strong></p>
+<h2 id="practical-recommendations">Practical Recommendations</h2>
+<h3 id="1-start-with-rate-limiting">1. Start With Rate Limiting</h3>
+<p><strong>Mọi public API cần rate limiting.</strong></p>
+<pre><code class="language-python"># Simple Flask example
+from flask_limiter import Limiter
+
+limiter = Limiter(
+    app,
+    key_func=lambda: request.headers.get(&#x27;X-API-Key&#x27;),
+    default_limits=[&quot;1000 per day&quot;, &quot;100 per hour&quot;]
+)
+
+@app.route(&#x27;/api/data&#x27;)
+@limiter.limit(&quot;10 per minute&quot;)
+def get_data():
+    return jsonify(data)
+</code></pre>
+<p><strong>Even internal APIs benefit từ rate limiting.</strong></p>
+<h3 id="2-implement-circuit-breakers-for-external-dependencies">2. Implement Circuit Breakers For External Dependencies</h3>
+<pre><code class="language-python"># Wrap external API calls
+payment_breaker = CircuitBreaker()
+email_breaker = CircuitBreaker()
+
+@payment_breaker.call
+def charge_payment(amount):
+    return stripe_api.charge(amount)
+
+@email_breaker.call
+def send_email(to, body):
+    return sendgrid_api.send(to, body)
+</code></pre>
+<h3 id="3-monitor--alert">3. Monitor &amp; Alert</h3>
+<p><strong>Track metrics:</strong></p>
+<pre><code>- Rate limit hits (per endpoint, per user)
+- Circuit breaker state changes
+- Queue depths
+- Request latency (p50, p95, p99)
+- Error rates
+</code></pre>
+<p><strong>Alert when:</strong></p>
+<ul>
+<li>Rate limits hit frequently (may need increase)</li>
+<li>Circuit breaker open (dependency issue)</li>
+<li>Queue growing (backpressure needed)</li>
+</ul>
+<h3 id="4-design-for-degradation">4. Design For Degradation</h3>
+<p><strong>Graceful degradation &gt; hard failures.</strong></p>
+<pre><code class="language-python">def get_user_recommendations():
+    try:
+        # Try ML service
+        return ml_service.get_recommendations()
+    except CircuitBreakerOpenError:
+        # Fallback to simple algorithm
+        return simple_recommendation()
+    except Exception:
+        # Last resort: popular items
+        return get_popular_items()
+</code></pre>
+<h3 id="5-test-under-load">5. Test Under Load</h3>
+<p><strong>Load testing should trigger protection mechanisms.</strong></p>
+<pre><code class="language-bash"># k6 load test
+k6 run --vus 1000 --duration 30s load_test.js
+</code></pre>
+<p><strong>Verify:</strong></p>
+<ul>
+<li>Rate limiting kicks in</li>
+<li>Circuit breaker opens on failures</li>
+<li>System remains stable under overload</li>
+</ul>
+<h2 id="mental-model-system-phải-protect-itself">Mental Model: System Phải Protect Itself</h2>
+<p><strong>Core insight:</strong></p>
+<p><strong>Good systems không assume perfect conditions. They expect và handle abuse, failures, và overload.</strong></p>
+<pre><code>Bad system:
+  Assume: Traffic reasonable, dependencies reliable
+  Reality: Spike traffic → crash
+
+Good system:
+  Assume: Anything can happen
+  Design: Protection mechanisms at every layer
+  Reality: Spike traffic → graceful degradation
+</code></pre>
+<p><strong>Architect mindset:</strong></p>
+<ol>
+<li><strong>External traffic:</strong> Rate limiting</li>
+<li><strong>Dependency failures:</strong> Circuit breaker</li>
+<li><strong>Internal overload:</strong> Backpressure, load shedding</li>
+<li><strong>Resource isolation:</strong> Bulkhead pattern</li>
+</ol>
+<p><strong>System self-protection = reliability.</strong></p>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>1. Rate limiting prevent abuse và resource exhaustion</strong></p>
+<p>Token bucket algorithm most popular. Distributed rate limiting needs Redis hoặc gossip.</p>
+<p><strong>2. Circuit breaker prevent cascading failures</strong></p>
+<p>Fail fast, give services time to recover, provide fallbacks.</p>
+<p><strong>3. Backpressure pushes back on upstream producers</strong></p>
+<p>Prevents queue explosion, maintains system stability.</p>
+<p><strong>4. Load shedding drops traffic to survive</strong></p>
+<p>Priority-based hoặc adaptive. Better degrade gracefully than crash completely.</p>
+<p><strong>5. Bulkhead pattern isolates failures</strong></p>
+<p>Separate thread pools/connection pools per dependency.</p>
+<p><strong>6. Defense in depth</strong></p>
+<p>Multiple protection layers. Rate limiting + circuit breaker + load shedding.</p>
+<p><strong>7. Monitor và alert on protection triggers</strong></p>
+<p>Protection mechanisms kicking in = early warning signals.</p>
+<p><strong>8. Design for degradation</strong></p>
+<p>Fallback strategies better than hard failures.</p>
+<p><strong>9. Test under overload</strong></p>
+<p>Load testing should exercise protection mechanisms.</p>
+<hr/>
+<p><strong>Remember: The best system is one that survives abuse, handles failures gracefully, and protects itself automatically. Don&#x27;t wait for production incidents to add these protections - build them in from the start.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-4/lesson/lesson-4-database-scaling-optimization"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues">Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-4\",\"lesson\",\"lesson-5-rate-limiting-and-load-control\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-4\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-5-rate-limiting-and-load-control\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách protect hệ thống khỏi traffic spikes và cascading failures.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-performance-bottleneck-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-1-performance-bottleneck-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Performance \u0026 Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn\"}]]}]}],[\"$\",\"li\",\"lesson-2-caching-strategy-trade-consistency-de-lay-speed\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-2-caching-strategy-trade-consistency-de-lay-speed\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Caching Strategy - Trade Consistency Để Lấy Speed\"}]]}]}],[\"$\",\"li\",\"lesson-3-cdn-and-edge-computing-distributed-cache-gan-user\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"CDN \u0026 Edge Computing - Distributed Cache Gần User\"}]]}]}],[\"$\",\"li\",\"lesson-4-database-scaling-optimization\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-4-database-scaling-optimization\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\"}]]}]}],[\"$\",\"li\",\"lesson-5-rate-limiting-and-load-control\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\"}]]}]}],[\"$\",\"li\",\"lesson-6-asynchronous-processin-queues\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}],\"$L26\"]}]]}],\"$L27\"]}],\"$L28\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"29:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\"}]\n26:[\"$\",\"li\",\"lesson-7-monitoring-observability-performance-debugging\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",7]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\"}]]}]}]\n27:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4\",\"className\":\"hover:text-ink\",\"children\":\"Phase 4 — Scalability \u0026 Performance\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách protect hệ thống khỏi traffic spikes và cascading failures.\"}]]}],[\"$\",\"$L29\",null,{\"path\":\"/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control\",\"title\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\",\"description\":\"Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách protect hệ thống khỏi traffic spikes và cascading failures.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\",\"children\":\"$L2a\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-4-database-scaling-optimization\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2a:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"rate-limiting--load-control---protect-system-khỏi-overload\",\"children\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Bạn build một API hoàn hảo. Code clean, database optimized, infrastructure solid.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Rồi một ngày, traffic spike 10x bất ngờ. Có thể là:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Viral post trên social media\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bot attack\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bug ở client (infinite retry loop)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Flash sale trong e-commerce\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Hệ thống collapse. Database overwhelm. Servers crash. Toàn bộ service down.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Không phải vì architecture tồi. Là vì \",[\"$\",\"strong\",null,{\"children\":\"không có protection mechanisms.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Mental model quan trọng:\"}],\" System phải biết protect itself. Không thể tin rằng traffic sẽ luôn reasonable.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Lesson này dạy bạn:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Rate limiting algorithms (token bucket, leaky bucket)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Distributed rate limiting\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Backpressure \u0026 load shedding\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Circuit breaker pattern\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Khi nào dùng technique nào\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-cần-rate-limiting\",\"children\":\"Tại Sao Cần Rate Limiting?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"problem-1-resource-exhaustion\",\"children\":\"Problem 1: Resource Exhaustion\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mọi system có giới hạn.\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Database: 1000 connections\\nAPI server: 10,000 concurrent requests\\nNetwork: 1 Gbps bandwidth\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Vượt quá giới hạn → system crash.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Without rate limiting, một client có thể consume toàn bộ resources.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"problem-2-cost-control\",\"children\":\"Problem 2: Cost Control\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cloud services charge theo usage.\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"API Gateway: $3.50 per million requests\\nLambda: $0.20 per million invocations\\nDatabase: $0.10 per GB transfer\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Uncontrolled traffic = unlimited cost.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Bot attack có thể generate hàng triệu requests → bill $10,000 trong 1 ngày.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"problem-3-abuse--security\",\"children\":\"Problem 3: Abuse \u0026 Security\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Attackers exploit systems:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Brute force login (thử hàng nghìn passwords)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Scraping data (crawl toàn bộ database)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"DDoS (overwhelm với junk traffic)\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rate limiting = first line of defense.\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"problem-4-fair-usage\",\"children\":\"Problem 4: Fair Usage\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Một user không nên monopolize resources.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Trong multi-tenant system, 1 customer spam requests → impact tất cả customers.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rate limiting đảm bảo fairness.\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"use-cases\",\"children\":\"Use Cases\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"API quotas:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Free tier: 1000 requests/day\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Pro tier: 100,000 requests/day\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Login attempts:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"5 failed attempts → lock account 15 minutes\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Search queries:\"}]}],\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\",\"\\n\",\"$Lc9\",\"\\n\",\"$Lca\",\"\\n\",\"$Lcb\",\"\\n\",\"$Lcc\",\"\\n\",\"$Lcd\",\"\\n\",\"$Lce\",\"\\n\",\"$Lcf\",\"\\n\",\"$Ld0\",\"\\n\",\"$Ld1\",\"\\n\",\"$Ld2\",\"\\n\",\"$Ld3\",\"\\n\",\"$Ld4\",\"\\n\",\"$Ld5\",\"\\n\",\"$Ld6\",\"\\n\",\"$Ld7\",\"\\n\",\"$Ld8\",\"\\n\",\"$Ld9\",\"\\n\",\"$Lda\",\"\\n\",\"$Ldb\",\"\\n\",\"$Ldc\",\"\\n\",\"$Ldd\",\"\\n\",\"$Lde\",\"\\n\",\"$Ldf\",\"\\n\",\"$Le0\",\"\\n\",\"$Le1\",\"\\n\",\"$Le2\",\"\\n\",\"$Le3\",\"\\n\",\"$Le4\",\"\\n\",\"$Le5\",\"\\n\",\"$Le6\",\"\\n\",\"$Le7\",\"\\n\",\"$Le8\",\"\\n\",\"$Le9\",\"\\n\",\"$Lea\",\"\\n\",\"$Leb\"]}]\n"])</script><script>self.__next_f.push([1,"ec:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n2b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"10 searches/minute per user\"}],\"\\n\"]}]\n2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"File uploads:\"}]}]\n2d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"100 MB/hour per user\"}],\"\\n\"]}]\n2e:[\"$\",\"h2\",null,{\"id\":\"rate-limiting-algorithms\",\"children\":\"Rate Limiting Algorithms\"}]\n2f:[\"$\",\"p\",null,{\"children\":\"Có nhiều algorithms, mỗi cái phù hợp với use case khác nhau.\"}]\n30:[\"$\",\"h3\",null,{\"id\":\"1-fixed-window-counter\",\"children\":\"1. Fixed Window Counter\"}]\n31:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Simplest algorithm.\"}]}]\n32:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import time\\n\\nclass FixedWindowRateLimiter:\\n    def __init__(self, limit, window_seconds):\\n        self.limit = limit\\n        self.window = window_seconds\\n        self.counter = 0\\n        self.window_start = time.time()\\n    \\n    def allow_request(self):\\n        now = time.time()\\n        \\n        # New window\\n        if now - self.window_start \u003e= self.window:\\n            self.counter = 0\\n            self.window_start = now\\n        \\n        # Check limit\\n        if self.counter \u003c self.limit:\\n            self.counter += 1\\n            return True\\n        \\n        return False\\n\"}]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\n34:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Window: 1 minute\\nLimit: 100 requests\\n\\n00:00-00:59: 100 requests ✅\\n01:00-01:59: Reset counter, 100 requests ✅\\n\"}]}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem: Window boundary issue\"}]}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"00:59: 100 requests (max out)\\n01:00: Reset\\n01:01: 100 requests\\n\\nTotal 200 requests trong 2 seconds! ⚠️\\n\"}]}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Burst traffic ở window boundary bypass limit.\"}]}]\n38:[\"$\",\"h3\",null,{\"id\":\"2-sliding-window-log\",\"children\":\"2. Sliding Window Log\"}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track timestamp của mỗi request.\"}]}]\n3a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from collections import deque\\nimport time\\n\\nclass SlidingWindowLog:\\n    def __init__(self, limit, window_seconds):\\n        self.limit = limit\\n        self.window = window_seconds\\n        self.log = deque()\\n    \\n    def allow_request(self):\\n        now = time.time()\\n        \\n        # Remove old requests outside window\\n        while self.log and self.log[0] \u003c= now - self.window:\\n            self.log.popleft()\\n        \\n        # Check limit\\n        if len(self.log) \u003c self.limit:\\n            self.log.append(now)\\n            return True\\n        \\n        return False\\n\"}]}]\n3b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\n3c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Window: 60 seconds\\nLimit: 100 requests\\n\\nRequest at 10:00:30\\n→ Count requests từ 09:59:30 đến 10:00:30\\n→ If \u003c 100, allow\\n\"}]}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n3e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Accurate (no window boundary issue)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Smooth rate limiting\"}],\"\\n\"]}]\n3f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n40:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Memory intensive (store all timestamps)\"}],\"\\n\",[\"$\",\"li\",null,{\"ch"])</script><script>self.__next_f.push([1,"ildren\":\"O(N) lookup time\"}],\"\\n\"]}]\n41:[\"$\",\"h3\",null,{\"id\":\"3-sliding-window-counter-hybrid\",\"children\":\"3. Sliding Window Counter (Hybrid)\"}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Combine fixed window + sliding calculation.\"}]}]\n43:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import time\\n\\nclass SlidingWindowCounter:\\n    def __init__(self, limit, window_seconds):\\n        self.limit = limit\\n        self.window = window_seconds\\n        self.current_window = {\\\"start\\\": time.time(), \\\"count\\\": 0}\\n        self.prev_window_count = 0\\n    \\n    def allow_request(self):\\n        now = time.time()\\n        \\n        # Calculate sliding count\\n        elapsed = now - self.current_window[\\\"start\\\"]\\n        \\n        if elapsed \u003e= self.window:\\n            # New window\\n            self.prev_window_count = self.current_window[\\\"count\\\"]\\n            self.current_window = {\\\"start\\\": now, \\\"count\\\": 0}\\n            elapsed = 0\\n        \\n        # Weighted count from previous window\\n        prev_weight = (self.window - elapsed) / self.window\\n        estimated_count = (\\n            self.prev_window_count * prev_weight +\\n            self.current_window[\\\"count\\\"]\\n        )\\n        \\n        if estimated_count \u003c self.limit:\\n            self.current_window[\\\"count\\\"] += 1\\n            return True\\n        \\n        return False\\n\"}]}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Smooths out fixed window spikes với O(1) memory.\"}]}]\n45:[\"$\",\"h3\",null,{\"id\":\"4-token-bucket-most-popular\",\"children\":\"4. Token Bucket (MOST POPULAR)\"}]\n46:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bucket chứa tokens. Mỗi request consume 1 token.\"}]}]\n47:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import time\\n\\nclass TokenBucket:\\n    def __init__(self, capacity, refill_rate):\\n        self.capacity = capacity        # Max tokens\\n        self.tokens = capacity           # Current tokens\\n        self.refill_rate = refill_rate   # Tokens per second\\n        self.last_refill = time.time()\\n    \\n    def allow_request(self, tokens_needed=1):\\n        now = time.time()\\n        \\n        # Refill tokens\\n        elapsed = now - self.last_refill\\n        tokens_to_add = elapsed * self.refill_rate\\n        self.tokens = min(self.capacity, self.tokens + tokens_to_add)\\n        self.last_refill = now\\n        \\n        # Check if enough tokens\\n        if self.tokens \u003e= tokens_needed:\\n            self.tokens -= tokens_needed\\n            return True\\n        \\n        return False\\n\"}]}]\n48:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\n49:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Capacity: 100 tokens\\nRefill rate: 10 tokens/second\\n\\nStart: 100 tokens\\nRequest 1: 99 tokens (allow)\\nRequest 2: 98 tokens (allow)\\n... (100 requests)\\nRequest 101: 0 tokens (reject) ❌\\n\\nWait 1 second: +10 tokens\\nRequest 102: 9 tokens (allow) ✅\\n\"}]}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n4b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Allow bursts (lợi dụng accumulated tokens)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Smooth long-term rate\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple implementation\"}],\"\\n\"]}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n4d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bursts có thể overwhelm downstream\"}],\"\\n\"]}]\n4e:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Used by:\"}],\" AWS API Gateway, Kong, Nginx.\"]}]\n4f:[\"$\",\"h3\",null,{\"id\":\"5-leaky-bucket\",\"children\":\"5. Leaky Bucket\"}]\n50:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bucket leak tokens at constant rate.\"}]}]\n51:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import time\\nfrom collections import deque\\n\\nclass LeakyBucket:\\n    def __init__(self, capacity, leak_rate):\\n        self.capacity = capacity      # Max queue size\\n        s"])</script><script>self.__next_f.push([1,"elf.leak_rate = leak_rate    # Requests processed per second\\n        self.queue = deque()\\n        self.last_leak = time.time()\\n    \\n    def allow_request(self):\\n        now = time.time()\\n        \\n        # Leak (process) requests\\n        elapsed = now - self.last_leak\\n        leaks = int(elapsed * self.leak_rate)\\n        \\n        for _ in range(min(leaks, len(self.queue))):\\n            self.queue.popleft()\\n        \\n        self.last_leak = now\\n        \\n        # Add request to queue\\n        if len(self.queue) \u003c self.capacity:\\n            self.queue.append(now)\\n            return True\\n        \\n        return False\\n\"}]}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Difference từ Token Bucket:\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Token Bucket:\"}],\" Bursty output (có thể send nhiều requests cùng lúc nếu có tokens)\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Leaky Bucket:\"}],\" Smooth output (constant rate, không có bursts)\"]}]\n54:[\"$\",\"$Lec\",null,{\"chart\":\"flowchart LR\\n    subgraph TokenBucket[\\\"Token Bucket\\\"]\\n        TB_Input[Requests] --\u003e|Variable rate| TB_Bucket[Bucket]\\n        TB_Bucket --\u003e|Can burst| TB_Output[Output]\\n    end\\n    \\n    subgraph LeakyBucket[\\\"Leaky Bucket\\\"]\\n        LB_Input[Requests] --\u003e|Variable rate| LB_Queue[Queue]\\n        LB_Queue --\u003e|Constant rate| LB_Output[Output]\\n    end\"}]\n55:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Token Bucket = rate limit input.\"}],[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Leaky Bucket = rate limit output.\"}]]}]\n56:[\"$\",\"h3\",null,{\"id\":\"algorithm-comparison\",\"children\":\"Algorithm Comparison\"}]\n"])</script><script>self.__next_f.push([1,"57:[\"$\",\"table\",null,{\"children\":[[\"$\",\"thead\",null,{\"children\":[\"$\",\"tr\",null,{\"children\":[[\"$\",\"th\",null,{\"children\":\"Algorithm\"}],[\"$\",\"th\",null,{\"children\":\"Memory\"}],[\"$\",\"th\",null,{\"children\":\"Accuracy\"}],[\"$\",\"th\",null,{\"children\":\"Bursts\"}],[\"$\",\"th\",null,{\"children\":\"Use Case\"}]]}]}],[\"$\",\"tbody\",null,{\"children\":[[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Fixed Window\"}],[\"$\",\"td\",null,{\"children\":\"O(1)\"}],[\"$\",\"td\",null,{\"children\":\"Low\"}],[\"$\",\"td\",null,{\"children\":\"Yes\"}],[\"$\",\"td\",null,{\"children\":\"Simple quotas\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Sliding Log\"}],[\"$\",\"td\",null,{\"children\":\"O(N)\"}],[\"$\",\"td\",null,{\"children\":\"High\"}],[\"$\",\"td\",null,{\"children\":\"No\"}],[\"$\",\"td\",null,{\"children\":\"Precise limiting\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Sliding Counter\"}],[\"$\",\"td\",null,{\"children\":\"O(1)\"}],[\"$\",\"td\",null,{\"children\":\"Medium\"}],[\"$\",\"td\",null,{\"children\":\"No\"}],[\"$\",\"td\",null,{\"children\":\"Good balance\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Token Bucket\"}],[\"$\",\"td\",null,{\"children\":\"O(1)\"}],[\"$\",\"td\",null,{\"children\":\"Good\"}],[\"$\",\"td\",null,{\"children\":\"Yes\"}],[\"$\",\"td\",null,{\"children\":\"Most APIs\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Leaky Bucket\"}],[\"$\",\"td\",null,{\"children\":\"O(N)\"}],[\"$\",\"td\",null,{\"children\":\"Good\"}],[\"$\",\"td\",null,{\"children\":\"No\"}],[\"$\",\"td\",null,{\"children\":\"Traffic shaping\"}]]}]]}]]}]\n"])</script><script>self.__next_f.push([1,"58:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Token Bucket = most popular vì balance simplicity + effectiveness.\"}]}]\n59:[\"$\",\"h2\",null,{\"id\":\"distributed-rate-limiting\",\"children\":\"Distributed Rate Limiting\"}]\n5a:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Problem:\"}],\" Multiple API servers, làm sao sync rate limits?\"]}]\n5b:[\"$\",\"$Lec\",null,{\"chart\":\"flowchart TB\\n    User[User]\\n    LB[Load Balancer]\\n    \\n    subgraph Servers\\n        S1[Server 1\u003cbr/\u003eLocal counter: 50]\\n        S2[Server 2\u003cbr/\u003eLocal counter: 50]\\n        S3[Server 3\u003cbr/\u003eLocal counter: 50]\\n    end\\n    \\n    User --\u003e LB\\n    LB --\u003e S1\\n    LB --\u003e S2\\n    LB --\u003e S3\"}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Limit: 100 req/min per user.\"}]}]\n5d:[\"$\",\"p\",null,{\"children\":\"Nếu mỗi server track riêng → user có thể send 50 requests đến mỗi server = 150 total! ⚠️\"}]\n5e:[\"$\",\"h3\",null,{\"id\":\"solution-1-centralized-state-redis\",\"children\":\"Solution 1: Centralized State (Redis)\"}]\n5f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Store counters trong shared Redis.\"}]}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import redis\\nimport time\\n\\nclass DistributedRateLimiter:\\n    def __init__(self, redis_client, limit, window):\\n        self.redis = redis_client\\n        self.limit = limit\\n        self.window = window\\n    \\n    def allow_request(self, user_id):\\n        key = f\\\"rate_limit:{user_id}\\\"\\n        current = self.redis.get(key)\\n        \\n        if current is None:\\n            # First request\\n            self.redis.setex(key, self.window, 1)\\n            return True\\n        \\n        if int(current) \u003c self.limit:\\n            self.redis.incr(key)\\n            return True\\n        \\n        return False\\n\"}]}]\n61:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Token bucket in Redis:\"}]}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def allow_request_token_bucket(self, user_id):\\n    key = f\\\"token_bucket:{user_id}\\\"\\n    now = time.time()\\n    \\n    # Lua script for atomic operation\\n    lua_script = \\\"\\\"\\\"\\n    local key = KEYS[1]\\n    local capacity = tonumber(ARGV[1])\\n    local refill_rate = tonumber(ARGV[2])\\n    local now = tonumber(ARGV[3])\\n    \\n    local bucket = redis.call('HMGET', key, 'tokens', 'last_refill')\\n    local tokens = tonumber(bucket[1]) or capacity\\n    local last_refill = tonumber(bucket[2]) or now\\n    \\n    -- Refill tokens\\n    local elapsed = now - last_refill\\n    tokens = math.min(capacity, tokens + elapsed * refill_rate)\\n    \\n    if tokens \u003e= 1 then\\n        tokens = tokens - 1\\n        redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)\\n        redis.call('EXPIRE', key, 3600)\\n        return 1\\n    else\\n        return 0\\n    end\\n    \\\"\\\"\\\"\\n    \\n    return self.redis.eval(lua_script, 1, key, \\n                          self.capacity, self.refill_rate, now)\\n\"}]}]\n63:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n64:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Accurate cross-server\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Centralized logic\"}],\"\\n\"]}]\n65:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n66:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Redis single point of failure\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Network latency per request\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Redis can be bottleneck\"}],\"\\n\"]}]\n67:[\"$\",\"h3\",null,{\"id\":\"solution-2-eventually-consistent-gossip\",\"children\":\"Solution 2: Eventually Consistent (Gossip)\"}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mỗi server maintain local state, sync periodically.\"}]}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class EventuallyConsistentRateLimiter:\\n    def __init__(self, limit, num_servers):\\n        self.limit = limit\\n        self.local_limit = limit // num_servers  # Divide among servers\\n        self.local_counter ="])</script><script>self.__next_f.push([1," 0\\n        self.global_counters = {}  # From other servers\\n    \\n    def allow_request(self, user_id):\\n        # Check local limit first\\n        if self.local_counter \u003c self.local_limit:\\n            self.local_counter += 1\\n            return True\\n        \\n        # Check global limit (eventual)\\n        total = sum(self.global_counters.values()) + self.local_counter\\n        return total \u003c self.limit\\n    \\n    def sync_with_peers(self):\\n        # Gossip protocol: exchange counters with other servers\\n        pass\\n\"}]}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n6b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"No single point of failure\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Low latency (local check)\"}],\"\\n\"]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n6d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Not accurate (eventual consistency)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complex implementation\"}],\"\\n\"]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"hybrid-approach-practical\",\"children\":\"Hybrid Approach (Practical)\"}]\n6f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Local cache + Redis.\"}]}]\ned:T465,class HybridRateLimiter:\n    def __init__(self, redis_client, limit, window):\n        self.redis = redis_client\n        self.limit = limit\n        self.window = window\n        self.local_cache = {}\n        self.cache_ttl = 1  # 1 second cache\n    \n    def allow_request(self, user_id):\n        # Check local cache first\n        cache_entry = self.local_cache.get(user_id)\n        now = time.time()\n        \n        if cache_entry and now - cache_entry['time'] \u003c self.cache_ttl:\n            if cache_entry['count'] \u003c self.limit:\n                cache_entry['count'] += 1\n                return True\n            return False\n        \n        # Cache miss or expired - check Redis\n        key = f\"rate_limit:{user_id}\"\n        current = self.redis.get(key)\n        \n        if current is None or int(current) \u003c self.limit:\n            count = self.redis.incr(key)\n            self.redis.expire(key, self.window)\n            \n            # Update local cache\n            self.local_cache[user_id] = {\n                'count': count,\n                'time': now\n            }\n            return True\n        \n        return False\n70:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$ed\"}]}]\n71:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Balance accuracy + performance.\"}]}]\n72:[\"$\",\"h2\",null,{\"id\":\"rate-limiting-response-headers\",\"children\":\"Rate Limiting Response Headers\"}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Clients cần biết rate limit status.\"}]}]\n74:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Standard headers:\"}]}]\n75:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-http\",\"children\":\"HTTP/1.1 200 OK\\nX-RateLimit-Limit: 1000           # Total limit\\nX-RateLimit-Remaining: 950        # Requests remaining\\nX-RateLimit-Reset: 1643990400     # Unix timestamp when resets\\n\\nHTTP/1.1 429 Too Many Requests\\nRetry-After: 60                   # Seconds until retry\\nX-RateLimit-Limit: 1000\\nX-RateLimit-Remaining: 0\\nX-RateLimit-Reset: 1643990400\\n\"}]}]\n76:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Clients có thể:\"}]}]\n77:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Display quota to users\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Implement exponential backoff\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Schedule requests efficiently\"}],\"\\n\"]}]\n78:[\"$\",\"h2\",null,{\"id\":\"backpressure---push-back-on-upstream\",\"children\":\"Backpressure - Push Back On Upstream\"}]\n79:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rate limiting protect system từ external traffic. Backpressure protect từ internal overload.\"}]}]\n7a:[\"$\",\"h3\",null,{\"id\":\"the-problem\",\"children\":\"The Problem\"}]\n7b:[\"$\",\"$Lec\",null,{\"chart\":\"sequenceDiagram\\n    participant API\\n    participant Queue\\n    participant Worker\\n    participant DB\\n    \\n    API-\u003e\u003eQueue: Fast ("])</script><script>self.__next_f.push([1,"1000 msg/s)\\n    Queue-\u003e\u003eWorker: Medium (100 msg/s)\\n    Worker-\u003e\u003eDB: Slow (10 query/s)\\n    \\n    Note over Queue: Queue grows infinitely!\"}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Producer nhanh hơn consumer → queue explode.\"}]}]\n7d:[\"$\",\"h3\",null,{\"id\":\"solution-backpressure\",\"children\":\"Solution: Backpressure\"}]\n7e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Slow down producer khi consumer overwhelmed.\"}]}]\n7f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class BackpressureQueue:\\n    def __init__(self, max_size):\\n        self.queue = []\\n        self.max_size = max_size\\n    \\n    def push(self, item):\\n        if len(self.queue) \u003e= self.max_size:\\n            # Backpressure: Block or reject\\n            raise QueueFullError(\\\"Queue full, slow down!\\\")\\n        \\n        self.queue.append(item)\\n    \\n    def pop(self):\\n        if self.queue:\\n            return self.queue.pop(0)\\n        return None\\n\"}]}]\n80:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"API checks queue size:\"}]}]\n81:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.route('/api/task', methods=['POST'])\\ndef create_task():\\n    try:\\n        queue.push(request.data)\\n        return {\\\"status\\\": \\\"queued\\\"}, 202\\n    except QueueFullError:\\n        return {\\\"error\\\": \\\"System overloaded, try later\\\"}, 503\\n\"}]}]\n82:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"503 Service Unavailable = backpressure signal.\"}]}]\n83:[\"$\",\"h3\",null,{\"id\":\"reactive-streams-backpressure\",\"children\":\"Reactive Streams Backpressure\"}]\n84:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Modern approach: request-based pull.\"}]}]\n85:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class ReactiveStream:\\n    def __init__(self, producer, consumer):\\n        self.producer = producer\\n        self.consumer = consumer\\n        self.buffer = []\\n        self.requested = 0\\n    \\n    def request(self, n):\\n        # Consumer requests n items\\n        self.requested += n\\n        self.try_send()\\n    \\n    def try_send(self):\\n        while self.requested \u003e 0 and self.buffer:\\n            item = self.buffer.pop(0)\\n            self.consumer.on_next(item)\\n            self.requested -= 1\\n    \\n    def on_data(self, item):\\n        # Producer sends data\\n        if self.requested \u003e 0:\\n            self.consumer.on_next(item)\\n            self.requested -= 1\\n        else:\\n            # Buffer or drop\\n            if len(self.buffer) \u003c MAX_BUFFER:\\n                self.buffer.append(item)\\n            else:\\n                self.consumer.on_error(\\\"Backpressure limit\\\")\\n\"}]}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Consumer pulls data at its pace, not pushed.\"}]}]\n87:[\"$\",\"h2\",null,{\"id\":\"load-shedding---drop-traffic-to-survive\",\"children\":\"Load Shedding - Drop Traffic To Survive\"}]\n88:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi hệ thống quá tải, reject requests để protect core functionality.\"}]}]\n89:[\"$\",\"h3\",null,{\"id\":\"priority-based-shedding\",\"children\":\"Priority-Based Shedding\"}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Not all requests equal importance.\"}]}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class LoadShedder:\\n    def __init__(self, max_load):\\n        self.max_load = max_load\\n        self.current_load = 0\\n    \\n    def allow_request(self, priority):\\n        if self.current_load \u003c self.max_load:\\n            return True\\n        \\n        # Overload: only allow high priority\\n        if priority == \\\"critical\\\":\\n            return True\\n        elif priority == \\\"high\\\" and self.current_load \u003c self.max_load * 1.1:\\n            return True\\n        else:\\n            return False\\n\"}]}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example priorities:\"}]}]\n8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"childre"])</script><script>self.__next_f.push([1,"n\":\"# Critical: payment, checkout\\nif allow_request(\\\"critical\\\"):\\n    process_payment()\\n\\n# High: user profile update  \\nif allow_request(\\\"high\\\"):\\n    update_profile()\\n\\n# Low: analytics, logging\\nif allow_request(\\\"low\\\"):\\n    track_analytics()\\n\"}]}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Shed low-priority traffic first.\"}]}]\n8f:[\"$\",\"h3\",null,{\"id\":\"adaptive-shedding\",\"children\":\"Adaptive Shedding\"}]\n90:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Shed based on system health metrics.\"}]}]\n91:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class AdaptiveLoadShedder:\\n    def __init__(self):\\n        self.error_rate = 0.0\\n        self.latency_p99 = 0.0\\n    \\n    def should_shed_load(self):\\n        # Shed if error rate high\\n        if self.error_rate \u003e 0.05:  # 5% errors\\n            return True\\n        \\n        # Shed if latency high\\n        if self.latency_p99 \u003e 1000:  # 1 second\\n            return True\\n        \\n        # Shed if CPU high\\n        cpu_usage = psutil.cpu_percent()\\n        if cpu_usage \u003e 90:\\n            return True\\n        \\n        return False\\n    \\n    def calculate_shed_probability(self):\\n        # Progressive shedding\\n        if self.error_rate \u003c 0.01:\\n            return 0.0  # No shedding\\n        elif self.error_rate \u003c 0.05:\\n            return 0.5  # Shed 50%\\n        else:\\n            return 0.9  # Shed 90%\\n\"}]}]\n92:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Gradual degradation thay vì hard cutoff.\"}]}]\n93:[\"$\",\"h2\",null,{\"id\":\"circuit-breaker---stop-calling-failing-services\",\"children\":\"Circuit Breaker - Stop Calling Failing Services\"}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pattern để prevent cascading failures.\"}]}]\n95:[\"$\",\"h3\",null,{\"id\":\"the-problem-1\",\"children\":\"The Problem\"}]\n96:[\"$\",\"$Lec\",null,{\"chart\":\"sequenceDiagram\\n    participant API\\n    participant ServiceA\\n    participant ServiceB\\n    \\n    API-\u003e\u003eServiceB: Request\\n    ServiceB--\u003e\u003eAPI: Timeout (30s)\\n    \\n    API-\u003e\u003eServiceB: Retry\\n    ServiceB--\u003e\u003eAPI: Timeout (30s)\\n    \\n    Note over API: All threads blocked!\u003cbr/\u003eAPI becomes unresponsive\"}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Service B down → API keep trying → API down too.\"}]}]\n98:[\"$\",\"h3\",null,{\"id\":\"circuit-breaker-states\",\"children\":\"Circuit Breaker States\"}]\n99:[\"$\",\"$Lec\",null,{\"chart\":\"stateDiagram-v2\\n    [*] --\u003e Closed\\n    Closed --\u003e Open: Failures exceed threshold\\n    Open --\u003e HalfOpen: Timeout expires\\n    HalfOpen --\u003e Closed: Success\\n    HalfOpen --\u003e Open: Failure\"}]\n9a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"States:\"}]}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Closed (Normal):\"}]}]\n9c:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Requests pass through\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Track failures\"}],\"\\n\"]}]\n9d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Open (Failed):\"}]}]\n9e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Reject requests immediately (fail fast)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Don't call failing service\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Return cached data or error\"}],\"\\n\"]}]\n9f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Half-Open (Testing):\"}]}]\na0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Allow limited requests\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test if service recovered\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Close if success, open if fail\"}],\"\\n\"]}]\na1:[\"$\",\"h3\",null,{\"id\":\"implementation\",\"children\":\"Implementation\"}]\nee:T642,"])</script><script>self.__next_f.push([1,"import time\nfrom enum import Enum\n\nclass CircuitState(Enum):\n    CLOSED = \"closed\"\n    OPEN = \"open\"\n    HALF_OPEN = \"half_open\"\n\nclass CircuitBreaker:\n    def __init__(self, failure_threshold=5, timeout=60, half_open_max=3):\n        self.failure_threshold = failure_threshold\n        self.timeout = timeout  # Seconds before trying again\n        self.half_open_max = half_open_max\n        \n        self.state = CircuitState.CLOSED\n        self.failure_count = 0\n        self.last_failure_time = None\n        self.half_open_attempts = 0\n    \n    def call(self, func, *args, **kwargs):\n        if self.state == CircuitState.OPEN:\n            # Check if timeout expired\n            if time.time() - self.last_failure_time \u003e= self.timeout:\n                self.state = CircuitState.HALF_OPEN\n                self.half_open_attempts = 0\n            else:\n                raise CircuitBreakerOpenError(\"Circuit breaker is open\")\n        \n        try:\n            result = func(*args, **kwargs)\n            self.on_success()\n            return result\n        except Exception as e:\n            self.on_failure()\n            raise e\n    \n    def on_success(self):\n        if self.state == CircuitState.HALF_OPEN:\n            self.state = CircuitState.CLOSED\n        \n        self.failure_count = 0\n    \n    def on_failure(self):\n        self.failure_count += 1\n        self.last_failure_time = time.time()\n        \n        if self.state == CircuitState.HALF_OPEN:\n            self.state = CircuitState.OPEN\n        elif self.failure_count \u003e= self.failure_threshold:\n            self.state = CircuitState.OPEN\n"])</script><script>self.__next_f.push([1,"a2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$ee\"}]}]\na3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Usage:\"}]}]\na4:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"breaker = CircuitBreaker(failure_threshold=5, timeout=60)\\n\\ndef call_external_service():\\n    return breaker.call(external_api.get_data)\\n\\ntry:\\n    data = call_external_service()\\nexcept CircuitBreakerOpenError:\\n    # Service is down, use fallback\\n    data = get_cached_data()\\n\"}]}]\na5:[\"$\",\"h3\",null,{\"id\":\"benefits\",\"children\":\"Benefits\"}]\na6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Fail fast\"}]}]\na7:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Không waste time retry failing service\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Free up threads/resources\"}],\"\\n\"]}]\na8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Give service time to recover\"}]}]\na9:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Stop hammering failed service\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Allow graceful recovery\"}],\"\\n\"]}]\naa:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Prevent cascading failures\"}]}]\nab:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"One service down ≠ entire system down\"}],\"\\n\"]}]\nac:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Provide fallbacks\"}]}]\nad:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"try:\\n    data = call_external_service()\\nexcept CircuitBreakerOpenError:\\n    # Fallback strategies\\n    data = get_cached_data()           # Use cache\\n    data = get_default_data()          # Use defaults\\n    data = call_backup_service()       # Alternate service\\n\"}]}]\nae:[\"$\",\"h2\",null,{\"id\":\"bulkhead-pattern---isolate-failures\",\"children\":\"Bulkhead Pattern - Isolate Failures\"}]\naf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't let one component consume all resources.\"}]}]\nb0:[\"$\",\"h3\",null,{\"id\":\"thread-pool-bulkheads\",\"children\":\"Thread Pool Bulkheads\"}]\nb1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from concurrent.futures import ThreadPoolExecutor\\n\\nclass BulkheadPattern:\\n    def __init__(self):\\n        # Separate thread pools for different services\\n        self.service_a_pool = ThreadPoolExecutor(max_workers=10)\\n        self.service_b_pool = ThreadPoolExecutor(max_workers=10)\\n        self.service_c_pool = ThreadPoolExecutor(max_workers=10)\\n    \\n    def call_service_a(self, request):\\n        return self.service_a_pool.submit(service_a.process, request)\\n    \\n    def call_service_b(self, request):\\n        return self.service_b_pool.submit(service_b.process, request)\\n\"}]}]\nb2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Service B slow/hang → chỉ consume 10 threads của B pool.\"}]}]\nb3:[\"$\",\"p\",null,{\"children\":\"Service A và C vẫn hoạt động bình thường.\"}]\nb4:[\"$\",\"h3\",null,{\"id\":\"connection-pool-bulkheads\",\"children\":\"Connection Pool Bulkheads\"}]\nb5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Separate database connection pools\\ndb_pool_users = create_pool(max_connections=20)\\ndb_pool_orders = create_pool(max_connections=20)\\ndb_pool_analytics = create_pool(max_connections=10)\\n\\n# Analytics queries won't starve user queries\\n\"}]}]\nb6:[\"$\",\"h2\",null,{\"id\":\"putting-it-all-together\",\"children\":\"Putting It All Together\"}]\nb7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Comprehensive protection strategy:\"}]}]\nb8:[\"$\",\"$Lec\",null,{\"chart\":\"flowchart TD\\n    Request[Incoming Request]\\n    \\n    RL{Rate Limiting}\\n    LB{Load Balancer}\\n    CB{Circuit Breaker}\\n    Service[Service]\\n    DB[(Database)]\\n    \\n    Request --\u003e RL\\n    RL --\u003e|Allow| LB\\n    RL --\u003e|Reject| Deny[429 Too Many Requests]\\n    \\n    LB --\u003e CB\\n    CB --\u003e|Closed/Half-Open| Service\\n    CB --\u003e|Open| Fallback[Fallback Response]\\n    \\n    Service --\u003e DB\\n    DB --\u003e|Slow| Shed[Load Shedding]\\n    Shed "])</script><script>self.__next_f.push([1,"--\u003e|Drop| Drop[503 Service Unavailable]\"}]\nb9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Layers of protection:\"}]}]\nba:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Rate limiting:\"}],\" Prevent abuse\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Circuit breaker:\"}],\" Fail fast on downstream failures\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Backpressure:\"}],\" Slow down when queues full\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Load shedding:\"}],\" Drop traffic when overloaded\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Bulkhead:\"}],\" Isolate failures\"]}],\"\\n\"]}]\nbb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Defense in depth.\"}]}]\nbc:[\"$\",\"h2\",null,{\"id\":\"practical-recommendations\",\"children\":\"Practical Recommendations\"}]\nbd:[\"$\",\"h3\",null,{\"id\":\"1-start-with-rate-limiting\",\"children\":\"1. Start With Rate Limiting\"}]\nbe:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mọi public API cần rate limiting.\"}]}]\nbf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Simple Flask example\\nfrom flask_limiter import Limiter\\n\\nlimiter = Limiter(\\n    app,\\n    key_func=lambda: request.headers.get('X-API-Key'),\\n    default_limits=[\\\"1000 per day\\\", \\\"100 per hour\\\"]\\n)\\n\\n@app.route('/api/data')\\n@limiter.limit(\\\"10 per minute\\\")\\ndef get_data():\\n    return jsonify(data)\\n\"}]}]\nc0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Even internal APIs benefit từ rate limiting.\"}]}]\nc1:[\"$\",\"h3\",null,{\"id\":\"2-implement-circuit-breakers-for-external-dependencies\",\"children\":\"2. Implement Circuit Breakers For External Dependencies\"}]\nc2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Wrap external API calls\\npayment_breaker = CircuitBreaker()\\nemail_breaker = CircuitBreaker()\\n\\n@payment_breaker.call\\ndef charge_payment(amount):\\n    return stripe_api.charge(amount)\\n\\n@email_breaker.call\\ndef send_email(to, body):\\n    return sendgrid_api.send(to, body)\\n\"}]}]\nc3:[\"$\",\"h3\",null,{\"id\":\"3-monitor--alert\",\"children\":\"3. Monitor \u0026 Alert\"}]\nc4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track metrics:\"}]}]\nc5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- Rate limit hits (per endpoint, per user)\\n- Circuit breaker state changes\\n- Queue depths\\n- Request latency (p50, p95, p99)\\n- Error rates\\n\"}]}]\nc6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Alert when:\"}]}]\nc7:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Rate limits hit frequently (may need increase)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Circuit breaker open (dependency issue)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Queue growing (backpressure needed)\"}],\"\\n\"]}]\nc8:[\"$\",\"h3\",null,{\"id\":\"4-design-for-degradation\",\"children\":\"4. Design For Degradation\"}]\nc9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Graceful degradation \u003e hard failures.\"}]}]\nca:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_user_recommendations():\\n    try:\\n        # Try ML service\\n        return ml_service.get_recommendations()\\n    except CircuitBreakerOpenError:\\n        # Fallback to simple algorithm\\n        return simple_recommendation()\\n    except Exception:\\n        # Last resort: popular items\\n        return get_popular_items()\\n\"}]}]\ncb:[\"$\",\"h3\",null,{\"id\":\"5-test-under-load\",\"children\":\"5. Test Under Load\"}]\ncc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Load testing should trigger protection mechanisms.\"}]}]\ncd:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-bash\",\"children\":\"# k6 load test\\nk6 run --vus 1000 --duration 30s load_test.js\\n\"}]}]\nce:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Verify:\"}]}]\ncf:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Rate limiting kicks in\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Circuit breaker opens on failures\"}],\"\\n\",[\"$\","])</script><script>self.__next_f.push([1,"\"li\",null,{\"children\":\"System remains stable under overload\"}],\"\\n\"]}]\nd0:[\"$\",\"h2\",null,{\"id\":\"mental-model-system-phải-protect-itself\",\"children\":\"Mental Model: System Phải Protect Itself\"}]\nd1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core insight:\"}]}]\nd2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good systems không assume perfect conditions. They expect và handle abuse, failures, và overload.\"}]}]\nd3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad system:\\n  Assume: Traffic reasonable, dependencies reliable\\n  Reality: Spike traffic → crash\\n\\nGood system:\\n  Assume: Anything can happen\\n  Design: Protection mechanisms at every layer\\n  Reality: Spike traffic → graceful degradation\\n\"}]}]\nd4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architect mindset:\"}]}]\nd5:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"External traffic:\"}],\" Rate limiting\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Dependency failures:\"}],\" Circuit breaker\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Internal overload:\"}],\" Backpressure, load shedding\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Resource isolation:\"}],\" Bulkhead pattern\"]}],\"\\n\"]}]\nd6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"System self-protection = reliability.\"}]}]\nd7:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\nd8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Rate limiting prevent abuse và resource exhaustion\"}]}]\nd9:[\"$\",\"p\",null,{\"children\":\"Token bucket algorithm most popular. Distributed rate limiting needs Redis hoặc gossip.\"}]\nda:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Circuit breaker prevent cascading failures\"}]}]\ndb:[\"$\",\"p\",null,{\"children\":\"Fail fast, give services time to recover, provide fallbacks.\"}]\ndc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Backpressure pushes back on upstream producers\"}]}]\ndd:[\"$\",\"p\",null,{\"children\":\"Prevents queue explosion, maintains system stability.\"}]\nde:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Load shedding drops traffic to survive\"}]}]\ndf:[\"$\",\"p\",null,{\"children\":\"Priority-based hoặc adaptive. Better degrade gracefully than crash completely.\"}]\ne0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Bulkhead pattern isolates failures\"}]}]\ne1:[\"$\",\"p\",null,{\"children\":\"Separate thread pools/connection pools per dependency.\"}]\ne2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"6. Defense in depth\"}]}]\ne3:[\"$\",\"p\",null,{\"children\":\"Multiple protection layers. Rate limiting + circuit breaker + load shedding.\"}]\ne4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"7. Monitor và alert on protection triggers\"}]}]\ne5:[\"$\",\"p\",null,{\"children\":\"Protection mechanisms kicking in = early warning signals.\"}]\ne6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"8. Design for degradation\"}]}]\ne7:[\"$\",\"p\",null,{\"children\":\"Fallback strategies better than hard failures.\"}]\ne8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"9. Test under overload\"}]}]\ne9:[\"$\",\"p\",null,{\"children\":\"Load testing should exercise protection mechanisms.\"}]\nea:[\"$\",\"hr\",null,{}]\neb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember: The best system is one that survives abuse, handles failures gracefully, and protects itself automatically. Don't wait for production incidents to add these protections - build them in from the start.\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"ef:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload | Phase 4 — Scalability \u0026 Performance | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách pr\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload | Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách pr\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload | Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học rate limiting và load control patterns: token bucket, leaky bucket, distributed rate limiting, backpressure, load shedding, và circuit breaker. Hiểu cách pr\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$Lef\",\"14\",{}]]\n"])</script></body></html>

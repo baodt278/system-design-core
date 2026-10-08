@@ -1,0 +1,659 @@
+@0 h1
+Social Feed Systems: Kiến Trúc Phức Tạp Nhất
+@1 p
+Tôi còn nhớ lần đầu được assign task: "Thiết kế news feed cho social network".
+@2 p
+Tôi nghĩ đơn giản: *"Query posts của người user follow, sort by time, done."*
+@3 p
+Senior architect nhìn tôi: *"Với 1 triệu users, mỗi người follow 500 người, mỗi người post 10 lần/ngày. Em tính sao?"*
+@4 p
+Tôi tính nhanh:
+@5 li
+Load feed = Query 500 users × 10 posts = 5,000 posts
+@6 li
+Sort 5,000 posts
+@7 li
+1 triệu users làm việc này → 1 triệu × 5,000 queries = 5 tỷ queries
+@8 li
+Database chết ngay
+@9 p
+Senior cười: *"Welcome to fanout problem. Đây là lý do Facebook phải build infrastructure riêng."*
+@10 p
+Đó là lúc tôi học: **Feed systems là kiến trúc phức tạp nhất trong consumer apps.**
+@11 h2
+Tại Sao Feed Systems Khó?
+@12 h3
+The Core Challenge
+@13 p
+**Problem statement:**
+@14 pre
+User opens app → See personalized feed
+- Posts từ người họ follow
+- Sorted by relevance/time
+- Load < 500ms
+- Million concurrent users
+
+Sounds simple. Reality: Nightmare.
+
+@15 p
+**Scale calculation:**
+@16 pre
+Platform: 100M users
+Average follows: 200 people
+Average posts: 2 posts/day per user
+
+Naive approach (Query on read):
+User load feed:
+→ Query 200 followees
+→ Get latest posts from each
+→ Merge 400 posts
+→ Sort by time
+→ Apply ranking
+
+With 100M users:
+→ 100M users × 200 queries = 20 billion database queries/day
+→ Database melts
+
+@17 p
+**Why it's hard:**
+@18 pre
+1. Read amplification
+   - Mỗi feed load = hundreds of reads
+   - Cannot cache (personalized per user)
+
+2. Write amplification  
+   - 1 post → thousands of followers see it
+   - How to propagate efficiently?
+
+3. Personalization
+   - Each user sees different feed
+   - Ranking depends on user history
+   - Cannot simple cache
+
+4. Consistency trade-offs
+   - User posts → How fast followers see?
+   - Eventual consistency acceptable?
+
+5. Celebrities problem
+   - User với 100M followers
+   - 1 post = 100M feed updates?
+
+@19 p
+**Key insight:** Feed systems force bạn confront mọi distributed systems challenges cùng lúc.
+@20 h2
+Fanout Strategies: Core Architecture Decision
+@21 p
+**Fanout = Cách distribute 1 post đến feeds của followers**
+@22 p
+Có 3 approaches fundamentally khác nhau. Mỗi approach có trade-offs sâu sắc.
+@23 h3
+Approach 1: Fanout on Write (Push Model)
+@24 p
+**Concept: Pre-compute feeds khi user posts**
+@25 pre
+sequenceDiagram
+    participant User
+    participant PostService
+    participant FanoutService
+    participant TimelineCache
+    participant Followers
+    
+    User->>PostService: Create post
+    PostService->>PostService: Save to database
+    PostService->>FanoutService: Trigger fanout
+    FanoutService->>Followers: Get follower list
+    
+    loop For each follower
+        FanoutService->>TimelineCache: Insert post into follower's feed
+    end
+    
+    FanoutService->>User: Post created (async)
+@26 p
+*Fanout on write: Khi user post, immediately push vào feed của tất cả followers*
+@27 p
+**Implementation:**
+@28 p
+**Trade-offs:**
+@29 pre
+Advantages:
+- Read cực nhanh (< 10ms)
+- Feed đã pre-computed
+- Simple read logic
+- Scalable reads
+
+Disadvantages:
+- Write amplification (1 post → N fanout jobs)
+- Celebrity problem (1 post → 100M updates)
+- Wasted work (inactive users still get updates)
+- Storage cost (N × average_posts per user)
+- Fanout lag (eventual consistency)
+
+@30 p
+**Capacity calculation:**
+@31 pre
+User posts:
+- Has 1,000 followers
+- 1 post → 1,000 fanout writes
+
+Celebrity posts:
+- Has 10M followers  
+- 1 post → 10M fanout writes
+- Takes minutes to complete
+
+Total platform:
+- 100M users post 2 times/day = 200M posts/day
+- Average 200 followers
+- Total fanout: 200M × 200 = 40 billion writes/day
+- 40B / 86400s ≈ 460K writes/second
+
+Need massive write capacity!
+
+@32 p
+**Khi nào dùng:**
+@33 pre
+✓ Most users có < 5,000 followers
+✓ Read performance critical (< 100ms)
+✓ Can afford write amplification
+✓ Storage not constraint
+✓ Eventual consistency acceptable
+
+@34 h3
+Approach 2: Fanout on Read (Pull Model)
+@35 p
+**Concept: Generate feed khi user requests**
+@36 pre
+sequenceDiagram
+    participant User
+    participant FeedService
+    participant FollowGraph
+    participant PostDB
+    
+    User->>FeedService: Get feed
+    FeedService->>FollowGraph: Get followees
+    FollowGraph-->>FeedService: [user1, user2, ..., userN]
+    
+    loop For each followee
+        FeedService->>PostDB: Get recent posts
+    end
+    
+    FeedService->>FeedService: Merge & sort posts
+    FeedService->>FeedService: Apply ranking
+    FeedService-->>User: Return feed
+@37 p
+*Fanout on read: Khi user mở feed, query posts từ tất cả followees real-time*
+@38 p
+**Implementation:**
+@39 p
+**Trade-offs:**
+@40 pre
+Advantages:
+- No write amplification (just save post)
+- Fast writes
+- No fanout lag (always fresh)
+- No wasted work
+- No celebrity problem
+- Low storage cost
+
+Disadvantages:
+- Read amplification (query many users)
+- Slow reads (100-500ms)
+- Hard to scale reads
+- Complex caching strategy
+- Database load high
+
+@41 p
+**Performance calculation:**
+@42 pre
+User loads feed:
+- Follows 200 people
+- Query each person's recent posts
+- 200 queries (even with batching: 10-20 queries)
+- Merge 4,000 posts
+- Sort
+- Total: 200-500ms
+
+1M concurrent users:
+→ 1M × 200 queries = 200M queries
+→ Database cannot handle
+
+@43 p
+**Khi nào dùng:**
+@44 pre
+✓ Small scale (< 100K users)
+✓ Users follow ít người (< 50)
+✓ Write performance critical
+✓ Strong consistency required
+✓ Limited infrastructure
+
+@45 h3
+Approach 3: Hybrid Fanout (Best of Both Worlds)
+@46 p
+**Concept: Fanout on write cho normal users, fanout on read cho celebrities**
+@47 pre
+graph TB
+    POST[User Creates Post]
+    
+    POST --> CHECK{User has > 10K followers?}
+    
+    CHECK -->|No - Normal User| FANOUT_WRITE[Fanout on Write]
+    FANOUT_WRITE --> CACHE1[Push to all followers' timelines]
+    
+    CHECK -->|Yes - Celebrity| FANOUT_READ[Fanout on Read]
+    FANOUT_READ --> MARK[Mark as celebrity post]
+    
+    USER[User Loads Feed]
+    USER --> TIMELINE[Get pre-computed timeline]
+    USER --> CELEB[Query celebrity posts]
+    USER --> MERGE[Merge both sources]
+    MERGE --> RANK[Apply ranking]
+    RANK --> DISPLAY[Display feed]
+    
+    style FANOUT_WRITE fill:#51cf66
+    style FANOUT_READ fill:#ff6b6b
+    style MERGE fill:#ffd43b
+@48 p
+*Hybrid fanout: Combine cả hai strategies dựa trên follower count*
+@49 p
+**Implementation:**
+@50 p
+**Trade-offs:**
+@51 pre
+Advantages:
+- Fast reads (pre-computed for most)
+- No celebrity fanout explosion
+- Balanced write load
+- Flexible (tune threshold)
+- Best of both worlds
+
+Disadvantages:
+- Most complex implementation
+- Need maintain celebrity list
+- Celebrity posts slight delay
+- More moving parts
+- Harder to debug
+
+@52 p
+**Real-world thresholds:**
+@53 pre
+Twitter (2015):
+- Fanout threshold: 2,000 followers
+- Above → Fanout on read
+
+Facebook (estimated):
+- Fanout threshold: 5,000 followers
+- Above → Hybrid approach
+
+Instagram (estimated):
+- Fanout threshold: 10,000 followers
+- Verified accounts → Always fanout on read
+
+@54 p
+**Khi nào dùng:**
+@55 pre
+✓ Large scale (> 1M users)
+✓ Mix of normal users và celebrities
+✓ Need optimize both reads và writes
+✓ Can handle complexity
+✓ Have engineering resources
+
+This is what Facebook, Twitter, Instagram use!
+
+@56 h2
+Timeline Cache Design
+@57 p
+**Timeline cache là heart của feed system.**
+@58 h3
+Cache Structure
+@59 p
+**Redis Sorted Set = Perfect fit**
+@60 p
+**Why Sorted Set?**
+@61 pre
+Automatic sorting by timestamp
+O(log N) insertion
+Range queries (pagination)
+Trim old posts easily
+Efficient memory
+
+@62 p
+**Operations:**
+@63 h3
+Cache Sizing
+@64 p
+**Memory calculation:**
+@65 pre
+Per user:
+- Store 1,000 recent posts in timeline
+- Each entry: 8 bytes (post_id) + 8 bytes (timestamp) = 16 bytes
+- Per user: 1,000 × 16 = 16 KB
+
+100M users:
+- 100M × 16 KB = 1.6 TB RAM
+
+With Redis cluster (sharded):
+- 100 nodes × 16 GB RAM each = 1.6 TB
+- Cost: ~$10,000/month (AWS ElastiCache)
+
+Expensive but necessary!
+
+@66 h3
+Cache Invalidation
+@67 p
+**Problem:**
+@68 pre
+User posts
+→ Fanout to 1,000 followers
+→ Takes 5 seconds
+→ Some followers see post immediately
+→ Some wait 5 seconds
+
+Eventual consistency!
+
+@69 p
+**Strategy:**
+@70 h2
+Ranking Algorithms
+@71 p
+**Chronological sorting là insufficient. Need ranking.**
+@72 h3
+Why Ranking?
+@73 pre
+Problem with pure chronological:
+- User follows 500 people
+- Some post 50 times/day
+- Some post 1 time/week
+- Feed dominated by spammers
+- Miss important posts from close friends
+
+Need: Show most relevant posts first
+
+@74 h3
+Simple Ranking: Engagement-Based
+@75 p
+**Trade-offs:**
+@76 pre
+Simple to implement
+Rewards engaging content
+Time decay prevents old posts
+
+Rich get richer (popular posts stay on top)
+Doesn't consider user preferences
+Gaming possible (fake engagement)
+
+@77 h3
+Advanced Ranking: Personalized
+@78 p
+**ML Pipeline (high-level):**
+@79 pre
+graph LR
+    A[User Interactions] --> B[Feature Engineering]
+    B --> C[Training Data]
+    C --> D[Model Training]
+    D --> E[Model Serving]
+    E --> F[Real-time Ranking]
+    F --> G[User Feedback]
+    G --> A
+    
+    style D fill:#ffd43b
+    style E fill:#51cf66
+@80 p
+*ML ranking pipeline: Continuous learning từ user interactions*
+@81 p
+**Real-world complexity:**
+@82 pre
+Facebook News Feed uses:
+- 100,000+ features
+- Ensemble of models
+- Real-time personalization
+- A/B testing framework
+- Constant iteration
+
+Not simple!
+
+@83 h2
+Event-Driven Architecture
+@84 p
+**Feed systems thực chất là event-driven systems.**
+@85 h3
+Event Flow
+@86 pre
+sequenceDiagram
+    participant User
+    participant PostService
+    participant EventBus
+    participant FanoutWorker
+    participant TimelineCache
+    participant NotificationService
+    participant AnalyticsService
+    
+    User->>PostService: Create post
+    PostService->>PostService: Save to DB
+    PostService->>EventBus: Publish "post.created" event
+    
+    EventBus->>FanoutWorker: Consume event
+    FanoutWorker->>TimelineCache: Update followers' timelines
+    
+    EventBus->>NotificationService: Consume event
+    NotificationService->>NotificationService: Send notifications
+    
+    EventBus->>AnalyticsService: Consume event
+    AnalyticsService->>AnalyticsService: Track metrics
+    
+    PostService-->>User: Success response
+@87 p
+*Event-driven: Một action trigger multiple async processes*
+@88 h3
+Event Structure
+@89 h3
+Event Consumers
+@90 h3
+Benefits of Event-Driven
+@91 pre
+Decoupling
+   - Services don't know about each other
+   - Easy to add new consumers
+   - Independent deployment
+
+Scalability
+   - Async processing
+   - Can scale each consumer independently
+   - Queue buffers traffic spikes
+
+Flexibility
+   - Add features without touching core
+   - A/B testing easier
+   - Rollback simpler
+
+Reliability
+   - Retry failed events
+   - Dead letter queue
+   - At-least-once delivery
+
+Complexity
+   - More moving parts
+   - Eventual consistency
+   - Debugging harder
+   - Ordering challenges
+
+@92 h2
+Pagination Strategy
+@93 p
+**Infinite scroll = tricky pagination.**
+@94 h3
+Offset-Based Pagination (Don't Use!)
+@95 h3
+Cursor-Based Pagination (Use This!)
+@96 p
+**Why cursor-based wins:**
+@97 pre
+No duplicates
+No missing posts
+Efficient (always O(log N))
+Works with real-time updates
+Stateless (cursor contains all info)
+
+@98 h2
+Integration: Putting It All Together
+@99 p
+**Real-world architecture cho 100M users:**
+@100 pre
+graph TB
+    subgraph Client Layer
+        APP[Mobile/Web App]
+    end
+    
+    subgraph API Layer
+        LB[Load Balancer]
+        API1[API Server 1]
+        API2[API Server 2]
+        API3[API Server N]
+    end
+    
+    subgraph Service Layer
+        POST[Post Service]
+        FEED[Feed Service]
+        RANK[Ranking Service]
+        NOTIF[Notification Service]
+    end
+    
+    subgraph Event Layer
+        KAFKA[Kafka Event Bus]
+        FANOUT[Fanout Workers]
+        ANALYTICS[Analytics Workers]
+    end
+    
+    subgraph Data Layer
+        REDIS[Timeline Cache<br/>Redis Cluster]
+        DB[(PostgreSQL<br/>Sharded)]
+        S3[S3<br/>Media Storage]
+    end
+    
+    APP --> LB
+    LB --> API1 & API2 & API3
+    API1 & API2 & API3 --> POST & FEED & RANK
+    
+    POST --> KAFKA
+    POST --> DB
+    POST --> S3
+    
+    KAFKA --> FANOUT
+    KAFKA --> ANALYTICS
+    
+    FANOUT --> REDIS
+    FEED --> REDIS
+    FEED --> DB
+    RANK --> DB
+    
+    style KAFKA fill:#ffd43b
+    style REDIS fill:#51cf66
+    style FANOUT fill:#ff6b6b
+@101 p
+*Complete feed system architecture với event-driven design*
+@102 h3
+Capacity Planning
+@103 pre
+Platform: 100M monthly active users
+Daily active: 30M users
+Posts/day: 60M posts (2 posts/user average)
+Average followers: 200
+
+Write load:
+- 60M posts/day
+- Fanout: 60M × 200 = 12B timeline writes/day
+- 12B / 86400s ≈ 140K writes/second
+
+Read load:
+- 30M users open feed 10 times/day = 300M feed loads/day
+- 300M / 86400s ≈ 3,500 reads/second
+
+Infrastructure:
+- API servers: 200 instances
+- Fanout workers: 500 instances
+- Redis cluster: 100 nodes (1.6TB total RAM)
+- PostgreSQL: 50 shards
+- Kafka: 20 brokers
+- S3: Unlimited (media storage)
+
+Cost (monthly, AWS):
+- Compute (EC2): $50,000
+- Redis (ElastiCache): $10,000
+- RDS (PostgreSQL): $30,000
+- S3: $5,000
+- Kafka (MSK): $8,000
+- Data transfer: $15,000
+Total: ~$120,000/month
+
+Not cheap, but necessary at scale!
+
+@104 h2
+Key Takeaways
+@105 p
+**Feed systems complexity:**
+@106 pre
+Most complex architecture trong consumer apps vì:
+- Read và write amplification
+- Personalization at scale
+- Real-time requirements
+- Celebrity problem
+- Eventual consistency
+
+@107 p
+**Fanout strategies:**
+@108 pre
+Fanout on Write:
+- Pre-compute feeds
+- Fast reads
+- Write amplification
+- Good cho normal users
+
+Fanout on Read:
+- Query on demand
+- Fast writes
+- Read amplification
+- Good cho celebrities
+
+Hybrid (Best):
+- Combine both
+- Optimize based on follower count
+- Facebook, Twitter, Instagram use this
+
+@109 p
+**Architecture patterns:**
+@110 pre
+✓ Event-driven (decouple services)
+✓ Timeline cache (Redis sorted sets)
+✓ Cursor-based pagination (avoid offsets)
+✓ Async fanout (queue-based)
+✓ Personalized ranking (ML pipeline)
+
+@111 p
+**Trade-offs always:**
+@112 pre
+Consistency vs Latency:
+- Eventual consistency acceptable
+- Fanout lag OK (few seconds)
+
+Storage vs Compute:
+- Cache timelines (storage cost)
+- Or query on demand (compute cost)
+
+Simplicity vs Optimization:
+- Start simple (fanout on write)
+- Add complexity when proven needed (hybrid)
+
+@113 p
+**Lesson learned từ kinh nghiệm:**
+@114 li
+**Start simple:** Fanout on write, iterate later
+@115 li
+**Measure everything:** Know where bottleneck is
+@116 li
+**Eventual consistency OK:** Users don't notice 2-second delay
+@117 li
+**Cache is king:** Pre-compute as much as possible
+@118 li
+**Event-driven scales:** Decouple services early
+@119 p
+Feed systems force bạn confront mọi distributed systems challenges. Master feed = Master distributed systems thinking.
+@120 p
+**This is why Feed Engineer là specialized role at FAANG companies.**

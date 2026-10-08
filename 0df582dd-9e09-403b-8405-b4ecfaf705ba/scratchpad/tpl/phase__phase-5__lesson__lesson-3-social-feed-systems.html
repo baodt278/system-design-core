@@ -1,0 +1,578 @@
+<article class="prose-ui"><h1 id="social-feed-systems-kiến-trúc-phức-tạp-nhất">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<ul>
+<li>§§SEG5§§</li>
+<li>§§SEG6§§</li>
+<li>§§SEG7§§</li>
+<li>§§SEG8§§</li>
+</ul>
+<p>§§SEG9§§</p>
+<p>§§SEG10§§</p>
+<h2 id="tại-sao-feed-systems-khó">§§SEG11§§</h2>
+<h3 id="the-core-challenge">§§SEG12§§</h3>
+<p>§§SEG13§§</p>
+<pre><code>§§SEG14§§</code></pre>
+<p>§§SEG15§§</p>
+<pre><code>§§SEG16§§</code></pre>
+<p>§§SEG17§§</p>
+<pre><code>§§SEG18§§</code></pre>
+<p>§§SEG19§§</p>
+<h2 id="fanout-strategies-core-architecture-decision">§§SEG20§§</h2>
+<p>§§SEG21§§</p>
+<p>§§SEG22§§</p>
+<h3 id="approach-1-fanout-on-write-push-model">§§SEG23§§</h3>
+<p>§§SEG24§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG25§§</code></pre>
+<p>§§SEG26§§</p>
+<p>§§SEG27§§</p>
+<pre><code class="language-python">class FanoutOnWriteService:
+    def create_post(self, user_id, content):
+        # 1. Save post to database
+        post = self.db.create_post({
+            'user_id': user_id,
+            'content': content,
+            'created_at': datetime.now()
+        })
+        
+        # 2. Get followers
+        follower_ids = self.db.get_followers(user_id)
+        
+        # 3. Fanout to all followers (async via queue)
+        for follower_id in follower_ids:
+            self.queue.publish({
+                'task': 'insert_into_timeline',
+                'follower_id': follower_id,
+                'post_id': post.id
+            })
+        
+        return {'status': 'success', 'post_id': post.id}
+
+class FanoutWorker:
+    def process_fanout(self, message):
+        follower_id = message['follower_id']
+        post_id = message['post_id']
+        
+        # Insert into follower's timeline cache (Redis sorted set)
+        self.redis.zadd(
+            f"timeline:{follower_id}",
+            {post_id: timestamp}
+        )
+        
+        # Keep only recent 1000 posts
+        self.redis.zremrangebyrank(f"timeline:{follower_id}", 0, -1001)
+
+# Read feed (extremely fast!)
+class FeedService:
+    def get_feed(self, user_id, page=1, size=20):
+        # Read from pre-computed cache
+        post_ids = self.redis.zrevrange(
+            f"timeline:{user_id}",
+            (page-1)*size,
+            page*size-1
+        )
+        
+        # Fetch post details
+        posts = self.db.get_posts(post_ids)
+        
+        return posts
+</code></pre>
+<p>§§SEG28§§</p>
+<pre><code>§§SEG29§§</code></pre>
+<p>§§SEG30§§</p>
+<pre><code>§§SEG31§§</code></pre>
+<p>§§SEG32§§</p>
+<pre><code>§§SEG33§§</code></pre>
+<h3 id="approach-2-fanout-on-read-pull-model">§§SEG34§§</h3>
+<p>§§SEG35§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG36§§</code></pre>
+<p>§§SEG37§§</p>
+<p>§§SEG38§§</p>
+<pre><code class="language-python">class FanoutOnReadService:
+    def create_post(self, user_id, content):
+        # Simply save post, no fanout
+        post = self.db.create_post({
+            'user_id': user_id,
+            'content': content,
+            'created_at': datetime.now()
+        })
+        
+        return {'status': 'success', 'post_id': post.id}
+    
+    def get_feed(self, user_id, page=1, size=20):
+        # 1. Get followees
+        followee_ids = self.db.get_followees(user_id)
+        
+        # 2. Get recent posts from each followee
+        all_posts = []
+        for followee_id in followee_ids:
+            posts = self.cache.get(f"user_posts:{followee_id}")
+            if not posts:
+                # Cache miss, query DB
+                posts = self.db.get_user_posts(
+                    followee_id,
+                    limit=100  # Recent 100 posts
+                )
+                self.cache.set(f"user_posts:{followee_id}", posts, ttl=300)
+            
+            all_posts.extend(posts)
+        
+        # 3. Merge and sort
+        all_posts.sort(key=lambda p: p['created_at'], reverse=True)
+        
+        # 4. Paginate
+        start = (page-1) * size
+        end = start + size
+        
+        return all_posts[start:end]
+</code></pre>
+<p>§§SEG39§§</p>
+<pre><code>§§SEG40§§</code></pre>
+<p>§§SEG41§§</p>
+<pre><code>§§SEG42§§</code></pre>
+<p>§§SEG43§§</p>
+<pre><code>§§SEG44§§</code></pre>
+<h3 id="approach-3-hybrid-fanout-best-of-both-worlds">§§SEG45§§</h3>
+<p>§§SEG46§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG47§§</code></pre>
+<p>§§SEG48§§</p>
+<p>§§SEG49§§</p>
+<pre><code class="language-python">class HybridFanoutService:
+    CELEBRITY_THRESHOLD = 10_000  # 10K followers
+    
+    def create_post(self, user_id, content):
+        # Save post
+        post = self.db.create_post({
+            'user_id': user_id,
+            'content': content,
+            'created_at': datetime.now()
+        })
+        
+        # Check if celebrity
+        follower_count = self.db.get_follower_count(user_id)
+        
+        if follower_count &lt; self.CELEBRITY_THRESHOLD:
+            # Normal user: Fanout on write
+            self._fanout_to_followers(user_id, post.id)
+        else:
+            # Celebrity: Mark for fanout on read
+            self.redis.sadd('celebrity_users', user_id)
+            # Store in celebrity posts cache
+            self.redis.zadd(
+                f"celebrity_posts:{user_id}",
+                {post.id: post.created_at.timestamp()}
+            )
+        
+        return {'status': 'success', 'post_id': post.id}
+    
+    def get_feed(self, user_id, page=1, size=20):
+        # 1. Get pre-computed timeline (normal users)
+        timeline_posts = self.redis.zrevrange(
+            f"timeline:{user_id}",
+            0,
+            100  # Get more than needed
+        )
+        
+        # 2. Get celebrity posts (users this user follows)
+        celebrity_followees = self._get_celebrity_followees(user_id)
+        celebrity_posts = []
+        
+        for celebrity_id in celebrity_followees:
+            posts = self.redis.zrevrange(
+                f"celebrity_posts:{celebrity_id}",
+                0,
+                20  # Recent 20 posts
+            )
+            celebrity_posts.extend(posts)
+        
+        # 3. Merge both sources
+        all_post_ids = timeline_posts + celebrity_posts
+        
+        # 4. Fetch post details
+        posts = self.db.get_posts(all_post_ids)
+        
+        # 5. Sort by timestamp
+        posts.sort(key=lambda p: p['created_at'], reverse=True)
+        
+        # 6. Apply ranking algorithm
+        ranked_posts = self.ranking_service.rank(posts, user_id)
+        
+        # 7. Paginate
+        start = (page-1) * size
+        end = start + size
+        
+        return ranked_posts[start:end]
+    
+    def _get_celebrity_followees(self, user_id):
+        """Get list of celebrities this user follows"""
+        followees = self.db.get_followees(user_id)
+        celebrities = self.redis.smembers('celebrity_users')
+        return [f for f in followees if f in celebrities]
+</code></pre>
+<p>§§SEG50§§</p>
+<pre><code>§§SEG51§§</code></pre>
+<p>§§SEG52§§</p>
+<pre><code>§§SEG53§§</code></pre>
+<p>§§SEG54§§</p>
+<pre><code>§§SEG55§§</code></pre>
+<h2 id="timeline-cache-design">§§SEG56§§</h2>
+<p>§§SEG57§§</p>
+<h3 id="cache-structure">§§SEG58§§</h3>
+<p>§§SEG59§§</p>
+<pre><code class="language-python"># Structure
+Key: "timeline:{user_id}"
+Score: post_timestamp (for sorting)
+Member: post_id
+
+# Example
+timeline:user123 = {
+    post_456: 1709567890000,  # Score = timestamp in ms
+    post_457: 1709567891000,
+    post_458: 1709567892000,
+    ...
+}
+</code></pre>
+<p>§§SEG60§§</p>
+<pre><code>§§SEG61§§</code></pre>
+<p>§§SEG62§§</p>
+<pre><code class="language-python"># Insert post into timeline
+redis.zadd(
+    "timeline:user123",
+    {post_id: timestamp}
+)
+
+# Get paginated feed (20 posts per page)
+post_ids = redis.zrevrange(
+    "timeline:user123",
+    start=0,
+    end=19,
+    withscores=True
+)
+
+# Trim to keep only recent 1000 posts
+redis.zremrangebyrank(
+    "timeline:user123",
+    0,
+    -1001  # Keep rank 1000 to end
+)
+
+# Get posts after certain timestamp (pull to refresh)
+post_ids = redis.zrevrangebyscore(
+    "timeline:user123",
+    max="+inf",
+    min=last_seen_timestamp
+)
+</code></pre>
+<h3 id="cache-sizing">§§SEG63§§</h3>
+<p>§§SEG64§§</p>
+<pre><code>§§SEG65§§</code></pre>
+<h3 id="cache-invalidation">§§SEG66§§</h3>
+<p>§§SEG67§§</p>
+<pre><code>§§SEG68§§</code></pre>
+<p>§§SEG69§§</p>
+<pre><code class="language-python">class TimelineCacheManager:
+    def invalidate_after_post(self, user_id, post_id):
+        # Don't invalidate, just ensure freshness
+        # Timeline cache is append-only
+        pass
+    
+    def invalidate_after_delete(self, user_id, post_id):
+        # Post deleted → Remove from all followers' timelines
+        followers = self.db.get_followers(user_id)
+        
+        for follower_id in followers:
+            self.redis.zrem(
+                f"timeline:{follower_id}",
+                post_id
+            )
+    
+    def invalidate_after_unfollow(self, user_id, unfollowed_id):
+        # User unfollows someone → Remove their posts from timeline
+        posts = self.redis.zrange(f"celebrity_posts:{unfollowed_id}", 0, -1)
+        
+        for post_id in posts:
+            self.redis.zrem(
+                f"timeline:{user_id}",
+                post_id
+            )
+</code></pre>
+<h2 id="ranking-algorithms">§§SEG70§§</h2>
+<p>§§SEG71§§</p>
+<h3 id="why-ranking">§§SEG72§§</h3>
+<pre><code>§§SEG73§§</code></pre>
+<h3 id="simple-ranking-engagement-based">§§SEG74§§</h3>
+<pre><code class="language-python">def calculate_engagement_score(post):
+    """Simple engagement-based ranking"""
+    
+    # Age decay
+    age_hours = (datetime.now() - post.created_at).total_seconds() / 3600
+    age_factor = 1 / (age_hours + 2) ** 1.5  # Exponential decay
+    
+    # Engagement signals
+    engagement = (
+        post.likes * 1.0 +
+        post.comments * 2.0 +  # Comments more valuable
+        post.shares * 3.0      # Shares most valuable
+    )
+    
+    # Combine
+    score = engagement * age_factor
+    
+    return score
+
+# Apply ranking
+def rank_posts(posts):
+    for post in posts:
+        post.score = calculate_engagement_score(post)
+    
+    # Sort by score descending
+    posts.sort(key=lambda p: p.score, reverse=True)
+    
+    return posts
+</code></pre>
+<p>§§SEG75§§</p>
+<pre><code>§§SEG76§§</code></pre>
+<h3 id="advanced-ranking-personalized">§§SEG77§§</h3>
+<pre><code class="language-python">class PersonalizedRanking:
+    def rank(self, posts, user_id):
+        """ML-based personalized ranking"""
+        
+        # Get user features
+        user_profile = self.get_user_profile(user_id)
+        
+        scored_posts = []
+        for post in posts:
+            # Extract post features
+            features = self._extract_features(post, user_profile)
+            
+            # ML model prediction
+            score = self.model.predict(features)
+            
+            scored_posts.append((post, score))
+        
+        # Sort by predicted score
+        scored_posts.sort(key=lambda x: x[1], reverse=True)
+        
+        return [post for post, score in scored_posts]
+    
+    def _extract_features(self, post, user_profile):
+        """Extract features for ML model"""
+        return {
+            # Time features
+            'age_hours': (datetime.now() - post.created_at).hours,
+            'hour_of_day': post.created_at.hour,
+            
+            # Engagement features
+            'like_count': post.likes,
+            'comment_count': post.comments,
+            'share_count': post.shares,
+            'engagement_rate': post.likes / max(post.impressions, 1),
+            
+            # Author features
+            'author_follower_count': post.author.followers,
+            'user_follows_author': user_profile.follows(post.author_id),
+            'past_engagement_with_author': user_profile.engagement_with(post.author_id),
+            
+            # Content features
+            'has_image': post.has_image,
+            'has_video': post.has_video,
+            'text_length': len(post.content),
+            'contains_hashtags': '#' in post.content,
+            
+            # User preference features
+            'topic_match': self._topic_similarity(post.topics, user_profile.interests),
+            'language_match': post.language == user_profile.language
+        }
+</code></pre>
+<p>§§SEG78§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG79§§</code></pre>
+<p>§§SEG80§§</p>
+<p>§§SEG81§§</p>
+<pre><code>§§SEG82§§</code></pre>
+<h2 id="event-driven-architecture">§§SEG83§§</h2>
+<p>§§SEG84§§</p>
+<h3 id="event-flow">§§SEG85§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG86§§</code></pre>
+<p>§§SEG87§§</p>
+<h3 id="event-structure">§§SEG88§§</h3>
+<pre><code class="language-python"># Post created event
+{
+    "event_type": "post.created",
+    "event_id": "evt_123456",
+    "timestamp": 1709567890000,
+    "data": {
+        "post_id": "post_456",
+        "author_id": "user_123",
+        "content": "Hello world!",
+        "media_urls": ["https://..."],
+        "created_at": 1709567890000
+    },
+    "metadata": {
+        "source": "mobile_app",
+        "version": "v2.1"
+    }
+}
+
+# Like event
+{
+    "event_type": "post.liked",
+    "event_id": "evt_123457",
+    "timestamp": 1709567891000,
+    "data": {
+        "post_id": "post_456",
+        "user_id": "user_789",
+        "liked_at": 1709567891000
+    }
+}
+
+# Comment event
+{
+    "event_type": "post.commented",
+    "event_id": "evt_123458",
+    "timestamp": 1709567892000,
+    "data": {
+        "post_id": "post_456",
+        "comment_id": "cmt_789",
+        "author_id": "user_999",
+        "content": "Nice post!",
+        "created_at": 1709567892000
+    }
+}
+</code></pre>
+<h3 id="event-consumers">§§SEG89§§</h3>
+<pre><code class="language-python"># Fanout consumer
+class FanoutEventConsumer:
+    def handle_post_created(self, event):
+        post_id = event['data']['post_id']
+        author_id = event['data']['author_id']
+        timestamp = event['data']['created_at']
+        
+        # Get followers
+        followers = self.db.get_followers(author_id)
+        
+        # Fanout
+        for follower_id in followers:
+            self.redis.zadd(
+                f"timeline:{follower_id}",
+                {post_id: timestamp}
+            )
+
+# Notification consumer
+class NotificationEventConsumer:
+    def handle_post_liked(self, event):
+        post_id = event['data']['post_id']
+        liker_id = event['data']['user_id']
+        
+        # Get post author
+        post = self.db.get_post(post_id)
+        author_id = post.author_id
+        
+        # Send notification
+        if author_id != liker_id:  # Don't notify self
+            self.notification_service.send({
+                'user_id': author_id,
+                'type': 'like',
+                'actor_id': liker_id,
+                'post_id': post_id
+            })
+
+# Analytics consumer
+class AnalyticsEventConsumer:
+    def handle_all_events(self, event):
+        # Stream to analytics pipeline
+        self.kinesis.put_record(event)
+        
+        # Update real-time counters
+        if event['event_type'] == 'post.created':
+            self.redis.incr('metrics:posts_created:today')
+        elif event['event_type'] == 'post.liked':
+            self.redis.incr('metrics:likes:today')
+</code></pre>
+<h3 id="benefits-of-event-driven">§§SEG90§§</h3>
+<pre><code>§§SEG91§§</code></pre>
+<h2 id="pagination-strategy">§§SEG92§§</h2>
+<p>§§SEG93§§</p>
+<h3 id="offset-based-pagination-dont-use">§§SEG94§§</h3>
+<pre><code class="language-python"># BAD: Offset-based
+def get_feed_offset(user_id, page, size=20):
+    offset = (page - 1) * size
+    
+    post_ids = redis.zrevrange(
+        f"timeline:{user_id}",
+        offset,
+        offset + size - 1
+    )
+    
+    return post_ids
+
+# Problems:
+# 1. Duplicates if new posts added while paginating
+# 2. Missing posts if posts deleted
+# 3. Inefficient for large offsets (O(N))
+</code></pre>
+<h3 id="cursor-based-pagination-use-this">§§SEG95§§</h3>
+<pre><code class="language-python"># GOOD: Cursor-based
+def get_feed_cursor(user_id, cursor=None, size=20):
+    if cursor is None:
+        # First page: Start from highest score
+        cursor = "+inf"
+    
+    # Get posts with score &lt; cursor
+    post_ids = redis.zrevrangebyscore(
+        f"timeline:{user_id}",
+        max=cursor,
+        min="-inf",
+        start=0,
+        num=size + 1,  # Fetch one extra to check if more
+        withscores=True
+    )
+    
+    has_more = len(post_ids) &gt; size
+    if has_more:
+        post_ids = post_ids[:size]
+    
+    # Next cursor = smallest score in this page
+    next_cursor = post_ids[-1][1] if post_ids else None
+    
+    return {
+        'posts': [pid for pid, score in post_ids],
+        'next_cursor': next_cursor,
+        'has_more': has_more
+    }
+
+# Client usage:
+# Page 1: GET /feed?size=20
+# Response: {posts: [...], next_cursor: 1709567890000}
+#
+# Page 2: GET /feed?cursor=1709567890000&amp;size=20
+# Response: {posts: [...], next_cursor: 1709567850000}
+</code></pre>
+<p>§§SEG96§§</p>
+<pre><code>§§SEG97§§</code></pre>
+<h2 id="integration-putting-it-all-together">§§SEG98§§</h2>
+<p>§§SEG99§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG100§§</code></pre>
+<p>§§SEG101§§</p>
+<h3 id="capacity-planning">§§SEG102§§</h3>
+<pre><code>§§SEG103§§</code></pre>
+<h2 id="key-takeaways">§§SEG104§§</h2>
+<p>§§SEG105§§</p>
+<pre><code>§§SEG106§§</code></pre>
+<p>§§SEG107§§</p>
+<pre><code>§§SEG108§§</code></pre>
+<p>§§SEG109§§</p>
+<pre><code>§§SEG110§§</code></pre>
+<p>§§SEG111§§</p>
+<pre><code>§§SEG112§§</code></pre>
+<p>§§SEG113§§</p>
+<ol>
+<li>§§SEG114§§</li>
+<li>§§SEG115§§</li>
+<li>§§SEG116§§</li>
+<li>§§SEG117§§</li>
+<li>§§SEG118§§</li>
+</ol>
+<p>§§SEG119§§</p>
+<p>§§SEG120§§</p></article>

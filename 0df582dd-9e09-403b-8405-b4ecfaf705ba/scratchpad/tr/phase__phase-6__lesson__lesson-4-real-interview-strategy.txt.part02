@@ -1,0 +1,589 @@
+@66
+Chiến Lược 3: Thiết Kế WhatsApp (Hệ Thống Nhắn Tin)
+@67
+Điều ⟦Người Phỏng Vấn|Interviewer⟧ Muốn Nghe
+@68
+**Thách thức cốt lõi:** Giao tin nhắn một cách tin cậy theo thời gian thực với ⟦tính sẵn sàng cao|high availability⟧
+@69
+**Các chủ đề chính cần đề cập:**
+@70
+Giao tin thời gian thực (WebSocket)
+@71
+⟦Đảm bảo giao tin|Message delivery guarantees⟧
+@72
+Xử lý tin nhắn khi người dùng ngoại tuyến
+@73
+Nhắn tin nhóm
+@74
+⟦Mã hoá đầu cuối|End-to-end encryption⟧ (ở mức khái niệm)
+@75
+Trọng Tâm Khi Áp Dụng SNAKE
+@76
+**S - Scope - Phạm vi**
+@77
+"Cho tôi làm rõ:
+
+Tính năng cốt lõi:
+✓ Nhắn tin 1-1
+✓ Nhắn tin nhóm (< 256 thành viên)
+✓ Xác nhận trạng thái (đã gửi, đã nhận, đã đọc)
+✓ Lưu trữ tin nhắn khi ngoại tuyến
+
+Ngoài phạm vi:
+✗ Gọi thoại/video
+✗ Cập nhật trạng thái
+✗ Tính năng thanh toán
+
+Quy mô:
+- 2 tỷ người dùng
+- 100 tỷ tin nhắn/ngày
+- Cần giao tin thời gian thực
+- Đảm bảo giao tin 99,99%
+
+Như vậy đúng chưa?"
+
+@78
+**N - Numbers - Con số**
+@79
+"Lưu lượng tin nhắn:
+100 tỷ tin nhắn/ngày / 86400 giây ≈ 1,1 triệu tin nhắn/giây
+Cao điểm (gấp 3): 3,3 triệu tin nhắn/giây
+
+Lưu trữ:
+Tin nhắn trung bình: 100 byte
+100 tỷ tin nhắn/ngày × 365 × 2 năm = 73 nghìn tỷ tin nhắn
+× 100 byte = 7,3 PB
+→ Cần lưu trữ phân tán
+
+Tải kết nối:
+100 triệu người dùng trực tuyến đồng thời
+Mỗi người duy trì một kết nối WebSocket
+= 100 triệu kết nối lâu dài
+→ Cần gom nhóm kết nối (connection pooling), nhiều máy chủ"
+
+@80
+**K - Key Components - Thành phần chính**
+@81
+graph TB
+    CLIENT[Máy khách di động]
+    WS[Máy chủ WebSocket]
+    MSG[Dịch vụ tin nhắn]
+    QUEUE[Hàng đợi thông điệp]
+    STORAGE[(Lưu trữ tin nhắn)]
+    PRESENCE[Dịch vụ trạng thái trực tuyến]
+
+    CLIENT <-->|WebSocket| WS
+    WS --> MSG
+    MSG --> QUEUE
+    MSG --> STORAGE
+    WS --> PRESENCE
+
+    style WS fill:#ff6b6b
+    style QUEUE fill:#51cf66
+@82
+*WhatsApp: Tập trung vào tầng WebSocket và ⟦Hàng đợi thông điệp|Message Queue⟧*
+@83
+**Các phần thảo luận then chốt:**
+@84
+1. Giao tin thời gian thực:
+
+"Mỗi người dùng một kết nối WebSocket:
+- Duy trì kết nối lâu dài
+- Độ trễ thấp (< 50ms)
+- Giao tiếp hai chiều
+
+Luồng tin nhắn:
+1. Người gửi → Máy chủ WebSocket A
+2. Máy chủ A → Dịch vụ tin nhắn
+3. Dịch vụ tin nhắn → Kiểm tra người nhận có trực tuyến không
+4. Nếu trực tuyến:
+   → Chuyển tiếp tới máy chủ WebSocket của người nhận
+   → Giao ngay lập tức
+5. Nếu ngoại tuyến:
+   → Lưu vào hàng đợi thông điệp
+   → Giao khi người nhận trực tuyến trở lại
+
+Vì sao cách này hiệu quả:
+- Thời gian thực với người dùng đang trực tuyến
+- Đảm bảo giao tin với người dùng ngoại tuyến
+- Mở rộng theo chiều ngang (nhiều máy chủ WS)"
+
+2. Đảm bảo giao tin:
+
+"Giao ít nhất một lần (at-least-once):
+- Tin nhắn được lưu trong hàng đợi cho tới khi được xác nhận
+- Máy khách gửi ACK khi đã nhận
+- Thử lại nếu không có ACK trong 30 giây
+- Hàng đợi bền vững (Kafka)
+
+Ba dấu tích:
+✓ Đã gửi: Tin nhắn đã rời thiết bị người gửi
+✓✓ Đã nhận: Tin nhắn đã tới thiết bị người nhận
+✓✓✓ Đã đọc: Người nhận đã mở cuộc trò chuyện
+
+Triển khai:
+- Mỗi lần cập nhật trạng thái là một tin nhắn riêng
+- Được giao qua cùng kênh WebSocket
+- Lưu vào cơ sở dữ liệu để làm lịch sử"
+
+3. Xử lý ngoại tuyến:
+
+"Khi người dùng ngoại tuyến:
+- Tin nhắn được xếp hàng trong bộ lưu trữ bền vững
+- Lưu giữ trong 30 ngày
+- Khi người dùng trực tuyến trở lại:
+  → Lấy các tin nhắn đang chờ
+  → Giao theo đúng thứ tự
+  → Đánh dấu là đã nhận
+  → Xoá khỏi hàng đợi
+
+Vì sao dựa trên hàng đợi:
+- Đảm bảo giao tin
+- Xử lý được gián đoạn mạng
+- Hỗ trợ nhiều thiết bị"
+
+@85
+**E - Elaborate - Đào sâu**
+@86
+Nhắn tin nhóm:
+
+"Thách thức: Giao tin tới 256 thành viên một cách hiệu quả
+
+Cách tiếp cận ngây thơ:
+- Gửi 256 tin nhắn riêng lẻ
+- Vấn đề phân phát (fanout) tương tự Twitter
+
+Cách tiếp cận tốt hơn:
+- Một tin nhắn duy nhất được lưu một lần
+- 256 con trỏ tới cùng tin nhắn đó
+- Giao tới thành viên đang trực tuyến (WebSocket)
+- Xếp hàng chờ cho thành viên ngoại tuyến
+
+Đánh đổi:
+Tiết kiệm lưu trữ
+Tin nhắn nhất quán
+Logic đọc phức tạp (cần lần theo con trỏ)"
+
+Mã hoá:
+
+"Mã hoá đầu cuối (mức tổng quan):
+- Tin nhắn được mã hoá trên thiết bị người gửi
+- Máy chủ không thể giải mã (zero-knowledge)
+- Chỉ người nhận mới giải mã được
+
+Hệ quả:
+- Tìm kiếm phải thực hiện phía máy khách
+- Bản sao lưu được mã hoá
+- Máy chủ chỉ định tuyến các byte đã mã hoá"
+
+@87
+Điều Gì Làm Nên Một Câu Trả Lời Tốt
+@88
+✓ Tập trung vào thời gian thực (WebSocket)
+✓ Trình bày chi tiết đảm bảo giao tin
+✓ Có chiến lược xử lý ngoại tuyến
+✓ Có số liệu về khả năng mở rộng
+✓ Tối ưu nhắn tin nhóm
+
+@89
+Chiến Lược 4: Thiết Kế Google Drive (Lưu Trữ Đám Mây)
+@90
+Điều ⟦Người Phỏng Vấn|Interviewer⟧ Muốn Nghe
+@91
+**Thách thức cốt lõi:** Đồng bộ tệp giữa các thiết bị một cách tin cậy, kèm ⟦giải quyết xung đột|conflict resolution⟧
+@92
+**Các chủ đề chính cần đề cập:**
+@93
+Thuật toán ⟦đồng bộ|sync⟧ tệp
+@94
+Chiến lược ⟦chia khối|chunking⟧
+@95
+⟦Giải quyết xung đột|Conflict resolution⟧
+@96
+⟦Đồng bộ phần chênh lệch|Delta sync⟧ (chỉ những phần đã thay đổi)
+@97
+Cộng tác (chỉnh sửa thời gian thực)
+@98
+Trọng Tâm Khi Áp Dụng SNAKE
+@99
+**S - Scope - Phạm vi**
+@100
+"Cho tôi làm rõ:
+
+Tính năng cốt lõi:
+✓ Tải lên/tải xuống tệp
+✓ Đồng bộ giữa các thiết bị
+✓ Quản lý phiên bản tệp
+✓ Chia sẻ (quyền đọc/ghi)
+
+Ngoài phạm vi:
+✗ Cộng tác chỉnh sửa thời gian thực (Google Docs)
+✗ Tích hợp ứng dụng bên thứ ba
+✗ Tìm kiếm nâng cao
+
+Quy mô:
+- 1 tỷ người dùng
+- 10 tỷ tệp được lưu trữ
+- Kích thước tệp trung bình: 5MB
+- 1 triệu lượt đồng bộ đang diễn ra/phút
+
+Như vậy đúng chưa?"
+
+@101
+**N - Numbers - Con số**
+@102
+"Lưu trữ:
+10 tỷ tệp × 5MB = 50 exabyte
+→ Cần lưu trữ đối tượng phân tán
+
+Lưu lượng đồng bộ:
+1 triệu lượt đồng bộ/phút
+Trung bình: 2 tệp thay đổi mỗi lượt đồng bộ
+= 2 triệu thao tác tệp/phút
+= 33K thao tác/giây
+
+Băng thông:
+33K thao tác × 5MB = 165 GB/giây
+→ Cần chia khối để giảm băng thông!"
+
+@103
+**K - Key Components - Thành phần chính**
+@104
+graph TB
+    CLIENT[Máy khách máy tính/di động]
+    SYNC[Dịch vụ đồng bộ]
+    METADATA[(CSDL siêu dữ liệu)]
+    STORAGE[Lưu trữ đối tượng S3]
+    CHUNK[Dịch vụ chia khối]
+    NOTIF[Dịch vụ thông báo]
+
+    CLIENT --> SYNC
+    SYNC --> METADATA
+    SYNC --> CHUNK
+    CHUNK --> STORAGE
+    SYNC --> NOTIF
+    NOTIF --> CLIENT
+
+    style CHUNK fill:#ff6b6b
+    style SYNC fill:#51cf66
+@105
+*Google Drive: Tập trung vào ⟦Dịch vụ đồng bộ|Sync Service⟧ và ⟦chia khối|Chunking⟧*
+@106
+**Các phần thảo luận then chốt:**
+@107
+1. Chiến lược chia khối:
+
+"Vì sao cần chia khối:
+- Một tệp 1GB đã được tải lên
+- Người dùng sửa 1 dòng
+- Không chia khối: Tải lại toàn bộ 1GB
+- Có chia khối: Chỉ tải lên khối đã thay đổi
+
+Triển khai:
+- Chia tệp thành các khối 4MB
+- Băm từng khối (SHA-256)
+- Chỉ tải lên các khối có giá trị băm thay đổi
+
+Ví dụ:
+Tệp 1GB = 250 khối
+Người dùng sửa → 1 khối thay đổi
+Tải lên: 4MB thay vì 1GB
+→ Tiết kiệm băng thông 250 lần!
+
+Loại bỏ trùng lặp:
+- Cùng giá trị băm = cùng nội dung
+- Lưu một lần, tham chiếu nhiều lần
+- Tiết kiệm lưu trữ (nhiều người dùng tải lên cùng một tệp)"
+
+2. Thuật toán đồng bộ:
+
+"Luồng đồng bộ:
+1. Máy khách theo dõi thay đổi của tệp
+2. Phát hiện thay đổi → Tính giá trị băm của các khối
+3. So sánh với giá trị băm trên máy chủ
+4. Chỉ tải lên các khối đã thay đổi
+5. Máy chủ dựng lại tệp
+6. Thông báo cho các máy khách khác
+
+Phát hiện xung đột:
+- Bản ghi cuối cùng thắng (last-write-wins)? (có thể mất dữ liệu)
+- Tốt hơn: Lịch sử phiên bản
+- Người dùng sửa tệp khi ngoại tuyến trên 2 thiết bị
+- Cả hai cùng tải lên khi trực tuyến
+- Máy chủ phát hiện xung đột
+- Giữ lại cả hai phiên bản
+- Để người dùng tự hợp nhất"
+
+3. Cấu trúc siêu dữ liệu:
+
+"Siêu dữ liệu của tệp:
+{
+  file_id: "abc123",
+  name: "document.pdf",
+  size: 5242880,
+  chunks: [
+    {chunk_id: "ch1", hash: "a1b2...", offset: 0},
+    {chunk_id: "ch2", hash: "c3d4...", offset: 4194304}
+  ],
+  version: 5,
+  modified_by: "user_id",
+  modified_at: "2024-03-15T10:30:00Z"
+}
+
+Vì sao dùng cấu trúc này:
+- Dựng lại tệp từ các khối
+- Phát hiện thay đổi (so sánh giá trị băm)
+- Lịch sử phiên bản
+- Có thể loại bỏ trùng lặp"
+
+@108
+**E - Elaborate - Đào sâu**
+@109
+Thông báo thời gian thực:
+
+"Khi tệp được đồng bộ:
+- Máy chủ đẩy thông báo tới mọi máy khách đang kết nối
+- Qua WebSocket hoặc long-polling
+- Máy khách kiểm tra xem tệp cục bộ đã lỗi thời chưa
+- Tự động tải xuống nếu cần
+
+Vì sao cần thời gian thực:
+- Người dùng sửa tệp trên laptop
+- Người dùng thấy cập nhật ngay trên điện thoại
+- Trải nghiệm liền mạch giữa các thiết bị
+
+Hỗ trợ ngoại tuyến:
+
+"Thách thức: Người dùng sửa khi ngoại tuyến, một người dùng khác sửa cùng tệp
+
+Giải pháp:
+- Mỗi lần sửa tạo ra một phiên bản mới
+- Khi trực tuyến, tải lên dưới dạng phiên bản mới
+- Máy chủ phát hiện có nhiều phiên bản
+- Giao diện hiển thị: 'Bản sao xung đột (thiết bị của Người dùng 2)'
+- Người dùng tự hợp nhất
+
+Đánh đổi:
+Không bao giờ mất dữ liệu
+Người dùng nắm quyền kiểm soát
+Phải hợp nhất thủ công (trường hợp hiếm)"
+
+@110
+Điều Gì Làm Nên Một Câu Trả Lời Tốt
+@111
+✓ Trình bày chi tiết chiến lược chia khối
+✓ Giải thích đồng bộ phần chênh lệch (delta sync)
+✓ Có giải quyết xung đột
+✓ Thể hiện tối ưu băng thông
+✓ Thiết kế cấu trúc siêu dữ liệu
+
+@112
+Tư Duy Phỏng Vấn: Điều ⟦Người Phỏng Vấn|Interviewers⟧ Thực Sự Muốn
+@113
+Vượt Ra Ngoài Kiến Thức Kỹ Thuật
+@114
+**⟦Người phỏng vấn|Interviewers⟧ đánh giá:**
+@115
+1. Hiểu bài toán (30%)
+   - Bạn có làm rõ yêu cầu không?
+   - Bạn có nhận diện được thách thức cốt lõi không?
+
+2. Kỹ năng thiết kế hệ thống (40%)
+   - Bạn có thiết kế được kiến trúc có khả năng mở rộng không?
+   - Bạn có cân nhắc các đánh đổi không?
+   - Bạn có ước lượng được năng lực hệ thống không?
+
+3. Giao tiếp (20%)
+   - Bạn có giải thích rõ ràng không?
+   - Bạn có vừa nghĩ vừa nói thành lời không?
+   - Bạn có tinh thần hợp tác không?
+
+4. Chiều sâu kiến thức (10%)
+   - Bạn có hiểu sâu các công nghệ không?
+   - Bạn có thảo luận được các phương án thay thế không?
+
+@116
+Những Dấu Hiệu Đỏ Khiến Bạn Trượt Phỏng Vấn
+@117
+Nhảy vào giải pháp mà không làm rõ yêu cầu
+Kiến trúc chung chung (không tuỳ biến theo bài toán)
+Không tính toán quy mô
+Không thảo luận về đánh đổi
+Thiết kế trong im lặng (không nói thành lời suy nghĩ)
+Phòng thủ khi bị chất vấn
+Toàn thuật ngữ thời thượng, không có chiều sâu
+
+@118
+Những Dấu Hiệu Xanh Giúp Bạn Vượt Qua Phỏng Vấn
+@119
+Đặt câu hỏi làm rõ
+Tính toán quy mô (thể hiện tư duy dựa trên dữ liệu)
+Giải thích đánh đổi ("Tôi chọn X thay vì Y vì...")
+Nói thành lời suy nghĩ của mình
+Điều chỉnh dựa trên phản hồi
+Thể hiện chiều sâu ở 2-3 phần
+Thảo luận các kịch bản sự cố
+Đề xuất chiến lược giám sát
+
+@120
+Chiến Lược Luyện Tập
+@121
+Cách Chuẩn Bị
+@122
+**Bước 1: Thành thạo ⟦khung tư duy|Framework⟧ SNAKE (1 tuần)**
+@123
+Luyện tập 5 bài toán khác nhau với giới hạn thời gian nghiêm ngặt
+@124
+Làm quen với trình tự các bước
+@125
+**Bước 2: Nghiên cứu 4 nhóm hệ thống chính (2 tuần)**
+@126
+Hệ thống mạng xã hội (Twitter, Facebook, Instagram)
+@127
+Hệ thống video (YouTube, Netflix, TikTok)
+@128
+Hệ thống nhắn tin (WhatsApp, Slack, Discord)
+@129
+Hệ thống lưu trữ (Google Drive, Dropbox, S3)
+@130
+**Bước 3: ⟦Phỏng vấn thử|Mock Interviews⟧ (2-4 tuần)**
+@131
+Luyện tập với bạn bè, đồng nghiệp
+@132
+Tự ghi hình bản thân
+@133
+Xin nhận xét, góp ý
+@134
+Lặp lại và cải thiện
+@135
+Bài Toán Luyện Tập Theo Nhóm
+@136
+Bảng tin mạng xã hội:
+- Thiết kế Twitter
+- Thiết kế Instagram
+- Thiết kế bảng tin LinkedIn
+- Thiết kế Reddit
+
+Nền tảng video:
+- Thiết kế YouTube
+- Thiết kế Netflix
+- Thiết kế Twitch
+- Thiết kế TikTok
+
+Nhắn tin:
+- Thiết kế WhatsApp
+- Thiết kế Slack
+- Thiết kế Discord
+- Thiết kế Telegram
+
+Lưu trữ/Đồng bộ:
+- Thiết kế Google Drive
+- Thiết kế Dropbox
+- Thiết kế iCloud
+- Thiết kế S3
+
+Thương mại điện tử:
+- Thiết kế Amazon
+- Thiết kế Uber
+- Thiết kế Airbnb
+- Thiết kế ứng dụng giao đồ ăn
+
+Hạ tầng:
+- Thiết kế dịch vụ rút gọn URL
+- Thiết kế bộ giới hạn tần suất (rate limiter)
+- Thiết kế trình thu thập web (web crawler)
+- Thiết kế bộ nhớ đệm phân tán
+
+@137
+Khuôn Mẫu Quản Lý Thời Gian
+@138
+0-7 phút:   Scope (làm rõ yêu cầu)
+7-14 phút:  Numbers (ước lượng năng lực)
+14-21 phút: API (thiết kế giao diện)
+21-33 phút: Key Components (kiến trúc)
+33-45 phút: Elaborate (đào sâu)
+
+Luyện tập với đồng hồ bấm giờ!
+Kỷ luật là chìa khoá
+
+@139
+Những Điểm Cốt Lõi
+@140
+**Mỗi loại hệ thống có một "câu chuyện":**
+@141
+Twitter = Bài toán phân phát (fanout)
+YouTube = Mã hoá + CDN
+WhatsApp = Giao tin thời gian thực
+Google Drive = Đồng bộ + giải quyết xung đột
+
+Biết câu chuyện → Biết cần tập trung vào đâu
+
+@142
+**Công thức thành công khi phỏng vấn:**
+@143
+Kiến thức kỹ thuật × Giao tiếp × Cấu trúc = Thành công
+
+Bạn có thể giỏi kỹ thuật nhưng vẫn trượt nếu thiếu cấu trúc
+Bạn có thể có cấu trúc hoàn hảo nhưng vẫn trượt nếu thiếu chiều sâu
+Bạn cần cả hai!
+
+Khung tư duy SNAKE mang lại cấu trúc
+Luyện tập mang lại chiều sâu kỹ thuật
+Phỏng vấn thử cải thiện khả năng giao tiếp
+
+@144
+**Điều ⟦người phỏng vấn|interviewers⟧ muốn:**
+@145
+Không phải sự hoàn hảo
+Không phải mọi chi tiết
+Không phải lời giải học thuộc lòng
+
+Mà là:
+✓ Quy trình tư duy rõ ràng
+✓ Ý thức về đánh đổi
+✓ Tư duy về khả năng mở rộng
+✓ Giao tiếp rõ ràng
+✓ Chiều sâu ở những chỗ quan trọng
+
+@146
+**Chiến lược luyện tập:**
+@147
+Tuần 1: Thành thạo khung tư duy SNAKE
+Tuần 2-3: Nghiên cứu các nhóm hệ thống
+Tuần 4-6: Phỏng vấn thử
+Tuần 7+: Phỏng vấn thật
+
+Luyện tập đều đặn > Học dồn
+45 phút × 30 bài toán = Sẵn sàng
+
+@148
+**Lời khuyên cuối cùng:**
+@149
+Trong buổi phỏng vấn:
+- Hít thở sâu (bạn biết những điều này mà!)
+- Làm rõ trước khi thiết kế
+- Nói thành lời suy nghĩ của mình
+- Trình bày các đánh đổi
+- Tinh thần hợp tác
+- Hãy tận hưởng (nói thật đấy!)
+
+Hãy nhớ:
+Bạn đã học hành chăm chỉ
+Bạn hiểu các hệ thống
+Bạn có một khung tư duy
+Bạn đã sẵn sàng
+
+Hãy tin vào sự chuẩn bị của mình
+
+@150
+Bạn đã có kiến thức (6 phần). Bạn đã có ⟦khung tư duy|framework⟧ (SNAKE). Bạn đã có chiến lược (bài này).
+@151
+**Giờ là lúc luyện tập và chinh phục những buổi phỏng vấn đó!**
+@152
+**Chúc mừng!** Bạn đã hoàn thành toàn bộ khoá ⟦Thiết Kế Hệ Thống|System Design⟧ Từ Con Số 0 Đến Chuyên Gia.
+@153
+**Từ Phần 0 (Thay Đổi ⟦Mô Hình Tư Duy|Mental Model⟧) đến Phần 6 (Làm Chủ ⟦Thiết Kế Hệ Thống|System Design⟧), bạn đã lột xác từ ⟦lập trình viên|developer⟧ thành ⟦kiến trúc sư|architect⟧.**
+@154
+Hãy tiếp tục luyện tập. Tiếp tục xây dựng. Tiếp tục phát triển.
+@155
+**Bạn đã sẵn sàng. Hãy chinh phục những buổi phỏng vấn đó! 🚀**

@@ -1,0 +1,262 @@
+<article class="prose-ui"><h1 id="consistency-models-strong-vs-eventual-consistency">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<h2 id="tại-sao-consistency-quan-trọng">§§SEG6§§</h2>
+<p>§§SEG7§§</p>
+<pre><code>§§SEG8§§</code></pre>
+<p>§§SEG9§§</p>
+<pre><code>§§SEG10§§</code></pre>
+<p>§§SEG11§§</p>
+<p>§§SEG12§§</p>
+<h2 id="strong-consistency-luôn-đúng-nhưng-chậm">§§SEG13§§</h2>
+<h3 id="định-nghĩa">§§SEG14§§</h3>
+<p>§§SEG15§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG16§§</code></pre>
+<p>§§SEG17§§</p>
+<p>§§SEG18§§</p>
+<pre><code>§§SEG19§§</code></pre>
+<h3 id="linearizability-strongest-form">§§SEG20§§</h3>
+<p>§§SEG21§§</p>
+<p>§§SEG22§§</p>
+<pre><code>§§SEG23§§</code></pre>
+<p>§§SEG24§§</p>
+<p>§§SEG25§§</p>
+<pre><code>§§SEG26§§</code></pre>
+<h3 id="implementation-cost">§§SEG27§§</h3>
+<p>§§SEG28§§</p>
+<pre><code class="language-python">def write_with_strong_consistency(key, value):
+    # 1. Write to primary
+    primary.write(key, value)
+    
+    # 2. Replicate to ALL replicas
+    for replica in replicas:
+        replica.write(key, value)
+        
+    # 3. Wait for ALL confirmations
+    wait_for_all_acks()
+    
+    # 4. Only then return success
+    return "success"
+
+# If ANY replica fails → Entire write fails
+# If network slow → Write is slow
+</code></pre>
+<p>§§SEG29§§</p>
+<pre><code>§§SEG30§§</code></pre>
+<h3 id="trade-offs">§§SEG31§§</h3>
+<pre><code>§§SEG32§§</code></pre>
+<h3 id="khi-nào-cần-strong-consistency">§§SEG33§§</h3>
+<p>§§SEG34§§</p>
+<pre><code>§§SEG35§§</code></pre>
+<p>§§SEG36§§</p>
+<pre><code class="language-python"># Bank transfer PHẢI strong consistency
+def transfer_money(from_account, to_account, amount):
+    with transaction():
+        # PHẢI atomic và immediate
+        deduct(from_account, amount)
+        add(to_account, amount)
+    
+    # Không chấp nhận:
+    # - User thấy tiền đã trừ nhưng chưa vào account đích
+    # - Retry gây duplicate transfer
+    # - Stale balance data
+</code></pre>
+<h2 id="eventual-consistency-nhanh-nhưng-có-thể-sai-tạm-thời">§§SEG37§§</h2>
+<h3 id="định-nghĩa-1">§§SEG38§§</h3>
+<p>§§SEG39§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG40§§</code></pre>
+<p>§§SEG41§§</p>
+<p>§§SEG42§§</p>
+<pre><code>§§SEG43§§</code></pre>
+<h3 id="real-world-analogy">§§SEG44§§</h3>
+<pre><code>§§SEG45§§</code></pre>
+<h3 id="implementation">§§SEG46§§</h3>
+<pre><code class="language-python">def write_with_eventual_consistency(key, value):
+    # 1. Write to primary
+    primary.write(key, value)
+    
+    # 2. Return success IMMEDIATELY
+    return "success"
+    
+    # 3. Replicate async in background
+    background_task.replicate_to_replicas(key, value)
+
+# Fast! Không wait replication
+# User không phải đợi
+
+def read_from_replica(key):
+    # Có thể đọc stale data
+    return replica.read(key)
+</code></pre>
+<h3 id="conflict-resolution">§§SEG47§§</h3>
+<p>§§SEG48§§</p>
+<pre><code>§§SEG49§§</code></pre>
+<p>§§SEG50§§</p>
+<p>§§SEG51§§</p>
+<pre><code class="language-python">def resolve_conflict(value1, value2):
+    # Use timestamp
+    if value1.timestamp &gt; value2.timestamp:
+        return value1
+    else:
+        return value2
+
+# Simple nhưng có thể mất data
+# Nếu clocks không sync → Wrong decision
+</code></pre>
+<p>§§SEG52§§</p>
+<pre><code class="language-python">def resolve_conflict(value1, value2):
+    # Application decides
+    if feature_flag_enabled:
+        return merge_values(value1, value2)
+    else:
+        return value1  # Primary wins
+
+# Flexible nhưng complex logic
+</code></pre>
+<p>§§SEG53§§</p>
+<pre><code class="language-python"># Conflict-free Replicated Data Types
+# Example: Counter
+
+# DB1: increment counter
+counter_db1 = {node1: 5, node2: 3}  # total = 8
+
+# DB2: increment counter  
+counter_db2 = {node1: 5, node2: 4}  # total = 9
+
+# Merge: Take max per node
+counter_merged = {node1: 5, node2: 4}  # total = 9
+
+# No conflict! Deterministic merge
+</code></pre>
+<h3 id="trade-offs-1">§§SEG54§§</h3>
+<pre><code>§§SEG55§§</code></pre>
+<h3 id="khi-nào-dùng-eventual-consistency">§§SEG56§§</h3>
+<p>§§SEG57§§</p>
+<pre><code>§§SEG58§§</code></pre>
+<p>§§SEG59§§</p>
+<pre><code class="language-python"># Social media like KHÔNG CẦN strong consistency
+def like_post(user_id, post_id):
+    # Write immediately
+    likes_db.increment(post_id)
+    
+    # User sees like immediately
+    return {"likes": get_count_optimistic(post_id)}
+    
+    # Background: Replicate to analytics DB
+    # Eventual consistency acceptable
+    # Không ai care nếu count sai 1-2 trong vài giây
+</code></pre>
+<h2 id="readwrite-trade-offs">§§SEG60§§</h2>
+<h3 id="the-fundamental-trade-off">§§SEG61§§</h3>
+<pre><code>§§SEG62§§</code></pre>
+<p>§§SEG63§§</p>
+<pre><code>§§SEG64§§</code></pre>
+<h3 id="tunable-consistency">§§SEG65§§</h3>
+<p>§§SEG66§§</p>
+<pre><code class="language-python"># Cassandra example
+def read_with_consistency_level(key, level):
+    if level == "ALL":
+        # Read từ TẤT CẢ replicas, đợi all responses
+        # Strong consistency, slow
+        return db.read(key, consistency="ALL")
+        
+    elif level == "QUORUM":
+        # Read từ majority replicas
+        # Good balance
+        return db.read(key, consistency="QUORUM")
+        
+    elif level == "ONE":
+        # Read từ 1 replica bất kỳ
+        # Eventual consistency, fast
+        return db.read(key, consistency="ONE")
+
+# Ví dụ usage:
+# Critical read → QUORUM
+balance = read("account_balance", level="QUORUM")
+
+# Non-critical read → ONE
+recommendations = read("suggestions", level="ONE")
+</code></pre>
+<p>§§SEG67§§</p>
+<pre><code>§§SEG68§§</code></pre>
+<h2 id="real-world-decision-making">§§SEG69§§</h2>
+<h3 id="framework-4-questions">§§SEG70§§</h3>
+<p>§§SEG71§§</p>
+<p>§§SEG72§§</p>
+<pre><code>§§SEG73§§</code></pre>
+<p>§§SEG74§§</p>
+<pre><code>§§SEG75§§</code></pre>
+<p>§§SEG76§§</p>
+<pre><code>§§SEG77§§</code></pre>
+<p>§§SEG78§§</p>
+<pre><code>§§SEG79§§</code></pre>
+<h3 id="decision-matrix">§§SEG80§§</h3>
+<pre><code>§§SEG81§§</code></pre>
+<h3 id="hybrid-approach">§§SEG82§§</h3>
+<p>§§SEG83§§</p>
+<pre><code class="language-python">class EcommerceSystem:
+    def checkout(self, cart_items):
+        # STRONG consistency cho critical path
+        with strong_consistency():
+            inventory = check_inventory(cart_items)  # Must be accurate
+            payment = process_payment(amount)         # Must be exact
+            order = create_order(cart_items)          # Must be atomic
+        
+        # EVENTUAL consistency cho non-critical
+        with eventual_consistency():
+            send_email_confirmation(order)            # Delay OK
+            update_analytics(order)                   # Approximate OK
+            generate_recommendations(user)            # Eventual OK
+            update_activity_feed(user, order)         # Delay fine
+
+# Critical = Strong
+# Non-critical = Eventual
+</code></pre>
+<h2 id="feature-based-consistency-decisions">§§SEG84§§</h2>
+<h3 id="case-study-1-e-commerce-checkout">§§SEG85§§</h3>
+<p>§§SEG86§§</p>
+<pre><code>§§SEG87§§</code></pre>
+<p>§§SEG88§§</p>
+<pre><code>§§SEG89§§</code></pre>
+<h3 id="case-study-2-social-media">§§SEG90§§</h3>
+<p>§§SEG91§§</p>
+<pre><code>§§SEG92§§</code></pre>
+<p>§§SEG93§§</p>
+<pre><code>§§SEG94§§</code></pre>
+<h3 id="case-study-3-messaging-app">§§SEG95§§</h3>
+<p>§§SEG96§§</p>
+<pre><code>§§SEG97§§</code></pre>
+<p>§§SEG98§§</p>
+<pre><code>§§SEG99§§</code></pre>
+<h2 id="mental-model-consistency--business-decision">§§SEG100§§</h2>
+<p>§§SEG101§§</p>
+<pre><code>§§SEG102§§</code></pre>
+<p>§§SEG103§§</p>
+<pre><code>§§SEG104§§</code></pre>
+<h2 id="key-takeaways">§§SEG105§§</h2>
+<p>§§SEG106§§</p>
+<pre><code>§§SEG107§§</code></pre>
+<p>§§SEG108§§</p>
+<pre><code>§§SEG109§§</code></pre>
+<p>§§SEG110§§</p>
+<pre><code>§§SEG111§§</code></pre>
+<p>§§SEG112§§</p>
+<blockquote>
+<p>§§SEG113§§</p>
+</blockquote>
+<p>§§SEG114§§</p>
+<p>§§SEG115§§</p>
+<ol>
+<li>§§SEG116§§</li>
+<li>§§SEG117§§</li>
+<li>§§SEG118§§</li>
+<li>§§SEG119§§</li>
+</ol>
+<p>§§SEG120§§</p>
+<p>§§SEG121§§</p>
+<pre><code>§§SEG122§§</code></pre>
+<p>§§SEG123§§</p>
+<p>§§SEG124§§</p></article>

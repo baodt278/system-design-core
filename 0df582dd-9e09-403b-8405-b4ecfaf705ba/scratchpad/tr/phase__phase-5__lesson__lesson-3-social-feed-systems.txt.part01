@@ -1,0 +1,321 @@
+@0
+Hệ Thống ⟦Bảng Tin|Feed⟧ Mạng Xã Hội: Kiến Trúc Phức Tạp Nhất
+@1
+Tôi còn nhớ lần đầu được giao nhiệm vụ: "Thiết kế ⟦bảng tin|news feed⟧ cho một mạng xã hội".
+@2
+Tôi nghĩ đơn giản: *"Truy vấn các bài đăng của những người mà người dùng theo dõi, sắp xếp theo thời gian, xong."*
+@3
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ nhìn tôi: *"Với 1 triệu người dùng, mỗi người theo dõi 500 người, mỗi người đăng bài 10 lần/ngày. Em tính sao?"*
+@4
+Tôi tính nhanh:
+@5
+Tải ⟦bảng tin|feed⟧ = Truy vấn 500 người dùng × 10 bài đăng = 5.000 bài đăng
+@6
+Sắp xếp 5.000 bài đăng
+@7
+1 triệu người dùng làm việc này → 1 triệu × 5.000 ⟦truy vấn|queries⟧ = 5 tỷ truy vấn
+@8
+⟦Cơ sở dữ liệu|Database⟧ sập ngay lập tức
+@9
+Anh ấy cười: *"Chào mừng đến với bài toán ⟦phân phát|fanout⟧. Đây là lý do Facebook phải tự xây dựng ⟦hạ tầng|infrastructure⟧ riêng."*
+@10
+Đó là lúc tôi học được: **Hệ thống ⟦bảng tin|feed⟧ là kiến trúc phức tạp nhất trong các ứng dụng hướng người tiêu dùng.**
+@11
+Tại Sao Hệ Thống ⟦Bảng Tin|Feed⟧ Lại Khó?
+@12
+Thách Thức Cốt Lõi
+@13
+**Phát biểu bài toán:**
+@14
+Người dùng mở ứng dụng → Thấy bảng tin được cá nhân hoá
+- Bài đăng từ những người họ theo dõi
+- Sắp xếp theo mức độ liên quan/thời gian
+- Tải < 500ms
+- Hàng triệu người dùng đồng thời
+
+Nghe thì đơn giản. Thực tế: Một cơn ác mộng.
+
+@15
+**Tính toán ⟦quy mô|scale⟧:**
+@16
+Nền tảng: 100M người dùng
+Số người theo dõi trung bình: 200 người
+Số bài đăng trung bình: 2 bài/ngày mỗi người dùng
+
+Cách tiếp cận ngây thơ (Truy vấn khi đọc):
+Người dùng tải bảng tin:
+→ Truy vấn 200 người được theo dõi
+→ Lấy các bài đăng mới nhất của từng người
+→ Gộp 400 bài đăng
+→ Sắp xếp theo thời gian
+→ Áp dụng xếp hạng
+
+Với 100M người dùng:
+→ 100M người dùng × 200 truy vấn = 20 tỷ truy vấn cơ sở dữ liệu/ngày
+→ Cơ sở dữ liệu tan chảy
+
+@17
+**Tại sao nó khó:**
+@18
+1. Khuếch đại đọc (read amplification)
+   - Mỗi lần tải bảng tin = hàng trăm lượt đọc
+   - Không thể lưu đệm (cá nhân hoá theo từng người dùng)
+
+2. Khuếch đại ghi (write amplification)
+   - 1 bài đăng → hàng nghìn người theo dõi nhìn thấy
+   - Làm sao lan truyền hiệu quả?
+
+3. Cá nhân hoá
+   - Mỗi người dùng thấy một bảng tin khác nhau
+   - Xếp hạng phụ thuộc vào lịch sử người dùng
+   - Không thể lưu đệm đơn giản
+
+4. Đánh đổi về tính nhất quán
+   - Người dùng đăng bài → Bao lâu thì người theo dõi thấy?
+   - Nhất quán cuối cùng có chấp nhận được không?
+
+5. Bài toán người nổi tiếng
+   - Người dùng có 100M người theo dõi
+   - 1 bài đăng = 100M lượt cập nhật bảng tin?
+
+@19
+**Điểm mấu chốt:** Hệ thống ⟦bảng tin|feed⟧ buộc bạn đối mặt với mọi thách thức của ⟦hệ thống phân tán|distributed systems⟧ cùng một lúc.
+@20
+Các Chiến Lược ⟦Phân Phát|Fanout⟧: Quyết Định Kiến Trúc Cốt Lõi
+@21
+**⟦Phân phát|Fanout⟧ = Cách đưa 1 bài đăng đến ⟦bảng tin|feeds⟧ của những ⟦người theo dõi|followers⟧**
+@22
+Có 3 cách tiếp cận khác nhau về căn bản. Mỗi cách tiếp cận có những ⟦sự đánh đổi|trade-offs⟧ sâu sắc.
+@23
+Cách Tiếp Cận 1: ⟦Phân Phát Khi Ghi|Fanout on Write⟧ (⟦Mô Hình Đẩy|Push Model⟧)
+@24
+**Ý tưởng: ⟦Tính trước|Pre-compute⟧ ⟦bảng tin|feeds⟧ khi người dùng đăng bài**
+@25
+sequenceDiagram
+    participant User
+    participant PostService
+    participant FanoutService
+    participant TimelineCache
+    participant Followers
+
+    User->>PostService: Tạo bài đăng
+    PostService->>PostService: Lưu vào cơ sở dữ liệu
+    PostService->>FanoutService: Kích hoạt phân phát
+    FanoutService->>Followers: Lấy danh sách người theo dõi
+
+    loop Với mỗi người theo dõi
+        FanoutService->>TimelineCache: Chèn bài đăng vào bảng tin của người theo dõi
+    end
+
+    FanoutService->>User: Đã tạo bài đăng (bất đồng bộ)
+@26
+*⟦Phân phát khi ghi|Fanout on write⟧: Khi người dùng đăng bài, lập tức đẩy vào ⟦bảng tin|feed⟧ của tất cả ⟦người theo dõi|followers⟧*
+@27
+**Triển khai:**
+@28
+**⟦Sự đánh đổi|Trade-offs⟧:**
+@29
+Ưu điểm:
+- Đọc cực nhanh (< 10ms)
+- Bảng tin đã được tính trước
+- Logic đọc đơn giản
+- Việc đọc dễ mở rộng
+
+Nhược điểm:
+- Khuếch đại ghi (1 bài đăng → N tác vụ phân phát)
+- Bài toán người nổi tiếng (1 bài đăng → 100M lượt cập nhật)
+- Lãng phí công sức (người dùng không hoạt động vẫn nhận cập nhật)
+- Chi phí lưu trữ (N × số bài đăng trung bình mỗi người dùng)
+- Độ trễ phân phát (nhất quán cuối cùng)
+
+@30
+**Tính toán ⟦năng lực|capacity⟧:**
+@31
+Người dùng thường đăng bài:
+- Có 1.000 người theo dõi
+- 1 bài đăng → 1.000 lượt ghi phân phát
+
+Người nổi tiếng đăng bài:
+- Có 10M người theo dõi
+- 1 bài đăng → 10M lượt ghi phân phát
+- Mất vài phút mới hoàn tất
+
+Toàn nền tảng:
+- 100M người dùng đăng 2 lần/ngày = 200M bài đăng/ngày
+- Trung bình 200 người theo dõi
+- Tổng phân phát: 200M × 200 = 40 tỷ lượt ghi/ngày
+- 40B / 86400s ≈ 460K lượt ghi/giây
+
+Cần năng lực ghi cực lớn!
+
+@32
+**Khi nào dùng:**
+@33
+✓ Đa số người dùng có < 5.000 người theo dõi
+✓ Hiệu năng đọc là then chốt (< 100ms)
+✓ Chịu được khuếch đại ghi
+✓ Lưu trữ không phải là ràng buộc
+✓ Nhất quán cuối cùng là chấp nhận được
+
+@34
+Cách Tiếp Cận 2: ⟦Phân Phát Khi Đọc|Fanout on Read⟧ (⟦Mô Hình Kéo|Pull Model⟧)
+@35
+**Ý tưởng: Tạo ⟦bảng tin|feed⟧ khi người dùng ⟦yêu cầu|requests⟧**
+@36
+sequenceDiagram
+    participant User
+    participant FeedService
+    participant FollowGraph
+    participant PostDB
+
+    User->>FeedService: Lấy bảng tin
+    FeedService->>FollowGraph: Lấy danh sách người được theo dõi
+    FollowGraph-->>FeedService: [user1, user2, ..., userN]
+
+    loop Với mỗi người được theo dõi
+        FeedService->>PostDB: Lấy các bài đăng gần đây
+    end
+
+    FeedService->>FeedService: Gộp & sắp xếp bài đăng
+    FeedService->>FeedService: Áp dụng xếp hạng
+    FeedService-->>User: Trả về bảng tin
+@37
+*⟦Phân phát khi đọc|Fanout on read⟧: Khi người dùng mở ⟦bảng tin|feed⟧, truy vấn bài đăng từ tất cả những người được theo dõi theo ⟦thời gian thực|real-time⟧*
+@38
+**Triển khai:**
+@39
+**⟦Sự đánh đổi|Trade-offs⟧:**
+@40
+Ưu điểm:
+- Không khuếch đại ghi (chỉ lưu bài đăng)
+- Ghi nhanh
+- Không có độ trễ phân phát (luôn mới nhất)
+- Không lãng phí công sức
+- Không có bài toán người nổi tiếng
+- Chi phí lưu trữ thấp
+
+Nhược điểm:
+- Khuếch đại đọc (truy vấn nhiều người dùng)
+- Đọc chậm (100-500ms)
+- Khó mở rộng việc đọc
+- Chiến lược lưu đệm phức tạp
+- Tải lên cơ sở dữ liệu cao
+
+@41
+**Tính toán ⟦hiệu năng|performance⟧:**
+@42
+Người dùng tải bảng tin:
+- Theo dõi 200 người
+- Truy vấn các bài đăng gần đây của từng người
+- 200 truy vấn (kể cả khi gộp lô: 10-20 truy vấn)
+- Gộp 4.000 bài đăng
+- Sắp xếp
+- Tổng: 200-500ms
+
+1M người dùng đồng thời:
+→ 1M × 200 truy vấn = 200M truy vấn
+→ Cơ sở dữ liệu không chịu nổi
+
+@43
+**Khi nào dùng:**
+@44
+✓ Quy mô nhỏ (< 100K người dùng)
+✓ Người dùng theo dõi ít người (< 50)
+✓ Hiệu năng ghi là then chốt
+✓ Yêu cầu nhất quán mạnh
+✓ Hạ tầng hạn chế
+
+@45
+Cách Tiếp Cận 3: ⟦Phân Phát Lai|Hybrid Fanout⟧ (Kết Hợp Ưu Điểm Của Cả Hai)
+@46
+**Ý tưởng: ⟦Phân phát khi ghi|Fanout on write⟧ cho người dùng thông thường, ⟦phân phát khi đọc|fanout on read⟧ cho người nổi tiếng**
+@47
+graph TB
+    POST[Người dùng tạo bài đăng]
+
+    POST --> CHECK{Người dùng có > 10K người theo dõi?}
+
+    CHECK -->|Không - Người dùng thường| FANOUT_WRITE[Phân phát khi ghi]
+    FANOUT_WRITE --> CACHE1[Đẩy vào dòng thời gian của mọi người theo dõi]
+
+    CHECK -->|Có - Người nổi tiếng| FANOUT_READ[Phân phát khi đọc]
+    FANOUT_READ --> MARK[Đánh dấu là bài của người nổi tiếng]
+
+    USER[Người dùng tải bảng tin]
+    USER --> TIMELINE[Lấy dòng thời gian đã tính trước]
+    USER --> CELEB[Truy vấn bài của người nổi tiếng]
+    USER --> MERGE[Gộp cả hai nguồn]
+    MERGE --> RANK[Áp dụng xếp hạng]
+    RANK --> DISPLAY[Hiển thị bảng tin]
+
+    style FANOUT_WRITE fill:#51cf66
+    style FANOUT_READ fill:#ff6b6b
+    style MERGE fill:#ffd43b
+@48
+*⟦Phân phát lai|Hybrid fanout⟧: Kết hợp cả hai chiến lược dựa trên số lượng ⟦người theo dõi|follower⟧*
+@49
+**Triển khai:**
+@50
+**⟦Sự đánh đổi|Trade-offs⟧:**
+@51
+Ưu điểm:
+- Đọc nhanh (tính trước cho đa số)
+- Không bùng nổ phân phát vì người nổi tiếng
+- Tải ghi cân bằng
+- Linh hoạt (tinh chỉnh ngưỡng)
+- Kết hợp ưu điểm của cả hai
+
+Nhược điểm:
+- Triển khai phức tạp nhất
+- Cần duy trì danh sách người nổi tiếng
+- Bài của người nổi tiếng bị trễ một chút
+- Nhiều thành phần chuyển động hơn
+- Khó gỡ lỗi hơn
+
+@52
+**Các ngưỡng trong thực tế:**
+@53
+Twitter (2015):
+- Ngưỡng phân phát: 2.000 người theo dõi
+- Trên ngưỡng → Phân phát khi đọc
+
+Facebook (ước tính):
+- Ngưỡng phân phát: 5.000 người theo dõi
+- Trên ngưỡng → Cách tiếp cận lai
+
+Instagram (ước tính):
+- Ngưỡng phân phát: 10.000 người theo dõi
+- Tài khoản đã xác minh → Luôn phân phát khi đọc
+
+@54
+**Khi nào dùng:**
+@55
+✓ Quy mô lớn (> 1M người dùng)
+✓ Có cả người dùng thường và người nổi tiếng
+✓ Cần tối ưu cả đọc và ghi
+✓ Chịu được độ phức tạp
+✓ Có đủ nguồn lực kỹ thuật
+
+Đây là cách Facebook, Twitter, Instagram đang làm!
+
+@56
+Thiết Kế ⟦Bộ Nhớ Đệm Dòng Thời Gian|Timeline Cache⟧
+@57
+**⟦Bộ nhớ đệm dòng thời gian|Timeline cache⟧ là trái tim của hệ thống ⟦bảng tin|feed⟧.**
+@58
+Cấu Trúc ⟦Bộ Nhớ Đệm|Cache⟧
+@59
+**Redis Sorted Set (tập hợp có thứ tự) = Hoàn toàn phù hợp**
+@60
+**Tại sao lại là Sorted Set?**
+@61
+Tự động sắp xếp theo dấu thời gian
+Chèn với độ phức tạp O(log N)
+Truy vấn theo khoảng (phân trang)
+Dễ dàng cắt bớt bài đăng cũ
+Sử dụng bộ nhớ hiệu quả
+
+@62
+**Các thao tác:**
+@63
+Định Cỡ ⟦Bộ Nhớ Đệm|Cache⟧

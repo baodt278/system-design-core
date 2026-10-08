@@ -1,0 +1,352 @@
+@0
+⟦Khung Câu Hỏi Hệ Thống|System Question Framework⟧ - Danh Sách Kiểm Tra Chuẩn Khi Thiết Kế Hệ Thống
+@1
+Khi bắt đầu thiết kế một hệ thống, nhiều ⟦kỹ sư|engineer⟧ mới thường nhảy thẳng vào giải pháp mà quên mất một bước cực kỳ quan trọng: **đặt câu hỏi đúng**.
+@2
+Tôi từng mắc lỗi này. Khi thiết kế một hệ thống chat, tôi nghĩ ngay đến WebSocket, Redis Pub/Sub, ⟦mở rộng theo chiều ngang|horizontal scaling⟧... rồi giữa chừng mới phát hiện: khách hàng chỉ cần 100 người dùng trực tuyến đồng thời. Tôi đã ⟦thiết kế thừa|over-engineer⟧ một cách thảm hại.
+@3
+Vấn đề không phải là thiếu kiến thức kỹ thuật. Vấn đề là tôi đã không hỏi đủ câu hỏi trước khi thiết kế.
+@4
+Tại Sao Cần Một ⟦Khung|Framework⟧ Câu Hỏi?
+@5
+Khi thiết kế hệ thống, có hàng trăm thứ cần cân nhắc. Không ai có thể nhớ hết. Bạn cần một **danh sách kiểm tra** để đảm bảo không bỏ sót điểm quan trọng nào.
+@6
+Hãy nghĩ về nó như danh sách kiểm tra của phi công trước khi cất cánh. Dù đã bay 10.000 giờ, phi công vẫn phải kiểm tra từng bước một. Tại sao? Vì danh sách kiểm tra đảm bảo sự nhất quán và an toàn.
+@7
+⟦Thiết kế hệ thống|System design⟧ cũng vậy. ⟦Khung|Framework⟧ câu hỏi là tấm lưới an toàn của bạn.
+@8
+7 Câu Hỏi Cốt Lõi
+@9
+Đây là 7 câu hỏi tôi luôn đặt ra khi bắt đầu thiết kế bất kỳ hệ thống nào. Thứ tự có ý nghĩa — nó đi từ bối cảnh tổng thể đến chi tiết kỹ thuật.
+@10
+1. ⟦Quy Mô|Scale⟧: Hệ Thống Sẽ Lớn Đến Đâu?
+@11
+Đây là câu hỏi đầu tiên vì một lý do đơn giản: **⟦kiến trúc|architecture⟧ cho 1.000 người dùng hoàn toàn khác kiến trúc cho 10 triệu người dùng**.
+@12
+Các câu hỏi cụ thể:
+@13
+Hiện tại có bao nhiêu người dùng?
+@14
+Mức tăng trưởng dự kiến trong 1-2 năm tới?
+@15
+Số người dùng đồng thời vào ⟦cao điểm|peak⟧?
+@16
+Số lượng ⟦giao dịch|transactions⟧/⟦yêu cầu|requests⟧ mỗi ngày?
+@17
+**Tại sao quan trọng:** ⟦Quy mô|Scale⟧ quyết định các lựa chọn công nghệ. Với 1.000 người dùng, một ⟦hệ thống nguyên khối|monolith⟧ + MySQL là quá đủ. Với 10 triệu người dùng, bạn cần ⟦vi dịch vụ|microservices⟧, các ⟦lớp bộ nhớ đệm|caching layers⟧, ⟦phân mảnh dữ liệu|database sharding⟧.
+@18
+Ví dụ thực tế: Một ⟦công ty khởi nghiệp|startup⟧ với 5.000 người dùng không cần Kubernetes và ⟦bộ nhớ đệm phân tán|distributed cache⟧. Nhưng nếu họ kỳ vọng tăng trưởng gấp 50 lần trong năm tới, bạn cần thiết kế với ⟦dư địa|headroom⟧.
+@19
+2. ⟦Mô Hình Lưu Lượng|Traffic Pattern⟧: Người Dùng Hoạt Động Như Thế Nào?
+@20
+⟦Quy mô|Scale⟧ chỉ cho bạn con số. ⟦Mô hình lưu lượng|Traffic pattern⟧ cho bạn biết **hành vi**.
+@21
+Các câu hỏi cụ thể:
+@22
+⟦Lưu lượng|Traffic⟧ đều đặn hay có ⟦tăng đột biến|spike⟧?
+@23
+Những ⟦giờ cao điểm|peak hours⟧ nào trong ngày?
+@24
+Có quy luật theo mùa không? (Black Friday, Tết)
+@25
+⟦Thiên về đọc|Read-heavy⟧ hay ⟦thiên về ghi|write-heavy⟧?
+@26
+Tỷ lệ giữa lượt đọc và lượt ghi?
+@27
+**Tại sao quan trọng:** Mô hình lưu lượng ảnh hưởng đến ⟦chiến lược lưu đệm|caching strategy⟧, ⟦chính sách tự động mở rộng|auto-scaling policies⟧ và thiết kế ⟦cơ sở dữ liệu|database⟧.
+@28
+graph TB
+    A[Lưu lượng ổn định] --> B[Kiến trúc đơn giản hơn]
+    A --> C[Năng lực dễ dự đoán]
+
+    D[Lưu lượng tăng đột biến] --> E[Bắt buộc tự động mở rộng]
+    D --> F[Bộ nhớ đệm là then chốt]
+    D --> G[Xử lý dựa trên hàng đợi]
+@29
+Ví dụ: Một hệ thống thương mại điện tử có ⟦lưu lượng|traffic⟧ ⟦tăng đột biến|spike⟧ vào 12 giờ trưa và 8 giờ tối. Bạn không thể cấp phát tài nguyên cho ⟦tải|load⟧ ⟦cao điểm|peak⟧ suốt 24/7 — quá tốn kém. Bạn cần ⟦tự động mở rộng|auto-scaling⟧ + ⟦lưu đệm|caching⟧ mạnh tay.
+@30
+Ngược lại, một công cụ nội bộ với ⟦lưu lượng|traffic⟧ ổn định có thể dùng năng lực cố định, đơn giản hơn.
+@31
+3. Kích Thước Dữ Liệu: Bao Nhiêu Dữ Liệu Và Tăng Nhanh Đến Đâu?
+@32
+Đây là câu hỏi về ⟦lưu trữ|storage⟧ và ⟦vòng đời dữ liệu|data lifecycle⟧.
+@33
+Các câu hỏi cụ thể:
+@34
+Tổng kích thước dữ liệu hiện tại?
+@35
+Tốc độ tăng trưởng dữ liệu? (GB/ngày, TB/tháng)
+@36
+Kích thước trung bình mỗi bản ghi?
+@37
+⟦Chính sách lưu giữ dữ liệu|Data retention policy⟧? (giữ mãi hay xoá sau X tháng?)
+@38
+Tỷ lệ ⟦dữ liệu nóng|hot data⟧ so với ⟦dữ liệu lạnh|cold data⟧?
+@39
+**Tại sao quan trọng:** Kích thước dữ liệu quyết định lựa chọn ⟦cơ sở dữ liệu|database⟧, ⟦chiến lược lưu trữ|storage strategy⟧ và ⟦chính sách lưu trữ dài hạn|archival policies⟧.
+@40
+Ví dụ thực tế: Một nền tảng phân tích sinh ra 100GB log mỗi ngày. Sau 1 năm là 36TB. Bạn không thể ⟦truy vấn|query⟧ trực tiếp trên 36TB. Bạn cần:
+@41
+⟦Lưu trữ nóng|Hot storage⟧ cho 30 ngày gần nhất (SSD tốc độ cao)
+@42
+⟦Lưu trữ lạnh|Cold storage⟧ cho dữ liệu lịch sử (S3/Glacier)
+@43
+⟦Tổng hợp dữ liệu|Data aggregation⟧ và ⟦lấy mẫu|sampling⟧
+@44
+4. ⟦Tính Sẵn Sàng|Availability⟧: ⟦Thời Gian Ngừng Hoạt Động|Downtime⟧ Có Chấp Nhận Được Không?
+@45
+⟦Tính sẵn sàng|Availability⟧ là chuyện **⟦thời gian ngừng hoạt động|downtime⟧ chấp nhận được**.
+@46
+Các câu hỏi cụ thể:
+@47
+Hệ thống có được phép ngừng hoạt động không?
+@48
+⟦Thời gian ngừng hoạt động|Downtime⟧ chấp nhận được: phút, giờ, hay giây?
+@49
+Cần ⟦thời gian hoạt động|uptime⟧ 99,9% hay 99,99%?
+@50
+Tác động của việc ngừng hoạt động? (mất doanh thu, ảnh hưởng người dùng)
+@51
+Có chấp nhận ⟦khung giờ bảo trì|maintenance window⟧ không?
+@52
+**Tại sao quan trọng:** Yêu cầu về ⟦tính sẵn sàng|availability⟧ chi phối ⟦độ phức tạp|complexity⟧ của kiến trúc và ⟦chi phí|cost⟧.
+@53
+Uptime 99.9%   = ~8.7 giờ ngừng/năm     → một máy chủ là ổn
+Uptime 99.99%  = ~52 phút ngừng/năm     → cần dự phòng
+Uptime 99.999% = ~5 phút ngừng/năm      → đa vùng + chuyển đổi dự phòng phức tạp
+
+@54
+Ví dụ: Công cụ nội bộ có thể ngừng 2-3 giờ để bảo trì lúc đêm khuya? Thiết kế đơn giản. Hệ thống thanh toán không được ngừng dù chỉ 1 giây? Cần ⟦đa vùng chủ động – chủ động|multi-region active-active⟧.
+@55
+⟦Đánh đổi|Trade-off⟧: Mỗi số "9" thêm vào ⟦tính sẵn sàng|availability⟧ làm ⟦độ phức tạp|complexity⟧ và ⟦chi phí|cost⟧ tăng theo cấp số nhân.
+@56
+5. ⟦Tính Nhất Quán|Consistency⟧: Dữ Liệu Phải Đúng Ngay Lập Tức?
+@57
+Đây là câu hỏi về **tính đúng đắn và ⟦đồng bộ hoá|synchronization⟧ dữ liệu**.
+@58
+Các câu hỏi cụ thể:
+@59
+Có cần ⟦nhất quán mạnh|strong consistency⟧ không?
+@60
+⟦Nhất quán cuối cùng|Eventual consistency⟧ có chấp nhận được không?
+@61
+⟦Dữ liệu cũ|Stale data⟧ trong vài giây có ổn không?
+@62
+Chiến lược ⟦giải quyết xung đột|conflict resolution⟧?
+@63
+Cần đảm bảo ⟦giao dịch|transaction⟧ đến mức nào?
+@64
+**Tại sao quan trọng:** Yêu cầu về ⟦tính nhất quán|consistency⟧ ảnh hưởng đến lựa chọn ⟦cơ sở dữ liệu|database⟧ và các ⟦mẫu kiến trúc|architecture patterns⟧.
+@65
+Ví dụ:
+@66
+**Cần ⟦nhất quán mạnh|strong consistency⟧:** Giao dịch ngân hàng, hệ thống quản lý tồn kho
+@67
+**⟦Nhất quán cuối cùng|Eventual consistency⟧ là đủ:** ⟦Bảng tin|feeds⟧ mạng xã hội, ⟦bảng điều khiển|dashboards⟧ phân tích, số lượt xem
+@68
+Một ⟦đánh đổi|trade-off⟧ kinh điển: Bạn không thể có cả ⟦nhất quán mạnh|strong consistency⟧ VÀ ⟦tính sẵn sàng cao|high availability⟧ VÀ ⟦khả năng chịu phân vùng|partition tolerance⟧ (định lý CAP). Phải chọn.
+@69
+6. ⟦Độ Trễ|Latency⟧: Nhanh Đến Mức Nào?
+@70
+⟦Độ trễ|Latency⟧ là chuyện **trải nghiệm người dùng và ⟦thời gian phản hồi|response time⟧**.
+@71
+Các câu hỏi cụ thể:
+@72
+⟦Thời gian phản hồi|Response time⟧ chấp nhận được? (ms, giây)
+@73
+Yêu cầu ⟦độ trễ|latency⟧ P50, P95, P99?
+@74
+Kỳ vọng về trải nghiệm người dùng?
+@75
+Cần thời gian thực hay ⟦xử lý theo lô|batch processing⟧ là được?
+@76
+Người dùng phân bố địa lý thế nào?
+@77
+**Tại sao quan trọng:** Yêu cầu về ⟦độ trễ|latency⟧ chi phối ⟦chiến lược lưu đệm|caching strategy⟧, việc ⟦đánh chỉ mục|indexing⟧ ⟦cơ sở dữ liệu|database⟧ và việc dùng CDN.
+@78
+flowchart LR
+    A[Yêu cầu người dùng] -->|Mục tiêu: &lt;100ms| B[Bộ nhớ đệm CDN]
+    B -->|Trượt bộ nhớ đệm| C[Bộ nhớ đệm ứng dụng]
+    C -->|Trượt bộ nhớ đệm| D[CSDL]
+
+    style B fill:#90EE90
+    style C fill:#FFD700
+    style D fill:#FF6B6B
+@79
+Ví dụ:
+@80
+Công cụ tìm kiếm: <100ms là then chốt cho trải nghiệm người dùng
+@81
+Tạo báo cáo theo lô: vài phút là ổn
+@82
+Chat thời gian thực: kỳ vọng <500ms
+@83
+⟦Bảng điều khiển|Dashboard⟧ phân tích: 2-3 giây là chấp nhận được
+@84
+⟦Độ trễ|Latency⟧ P99 quan trọng hơn trung bình. Nếu 99% ⟦yêu cầu|requests⟧ nhanh nhưng 1% chậm, trải nghiệm người dùng vẫn tệ.
+@85
+7. ⟦Chi Phí|Cost⟧: Ngân Sách Và ⟦Ràng Buộc|Constraints⟧ Là Gì?
+@86
+Cuối cùng nhưng cực kỳ quan trọng: **các ⟦ràng buộc|constraints⟧ về ⟦chi phí|cost⟧**.
+@87
+Các câu hỏi cụ thể:
+@88
+Ngân sách ⟦hạ tầng|infrastructure⟧ hằng tháng?
+@89
+⟦Chi phí|Cost⟧ trên mỗi người dùng ở mức nào là chấp nhận được?
+@90
+⟦Đánh đổi|Trade-offs⟧ giữa tự xây hay mua sẵn?
+@91
+Quy mô ⟦nhóm|team⟧ và chuyên môn?
+@92
+⟦Chi phí|Cost⟧ vận hành (bảo trì, ⟦giám sát|monitoring⟧)?
+@93
+**Tại sao quan trọng:** Giải pháp kỹ thuật tốt nhất cũng chẳng có ý nghĩa nếu vượt ngân sách hoặc ⟦nhóm|team⟧ không bảo trì nổi.
+@94
+Các kịch bản thực tế:
+@95
+⟦Công ty khởi nghiệp|Startup⟧ với ngân sách hạn chế: tối ưu cho ⟦chi phí|cost⟧, dùng ⟦dịch vụ được quản lý|managed services⟧
+@96
+Doanh nghiệp lớn có yêu cầu tuân thủ: có thể chi nhiều hơn cho bảo mật và ⟦độ tin cậy|reliability⟧
+@97
+Công ty tăng trưởng nhanh: tối ưu cho tốc độ ra thị trường, ⟦chi phí|cost⟧ là thứ yếu
+@98
+⟦Chi phí|Cost⟧ không chỉ là ⟦hạ tầng|infrastructure⟧. Nó gồm:
+@99
+Thời gian kỹ thuật (xây dựng và bảo trì)
+@100
+Dịch vụ của bên thứ ba
+@101
+⟦Hạ tầng|Infrastructure⟧ (⟦máy chủ|servers⟧, ⟦cơ sở dữ liệu|databases⟧, ⟦lưu trữ|storage⟧)
+@102
+⟦Chi phí phụ|Overhead⟧ vận hành (⟦giám sát|monitoring⟧, ⟦trực sự cố|on-call⟧)
+@103
+⟦Khung|Framework⟧ Trong Thực Tế
+@104
+Khi thiết kế một hệ thống, tôi làm theo quy trình này:
+@105
+graph TD
+    A[Nhận yêu cầu] --> B[Hỏi về quy mô & lưu lượng]
+    B --> C[Ước lượng kích thước dữ liệu]
+    C --> D[Xác định mục tiêu tính sẵn sàng]
+    D --> E[Làm rõ nhu cầu nhất quán]
+    E --> F[Đặt yêu cầu độ trễ]
+    F --> G[Kiểm tra ràng buộc chi phí]
+    G --> H[Thiết kế giải pháp]
+
+    H --> I{Đã rõ các đánh đổi?}
+    I -->|Chưa| B
+    I -->|Rồi| J[Ghi lại các quyết định]
+@106
+**Quy trình cụ thể:**
+@107
+**Lắng nghe trước** — nghe ⟦yêu cầu|requirement⟧ ban đầu
+@108
+**Hỏi có hệ thống** — đi qua 7 câu hỏi theo thứ tự
+@109
+**Làm rõ chỗ mơ hồ** — đừng giả định, hãy hỏi cho rõ
+@110
+**Ghi lại câu trả lời** — viết ra, đừng dựa vào trí nhớ
+@111
+**Nhận diện mâu thuẫn** — phát hiện các điểm mâu thuẫn từ sớm
+@112
+**Thảo luận về ⟦đánh đổi|trade-offs⟧** — minh bạch về các giới hạn
+@113
+Những Sai Lầm Thường Gặp Khi Đặt Câu Hỏi
+@114
+Qua kinh nghiệm, đây là những lỗi phổ biến:
+@115
+**1. Hỏi chưa đủ sâu**
+@116
+❌ "⟦Quy mô|Scale⟧ bao nhiêu?" — quá mơ hồ
+✅ "Bao nhiêu người dùng đồng thời vào ⟦giờ cao điểm|peak hour⟧? Tốc độ tăng trưởng dự kiến?"
+@117
+**2. Chấp nhận câu trả lời mơ hồ**
+@118
+❌ Người dùng: "Cần ⟦tính sẵn sàng cao|highly available⟧"
+✅ Hỏi tiếp: "⟦Tính sẵn sàng cao|Highly available⟧ nghĩa là chấp nhận ⟦thời gian ngừng hoạt động|downtime⟧ bao nhiêu? 1 giờ/năm hay 1 phút/năm?"
+@119
+**3. Không phản biện những yêu cầu phi thực tế**
+@120
+Nếu người dùng muốn: ⟦nhất quán mạnh|strong consistency⟧ + ⟦tính sẵn sàng|availability⟧ 99,999% + ⟦độ trễ|latency⟧ <10ms + ngân sách $100/tháng → không thực tế. Bạn phải chỉ ra và thảo luận về các ⟦đánh đổi|trade-offs⟧.
+@121
+**4. Quên hỏi về các ⟦ràng buộc|constraints⟧**
+@122
+Đừng chỉ hỏi về mục tiêu. Hãy hỏi về các giới hạn: ngân sách, quy mô ⟦nhóm|team⟧, yêu cầu tuân thủ, ⟦hệ thống cũ|legacy systems⟧.
+@123
+Ví Dụ Thực Hành: Thiết Kế Dịch Vụ ⟦Rút Gọn URL|URL Shortener⟧
+@124
+Áp dụng ⟦khung|framework⟧:
+@125
+**⟦Quy mô|Scale⟧:**
+@126
+100 triệu URL được tạo mỗi tháng
+@127
+1 tỷ lượt nhấp mỗi tháng (tỷ lệ đọc-ghi 10:1)
+@128
+**⟦Mô hình lưu lượng|Traffic Pattern⟧:**
+@129
+⟦Lưu lượng|Traffic⟧ ổn định, tăng nhẹ trong giờ hành chính
+@130
+⟦Thiên về đọc|Read-heavy⟧ (lượt nhấp >> lượt tạo)
+@131
+**Kích thước dữ liệu:**
+@132
+~10 byte cho mỗi URL rút gọn
+@133
+100 triệu × 10 byte = 1GB/tháng
+@134
+Mức tăng không đáng kể
+@135
+**⟦Tính sẵn sàng|Availability⟧:**
+@136
+99,9% là ổn (ngừng hoạt động ngắn có thể chấp nhận)
+@137
+Không phải hệ thống sống còn
+@138
+**⟦Tính nhất quán|Consistency⟧:**
+@139
+⟦Nhất quán cuối cùng|Eventual consistency⟧ là đủ cho phần phân tích
+@140
+⟦Nhất quán mạnh|Strong consistency⟧ cho việc tạo URL (không trùng lặp)
+@141
+**⟦Độ trễ|Latency⟧:**
+@142
+Chuyển hướng: <100ms là then chốt
+@143
+Tạo mới: <500ms là ổn
+@144
+**⟦Chi phí|Cost⟧:**
+@145
+Ngân sách ⟦công ty khởi nghiệp|startup⟧: tối ưu cho ⟦chi phí|cost⟧
+@146
+Ưu tiên ⟦dịch vụ được quản lý|managed services⟧
+@147
+**Các quyết định dựa trên câu trả lời:**
+@148
+Một ⟦cơ sở dữ liệu|database⟧ duy nhất là đủ (dữ liệu 1GB rất nhỏ)
+@149
+⟦Lưu đệm|Caching⟧ mạnh tay cho lượt đọc (tỷ lệ 10:1)
+@150
+Kiến trúc đơn giản (⟦tính sẵn sàng|availability⟧ 99,9% là đủ)
+@151
+Dùng ⟦cơ sở dữ liệu được quản lý|managed database⟧ (tối ưu ⟦chi phí|cost⟧, ⟦nhóm|team⟧ nhỏ)
+@152
+Những Điểm Cốt Lõi
+@153
+⟦Khung Câu Hỏi Hệ Thống|System Question Framework⟧ không phải là công thức thần kỳ. Nó là **công cụ tư duy** giúp bạn định hướng cuộc trao đổi và không bỏ sót những yếu tố quan trọng.
+@154
+**Hãy nhớ:**
+@155
+**Luôn bắt đầu bằng câu hỏi** — đừng nhảy ngay vào giải pháp
+**Hỏi có hệ thống** — làm theo danh sách kiểm tra để không bỏ sót gì
+**Làm rõ những câu trả lời mơ hồ** — đòi hỏi những con số cụ thể
+**Ghi lại mọi thứ** — viết ra để tham khảo về sau
+**Nhận diện ⟦đánh đổi|trade-offs⟧ từ sớm** — mâu thuẫn thường lộ ra từ chính các câu trả lời
+**Thực tế** — giải pháp hoàn hảo không tồn tại, chỉ có giải pháp đủ tốt trong các ⟦ràng buộc|constraints⟧ hiện có
+@156
+⟦Khung|Framework⟧ này không đảm bảo một thiết kế hoàn hảo. Nhưng nó đảm bảo bạn **đã đặt đúng câu hỏi** trước khi thiết kế — và đó là điểm khởi đầu quan trọng nhất.
+@157
+Lần tới khi thiết kế hệ thống, hãy lấy danh sách kiểm tra này ra. Đi qua từng câu hỏi một. Bạn sẽ bất ngờ về số ⟦giả định|assumption⟧ mình đã tránh được và số ⟦đánh đổi|trade-off⟧ mình nhận diện được từ sớm.
+@158
+Đó chính là sức mạnh của những câu hỏi hay.

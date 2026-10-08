@@ -1,0 +1,460 @@
+@0 h1
+Caching: Performance Layer Quan Trọng Nhất
+@1 p
+Có một câu hỏi mà junior engineers thường hỏi tôi: *"API chậm, em nên làm gì?"*
+@2 p
+10 năm trước, tôi sẽ nói: *"Optimize database queries."*
+@3 p
+Giờ tôi nói: *"Cache trước. Optimize sau."*
+@4 p
+Tại sao? Vì tôi đã học một bài học đắt giá.
+@5 p
+Năm 2015, hệ thống tôi quản lý bị chậm. Tôi spend 2 tuần optimize queries, rewrite indexes, tune database parameters. Improvement? 20%.
+@6 p
+Senior architect ghé qua, thêm Redis cache layer trong 2 giờ. Improvement? **10x faster**.
+@7 p
+Đó là lúc tôi hiểu: **Cache không phải là optimization technique. Nó là architectural decision.**
+@8 h2
+Tại Sao Cache Tồn Tại?
+@9 h3
+The Fundamental Speed Gap
+@10 pre
+CPU Cache:     1 nanosecond
+RAM:           100 nanoseconds  (100x slower)
+SSD:           150 microseconds (150,000x slower)
+Network:       50 milliseconds  (50,000,000x slower)
+HDD:           10 milliseconds  (10,000,000x slower)
+
+@11 p
+**Implication:** Mỗi lần bạn query database từ network, bạn mất 50 triệu cycles CPU.
+@12 p
+**Solution:** Lưu kết quả gần user hơn. Đó chính là cache.
+@13 h3
+Real-World Scenario
+@14 p
+**Without Cache:**
+@15 pre
+sequenceDiagram
+    participant U as User
+    participant A as API Server
+    participant D as Database
+    
+    U->>A: GET /product/123
+    A->>D: SELECT * FROM products WHERE id=123
+    Note over D: Query: 300ms
+    D-->>A: Product data
+    A-->>U: Response
+    Note over U: Total: 350ms
+@16 p
+**With Cache:**
+@17 pre
+sequenceDiagram
+    participant U as User
+    participant A as API Server
+    participant C as Cache (Redis)
+    participant D as Database
+    
+    U->>A: GET /product/123
+    A->>C: GET product:123
+    Note over C: Cache hit: 5ms
+    C-->>A: Product data
+    A-->>U: Response
+    Note over U: Total: 15ms (23x faster!)
+@18 h3
+When Cache Makes Sense
+@19 p
+Không phải mọi thứ đều nên cache. Hãy dùng framework này:
+@20 p
+**The Cache Decision Matrix:**
+@21 pre
+Question 1: Read-heavy? (read:write ratio > 10:1)
+  ↓ YES
+Question 2: Data thay đổi ít?
+  ↓ YES
+Question 3: Same data được request nhiều lần?
+  ↓ YES
+Question 4: Query expensive? (> 100ms)
+  ↓ YES
+  
+→ USE CACHE
+
+Any NO? → Think carefully
+
+@22 p
+**Examples:**
+@23 pre
+ SHOULD cache:
+- Product catalog (read 1000x, write 1x)
+- User profiles (read many, update rarely)
+- Static pages
+- API responses cho public data
+
+ SHOULD NOT cache:
+- Real-time stock prices (thay đổi liên tục)
+- Personalized recommendations (different per user)
+- Write-heavy counters (likes, views tăng liên tục)
+- Small datasets (< 1000 records, DB fast enough)
+
+@24 h2
+Cache Layers: Từ Client Đến Database
+@25 p
+Cache không chỉ là Redis. Nó là một **layered strategy**.
+@26 h3
+Layer 1: Browser Cache
+@27 pre
+flowchart LR
+    B[Browser] --> BC[Browser Cache]
+    BC --> S[Server]
+@28 p
+**How it works:**
+@29 p
+**Trade-offs:**
+@30 pre
+ Fastest (zero network)
+ Reduce server load
+ Hard to invalidate (user doesn't refresh)
+ Different cache per user
+
+@31 p
+**When to use:**
+@32 pre
+Static assets:
+- Images, CSS, JS files
+- Fonts, icons
+- Versioned URLs (/app.v2.js)
+
+NOT for:
+- HTML pages (need fresh)
+- API responses
+- Personalized content
+
+@33 h3
+Layer 2: CDN Cache
+@34 pre
+flowchart TD
+    U[Users Worldwide] --> CDN[CDN Edge Servers]
+    CDN --> O[Origin Server]
+    
+    style CDN fill:#90EE90
+@35 p
+**Geographic distribution:**
+@36 pre
+User in Brazil → Brazil edge server (20ms)
+User in Tokyo → Tokyo edge server (15ms)
+User in London → London edge server (10ms
+
+All serve từ cache, không hit origin server
+
+@37 p
+**Configuration:**
+@38 p
+**Trade-offs:**
+@39 pre
+ Low latency globally
+ Reduce origin load
+ DDoS protection
+ Cost (bandwidth expensive)
+ Complexity (multiple cache layers)
+
+@40 h3
+Layer 3: Application Cache (Redis/Memcached)
+@41 p
+**This is the main focus.** Đây là layer bạn có full control.
+@42 pre
+flowchart LR
+    A[API Server] --> R[Redis Cache]
+    A --> D[Database]
+    
+    style R fill:#FFB6C1
+@43 p
+**Why Redis?**
+@44 li
+In-memory → Extremely fast (< 1ms)
+@45 li
+Rich data structures (strings, hashes, lists, sets)
+@46 li
+TTL support
+@47 li
+Pub/sub for cache invalidation
+@48 li
+Persistence options
+@49 p
+**Basic pattern:**
+@50 h3
+Layer 4: Database Query Cache
+@51 p
+Most databases có built-in query cache.
+@52 p
+**MySQL Query Cache:**
+@53 p
+**Trade-offs:**
+@54 pre
+ Automatic (no code changes)
+ Shared across connections
+ Invalidated on ANY table write
+ Not scalable (single server)
+
+@55 p
+**Modern approach:** Disable DB query cache, use application cache instead (Redis). More control.
+@56 h2
+Cache Strategies: Khi Nào Read? Khi Nào Write?
+@57 h3
+Strategy 1: Cache-Aside (Lazy Loading)
+@58 p
+**Most common pattern.**
+@59 p
+**Flow diagram:**
+@60 pre
+flowchart TD
+    R[Read Request] --> C{Cache?}
+    C -->|Hit| RH[Return from Cache]
+    C -->|Miss| DB[Query Database]
+    DB --> SC[Store in Cache]
+    SC --> RD[Return Data]
+@61 p
+**Trade-offs:**
+@62 pre
+ Only cache what's needed
+ Cache miss không fatal
+ Resilient (cache down → still works)
+ First request always slow (cold cache)
+ Cache miss adds latency
+
+@63 p
+**Best for:** Read-heavy workloads, infrequent updates.
+@64 h3
+Strategy 2: Write-Through
+@65 p
+**Flow diagram:**
+@66 pre
+flowchart LR
+    W[Write] --> DB[Database]
+    W --> C[Cache]
+    DB --> S[Success]
+    C --> S
+@67 p
+**Trade-offs:**
+@68 pre
+ Cache always fresh
+ Read latency predictable
+ Write latency higher (2 operations)
+ Wasted writes (might not be read)
+
+@69 p
+**Best for:** Read-heavy với strict consistency requirements.
+@70 h3
+Strategy 3: Write-Behind (Write-Back)
+@71 p
+**Flow diagram:**
+@72 pre
+sequenceDiagram
+    participant C as Client
+    participant A as API
+    participant Cache
+    participant Q as Queue
+    participant DB as Database
+    
+    C->>A: Update request
+    A->>Cache: Write data
+    A->>Q: Queue DB write
+    A-->>C: Success (fast!)
+    Q->>DB: Async write later
+@73 p
+**Trade-offs:**
+@74 pre
+ Extremely fast writes
+ Absorb write spikes
+ Risk data loss (cache crash trước khi DB write)
+ Complex error handling
+ Eventual consistency
+
+@75 p
+**Best for:** Write-heavy workloads, analytics, logging.
+@76 h3
+Strategy 4: Refresh-Ahead
+@77 p
+**Trade-offs:**
+@78 pre
+ Cache rarely misses
+ Consistent latency
+ Complexity
+ Wasted refreshes (if data not accessed)
+
+@79 p
+**Best for:** Predictable access patterns, high availability requirements.
+@80 h2
+Cache Invalidation: The Hard Problem
+@81 p
+Phil Karlton: *"There are only two hard things in Computer Science: cache invalidation and naming things."*
+@82 h3
+Why It's Hard
+@83 pre
+Timeline:
+10:00:00 - User updates profile (DB updated)
+10:00:01 - User refreshes page
+          → Cache still has old data
+          → User sees old profile
+10:00:02 - User confused, files bug report
+
+@84 h3
+Solution 1: Time-Based (TTL)
+@85 p
+**Rule of thumb cho TTL:**
+@86 pre
+Highly dynamic data (stock prices): 1-10 seconds
+Dynamic data (news feed): 1-5 minutes
+Semi-static (user profile): 10-30 minutes
+Static (product catalog): 1-24 hours
+Immutable (images, old posts): Days/weeks
+
+@87 h3
+Solution 2: Explicit Invalidation
+@88 p
+**The N+1 invalidation problem:**
+@89 p
+**Pattern: Centralized invalidation**
+@90 h3
+Solution 3: Event-Driven Invalidation
+@91 p
+**Best for microservices.**
+@92 pre
+flowchart LR
+    US[User Service] -->|user.updated| EB[Event Bus]
+    EB --> CS[Cache Service]
+    EB --> NS[Notification Service]
+    EB --> AS[Analytics Service]
+    
+    CS --> R[Invalidate Cache]
+@93 p
+**Implementation:**
+@94 p
+**Trade-offs:**
+@95 pre
+ Decoupled services
+ Easy to add new subscribers
+ Reliable (event log persisted)
+ Infrastructure complexity (Kafka, RabbitMQ)
+ Eventual consistency (delay 10-100ms)
+
+@96 h3
+Solution 4: Cache Versioning
+@97 p
+**For immutable data.**
+@98 h2
+Thundering Herd Problem (Cache Stampede)
+@99 h3
+The Problem
+@100 pre
+Scenario:
+1. Popular cache key expires at 10:00:00
+2. At 10:00:01, 1000 concurrent requests arrive
+3. All requests: cache miss
+4. All 1000 requests query database simultaneously
+5. Database overloaded → crashes
+
+Result: Cache làm hệ thống TỆ HƠN thay vì TỐT HƠN
+
+@101 p
+**Real-world impact:**
+@102 p
+Tôi từng thấy Facebook page với 10M followers. Mỗi khi post mới, hàng triệu users refresh cùng lúc. Cache expire → Database chết → 5 phút downtime.
+@103 h3
+Solution 1: Lock-Based
+@104 p
+**Flow:**
+@105 pre
+flowchart TD
+    R1[Request 1] --> L{Acquire Lock?}
+    R2[Request 2] --> L
+    R3[Request 3] --> L
+    
+    L -->|Yes| Q[Query DB]
+    L -->|No| W[Wait & Retry]
+    
+    Q --> C[Update Cache]
+    W --> C
+    C --> RET[Return Data]
+@106 p
+**Trade-offs:**
+@107 pre
+ Only 1 DB query
+ Protects database
+ Other requests wait (latency spike)
+ Lock can get stuck (if holder crashes)
+
+@108 h3
+Solution 2: Probabilistic Early Expiration
+@109 h3
+Solution 3: Stale-While-Revalidate
+@110 p
+**This is my favorite approach** cho most use cases. User experience > perfect freshness.
+@111 h2
+Trade-offs: Khi Nào Không Nên Cache
+@112 h3
+Anti-Pattern 1: Caching Write-Heavy Data
+@113 h3
+Anti-Pattern 2: Caching Personalized Data
+@114 h3
+Anti-Pattern 3: Over-Caching
+@115 h2
+Best Practices From 10 Years Experience
+@116 h3
+1. Start With Metrics
+@117 h3
+2. Cache Keys Design
+@118 h3
+3. Appropriate TTL
+@119 h3
+4. Graceful Degradation
+@120 h3
+5. Monitor Cache Metrics
+@121 h2
+Key Takeaways
+@122 p
+**Cache là performance optimization đầu tiên bạn nên nghĩ đến:**
+@123 li
+10-100x faster than database
+@124 li
+Simple to implement (Redis = 2 giờ setup)
+@125 li
+High ROI
+@126 p
+**Cache strategies:**
+@127 li
+**Cache-Aside:** Most common, read-heavy
+@128 li
+**Write-Through:** Consistency critical
+@129 li
+**Write-Behind:** Write-heavy, can tolerate data loss
+@130 li
+**Refresh-Ahead:** Predictable patterns
+@131 p
+**Cache invalidation hard problems:**
+@132 li
+TTL: Simple, eventual freshness
+@133 li
+Explicit: Immediate, error-prone
+@134 li
+Event-driven: Scalable, complex
+@135 li
+Versioning: Elegant, more storage
+@136 p
+**Thundering herd solutions:**
+@137 li
+Lock-based: Safe, latency spikes
+@138 li
+Probabilistic: Spreads load
+@139 li
+Stale-while-revalidate: Best UX (my favorite)
+@140 p
+**When NOT to cache:**
+@141 li
+Write-heavy data
+@142 li
+Personalized content (low hit rate)
+@143 li
+Data that's already fast (< 10ms)
+@144 li
+Real-time requirements
+@145 p
+**Remember:** Cache adds complexity. Only add it when benefit > cost. Measure first, cache second.

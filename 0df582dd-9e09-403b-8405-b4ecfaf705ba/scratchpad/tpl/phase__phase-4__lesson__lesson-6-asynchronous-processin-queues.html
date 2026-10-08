@@ -1,0 +1,742 @@
+<article class="prose-ui"><h1 id="asynchronous-processing--queues---defer-work-để-giảm-latency">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<pre><code>§§SEG3§§</code></pre>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<pre><code>§§SEG6§§</code></pre>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<ul>
+<li>§§SEG10§§</li>
+<li>§§SEG11§§</li>
+<li>§§SEG12§§</li>
+<li>§§SEG13§§</li>
+<li>§§SEG14§§</li>
+<li>§§SEG15§§</li>
+</ul>
+<h2 id="sync-vs-async---trade-off-cơ-bản">§§SEG16§§</h2>
+<h3 id="synchronous-processing">§§SEG17§§</h3>
+<p>§§SEG18§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG19§§</code></pre>
+<p>§§SEG20§§</p>
+<p>§§SEG21§§</p>
+<ul>
+<li>§§SEG22§§</li>
+<li>§§SEG23§§</li>
+<li>§§SEG24§§</li>
+<li>§§SEG25§§</li>
+</ul>
+<p>§§SEG26§§</p>
+<ul>
+<li>§§SEG27§§</li>
+<li>§§SEG28§§</li>
+<li>§§SEG29§§</li>
+<li>§§SEG30§§</li>
+</ul>
+<h3 id="asynchronous-processing">§§SEG31§§</h3>
+<p>§§SEG32§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG33§§</code></pre>
+<p>§§SEG34§§</p>
+<p>§§SEG35§§</p>
+<ul>
+<li>§§SEG36§§</li>
+<li>§§SEG37§§</li>
+<li>§§SEG38§§</li>
+<li>§§SEG39§§</li>
+</ul>
+<p>§§SEG40§§</p>
+<ul>
+<li>§§SEG41§§</li>
+<li>§§SEG42§§</li>
+<li>§§SEG43§§</li>
+<li>§§SEG44§§</li>
+</ul>
+<h3 id="decision-framework">§§SEG45§§</h3>
+<p>§§SEG46§§</p>
+<p>§§SEG47§§</p>
+<pre><code class="language-python"># Login - must know if success/fail
+def login(username, password):
+    user = authenticate(username, password)  # Must wait
+    return user
+</code></pre>
+<p>§§SEG48§§</p>
+<pre><code class="language-python"># Payment - must confirm before proceeding
+def checkout(cart):
+    payment_result = charge_card(cart.total)  # Must wait
+    if payment_result.success:
+        create_order()
+</code></pre>
+<p>§§SEG49§§</p>
+<pre><code class="language-python"># Get user profile - fast query
+def get_profile(user_id):
+    return db.get_user(user_id)  # 10ms, không cần async
+</code></pre>
+<p>§§SEG50§§</p>
+<p>§§SEG51§§</p>
+<pre><code class="language-python"># Send email - user doesn't need to wait
+def register(email):
+    user = create_user(email)
+    send_welcome_email.delay(email)  # Async
+    return user
+</code></pre>
+<p>§§SEG52§§</p>
+<pre><code class="language-python"># Video processing - can take minutes
+def upload_video(file):
+    video = save_video(file)
+    process_video.delay(video.id)  # Async
+    return video
+</code></pre>
+<p>§§SEG53§§</p>
+<pre><code class="language-python"># 3rd party APIs - unpredictable latency
+def create_order(order):
+    save_order(order)
+    notify_warehouse.delay(order.id)  # Async
+    update_analytics.delay(order)     # Async
+    return order
+</code></pre>
+<p>§§SEG54§§</p>
+<pre><code class="language-python"># Notify many users - can be slow
+def post_update(post):
+    save_post(post)
+    notify_followers.delay(post.id)  # Async (may be 10k users)
+    return post
+</code></pre>
+<h2 id="message-queues---async-processing-infrastructure">§§SEG55§§</h2>
+<p>§§SEG56§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG57§§</code></pre>
+<h3 id="core-concepts">§§SEG58§§</h3>
+<p>§§SEG59§§</p>
+<ul>
+<li>§§SEG60§§</li>
+<li>§§SEG61§§</li>
+</ul>
+<p>§§SEG62§§</p>
+<ul>
+<li>§§SEG63§§</li>
+<li>§§SEG64§§</li>
+<li>§§SEG65§§</li>
+</ul>
+<p>§§SEG66§§</p>
+<ul>
+<li>§§SEG67§§</li>
+<li>§§SEG68§§</li>
+<li>§§SEG69§§</li>
+</ul>
+<h3 id="popular-queue-systems">§§SEG70§§</h3>
+<p>§§SEG71§§</p>
+<ul>
+<li>§§SEG72§§</li>
+<li>§§SEG73§§</li>
+<li>§§SEG74§§</li>
+<li>§§SEG75§§</li>
+</ul>
+<p>§§SEG76§§</p>
+<ul>
+<li>§§SEG77§§</li>
+<li>§§SEG78§§</li>
+<li>§§SEG79§§</li>
+</ul>
+<p>§§SEG80§§</p>
+<ul>
+<li>§§SEG81§§</li>
+<li>§§SEG82§§</li>
+<li>§§SEG83§§</li>
+<li>§§SEG84§§</li>
+</ul>
+<p>§§SEG85§§</p>
+<ul>
+<li>§§SEG86§§</li>
+<li>§§SEG87§§</li>
+<li>§§SEG88§§</li>
+<li>§§SEG89§§</li>
+</ul>
+<p>§§SEG90§§</p>
+<table><thead><tr><th>§§SEG91§§</th><th>§§SEG92§§</th><th>§§SEG93§§</th><th>§§SEG94§§</th><th>§§SEG95§§</th></tr></thead><tbody><tr><td>§§SEG96§§</td><td>§§SEG97§§</td><td>§§SEG98§§</td><td>§§SEG99§§</td><td>§§SEG100§§</td></tr><tr><td>§§SEG101§§</td><td>§§SEG102§§</td><td>§§SEG103§§</td><td>§§SEG104§§</td><td>§§SEG105§§</td></tr><tr><td>§§SEG106§§</td><td>§§SEG107§§</td><td>§§SEG108§§</td><td>§§SEG109§§</td><td>§§SEG110§§</td></tr><tr><td>§§SEG111§§</td><td>§§SEG112§§</td><td>§§SEG113§§</td><td>§§SEG114§§</td><td>§§SEG115§§</td></tr><tr><td>§§SEG116§§</td><td>§§SEG117§§</td><td>§§SEG118§§</td><td>§§SEG119§§</td><td>§§SEG120§§</td></tr><tr><td>§§SEG121§§</td><td>§§SEG122§§</td><td>§§SEG123§§</td><td>§§SEG124§§</td><td>§§SEG125§§</td></tr></tbody></table>
+<h3 id="basic-queue-operations">§§SEG126§§</h3>
+<p>§§SEG127§§</p>
+<pre><code class="language-python"># Python with Celery + Redis
+from celery import Celery
+
+app = Celery('tasks', broker='redis://localhost:6379')
+
+@app.task
+def send_email(to, subject, body):
+    # Email sending logic
+    smtp.send(to, subject, body)
+
+# Enqueue task
+send_email.delay('user@example.com', 'Welcome', 'Hello!')
+</code></pre>
+<p>§§SEG128§§</p>
+<pre><code class="language-python"># Worker processes tasks automatically
+# Start worker:
+# celery -A tasks worker --loglevel=info
+
+# Celery handles:
+# - Dequeue messages
+# - Call task function
+# - Retry on failure
+# - Acknowledge on success
+</code></pre>
+<p>§§SEG129§§</p>
+<pre><code class="language-python">import redis
+
+r = redis.Redis()
+
+while True:
+    # Blocking pop (wait for messages)
+    task = r.brpop('email_queue', timeout=5)
+    
+    if task:
+        queue_name, message = task
+        process_email(message)
+</code></pre>
+<h2 id="background-jobs---common-patterns">§§SEG130§§</h2>
+<h3 id="pattern-1-deferred-execution">§§SEG131§§</h3>
+<p>§§SEG132§§</p>
+<pre><code class="language-python"># Send reminder email after 24 hours
+send_reminder_email.apply_async(
+    args=[user.id],
+    countdown=86400  # 24 hours in seconds
+)
+</code></pre>
+<p>§§SEG133§§</p>
+<ul>
+<li>§§SEG134§§</li>
+<li>§§SEG135§§</li>
+<li>§§SEG136§§</li>
+</ul>
+<h3 id="pattern-2-scheduled-jobs-cron">§§SEG137§§</h3>
+<p>§§SEG138§§</p>
+<pre><code class="language-python"># Celery beat - periodic tasks
+from celery.schedules import crontab
+
+app.conf.beat_schedule = {
+    'cleanup-old-data': {
+        'task': 'tasks.cleanup_old_data',
+        'schedule': crontab(hour=2, minute=0),  # 2 AM daily
+    },
+    'send-daily-report': {
+        'task': 'tasks.send_daily_report',
+        'schedule': crontab(hour=9, minute=0, day_of_week=1),  # Monday 9 AM
+    },
+}
+</code></pre>
+<p>§§SEG139§§</p>
+<ul>
+<li>§§SEG140§§</li>
+<li>§§SEG141§§</li>
+<li>§§SEG142§§</li>
+<li>§§SEG143§§</li>
+</ul>
+<h3 id="pattern-3-batch-processing">§§SEG144§§</h3>
+<p>§§SEG145§§</p>
+<pre><code class="language-python"># Process batch of emails
+@app.task
+def send_batch_emails(email_ids):
+    emails = Email.objects.filter(id__in=email_ids)
+    for email in emails:
+        send_email(email)
+
+# Split into batches
+email_ids = [1, 2, 3, ..., 10000]
+batch_size = 100
+
+for i in range(0, len(email_ids), batch_size):
+    batch = email_ids[i:i+batch_size]
+    send_batch_emails.delay(batch)
+</code></pre>
+<p>§§SEG146§§</p>
+<ul>
+<li>§§SEG147§§</li>
+<li>§§SEG148§§</li>
+<li>§§SEG149§§</li>
+</ul>
+<h3 id="pattern-4-pipelinechain">§§SEG150§§</h3>
+<p>§§SEG151§§</p>
+<pre><code class="language-python">from celery import chain
+
+# Task chain
+workflow = chain(
+    resize_image.s(image_id),
+    apply_watermark.s(),
+    upload_to_cdn.s(),
+    update_database.s()
+)
+
+workflow.apply_async()
+</code></pre>
+<p>§§SEG152§§</p>
+<h3 id="pattern-5-fan-outfan-in">§§SEG153§§</h3>
+<p>§§SEG154§§</p>
+<pre><code class="language-python">from celery import group, chord
+
+# Process multiple images in parallel
+job = chord(
+    group(process_image.s(img_id) for img_id in image_ids),
+    aggregate_results.s()  # Called after all finish
+)
+
+job.apply_async()
+</code></pre>
+<p>§§SEG155§§</p>
+<ul>
+<li>§§SEG156§§</li>
+<li>§§SEG157§§</li>
+<li>§§SEG158§§</li>
+</ul>
+<h2 id="retry-strategies---handle-failures-gracefully">§§SEG159§§</h2>
+<p>§§SEG160§§</p>
+<h3 id="automatic-retry">§§SEG161§§</h3>
+<pre><code class="language-python">@app.task(
+    bind=True,
+    max_retries=3,
+    default_retry_delay=60  # 60 seconds
+)
+def send_email(self, to, subject, body):
+    try:
+        smtp.send(to, subject, body)
+    except SMTPException as exc:
+        # Retry with exponential backoff
+        raise self.retry(exc=exc, countdown=2 ** self.request.retries)
+</code></pre>
+<p>§§SEG162§§</p>
+<pre><code>§§SEG163§§</code></pre>
+<p>§§SEG164§§</p>
+<h3 id="conditional-retry">§§SEG165§§</h3>
+<p>§§SEG166§§</p>
+<pre><code class="language-python">@app.task(bind=True, max_retries=5)
+def call_external_api(self, url):
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except requests.Timeout as exc:
+        # Retry on timeout
+        raise self.retry(exc=exc, countdown=30)
+    except requests.HTTPError as exc:
+        if exc.response.status_code == 429:  # Rate limited
+            raise self.retry(exc=exc, countdown=120)
+        elif exc.response.status_code &gt;= 500:  # Server error
+            raise self.retry(exc=exc)
+        else:
+            # 4xx errors - don't retry
+            raise
+</code></pre>
+<p>§§SEG167§§</p>
+<ul>
+<li>§§SEG168§§</li>
+<li>§§SEG169§§</li>
+<li>§§SEG170§§</li>
+<li>§§SEG171§§</li>
+</ul>
+<h3 id="retry-limits">§§SEG172§§</h3>
+<p>§§SEG173§§</p>
+<pre><code class="language-python">@app.task(
+    max_retries=10,
+    retry_backoff=True,
+    retry_backoff_max=600,  # Max 10 minutes
+    retry_jitter=True        # Add randomness
+)
+def risky_task():
+    # Task logic
+    pass
+</code></pre>
+<p>§§SEG174§§</p>
+<h2 id="dead-letter-queue-dlq---handle-permanent-failures">§§SEG175§§</h2>
+<p>§§SEG176§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG177§§</code></pre>
+<h3 id="why-dlq-important">§§SEG178§§</h3>
+<p>§§SEG179§§</p>
+<p>§§SEG180§§</p>
+<p>§§SEG181§§</p>
+<p>§§SEG182§§</p>
+<p>§§SEG183§§</p>
+<p>§§SEG184§§</p>
+<p>§§SEG185§§</p>
+<p>§§SEG186§§</p>
+<h3 id="implementing-dlq">§§SEG187§§</h3>
+<p>§§SEG188§§</p>
+<pre><code class="language-python">from celery import Celery
+
+app = Celery('tasks')
+
+app.conf.task_reject_on_worker_lost = True
+app.conf.task_acks_late = True
+
+@app.task(
+    bind=True,
+    max_retries=3,
+    dead_letter_exchange='dlx',
+    dead_letter_routing_key='dlq'
+)
+def problematic_task(self):
+    # Task logic
+    pass
+</code></pre>
+<p>§§SEG189§§</p>
+<pre><code class="language-python">import boto3
+
+sqs = boto3.client('sqs')
+
+# Create main queue with DLQ
+response = sqs.create_queue(
+    QueueName='main-queue',
+    Attributes={
+        'RedrivePolicy': json.dumps({
+            'deadLetterTargetArn': dlq_arn,
+            'maxReceiveCount': '3'  # After 3 attempts → DLQ
+        })
+    }
+)
+</code></pre>
+<h3 id="monitoring-dlq">§§SEG190§§</h3>
+<p>§§SEG191§§</p>
+<pre><code>§§SEG192§§</code></pre>
+<p>§§SEG193§§</p>
+<ul>
+<li>§§SEG194§§</li>
+<li>§§SEG195§§</li>
+<li>§§SEG196§§</li>
+</ul>
+<p>§§SEG197§§</p>
+<pre><code class="language-python">def review_dlq():
+    messages = dlq.get_messages(limit=100)
+    
+    for msg in messages:
+        # Analyze failure reason
+        if is_fixable(msg):
+            fix_and_replay(msg)
+        else:
+            log_permanent_failure(msg)
+</code></pre>
+<h2 id="idempotency---critical-for-reliability">§§SEG198§§</h2>
+<p>§§SEG199§§</p>
+<h3 id="the-problem">§§SEG200§§</h3>
+<p>§§SEG201§§</p>
+<pre><code>§§SEG202§§</code></pre>
+<p>§§SEG203§§</p>
+<h3 id="solution-idempotent-operations">§§SEG204§§</h3>
+<p>§§SEG205§§</p>
+<pre><code class="language-python">@app.task
+def charge_payment(order_id, amount, idempotency_key):
+    # Check if already processed
+    if Payment.objects.filter(idempotency_key=idempotency_key).exists():
+        print("Already processed, skipping")
+        return
+    
+    # Process payment
+    result = stripe.charge(amount, idempotency_key=idempotency_key)
+    
+    # Save with idempotency key
+    Payment.objects.create(
+        order_id=order_id,
+        amount=amount,
+        idempotency_key=idempotency_key,
+        transaction_id=result.id
+    )
+</code></pre>
+<p>§§SEG206§§</p>
+<p>§§SEG207§§</p>
+<pre><code class="language-python"># Unique constraint on database
+class Payment(models.Model):
+    order_id = models.IntegerField()
+    transaction_id = models.CharField(max_length=100, unique=True)
+
+@app.task
+def charge_payment(order_id):
+    try:
+        result = stripe.charge(...)
+        Payment.objects.create(
+            order_id=order_id,
+            transaction_id=result.id  # Unique - prevents duplicates
+        )
+    except IntegrityError:
+        # Duplicate transaction - already processed
+        print("Already processed")
+</code></pre>
+<p>§§SEG208§§</p>
+<pre><code class="language-python"># Use database atomic operations
+@app.task
+def increment_view_count(post_id):
+    # Idempotent - can run multiple times safely
+    Post.objects.filter(id=post_id).update(
+        view_count=F('view_count') + 1
+    )
+</code></pre>
+<p>§§SEG209§§</p>
+<pre><code class="language-python">class Order(models.Model):
+    status = models.CharField(
+        choices=[
+            ('pending', 'Pending'),
+            ('processing', 'Processing'),
+            ('completed', 'Completed'),
+        ]
+    )
+
+@app.task
+def process_order(order_id):
+    order = Order.objects.get(id=order_id)
+    
+    # Only process if pending
+    if order.status != 'pending':
+        print("Already processed")
+        return
+    
+    # Update status atomically
+    updated = Order.objects.filter(
+        id=order_id,
+        status='pending'
+    ).update(status='processing')
+    
+    if updated == 0:
+        print("Another worker already processing")
+        return
+    
+    # Process order...
+    
+    order.status = 'completed'
+    order.save()
+</code></pre>
+<p>§§SEG210§§</p>
+<h3 id="best-practices">§§SEG211§§</h3>
+<p>§§SEG212§§</p>
+<pre><code class="language-python">import uuid
+
+idempotency_key = str(uuid.uuid4())
+charge_payment.delay(order_id, amount, idempotency_key)
+</code></pre>
+<p>§§SEG213§§</p>
+<p>§§SEG214§§</p>
+<p>§§SEG215§§</p>
+<pre><code class="language-python"># Redis
+redis.setex(f"processed:{idempotency_key}", 86400, "1")  # 24h TTL
+</code></pre>
+<p>§§SEG216§§</p>
+<p>§§SEG217§§</p>
+<h2 id="event-driven-architecture-intro">§§SEG218§§</h2>
+<p>§§SEG219§§</p>
+<h3 id="from-request-driven-to-event-driven">§§SEG220§§</h3>
+<p>§§SEG221§§</p>
+<pre><code class="language-python">def create_order(order_data):
+    order = save_order(order_data)
+    charge_payment(order)
+    send_confirmation(order)
+    notify_warehouse(order)
+    update_analytics(order)
+    return order
+</code></pre>
+<p>§§SEG222§§</p>
+<p>§§SEG223§§</p>
+<pre><code class="language-python">def create_order(order_data):
+    order = save_order(order_data)
+    
+    # Publish event
+    publish_event('order.created', {
+        'order_id': order.id,
+        'user_id': order.user_id,
+        'total': order.total
+    })
+    
+    return order
+
+# Separate subscribers
+@subscribe('order.created')
+def handle_payment(event):
+    charge_payment(event['order_id'])
+
+@subscribe('order.created')
+def send_email(event):
+    send_confirmation(event['order_id'])
+
+@subscribe('order.created')
+def notify_warehouse(event):
+    notify_warehouse(event['order_id'])
+</code></pre>
+<p>§§SEG224§§</p>
+<p>§§SEG225§§</p>
+<p>§§SEG226§§</p>
+<p>§§SEG227§§</p>
+<p>§§SEG228§§</p>
+<p>§§SEG229§§</p>
+<p>§§SEG230§§</p>
+<p>§§SEG231§§</p>
+<p>§§SEG232§§</p>
+<h3 id="event-structure">§§SEG233§§</h3>
+<pre><code class="language-python">{
+    "event_id": "evt_abc123",
+    "event_type": "order.created",
+    "timestamp": "2025-02-15T10:00:00Z",
+    "version": "1.0",
+    "data": {
+        "order_id": 12345,
+        "user_id": 789,
+        "total": 99.99
+    }
+}
+</code></pre>
+<p>§§SEG234§§</p>
+<ul>
+<li>§§SEG235§§</li>
+<li>§§SEG236§§</li>
+<li>§§SEG237§§</li>
+<li>§§SEG238§§</li>
+<li>§§SEG239§§</li>
+</ul>
+<h3 id="event-patterns">§§SEG240§§</h3>
+<p>§§SEG241§§</p>
+<p>§§SEG242§§</p>
+<pre><code class="language-python">publish_event('user.registered', {'user_id': 123})
+</code></pre>
+<p>§§SEG243§§</p>
+<p>§§SEG244§§</p>
+<pre><code class="language-python">publish_event('user.registered', {
+    'user_id': 123,
+    'email': 'user@example.com',
+    'name': 'John Doe',
+    'signup_date': '2025-02-15'
+})
+</code></pre>
+<p>§§SEG245§§</p>
+<p>§§SEG246§§</p>
+<pre><code class="language-python">events = [
+    {'type': 'account.created', 'balance': 1000},
+    {'type': 'transaction.deposit', 'amount': 500},
+    {'type': 'transaction.withdraw', 'amount': 200},
+]
+
+# Current balance = 1000 + 500 - 200 = 1300
+</code></pre>
+<h2 id="practical-recommendations">§§SEG247§§</h2>
+<h3 id="1-start-simple">§§SEG248§§</h3>
+<p>§§SEG249§§</p>
+<pre><code class="language-python"># Simple Celery task
+@app.task
+def send_email(to, subject, body):
+    smtp.send(to, subject, body)
+
+# Usage
+send_email.delay('user@example.com', 'Welcome', 'Hello!')
+</code></pre>
+<p>§§SEG250§§</p>
+<ul>
+<li>§§SEG251§§</li>
+<li>§§SEG252§§</li>
+<li>§§SEG253§§</li>
+</ul>
+<h3 id="2-monitor-queue-health">§§SEG254§§</h3>
+<p>§§SEG255§§</p>
+<pre><code class="language-python"># Queue depth
+queue_size = celery.control.inspect().stats()
+
+# Task success/failure rate
+from celery.events import EventReceiver
+
+def monitor_events():
+    receiver = EventReceiver(app.connection())
+    
+    for event in receiver.events():
+        if event['type'] == 'task-succeeded':
+            metrics.increment('task.success')
+        elif event['type'] == 'task-failed':
+            metrics.increment('task.failure')
+</code></pre>
+<p>§§SEG256§§</p>
+<ul>
+<li>§§SEG257§§</li>
+<li>§§SEG258§§</li>
+<li>§§SEG259§§</li>
+</ul>
+<h3 id="3-design-for-failure">§§SEG260§§</h3>
+<p>§§SEG261§§</p>
+<pre><code class="language-python">@app.task(
+    bind=True,
+    max_retries=3,
+    default_retry_delay=60
+)
+def resilient_task(self, data):
+    try:
+        # Task logic with timeout
+        result = process_with_timeout(data, timeout=30)
+        return result
+    except TimeoutError as exc:
+        # Retry on timeout
+        raise self.retry(exc=exc)
+    except Exception as exc:
+        # Log error for investigation
+        logger.error(f"Task failed: {exc}", extra={'data': data})
+        raise
+</code></pre>
+<h3 id="4-test-async-flows">§§SEG262§§</h3>
+<p>§§SEG263§§</p>
+<pre><code class="language-python"># Test with eager mode (synchronous for testing)
+app.conf.task_always_eager = True
+
+def test_order_creation():
+    order = create_order(order_data)
+    
+    # Tasks execute synchronously in tests
+    assert email_was_sent(order.user.email)
+    assert payment_was_charged(order.id)
+</code></pre>
+<p>§§SEG264§§</p>
+<pre><code class="language-python">def test_queue_integration():
+    # Send task to real queue
+    result = send_email.delay('test@example.com', 'Test', 'Body')
+    
+    # Wait for completion
+    assert result.get(timeout=10) == 'sent'
+</code></pre>
+<h3 id="5-graceful-degradation">§§SEG265§§</h3>
+<p>§§SEG266§§</p>
+<pre><code class="language-python">def create_order(order_data):
+    order = save_order(order_data)
+    
+    try:
+        send_confirmation.delay(order.id)
+    except ConnectionError:
+        # Queue unavailable - fallback to sync
+        logger.warning("Queue unavailable, sending email synchronously")
+        send_confirmation_sync(order.id)
+    
+    return order
+</code></pre>
+<h2 id="mental-model-latency-giảm-bằng-cách-defer-work">§§SEG267§§</h2>
+<p>§§SEG268§§</p>
+<p>§§SEG269§§</p>
+<pre><code>§§SEG270§§</code></pre>
+<p>§§SEG271§§</p>
+<pre><code>§§SEG272§§</code></pre>
+<p>§§SEG273§§</p>
+<ol>
+<li>§§SEG274§§</li>
+<li>§§SEG275§§</li>
+<li>§§SEG276§§</li>
+<li>§§SEG277§§</li>
+<li>§§SEG278§§</li>
+</ol>
+<p>§§SEG279§§</p>
+<h2 id="key-takeaways">§§SEG280§§</h2>
+<p>§§SEG281§§</p>
+<p>§§SEG282§§</p>
+<p>§§SEG283§§</p>
+<p>§§SEG284§§</p>
+<p>§§SEG285§§</p>
+<p>§§SEG286§§</p>
+<p>§§SEG287§§</p>
+<p>§§SEG288§§</p>
+<p>§§SEG289§§</p>
+<p>§§SEG290§§</p>
+<p>§§SEG291§§</p>
+<p>§§SEG292§§</p>
+<p>§§SEG293§§</p>
+<p>§§SEG294§§</p>
+<p>§§SEG295§§</p>
+<p>§§SEG296§§</p>
+<p>§§SEG297§§</p>
+<p>§§SEG298§§</p>
+<p>§§SEG299§§</p>
+<p>§§SEG300§§</p>
+<p>§§SEG301§§</p></article>

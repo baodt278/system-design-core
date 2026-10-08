@@ -1,0 +1,310 @@
+<article class="prose-ui"><h1 id="time--event-ordering---clock-problem-trong-distributed-systems">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<ul>
+<li>§§SEG10§§</li>
+<li>§§SEG11§§</li>
+<li>§§SEG12§§</li>
+<li>§§SEG13§§</li>
+<li>§§SEG14§§</li>
+</ul>
+<h2 id="tại-sao-thời-gian-quan-trọng">§§SEG15§§</h2>
+<p>§§SEG16§§</p>
+<h3 id="use-case-1-database-replication">§§SEG17§§</h3>
+<pre><code>§§SEG18§§</code></pre>
+<p>§§SEG19§§</p>
+<p>§§SEG20§§</p>
+<p>§§SEG21§§</p>
+<h3 id="use-case-2-distributed-transaction">§§SEG22§§</h3>
+<pre><code>§§SEG23§§</code></pre>
+<p>§§SEG24§§</p>
+<h3 id="use-case-3-event-sourcing">§§SEG25§§</h3>
+<pre><code>§§SEG26§§</code></pre>
+<p>§§SEG27§§</p>
+<p>§§SEG28§§</p>
+<p>§§SEG29§§</p>
+<h2 id="physical-clocks--clock-drift-problem">§§SEG30§§</h2>
+<h3 id="physical-clock-là-gì">§§SEG31§§</h3>
+<p>§§SEG32§§</p>
+<p>§§SEG33§§</p>
+<pre><code>§§SEG34§§</code></pre>
+<p>§§SEG35§§</p>
+<h3 id="clock-drift">§§SEG36§§</h3>
+<p>§§SEG37§§</p>
+<p>§§SEG38§§</p>
+<ul>
+<li>§§SEG39§§</li>
+<li>§§SEG40§§</li>
+<li>§§SEG41§§</li>
+</ul>
+<p>§§SEG42§§</p>
+<ul>
+<li>§§SEG43§§</li>
+<li>§§SEG44§§</li>
+<li>§§SEG45§§</li>
+</ul>
+<p>§§SEG46§§</p>
+<pre><code>§§SEG47§§</code></pre>
+<p>§§SEG48§§</p>
+<h3 id="ntp-network-time-protocol">§§SEG49§§</h3>
+<p>§§SEG50§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG51§§</code></pre>
+<p>§§SEG52§§</p>
+<ol>
+<li>§§SEG53§§</li>
+<li>§§SEG54§§</li>
+<li>§§SEG55§§</li>
+<li>§§SEG56§§</li>
+</ol>
+<p>§§SEG57§§</p>
+<ul>
+<li>§§SEG58§§</li>
+<li>§§SEG59§§</li>
+<li>§§SEG60§§</li>
+</ul>
+<p>§§SEG61§§</p>
+<p>§§SEG62§§</p>
+<ul>
+<li>§§SEG63§§</li>
+<li>§§SEG64§§</li>
+</ul>
+<p>§§SEG65§§</p>
+<ul>
+<li>§§SEG66§§</li>
+<li>§§SEG67§§</li>
+</ul>
+<p>§§SEG68§§</p>
+<ul>
+<li>§§SEG69§§</li>
+<li>§§SEG70§§</li>
+</ul>
+<p>§§SEG71§§</p>
+<h2 id="logical-clocks---ordering-without-physical-time">§§SEG72§§</h2>
+<p>§§SEG73§§</p>
+<p>§§SEG74§§</p>
+<h3 id="lamport-timestamps---foundation-của-logical-ordering">§§SEG75§§</h3>
+<p>§§SEG76§§</p>
+<h4 id="core-idea">§§SEG77§§</h4>
+<p>§§SEG78§§</p>
+<ul>
+<li>§§SEG79§§</li>
+<li>§§SEG80§§</li>
+<li>§§SEG81§§</li>
+<li>§§SEG82§§</li>
+</ul>
+<h4 id="rules">§§SEG83§§</h4>
+<pre><code>§§SEG84§§</code></pre>
+<h3 id="ví-dụ-thực-tế">§§SEG85§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG86§§</code></pre>
+<p>§§SEG87§§</p>
+<pre><code>§§SEG88§§</code></pre>
+<p>§§SEG89§§</p>
+<ul>
+<li>§§SEG90§§</li>
+<li>§§SEG91§§</li>
+<li>§§SEG92§§</li>
+<li>§§SEG93§§</li>
+</ul>
+<p>§§SEG94§§</p>
+<h3 id="happened-before-relationship-">§§SEG95§§</h3>
+<p>§§SEG96§§</p>
+<ol>
+<li>§§SEG97§§</li>
+<li>§§SEG98§§</li>
+<li>§§SEG99§§</li>
+</ol>
+<p>§§SEG100§§</p>
+<h3 id="limitation-của-lamport-timestamps">§§SEG101§§</h3>
+<p>§§SEG102§§</p>
+<pre><code>§§SEG103§§</code></pre>
+<p>§§SEG104§§</p>
+<pre><code>§§SEG105§§</code></pre>
+<p>§§SEG106§§</p>
+<p>§§SEG107§§</p>
+<h2 id="vector-clocks---detecting-causality">§§SEG108§§</h2>
+<p>§§SEG109§§</p>
+<h3 id="core-idea-1">§§SEG110§§</h3>
+<p>§§SEG111§§</p>
+<pre><code>§§SEG112§§</code></pre>
+<h3 id="rules-1">§§SEG113§§</h3>
+<pre><code>§§SEG114§§</code></pre>
+<h3 id="ví-dụ-vector-clocks">§§SEG115§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG116§§</code></pre>
+<p>§§SEG117§§</p>
+<pre><code>§§SEG118§§</code></pre>
+<p>§§SEG119§§</p>
+<p>§§SEG120§§</p>
+<p>§§SEG121§§</p>
+<p>§§SEG122§§</p>
+<p>§§SEG123§§</p>
+<h3 id="vector-clock-comparison-rules">§§SEG124§§</h3>
+<pre><code>§§SEG125§§</code></pre>
+<p>§§SEG126§§</p>
+<h3 id="trade-off-lamport-vs-vector-clocks">§§SEG127§§</h3>
+<table><thead><tr><th>§§SEG128§§</th><th>§§SEG129§§</th><th>§§SEG130§§</th></tr></thead><tbody><tr><td>§§SEG131§§</td><td>§§SEG132§§</td><td>§§SEG133§§</td></tr><tr><td>§§SEG134§§</td><td>§§SEG135§§</td><td>§§SEG136§§</td></tr><tr><td>§§SEG137§§</td><td>§§SEG138§§</td><td>§§SEG139§§</td></tr><tr><td>§§SEG140§§</td><td>§§SEG141§§</td><td>§§SEG142§§</td></tr></tbody></table>
+<p>§§SEG143§§</p>
+<h2 id="causality---happens-before-relationship">§§SEG144§§</h2>
+<p>§§SEG145§§</p>
+<h3 id="causal-events">§§SEG146§§</h3>
+<pre><code>§§SEG147§§</code></pre>
+<p>§§SEG148§§</p>
+<p>§§SEG149§§</p>
+<h3 id="concurrent-events">§§SEG150§§</h3>
+<pre><code>§§SEG151§§</code></pre>
+<p>§§SEG152§§</p>
+<p>§§SEG153§§</p>
+<h3 id="why-causality-matters">§§SEG154§§</h3>
+<p>§§SEG155§§</p>
+<pre><code>§§SEG156§§</code></pre>
+<p>§§SEG157§§</p>
+<p>§§SEG158§§</p>
+<pre><code>§§SEG159§§</code></pre>
+<p>§§SEG160§§</p>
+<p>§§SEG161§§</p>
+<pre><code>§§SEG162§§</code></pre>
+<p>§§SEG163§§</p>
+<h2 id="practical-applications">§§SEG164§§</h2>
+<h3 id="1-version-control-git">§§SEG165§§</h3>
+<p>§§SEG166§§</p>
+<pre><code>§§SEG167§§</code></pre>
+<p>§§SEG168§§</p>
+<h3 id="2-distributed-databases-dynamodb-cassandra">§§SEG169§§</h3>
+<p>§§SEG170§§</p>
+<pre><code>§§SEG171§§</code></pre>
+<p>§§SEG172§§</p>
+<h3 id="3-crdts-conflict-free-replicated-data-types">§§SEG173§§</h3>
+<p>§§SEG174§§</p>
+<p>§§SEG175§§</p>
+<h3 id="4-event-sourcing">§§SEG176§§</h3>
+<p>§§SEG177§§</p>
+<p>§§SEG178§§</p>
+<h2 id="hybrid-logical-clocks-hlc---best-of-both-worlds">§§SEG179§§</h2>
+<p>§§SEG180§§</p>
+<h3 id="why-hlc">§§SEG181§§</h3>
+<p>§§SEG182§§</p>
+<ul>
+<li>§§SEG183§§</li>
+<li>§§SEG184§§</li>
+<li>§§SEG185§§</li>
+</ul>
+<p>§§SEG186§§</p>
+<ul>
+<li>§§SEG187§§</li>
+<li>§§SEG188§§</li>
+</ul>
+<p>§§SEG189§§</p>
+<h3 id="hlc-structure">§§SEG190§§</h3>
+<pre><code>§§SEG191§§</code></pre>
+<p>§§SEG192§§</p>
+<pre><code>§§SEG193§§</code></pre>
+<p>§§SEG194§§</p>
+<ul>
+<li>§§SEG195§§</li>
+<li>§§SEG196§§</li>
+<li>§§SEG197§§</li>
+</ul>
+<p>§§SEG198§§</p>
+<h2 id="when-do-you-actually-need-event-ordering">§§SEG199§§</h2>
+<p>§§SEG200§§</p>
+<h3 id="cần-ordering-khi">§§SEG201§§</h3>
+<p>§§SEG202§§</p>
+<ul>
+<li>§§SEG203§§</li>
+<li>§§SEG204§§</li>
+<li>§§SEG205§§</li>
+</ul>
+<p>§§SEG206§§</p>
+<ul>
+<li>§§SEG207§§</li>
+<li>§§SEG208§§</li>
+</ul>
+<p>§§SEG209§§</p>
+<ul>
+<li>§§SEG210§§</li>
+<li>§§SEG211§§</li>
+</ul>
+<h3 id="không-cần-hoặc-relaxed-ordering">§§SEG212§§</h3>
+<p>§§SEG213§§</p>
+<ul>
+<li>§§SEG214§§</li>
+<li>§§SEG215§§</li>
+</ul>
+<p>§§SEG216§§</p>
+<ul>
+<li>§§SEG217§§</li>
+<li>§§SEG218§§</li>
+<li>§§SEG219§§</li>
+</ul>
+<p>§§SEG220§§</p>
+<ul>
+<li>§§SEG221§§</li>
+</ul>
+<p>§§SEG222§§</p>
+<h2 id="practical-considerations">§§SEG223§§</h2>
+<h3 id="1-overhead">§§SEG224§§</h3>
+<p>§§SEG225§§</p>
+<p>§§SEG226§§</p>
+<h3 id="2-storage">§§SEG227§§</h3>
+<p>§§SEG228§§</p>
+<pre><code>§§SEG229§§</code></pre>
+<p>§§SEG230§§</p>
+<ul>
+<li>§§SEG231§§</li>
+<li>§§SEG232§§</li>
+<li>§§SEG233§§</li>
+</ul>
+<h3 id="3-debugging">§§SEG234§§</h3>
+<p>§§SEG235§§</p>
+<p>§§SEG236§§</p>
+<pre><code class="language-json">{
+  "event": "order_created",
+  "lamport_clock": 12345,
+  "wall_clock": "2025-02-15T10:00:00Z",
+  "vector_clock": [5, 3, 8]
+}
+</code></pre>
+<h2 id="mental-model-time-trong-distributed-systems--time-trong-đời-thật">§§SEG237§§</h2>
+<p>§§SEG238§§</p>
+<p>§§SEG239§§</p>
+<pre><code>§§SEG240§§</code></pre>
+<p>§§SEG241§§</p>
+<ul>
+<li>§§SEG242§§</li>
+<li>§§SEG243§§</li>
+</ul>
+<p>§§SEG244§§</p>
+<p>§§SEG245§§</p>
+<h2 id="key-takeaways">§§SEG246§§</h2>
+<p>§§SEG247§§</p>
+<p>§§SEG248§§</p>
+<p>§§SEG249§§</p>
+<p>§§SEG250§§</p>
+<p>§§SEG251§§</p>
+<p>§§SEG252§§</p>
+<p>§§SEG253§§</p>
+<p>§§SEG254§§</p>
+<p>§§SEG255§§</p>
+<p>§§SEG256§§</p>
+<p>§§SEG257§§</p>
+<p>§§SEG258§§</p>
+<p>§§SEG259§§</p>
+<p>§§SEG260§§</p>
+<hr>
+<p>§§SEG261§§</p>
+<ul>
+<li>§§SEG262§§</li>
+<li>§§SEG263§§</li>
+<li>§§SEG264§§</li>
+<li>§§SEG265§§</li>
+<li>§§SEG266§§</li>
+<li>§§SEG267§§</li>
+</ul>
+<p>§§SEG268§§</p>
+<p>§§SEG269§§</p></article>

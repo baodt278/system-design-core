@@ -1,0 +1,299 @@
+@65
+⟦Tính Nhất Quán Có Thể Điều Chỉnh|Tunable Consistency⟧
+@66
+Một số hệ thống cho phép điều chỉnh ⟦tính nhất quán|consistency⟧ cho từng thao tác:
+@67
+**Ma trận ⟦đánh đổi|trade-off⟧:**
+@68
+Mức nhất quán | Độ trễ     | Tính sẵn sàng | Độ chính xác
+--------------|------------|---------------|------------------------
+ALL           | Cao        | Thấp          | Hoàn hảo
+QUORUM        | Trung bình | Trung bình    | Rất tốt
+ONE           | Thấp       | Cao           | Đúng dần theo thời gian
+
+@69
+Ra Quyết Định Trong Thực Tế
+@70
+⟦Khung Tư Duy|Framework⟧: 4 Câu Hỏi
+@71
+Khi thiết kế một tính năng, hãy tự hỏi 4 câu hỏi này:
+@72
+**Câu hỏi 1: Người dùng có bị thiệt hại nếu thấy ⟦dữ liệu cũ|stale data⟧ không?**
+@73
+Ví dụ:
+- Số dư ngân hàng bị cũ → CÓ thiệt hại (người dùng bị thấu chi)
+- Số lượt thích bị cũ → KHÔNG thiệt hại (chỉ để hiển thị)
+
+Nếu CÓ → Nhất quán mạnh
+Nếu KHÔNG → Nhất quán cuối cùng là ổn
+
+@74
+**Câu hỏi 2: Doanh nghiệp có thiệt hại nếu dữ liệu thiếu nhất quán không?**
+@75
+Ví dụ:
+- Bán vượt tồn kho → CÓ thiệt hại (hoàn tiền, uy tín)
+- Thứ tự bảng tin sai → KHÔNG thiệt hại (chỉ ảnh hưởng trải nghiệm)
+
+Nếu CÓ → Nhất quán mạnh
+Nếu KHÔNG → Nhất quán cuối cùng là ổn
+
+@76
+**Câu hỏi 3: Có thể sửa sau không?**
+@77
+Ví dụ:
+- Chuyển tiền sai → KHÔNG THỂ sửa (vấn đề pháp lý)
+- Thông báo bị trùng lặp → CÓ THỂ sửa (chỉ gây khó chịu)
+
+Nếu KHÔNG THỂ sửa → Nhất quán mạnh
+Nếu CÓ THỂ sửa → Nhất quán cuối cùng là ổn
+
+@78
+**Câu hỏi 4: Người dùng có kỳ vọng ⟦thời gian thực|real-time⟧ không?**
+@79
+Ví dụ:
+- Tin nhắn chat → CÓ, kỳ vọng ngay lập tức
+- Trạng thái đã đọc email → KHÔNG kỳ vọng (trễ cũng được)
+
+Nếu CÓ → Nhất quán mạnh (hoặc trông như vậy)
+Nếu KHÔNG → Nhất quán cuối cùng là ổn
+
+@80
+Ma Trận Quyết Định
+@81
+Loại tính năng            | Nhất quán | Lý do
+--------------------------|-----------|-----------------------
+Xử lý thanh toán          | Mạnh      | Không được phép sai
+Tồn kho (món cuối cùng)   | Mạnh      | Bán vượt tồn kho là tệ
+Xác thực người dùng       | Mạnh      | Then chốt về bảo mật
+Đổi mật khẩu              | Mạnh      | Then chốt về bảo mật
+Trạng thái đơn hàng       | Mạnh      | Kỳ vọng của người dùng
+--------------------------|-----------|-----------------------
+Số lượt thích/xem         | Cuối cùng | Xấp xỉ là ổn
+Bảng tin hoạt động        | Cuối cùng | Chấp nhận được độ trễ
+Gợi ý                     | Cuối cùng | Vốn đã cá nhân hóa
+Bảng điều khiển phân tích | Cuối cùng | Cập nhật theo lô là ổn
+Cập nhật hồ sơ            | Cuối cùng | Không gấp về thời gian
+Kết quả tìm kiếm          | Cuối cùng | Thứ hạng vốn thay đổi
+Số thông báo              | Cuối cùng | Lệch 1-2 vẫn ổn
+
+@82
+Cách Tiếp Cận Kết Hợp
+@83
+Trong thực tế, **hầu hết các hệ thống dùng cả hai**:
+@84
+Quyết Định ⟦Tính Nhất Quán|Consistency⟧ Theo Từng Tính Năng
+@85
+⟦Nghiên Cứu Tình Huống|Case Study⟧ 1: Thanh Toán Trong Thương Mại Điện Tử
+@86
+**Tính năng: Thêm vào giỏ hàng**
+@87
+Quyết định: Nhất quán cuối cùng
+
+Tại sao?
+- Giỏ hàng là trạng thái tạm thời
+- Người dùng có thể sửa trước khi thanh toán
+- Trễ vài giây là chấp nhận được
+- Tính sẵn sàng cao quan trọng hơn
+
+Triển khai:
+- Ghi vào bộ nhớ đệm cục bộ ngay lập tức
+- Nhân bản bất đồng bộ vào cơ sở dữ liệu
+- Người dùng thấy giỏ hàng cập nhật tức thì
+
+@88
+**Tính năng: Đặt hàng**
+@89
+Quyết định: Nhất quán mạnh
+
+Tại sao?
+- Xử lý thanh toán là then chốt
+- Kiểm tra tồn kho phải chính xác
+- Không được phép bán vượt tồn kho
+- Người dùng kỳ vọng được xác nhận ngay
+
+Triển khai:
+- Giao dịch trải qua tồn kho + thanh toán + đơn hàng
+- Chờ tất cả xác nhận
+- Người dùng đợi vài giây là ổn (đã được lường trước)
+
+@90
+⟦Nghiên Cứu Tình Huống|Case Study⟧ 2: Mạng Xã Hội
+@91
+**Tính năng: Đăng nội dung**
+@92
+Quyết định: Kết hợp
+
+Tại sao?
+- Người dùng kỳ vọng thấy bài của chính mình ngay (mạnh)
+- Người theo dõi có thể thấy sau (cuối cùng)
+
+Triển khai:
+- Ghi với nhất quán mạnh
+- Người dùng thấy bài đăng ngay
+- Nhân bản bất đồng bộ đến người theo dõi
+- Người theo dõi thấy trong vài giây
+
+@93
+**Tính năng: Số lượt thích**
+@94
+Quyết định: Nhất quán cuối cùng
+
+Tại sao?
+- Số đếm xấp xỉ là chấp nhận được
+- Khối lượng lớn (hàng nghìn lượt thích/giây)
+- Người dùng không quan tâm nếu lệch 10-20
+- Phản hồi nhanh là then chốt
+
+Triển khai:
+- Tăng bộ đếm bất đồng bộ
+- Cập nhật giao diện một cách lạc quan
+- Đồng bộ nền vào cơ sở dữ liệu
+- Số đếm nhất quán cuối cùng
+
+@95
+⟦Nghiên Cứu Tình Huống|Case Study⟧ 3: Ứng Dụng Nhắn Tin
+@96
+**Tính năng: Gửi tin nhắn**
+@97
+Quyết định: Nhất quán mạnh
+
+Tại sao?
+- Thứ tự tin nhắn là then chốt
+- Người dùng kỳ vọng người nhận thấy ngay
+- Không được làm mất tin nhắn
+- Xác nhận đã gửi rất quan trọng
+
+Triển khai:
+- Ghi vào CSDL của người gửi với nhất quán mạnh
+- Nhân bản đồng bộ sang CSDL của người nhận
+- Xác nhận đã gửi sau khi cả hai thao tác ghi xong
+- Người dùng chờ vài ms (chấp nhận được)
+
+@98
+**Tính năng: Trạng thái "Hoạt động lần cuối"**
+@99
+Quyết định: Nhất quán cuối cùng
+
+Tại sao?
+- Thời gian xấp xỉ là ổn
+- Cập nhật với tần suất cao
+- Không phải dữ liệu quan trọng
+- Trễ một chút là chấp nhận được
+
+Triển khai:
+- Cập nhật bất đồng bộ mỗi 30 giây
+- Người dùng có thể thấy "đang trực tuyến" với độ trễ nhỏ
+- Cuối cùng sẽ hội tụ
+- Hiệu năng > Độ chính xác
+
+@100
+⟦Mô Hình Tư Duy|Mental Model⟧: ⟦Tính Nhất Quán|Consistency⟧ = Quyết Định Kinh Doanh
+@101
+**Điểm mấu chốt:** ⟦Tính nhất quán|Consistency⟧ không phải sở thích kỹ thuật.
+@102
+Tư duy sai:
+"Nhất quán cuối cùng tốt hơn vì nhanh"
+"Nhất quán mạnh tốt hơn vì đúng"
+
+Tư duy đúng:
+"Tính năng này cần nhất quán mạnh vì yêu cầu kinh doanh X"
+"Tính năng này ổn với nhất quán cuối cùng vì doanh nghiệp chấp nhận được Y"
+
+@103
+**⟦Khung tư duy|Framework⟧:**
+@104
+Với mỗi tính năng:
+
+1. Xác định yêu cầu kinh doanh
+   → Điều gì quan trọng nhất?
+
+2. Đánh giá rủi ro
+   → Trường hợp xấu nhất với dữ liệu cũ là gì?
+
+3. Kiểm tra kỳ vọng của người dùng
+   → Người dùng kỳ vọng tức thì hay trễ cũng được?
+
+4. Chọn mô hình nhất quán
+   → Mạnh nếu then chốt
+   → Cuối cùng nếu chấp nhận được
+
+5. Triển khai tương ứng
+   → Đừng nghi ngờ lại nhu cầu kinh doanh
+
+@105
+Những Điểm Cốt Lõi
+@106
+**Tóm tắt các ⟦mô hình nhất quán|consistency models⟧:**
+@107
+Nhất quán mạnh:
+- Luôn đúng
+- Chậm hơn, tính sẵn sàng thấp hơn
+- Dùng cho: thanh toán, tồn kho, xác thực
+- Đánh đổi: Hiệu năng lấy độ chính xác
+
+Nhất quán cuối cùng:
+- Nhanh, tính sẵn sàng cao
+- Tạm thời không chính xác
+- Dùng cho: lượt thích, bảng tin, phân tích
+- Đánh đổi: Độ chính xác lấy hiệu năng
+
+@108
+**⟦Khung ra quyết định|Decision framework⟧:**
+@109
+Chọn nhất quán mạnh nếu:
+✓ Dữ liệu then chốt với doanh nghiệp
+✓ Không thể chấp nhận lỗi
+✓ Người dùng bị thiệt hại nếu sai
+✓ Có yêu cầu pháp lý/tuân thủ
+
+Chọn nhất quán cuối cùng nếu:
+✓ Dữ liệu xấp xỉ là ổn
+✓ Có thể sửa lỗi sau
+✓ Người dùng không quan tâm đến độ trễ
+✓ Hiệu năng là then chốt
+
+@110
+**Cách tiếp cận kết hợp là tốt nhất:**
+@111
+Hầu hết các hệ thống thực tế:
+- Nhất quán mạnh cho các luồng then chốt
+- Nhất quán cuối cùng cho mọi thứ còn lại
+
+Ví dụ:
+- Thương mại điện tử: Mạnh cho thanh toán, Cuối cùng cho duyệt sản phẩm
+- Mạng xã hội: Mạnh cho bài đăng, Cuối cùng cho lượt thích
+- Ngân hàng: Mạnh cho giao dịch, Cuối cùng cho sao kê
+
+@112
+**Quy tắc vàng:**
+@113
+⟦Tính nhất quán|Consistency⟧ là quyết định kinh doanh, không phải sở thích kỹ thuật. Luôn bắt đầu bằng ⟦yêu cầu|requirements⟧ kinh doanh, sau đó chọn ⟦mô hình nhất quán|consistency model⟧ tương ứng.
+@114
+**Câu hỏi tự kiểm tra:**
+@115
+Trước khi triển khai một tính năng, hãy tự hỏi:
+@116
+*Người dùng có bị thiệt hại nếu dữ liệu cũ vài giây không?*
+@117
+*Doanh nghiệp có thiệt hại nếu dữ liệu thiếu nhất quán không?*
+@118
+*Người dùng có kỳ vọng cập nhật ⟦thời gian thực|real-time⟧ không?*
+@119
+*Có thể bù đắp/sửa lỗi sau không?*
+@120
+Câu trả lời sẽ định hướng quyết định về ⟦tính nhất quán|consistency⟧.
+@121
+**Hãy nhớ:**
+@122
+Nhất quán hoàn hảo ở mọi nơi = Hệ thống chậm
+Không nhất quán ở đâu cả = Hệ thống sai
+
+Kiến trúc sư thông minh:
+- Nhất quán mạnh ở nơi cần thiết
+- Nhất quán cuối cùng ở nơi chấp nhận được
+- Lập luận rõ ràng cho mỗi quyết định
+
+@123
+Các ⟦mô hình nhất quán|consistency models⟧ không phải là chọn phương án "tốt hơn". Mà là chọn phương án **đúng** cho **bối cảnh** cụ thể.
+@124
+Kinh doanh trước. Công nghệ sau. Luôn luôn.

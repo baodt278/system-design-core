@@ -1,0 +1,1010 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế | Phase 1 — Foundation: Thinking in Systems | System Design Core</title><meta name="description" content="Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade off analysis. Củng cố kiến thức Phase 1 với checklist"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop"/><meta property="og:title" content="Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế | Phase 1 — Foundation: Thinking in Systems"/><meta property="og:description" content="Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade off analysis. Củng cố kiến thức Phase 1 với checklist"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế | Phase 1 — Foundation: Thinking in Systems"/><meta name="twitter:description" content="Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade off analysis. Củng cố kiến thức Phase 1 với checklist"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 1 — Foundation: Thinking in Systems</p><p class="mt-3 text-xl font-semibold text-ink">Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế</p><p class="mt-3 text-sm leading-7 text-ink-dim">Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade-off analysis. Củng cố kiến thức Phase 1 với checklist tự đánh giá chi tiết.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Components Trong Hệ Thống Web - Hiểu Từng Building Block</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-2-communication-patterns"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Communication Patterns - Sync vs Async trong Distributed Systems</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-1">Phase 1 — Foundation: Thinking in Systems</a></li><li>/</li><li aria-current="page" class="text-ink">Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade-off analysis. Củng cố kiến thức Phase 1 với checklist tự đánh giá chi tiết.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế"><article class="prose-ui"><h1 id="bài-tập-tổng-hợp-từ-theory-đến-practice">Bài Tập Tổng Hợp: Từ Theory Đến Practice</h1>
+<p>Chúc mừng bạn đã hoàn thành tất cả lessons trong Phase 1!</p>
+<p>Bạn đã học về components, communication patterns, data flow, và các khái niệm quan trọng như latency, throughput, CAP theorem.</p>
+<p>Nhưng có một sự thật mà tôi phải nói thẳng: <strong>Đọc hiểu ≠ Làm được.</strong></p>
+<p>Tôi từng có một mentee đọc xong tất cả tài liệu, nói &quot;Em hiểu hết rồi!&quot; Nhưng khi tôi cho một bài tập đơn giản: &quot;Thiết kế URL shortener&quot;, anh ta ngồi im 20 phút không biết bắt đầu từ đâu.</p>
+<p><strong>Why?</strong> Vì thiếu practice. Thiếu apply concepts vào real scenarios.</p>
+<p>Lesson này sẽ fix điều đó. Ba bài tập được thiết kế để:</p>
+<ol>
+<li><strong>Force bạn think như architect</strong> (không còn copy-paste solutions)</li>
+<li><strong>Apply tất cả concepts đã học</strong> (components, data flow, trade-offs)</li>
+<li><strong>Build confidence</strong> (sau khi làm xong, bạn sẽ thấy &quot;Mình làm được đấy!&quot;)</li>
+</ol>
+<p>Đừng skip. Đây là phần quan trọng nhất của Phase 1.</p>
+<h2 id="cách-làm-bài-tập-hiệu-quả">Cách Làm Bài Tập Hiệu Quả</h2>
+<p><strong>Rules:</strong></p>
+<ol>
+<li><strong>Không Google ngay</strong> - Thử think 15 phút trước</li>
+<li><strong>Vẽ ra giấy/whiteboard</strong> - Drawing forces clarity</li>
+<li><strong>Explain cho người khác</strong> - Hoặc rubber duck</li>
+<li><strong>Compare với solution</strong> - Sau khi làm xong</li>
+<li><strong>Iterate</strong> - Làm lại với approach khác</li>
+</ol>
+<p><strong>Mindset:</strong></p>
+<p>Không có &quot;đúng/sai&quot; absolute. Chỉ có &quot;fit/không fit&quot; với context.</p>
+<p>Nếu bạn có reasoning tốt cho decisions, đó là good design.</p>
+<h2 id="bài-1-phân-tích-hệ-thống-thực-tế">Bài 1: Phân Tích Hệ Thống Thực Tế</h2>
+<h3 id="mục-tiêu">Mục Tiêu</h3>
+<p>Develop system-level thinking bằng cách reverse engineer một app bạn dùng hàng ngày.</p>
+<h3 id="đề-bài">Đề Bài</h3>
+<p>Chọn <strong>1 app</strong> bạn hay dùng:</p>
+<ul>
+<li>Facebook</li>
+<li>Instagram</li>
+<li>Shopee</li>
+<li>Grab</li>
+<li>TikTok</li>
+</ul>
+<p><strong>Nhiệm vụ:</strong></p>
+<h4 id="part-a-vẽ-sơ-đồ-components">Part A: Vẽ Sơ Đồ Components</h4>
+<p>Identify và vẽ:</p>
+<pre><code>1. Client (web/mobile app)
+2. Load balancer(s)
+3. Application servers
+4. Cache layer(s)
+5. Database(s)
+6. CDN (nếu có)
+7. Message queues (nếu có)
+</code></pre>
+<p><strong>Example structure:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    Client[Mobile App]
+    CDN[CDN Static Assets]
+    LB[Load Balancer]
+    API1[API Server 1]
+    API2[API Server 2]
+    Cache[Redis Cache]
+    DB[(Database)]
+    Queue[Message Queue]
+    Worker[Background Workers]
+    
+    Client --&gt; CDN
+    Client --&gt; LB
+    LB --&gt; API1
+    LB --&gt; API2
+    API1 --&gt; Cache
+    API2 --&gt; Cache
+    Cache --&gt; DB
+    API1 --&gt; Queue
+    Queue --&gt; Worker
+    Worker --&gt; DB</code></pre>
+<p><strong>Tips:</strong></p>
+<p>Hãy suy luận dựa trên:</p>
+<ul>
+<li><strong>Scale</strong> - Bao nhiêu users? → Cần cache, LB, multiple servers</li>
+<li><strong>Features</strong> - Real-time chat? → WebSocket servers, message queue</li>
+<li><strong>Performance</strong> - Load nhanh? → CDN, aggressive caching</li>
+</ul>
+<h4 id="part-b-trace-data-flow">Part B: Trace Data Flow</h4>
+<p>Pick <strong>1 user action</strong> và trace từ đầu đến cuối.</p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li><strong>Instagram:</strong> User posts a photo</li>
+<li><strong>Shopee:</strong> User places an order</li>
+<li><strong>Grab:</strong> User books a ride</li>
+</ul>
+<p><strong>Format:</strong></p>
+<pre><code>1. User action: [Describe]
+
+2. Request flow:
+   Client → Component A → Component B → Component C
+
+3. Data transformations:
+   - At Component A: [What happens]
+   - At Component B: [What happens]
+   - At Component C: [What happens]
+
+4. Response flow:
+   Component C → Component B → Component A → Client
+
+5. Async processes (if any):
+   - Background job X
+   - Notification Y
+</code></pre>
+<p><strong>Example: Instagram Post Photo</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant U as User
+    participant CDN as CDN
+    participant LB as Load Balancer
+    participant API as API Server
+    participant Q as Message Queue
+    participant W as Workers
+    participant DB as Database
+    participant Cache as Redis
+    
+    U-&gt;&gt;CDN: Upload image
+    CDN--&gt;&gt;U: Return image URL
+    U-&gt;&gt;LB: POST /api/posts {image_url, caption}
+    LB-&gt;&gt;API: Forward request
+    API-&gt;&gt;DB: Save post metadata
+    API-&gt;&gt;Q: Add job: generate_thumbnail
+    API-&gt;&gt;Q: Add job: fanout_to_followers
+    API--&gt;&gt;U: Success (200ms)
+    
+    Q-&gt;&gt;W: Worker picks job
+    W-&gt;&gt;CDN: Download image
+    W-&gt;&gt;W: Generate thumbnail
+    W-&gt;&gt;CDN: Upload thumbnail
+    W-&gt;&gt;DB: Update post with thumbnail
+    
+    Q-&gt;&gt;W: Fanout worker
+    W-&gt;&gt;DB: Get follower IDs
+    W-&gt;&gt;Cache: Write to each follower&#x27;s feed cache</code></pre>
+<p><strong>Analysis:</strong></p>
+<pre><code>Sync part (200ms):
+- Upload image to CDN
+- Save post metadata
+- Add jobs to queue
+- Return success
+
+Async part (1-2 minutes):
+- Generate thumbnails
+- Distribute to followers&#x27; feeds
+- Send notifications
+
+Why async? 
+- User doesn&#x27;t need to wait for thumbnail
+- Followers don&#x27;t need instant update
+- Can handle millions of followers
+</code></pre>
+<h4 id="part-c-dự-đoán-bottlenecks">Part C: Dự Đoán Bottlenecks</h4>
+<p>Based on sơ đồ của bạn, identify:</p>
+<p><strong>1. Current bottleneck (at normal load):</strong></p>
+<pre><code>Component: [?]
+Reason: [Why is this slow?]
+Evidence: [How do you know?]
+</code></pre>
+<p><strong>2. Future bottleneck (at 10x scale):</strong></p>
+<pre><code>Component: [?]
+Reason: [What will break first?]
+Impact: [What happens when it breaks?]
+</code></pre>
+<p><strong>3. Solutions:</strong></p>
+<pre><code>Short-term: [Quick fix]
+Long-term: [Proper solution]
+Trade-offs: [What do we sacrifice?]
+</code></pre>
+<h3 id="giải-mẫu-tham-khảo">Giải Mẫu Tham Khảo</h3>
+<p><strong>Example: Shopee - User Places Order</strong></p>
+<p><strong>Components:</strong></p>
+<pre><code>Client: Mobile app
+CDN: Product images, static assets
+Load Balancer: Distribute traffic
+API Servers: Order processing (10+ servers)
+Cache: Redis (product info, inventory)
+Databases:
+  - Product DB (read replicas)
+  - Order DB (master-slave)
+  - User DB (master-slave)
+Message Queue: RabbitMQ
+Workers: Payment processing, notification
+</code></pre>
+<p><strong>Data Flow:</strong></p>
+<pre><code>1. User clicks &quot;Place Order&quot;
+
+2. Request:
+   App → LB → API Server
+
+3. API Server:
+   - Validate cart items (from cache)
+   - Check inventory (Redis)
+   - Create order (Order DB)
+   - Reserve inventory (decrease count)
+   - Add to payment queue
+   - Return order_id
+
+4. Response:
+   API → LB → App (show &quot;Processing...&quot;)
+
+5. Async:
+   - Payment worker charges card
+   - If success: Update order status
+   - If fail: Release inventory, notify user
+   - Notification worker sends email/SMS
+</code></pre>
+<p><strong>Bottlenecks:</strong></p>
+<pre><code>Current:
+- Inventory check (Redis)
+- Many concurrent users checking same products
+- Solution: Optimistic locking
+
+At 10x scale:
+- Order DB writes (master bottleneck)
+- Solution: Shard by user_id or order_id
+- Trade-off: Cross-shard queries harder
+</code></pre>
+<h3 id="self-check">Self-Check</h3>
+<p>Bạn pass bài này khi:</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Diagram có ít nhất 5 components rõ ràng</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Data flow logical và complete</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Bottleneck predictions có reasoning</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Solutions có trade-off analysis</li>
+</ul>
+<h2 id="bài-2-design-url-shortener-bitly">Bài 2: Design URL Shortener (bit.ly)</h2>
+<h3 id="mục-tiêu-1">Mục Tiêu</h3>
+<p>Thiết kế một hệ thống hoàn chỉnh từ requirements đến implementation details.</p>
+<h3 id="requirements">Requirements</h3>
+<p><strong>Functional:</strong></p>
+<ul>
+<li>User submits long URL → System returns short URL</li>
+<li>User clicks short URL → Redirect to original URL</li>
+<li>Custom short URLs (optional)</li>
+</ul>
+<p><strong>Non-functional:</strong></p>
+<ul>
+<li><strong>Write:</strong> 1 million URLs shortened/day</li>
+<li><strong>Read:</strong> 100 million redirects/day</li>
+<li><strong>Latency:</strong> &lt; 10ms for redirects</li>
+<li><strong>Availability:</strong> 99.9%</li>
+</ul>
+<h3 id="part-a-capacity-estimation">Part A: Capacity Estimation</h3>
+<p>Calculate để understand scale.</p>
+<p><strong>Write (Shorten):</strong></p>
+<pre><code>1M URLs/day
+= 1M / (24 * 3600) 
+≈ 12 URLs/second
+
+Peak (3x average): 36 URLs/second
+
+Conclusion: Write is light, easy to handle
+</code></pre>
+<p><strong>Read (Redirect):</strong></p>
+<pre><code>100M redirects/day
+= 100M / (24 * 3600)
+≈ 1,157 requests/second
+
+Peak (3x): ~3,500 requests/second
+
+Conclusion: Read-heavy (100:1 ratio) → Cache-friendly
+</code></pre>
+<p><strong>Storage:</strong></p>
+<pre><code>1 URL mapping ≈ 500 bytes
+1M URLs/day * 365 days * 5 years = 1.825B URLs
+1.825B * 500 bytes ≈ 912 GB ≈ 1 TB
+
+Conclusion: Storage không phải vấn đề
+</code></pre>
+<h3 id="part-b-api-design">Part B: API Design</h3>
+<p>Define clear interfaces.</p>
+<pre><code>POST /api/shorten
+Request:
+{
+  &quot;long_url&quot;: &quot;https://example.com/very/long/url&quot;,
+  &quot;custom_alias&quot;: &quot;mylink&quot; (optional)
+}
+
+Response:
+{
+  &quot;short_url&quot;: &quot;https://short.ly/abc123&quot;,
+  &quot;long_url&quot;: &quot;https://example.com/very/long/url&quot;,
+  &quot;created_at&quot;: &quot;2024-01-15T10:30:00Z&quot;
+}
+
+---
+
+GET /{short_code}
+Response: 302 Redirect to long_url
+</code></pre>
+<h3 id="part-c-core-problem---generate-short-code">Part C: Core Problem - Generate Short Code</h3>
+<p><strong>Challenge:</strong> Convert long URL → short unique code</p>
+<p><strong>Option 1: Hash-based</strong></p>
+<pre><code class="language-python">import hashlib
+
+def generate_short_code(long_url):
+    hash_value = hashlib.md5(long_url.encode()).hexdigest()
+    short_code = hash_value[:7]  # Take first 7 chars
+    return short_code
+
+# Example:
+# &quot;https://example.com/long/url&quot; → &quot;a3f8c2b&quot;
+</code></pre>
+<p><strong>Analysis:</strong></p>
+<pre><code>Deterministic (same URL → same code)
+Collision possible
+Need to check DB for duplicates
+Predictable (security issue)
+</code></pre>
+<p><strong>Option 2: Auto-increment + Base62 Encode</strong></p>
+<pre><code class="language-python">BASE62 = &quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;
+
+def encode_base62(num):
+    if num == 0:
+        return BASE62[0]
+    
+    result = []
+    while num:
+        result.append(BASE62[num % 62])
+        num //= 62
+    return &#x27;&#x27;.join(reversed(result))
+
+# Example:
+# ID 1 → &quot;1&quot;
+# ID 62 → &quot;10&quot; 
+# ID 1000000 → &quot;4c92&quot;
+</code></pre>
+<p><strong>Length calculation:</strong></p>
+<pre><code>62^6 = 56 billion combinations
+62^7 = 3.5 trillion combinations
+
+With 6 characters: 56B URLs (enough!)
+</code></pre>
+<p><strong>Analysis:</strong></p>
+<pre><code>No collision (unique ID)
+Short codes (6-7 chars)
+Predictable order (can be feature or bug)
+Sequential (might reveal volume)
+</code></pre>
+<p><strong>Recommendation:</strong> Use Option 2 (Base62) cho simplicity và reliability.</p>
+<h3 id="part-d-database-schema">Part D: Database Schema</h3>
+<pre><code class="language-sql">CREATE TABLE urls (
+    id BIGSERIAL PRIMARY KEY,
+    short_code VARCHAR(10) UNIQUE NOT NULL,
+    long_url TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    expires_at TIMESTAMP,
+    user_id BIGINT,
+    click_count INT DEFAULT 0,
+    
+    INDEX idx_short_code (short_code),
+    INDEX idx_user_id (user_id)
+);
+
+CREATE TABLE clicks (
+    id BIGSERIAL PRIMARY KEY,
+    short_code VARCHAR(10) NOT NULL,
+    clicked_at TIMESTAMP DEFAULT NOW(),
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    referer TEXT,
+    country VARCHAR(2),
+    
+    INDEX idx_short_code (short_code),
+    INDEX idx_clicked_at (clicked_at)
+);
+</code></pre>
+<p><strong>Why this design:</strong></p>
+<ul>
+<li><strong>urls:</strong> Core data, need fast lookup by short_code</li>
+<li><strong>clicks:</strong> Analytics data, can be separate (won&#x27;t slow down redirects)</li>
+<li><strong>Indexes:</strong> Critical for performance</li>
+<li><strong>click_count:</strong> Denormalized for quick display</li>
+</ul>
+<h3 id="part-e-architecture-design">Part E: Architecture Design</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    User[Users]
+    DNS[DNS/CDN]
+    LB[Load Balancer]
+    API1[API Server 1]
+    API2[API Server 2]
+    API3[API Server 3]
+    Cache[(Redis Cache)]
+    DB[(PostgreSQL)]
+    Analytics[Analytics Queue]
+    Worker[Analytics Workers]
+    
+    User --&gt; DNS
+    DNS --&gt; LB
+    LB --&gt; API1
+    LB --&gt; API2
+    LB --&gt; API3
+    
+    API1 --&gt; Cache
+    API2 --&gt; Cache
+    API3 --&gt; Cache
+    
+    Cache -.-&gt;|Cache miss| DB
+    
+    API1 --&gt; Analytics
+    Analytics --&gt; Worker
+    Worker --&gt; DB</code></pre>
+<p><strong>Flow: Shorten URL</strong></p>
+<pre><code>1. User → POST /api/shorten
+2. API Server:
+   - Generate ID (auto-increment)
+   - Encode to Base62
+   - Save to DB
+   - Return short URL
+3. Time: ~50ms
+</code></pre>
+<p><strong>Flow: Redirect</strong></p>
+<pre><code>1. User → GET /abc123
+2. API Server:
+   - Check Redis cache
+   - If hit: Return long_url (5ms)
+   - If miss: Query DB → Cache result → Return (50ms)
+3. Log click event (async, don&#x27;t wait)
+4. 302 Redirect
+</code></pre>
+<p><strong>Caching Strategy:</strong></p>
+<pre><code class="language-python">def redirect(short_code):
+    # 1. Try cache
+    long_url = cache.get(f&quot;url:{short_code}&quot;)
+    if long_url:
+        # Log async (fire and forget)
+        analytics_queue.add({
+            &quot;short_code&quot;: short_code,
+            &quot;timestamp&quot;: now(),
+            &quot;ip&quot;: request.ip
+        })
+        return redirect_response(long_url)
+    
+    # 2. Cache miss → DB
+    url_obj = db.query(
+        &quot;SELECT long_url FROM urls WHERE short_code = ?&quot;,
+        short_code
+    )
+    
+    if not url_obj:
+        return 404
+    
+    # 3. Cache for next time
+    cache.set(
+        f&quot;url:{short_code}&quot;,
+        url_obj.long_url,
+        ttl=86400  # 24 hours
+    )
+    
+    # 4. Log async
+    analytics_queue.add({...})
+    
+    return redirect_response(url_obj.long_url)
+</code></pre>
+<h3 id="part-f-scale-to-100m-clicksday">Part F: Scale to 100M Clicks/Day</h3>
+<p><strong>Problem:</strong></p>
+<pre><code>100M clicks/day = 1,157 req/s (avg)
+Peak: 3,500 req/s
+
+Challenges:
+1. Database read load
+2. Cache capacity
+3. Analytics writes
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<p><strong>1. Database Reads:</strong></p>
+<pre><code>Problem: 3,500 req/s * 50ms = 175 concurrent queries
+
+Solution A: Add read replicas (3 slaves)
+- Distribute reads across replicas
+- Each handles ~1,200 req/s → Easy
+
+Solution B: Aggressive caching (99% hit rate)
+- Only 1% goes to DB = 35 req/s
+- Very manageable
+</code></pre>
+<p><strong>2. Cache Strategy:</strong></p>
+<pre><code>Cache hot URLs:
+- 80/20 rule: 20% URLs get 80% traffic
+- Cache top 1M URLs
+- Memory: 1M * 500 bytes = 500 MB
+- Cheap, fast
+
+LRU eviction:
+- Auto-remove least recently used
+- Always keep hot data
+</code></pre>
+<p><strong>3. Analytics:</strong></p>
+<pre><code>Problem: 3,500 writes/second to clicks table
+
+Solution: Async queue + batch writes
+- Buffer clicks in queue
+- Worker batch insert every 10 seconds
+- Reduces DB writes by 10x
+
+Trade-off: Analytics delayed by ~10s (acceptable)
+</code></pre>
+<p><strong>Final Architecture:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    Users[Users Worldwide]
+    GeoDNS[GeoDNS]
+    CDN1[CDN - US Region]
+    CDN2[CDN - Asia Region]
+    
+    LB1[Load Balancer US]
+    LB2[Load Balancer Asia]
+    
+    API1[API Servers US]
+    API2[API Servers Asia]
+    
+    Cache1[(Redis US)]
+    Cache2[(Redis Asia)]
+    
+    DB_Master[(DB Master)]
+    DB_Slave1[(DB Slave 1)]
+    DB_Slave2[(DB Slave 2)]
+    
+    Queue[Analytics Queue]
+    Workers[Batch Workers]
+    
+    Users --&gt; GeoDNS
+    GeoDNS --&gt;|US traffic| CDN1
+    GeoDNS --&gt;|Asia traffic| CDN2
+    
+    CDN1 --&gt; LB1
+    CDN2 --&gt; LB2
+    
+    LB1 --&gt; API1
+    LB2 --&gt; API2
+    
+    API1 --&gt; Cache1
+    API2 --&gt; Cache2
+    
+    Cache1 -.-&gt;|Miss| DB_Slave1
+    Cache2 -.-&gt;|Miss| DB_Slave2
+    
+    API1 --&gt; Queue
+    API2 --&gt; Queue
+    Queue --&gt; Workers
+    Workers --&gt; DB_Master
+    
+    DB_Master -.-&gt;|Replicate| DB_Slave1
+    DB_Master -.-&gt;|Replicate| DB_Slave2</code></pre>
+<p><strong>Why this works:</strong></p>
+<ul>
+<li><strong>GeoDNS:</strong> Route users to nearest region → Low latency</li>
+<li><strong>CDN:</strong> Cache redirects at edge → Ultra fast</li>
+<li><strong>Multiple regions:</strong> High availability</li>
+<li><strong>Redis cache:</strong> 99% hit rate → Minimal DB load</li>
+<li><strong>Read replicas:</strong> Scale reads easily</li>
+<li><strong>Async analytics:</strong> Don&#x27;t slow down redirects</li>
+</ul>
+<h3 id="self-check-1">Self-Check</h3>
+<p>Bạn pass bài này khi:</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Capacity estimation có calculations rõ ràng</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->API design clean và RESTful</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Database schema có indexes đúng chỗ</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Architecture handle được scale requirements</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Có explain trade-offs của decisions</li>
+</ul>
+<h2 id="bài-3-trade-off-analysis---user-upload-avatar">Bài 3: Trade-off Analysis - User Upload Avatar</h2>
+<h3 id="mục-tiêu-2">Mục Tiêu</h3>
+<p>Practice so sánh approaches và make informed decisions.</p>
+<h3 id="context">Context</h3>
+<p>Feature: User uploads avatar (profile picture)</p>
+<p><strong>Processing needed:</strong></p>
+<ul>
+<li>Validate image (format, size)</li>
+<li>Resize to multiple sizes (thumbnail, medium, large)</li>
+<li>Upload to S3</li>
+<li>Update user record</li>
+</ul>
+<h3 id="approach-a-synchronous">Approach A: Synchronous</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant U as User
+    participant API as API Server
+    participant S3 as AWS S3
+    participant DB as Database
+    
+    U-&gt;&gt;API: Upload image
+    API-&gt;&gt;API: Validate (500ms)
+    API-&gt;&gt;API: Resize 3 sizes (2s)
+    API-&gt;&gt;S3: Upload originals (1s)
+    API-&gt;&gt;S3: Upload resized (1s)
+    API-&gt;&gt;DB: Update user record (100ms)
+    API--&gt;&gt;U: Success (4.6s total)</code></pre>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-python">@app.route(&#x27;/upload-avatar&#x27;, methods=[&#x27;POST&#x27;])
+def upload_avatar_sync():
+    # 1. Validate
+    if not is_valid_image(request.file):
+        return error(400, &quot;Invalid image&quot;)
+    
+    # 2. Resize
+    thumbnail = resize(request.file, 100, 100)
+    medium = resize(request.file, 300, 300)
+    large = resize(request.file, 600, 600)
+    
+    # 3. Upload to S3
+    original_url = s3.upload(request.file)
+    thumbnail_url = s3.upload(thumbnail)
+    medium_url = s3.upload(medium)
+    large_url = s3.upload(large)
+    
+    # 4. Update DB
+    db.update_user(user_id, {
+        &#x27;avatar_original&#x27;: original_url,
+        &#x27;avatar_thumbnail&#x27;: thumbnail_url,
+        &#x27;avatar_medium&#x27;: medium_url,
+        &#x27;avatar_large&#x27;: large_url
+    })
+    
+    # 5. Return
+    return success({
+        &#x27;avatar_url&#x27;: thumbnail_url
+    })
+    
+# User waits 4.6 seconds
+</code></pre>
+<h3 id="approach-b-asynchronous">Approach B: Asynchronous</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant U as User
+    participant API as API Server
+    participant S3 as AWS S3
+    participant Q as Message Queue
+    participant W as Worker
+    participant DB as Database
+    
+    U-&gt;&gt;API: Upload image
+    API-&gt;&gt;API: Validate (500ms)
+    API-&gt;&gt;S3: Upload original (1s)
+    API-&gt;&gt;DB: Save temp URL (100ms)
+    API-&gt;&gt;Q: Add resize job
+    API--&gt;&gt;U: Success (1.6s)
+    
+    Note over U: User sees upload success
+    
+    Q-&gt;&gt;W: Worker picks job
+    W-&gt;&gt;S3: Download original
+    W-&gt;&gt;W: Resize 3 sizes (2s)
+    W-&gt;&gt;S3: Upload resized (1s)
+    W-&gt;&gt;DB: Update final URLs (100ms)
+    
+    Note over U: Avatar appears after ~5s</code></pre>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-python">@app.route(&#x27;/upload-avatar&#x27;, methods=[&#x27;POST&#x27;])
+def upload_avatar_async():
+    # 1. Quick validation
+    if not is_valid_image(request.file):
+        return error(400, &quot;Invalid image&quot;)
+    
+    # 2. Upload original only
+    original_url = s3.upload(request.file)
+    
+    # 3. Save temp state
+    db.update_user(user_id, {
+        &#x27;avatar_original&#x27;: original_url,
+        &#x27;avatar_status&#x27;: &#x27;processing&#x27;
+    })
+    
+    # 4. Queue background job
+    queue.add_job(&#x27;resize_avatar&#x27;, {
+        &#x27;user_id&#x27;: user_id,
+        &#x27;original_url&#x27;: original_url
+    })
+    
+    # 5. Return immediately
+    return success({
+        &#x27;avatar_url&#x27;: original_url,
+        &#x27;status&#x27;: &#x27;processing&#x27;
+    })
+
+# User waits 1.6 seconds
+
+# Background worker (separate process)
+def resize_avatar_worker(job):
+    # Download
+    image = s3.download(job[&#x27;original_url&#x27;])
+    
+    # Resize
+    thumbnail = resize(image, 100, 100)
+    medium = resize(image, 300, 300)
+    large = resize(image, 600, 600)
+    
+    # Upload
+    thumbnail_url = s3.upload(thumbnail)
+    medium_url = s3.upload(medium)
+    large_url = s3.upload(large)
+    
+    # Update DB
+    db.update_user(job[&#x27;user_id&#x27;], {
+        &#x27;avatar_thumbnail&#x27;: thumbnail_url,
+        &#x27;avatar_medium&#x27;: medium_url,
+        &#x27;avatar_large&#x27;: large_url,
+        &#x27;avatar_status&#x27;: &#x27;completed&#x27;
+    })
+</code></pre>
+<h3 id="part-a-comparative-analysis">Part A: Comparative Analysis</h3>
+<p><strong>Latency:</strong></p>
+<pre><code>Synchronous:
+- User waits: 4.6 seconds
+- Perceived speed: Slow
+- Timeout risk: High (if &gt; 30s)
+
+Asynchronous:
+- User waits: 1.6 seconds (65% faster)
+- Perceived speed: Fast
+- Timeout risk: Low
+</code></pre>
+<p><strong>User Experience:</strong></p>
+<pre><code>Synchronous:
+Immediate result
+Simple UX (upload → done)
+Long wait time
+Progress bar needed
+User can&#x27;t do anything else
+
+Asynchronous:
+Fast feedback
+Can continue using app
+Delayed result
+Need to show &quot;processing&quot; state
+Need to handle refresh (state persistence)
+</code></pre>
+<p><strong>Complexity:</strong></p>
+<pre><code>Synchronous:
+Simple code
+Easy to debug
+No infrastructure needed
+Hard to scale (blocks server thread)
+
+Asynchronous:
+Scalable (handle traffic spikes)
+Server threads freed up
+More complex code
+Need message queue infrastructure
+Error handling harder (retry logic)
+Need monitoring
+</code></pre>
+<p><strong>Error Handling:</strong></p>
+<pre><code>Synchronous:
+- Error → Return to user immediately
+- User can retry
+- Simple rollback
+
+Asynchronous:
+- Error → User already got success response
+- Need notification system
+- Complex retry logic
+- Partial state handling
+</code></pre>
+<h3 id="part-b-decision-framework">Part B: Decision Framework</h3>
+<p><strong>Choose Synchronous when:</strong></p>
+<pre><code>Processing is fast (&lt; 2 seconds)
+User needs immediate confirmation
+Simple use case
+Low traffic
+Team small (can&#x27;t maintain complex infrastructure)
+
+Examples:
+- Form submission
+- Simple CRUD operations
+- User login
+</code></pre>
+<p><strong>Choose Asynchronous when:</strong></p>
+<pre><code>Processing is slow (&gt; 3 seconds)
+User can wait for result
+High traffic (need to handle spikes)
+Multiple expensive operations
+Can tolerate eventual consistency
+
+Examples:
+- File uploads with processing
+- Report generation
+- Email sending
+- Video transcoding
+- Data import/export
+</code></pre>
+<h3 id="part-c-hybrid-approach-best-of-both-worlds">Part C: Hybrid Approach (Best of Both Worlds)</h3>
+<p><strong>Strategy: Quick sync + Deep async</strong></p>
+<pre><code class="language-python">@app.route(&#x27;/upload-avatar&#x27;, methods=[&#x27;POST&#x27;])
+def upload_avatar_hybrid():
+    # SYNC: Fast operations
+    if not is_valid_image(request.file):
+        return error(400)
+    
+    original_url = s3.upload(request.file)
+    
+    # Generate quick thumbnail (500ms)
+    quick_thumb = resize_fast(request.file, 100, 100)
+    thumb_url = s3.upload(quick_thumb)
+    
+    # Update with quick thumbnail
+    db.update_user(user_id, {
+        &#x27;avatar_thumbnail&#x27;: thumb_url,
+        &#x27;avatar_status&#x27;: &#x27;processing&#x27;
+    })
+    
+    # ASYNC: Quality resizes
+    queue.add_job(&#x27;resize_hq_avatar&#x27;, {
+        &#x27;user_id&#x27;: user_id,
+        &#x27;original_url&#x27;: original_url
+    })
+    
+    return success({
+        &#x27;avatar_url&#x27;: thumb_url,
+        &#x27;status&#x27;: &#x27;processing&#x27;
+    })
+
+# User sees low-quality avatar immediately
+# High-quality versions replace after few seconds
+</code></pre>
+<p><strong>Why this is often best:</strong></p>
+<pre><code>Fast user feedback (2s)
+Something to show immediately
+Better quality eventually
+Handles traffic spikes
+More complex implementation
+</code></pre>
+<h3 id="part-d-real-world-example">Part D: Real-World Example</h3>
+<p><strong>What does Facebook/Instagram do?</strong></p>
+<p><strong>Instagram approach:</strong></p>
+<pre><code>1. User uploads photo
+2. Instant upload to CDN (original)
+3. Show original immediately (may be large)
+4. Background: Process filters, generate sizes
+5. Swap to processed version when ready
+6. User sees progress: &quot;Processing...&quot; → Done
+
+Why?
+- 1B+ users → Must be async
+- User engagement &gt; Perfect quality
+- Can&#x27;t make user wait 10 seconds
+</code></pre>
+<p><strong>Key insight:</strong> User experience &gt; Technical perfection.</p>
+<h3 id="self-check-2">Self-Check</h3>
+<p>Bạn pass bài này khi:</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->So sánh được latency của 2 approaches</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Explain UX differences clearly</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Understand complexity trade-offs</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Có decision framework rõ ràng</li>
+<li class="task-list-item"><input type="checkbox" disabled=""/> <!-- -->Can propose hybrid approach</li>
+</ul>
+<h2 id="checklist-tổng-hợp-phase-1">Checklist Tổng Hợp Phase 1</h2>
+<p>Sau khi hoàn thành 3 bài tập, đánh giá bản thân:</p>
+<h3 id="core-understanding">Core Understanding</h3>
+<ul class="contains-task-list">
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi có thể vẽ architecture diagram</strong> của bất kỳ app nào tôi dùng</p>
+<ul>
+<li>Test: Chọn 1 app random, vẽ trong 10 phút</li>
+</ul>
+</li>
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi hiểu bottleneck và cách tìm</strong></p>
+<ul>
+<li>Test: Given diagram, identify bottleneck và explain why</li>
+</ul>
+</li>
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi có thể trace data flow</strong> từ client đến database</p>
+<ul>
+<li>Test: Explain flow của 1 user action bất kỳ</li>
+</ul>
+</li>
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi hiểu sync vs async trade-offs</strong></p>
+<ul>
+<li>Test: Given feature, choose approach và defend decision</li>
+</ul>
+</li>
+</ul>
+<h3 id="practical-skills">Practical Skills</h3>
+<ul class="contains-task-list">
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi có thể estimate capacity</strong></p>
+<ul>
+<li>Test: Calculate QPS, storage cho requirements</li>
+</ul>
+</li>
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi có thể design API</strong></p>
+<ul>
+<li>Test: Define endpoints cho 1 feature</li>
+</ul>
+</li>
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi có thể design database schema</strong></p>
+<ul>
+<li>Test: Create tables với proper indexes</li>
+</ul>
+</li>
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi biết khi nào cần cache</strong></p>
+<ul>
+<li>Test: Identify cacheable data và TTL strategy</li>
+</ul>
+</li>
+</ul>
+<h3 id="concept-mastery">Concept Mastery</h3>
+<ul class="contains-task-list">
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi hiểu Latency vs Throughput</strong></p>
+<ul>
+<li>Test: Explain difference với real example</li>
+</ul>
+</li>
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi hiểu Availability tính toán</strong></p>
+<ul>
+<li>Test: Calculate downtime cho 99.9% vs 99.99%</li>
+</ul>
+</li>
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi hiểu CAP theorem</strong> ở mức basic</p>
+<ul>
+<li>Test: Given system, identify CA, CP, or AP</li>
+</ul>
+</li>
+<li class="task-list-item">
+<p><input type="checkbox" disabled=""/> <strong>Tôi có thể analyze trade-offs</strong></p>
+<ul>
+<li>Test: Compare 2 approaches với pros/cons</li>
+</ul>
+</li>
+</ul>
+<h3 id="scoring">Scoring</h3>
+<pre><code>10-12 checked: Excellent - Ready for Phase 2 ✅
+7-9 checked: Good - Review weak areas, then move on
+4-6 checked: Need more practice - Redo exercises
+0-3 checked: Review Phase 1 content again
+</code></pre>
+<p><strong>Honest self-assessment is critical.</strong> Don&#x27;t rush.</p>
+<h2 id="common-mistakes--how-to-fix">Common Mistakes &amp; How to Fix</h2>
+<h3 id="mistake-1-over-engineering">Mistake 1: Over-Engineering</h3>
+<p><strong>Symptom:</strong></p>
+<pre><code>Bài URL shortener:
+- Kubernetes cluster
+- Microservices (5 services)
+- Event sourcing
+- CQRS
+- Service mesh
+
+For 1M URLs/day → Overkill!
+</code></pre>
+<p><strong>Fix:</strong> Start simple. Prove need before adding complexity.</p>
+<h3 id="mistake-2-under-specifying">Mistake 2: Under-Specifying</h3>
+<p><strong>Symptom:</strong></p>
+<pre><code>&quot;Dùng database&quot;
+- SQL hay NoSQL?
+- Schema như thế nào?
+- Indexes ở đâu?
+</code></pre>
+<p><strong>Fix:</strong> Be specific. Justify choices.</p>
+<h3 id="mistake-3-ignoring-numbers">Mistake 3: Ignoring Numbers</h3>
+<p><strong>Symptom:</strong></p>
+<pre><code>&quot;Cần cache vì performance&quot;
+- Không tính QPS
+- Không estimate hit rate
+- Không tính memory needed
+</code></pre>
+<p><strong>Fix:</strong> Always calculate. Numbers inform decisions.</p>
+<h3 id="mistake-4-no-trade-off-analysis">Mistake 4: No Trade-off Analysis</h3>
+<p><strong>Symptom:</strong></p>
+<pre><code>&quot;Dùng approach A&quot;
+- Không mention downsides
+- Không compare với alternatives
+</code></pre>
+<p><strong>Fix:</strong> Every decision có trade-offs. State them.</p>
+<h2 id="next-steps">Next Steps</h2>
+<p><strong>Nếu pass checklist:</strong></p>
+<p>🎉 Congratulations! Bạn đã complete Phase 1.</p>
+<p><strong>Phase 2: Core Building Blocks</strong> đang đợi bạn:</p>
+<ul>
+<li>Deep dive vào Cache strategies</li>
+<li>Database scaling patterns</li>
+<li>Message queues</li>
+<li>And more...</li>
+</ul>
+<p><strong>Nếu chưa pass:</strong></p>
+<p>Đừng rush. System design không phải race.</p>
+<p><strong>Recommendations:</strong></p>
+<ol>
+<li>Review Phase 1 lessons</li>
+<li>Redo exercises với approach khác</li>
+<li>Explain concepts cho người khác</li>
+<li>Practice with more real apps</li>
+<li>Revisit checklist sau 1 tuần</li>
+</ol>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Practice &gt; Theory</strong></p>
+<p>Bạn có thể đọc 100 cuốn sách về system design, nhưng không practice thì vẫn không design được.</p>
+<p><strong>Think, Don&#x27;t Memorize</strong></p>
+<p>Không có template cố định. Mỗi system khác nhau. Học cách think, không phải remember solutions.</p>
+<p><strong>Trade-offs Everywhere</strong></p>
+<p>Mọi decision có trade-offs. Good architect là người:</p>
+<ul>
+<li>Hiểu trade-offs</li>
+<li>Choose based on context</li>
+<li>Can defend decisions</li>
+</ul>
+<p><strong>Start Simple, Iterate</strong></p>
+<p>Best designs thường evolve từ simple designs. Don&#x27;t over-engineer từ đầu.</p>
+<p><strong>Numbers Matter</strong></p>
+<p>Capacity estimation, QPS calculation, storage sizing - Không phải decoration. Chúng inform critical decisions.</p>
+<hr/>
+<p>Hãy dành thời gian với 3 bài tập này. Làm kỹ. Hiểu sâu.</p>
+<p>Foundation vững = Everything sau dễ hơn.</p>
+<p>Good luck! 🚀</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem</a></div><a class="inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-between bg-gradient-to-r from-brand to-[#5f7dff] px-6 shadow-[0_16px_34px_rgba(47,107,255,0.35)] hover:from-[#2659d6] hover:to-[#4f69dc]" href="/phase/phase-2"><span class="inline-flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-5 w-5"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Đi tới <!-- -->Phase 2 — Core Building Blocks</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-5 w-5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-1\",\"lesson\",\"lesson-5-bai-tap-tong-hop\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-1\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-5-bai-tap-tong-hop\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 1 — Foundation: Thinking in Systems\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade-off analysis. Củng cố kiến thức Phase 1 với checklist tự đánh giá chi tiết.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-components-trong-he-thong-web\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block\"}]]}]}],[\"$\",\"li\",\"lesson-2-communication-patterns\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-2-communication-patterns\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Communication Patterns - Sync vs Async trong Distributed Systems\"}]]}]}],[\"$\",\"li\",\"lesson-3-data-flow-and-bottlenecks\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống\"}]]}]}],[\"$\",\"li\",\"lesson-4-cac-khai-niem-quan-trong\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem\"}]]}]}],[\"$\",\"li\",\"lesson-5-bai-tap-tong-hop\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[\"$L24\",\"Tổng quan phase\"]}]]}],\"$L25\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"26:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"25:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1\",\"className\":\"hover:text-ink\",\"children\":\"Phase 1 — Foundation: Thinking in Systems\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade-off analysis. Củng cố kiến thức Phase 1 với checklist tự đánh giá chi tiết.\"}]]}],[\"$\",\"$L26\",null,{\"path\":\"/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop\",\"title\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế\",\"description\":\"Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade-off analysis. Củng cố kiến thức Phase 1 với checklist tự đánh giá chi tiết.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế\",\"children\":\"$L27\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem\"]}],null]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2\",\"className\":\"inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-between bg-gradient-to-r from-brand to-[#5f7dff] px-6 shadow-[0_16px_34px_rgba(47,107,255,0.35)] hover:from-[#2659d6] hover:to-[#4f69dc]\",\"children\":[[\"$\",\"span\",null,{\"className\":\"inline-flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-sparkles h-5 w-5\",\"children\":[[\"$\",\"path\",\"4pj2yx\",{\"d\":\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"}],\"$L28\",\"$L29\",\"$L2a\",\"$L2b\",\"$undefined\"]}],\"Đi tới \",\"Phase 2 — Core Building Blocks\"]}],\"$L2c\"]}],null]}]]}]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"path\",\"1olli1\",{\"d\":\"M20 3v4\"}]\n29:[\"$\",\"path\",\"1gvqau\",{\"d\":\"M22 5h-4\"}]\n2a:[\"$\",\"path\",\"vumght\",{\"d\":\"M4 17v2\"}]\n2b:[\"$\",\"path\",\"zchphs\",{\"d\":\"M5 18H3\"}]\n2c:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-5 w-5\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"2d:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"bài-tập-tổng-hợp-từ-theory-đến-practice\",\"children\":\"Bài Tập Tổng Hợp: Từ Theory Đến Practice\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Chúc mừng bạn đã hoàn thành tất cả lessons trong Phase 1!\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Bạn đã học về components, communication patterns, data flow, và các khái niệm quan trọng như latency, throughput, CAP theorem.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Nhưng có một sự thật mà tôi phải nói thẳng: \",[\"$\",\"strong\",null,{\"children\":\"Đọc hiểu ≠ Làm được.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi từng có một mentee đọc xong tất cả tài liệu, nói \\\"Em hiểu hết rồi!\\\" Nhưng khi tôi cho một bài tập đơn giản: \\\"Thiết kế URL shortener\\\", anh ta ngồi im 20 phút không biết bắt đầu từ đâu.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Why?\"}],\" Vì thiếu practice. Thiếu apply concepts vào real scenarios.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Lesson này sẽ fix điều đó. Ba bài tập được thiết kế để:\"}],\"\\n\",[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Force bạn think như architect\"}],\" (không còn copy-paste solutions)\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Apply tất cả concepts đã học\"}],\" (components, data flow, trade-offs)\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Build confidence\"}],\" (sau khi làm xong, bạn sẽ thấy \\\"Mình làm được đấy!\\\")\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Đừng skip. Đây là phần quan trọng nhất của Phase 1.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"cách-làm-bài-tập-hiệu-quả\",\"children\":\"Cách Làm Bài Tập Hiệu Quả\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rules:\"}]}],\"\\n\",[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Không Google ngay\"}],\" - Thử think 15 phút trước\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Vẽ ra giấy/whiteboard\"}],\" - Drawing forces clarity\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Explain cho người khác\"}],\" - Hoặc rubber duck\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Compare với solution\"}],\" - Sau khi làm xong\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Iterate\"}],\" - Làm lại với approach khác\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mindset:\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Không có \\\"đúng/sai\\\" absolute. Chỉ có \\\"fit/không fit\\\" với context.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Nếu bạn có reasoning tốt cho decisions, đó là good design.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"bài-1-phân-tích-hệ-thống-thực-tế\",\"children\":\"Bài 1: Phân Tích Hệ Thống Thực Tế\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"mục-tiêu\",\"children\":\"Mục Tiêu\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Develop system-level thinking bằng cách reverse engineer một app bạn dùng hàng ngày.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"đề-bài\",\"children\":\"Đề Bài\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Chọn \",[\"$\",\"strong\",null,{\"children\":\"1 app\"}],\" bạn hay dùng:\"]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Facebook\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Instagram\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Shopee\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Grab\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"TikTok\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhiệm vụ:\"}]}],\"\\n\",[\"$\",\"h4\",null,{\"id\":\"part-a-vẽ-sơ-đồ-components\",\"children\":\"Part A: Vẽ Sơ Đồ Components\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Identify và vẽ:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Client (web/mobile app)\\n2. Load balancer(s)\\n3. Application servers\\n4. Cache layer(s)\\n5. Database(s)\\n6. CDN (nếu có)\\n7. Message queues (nếu có)\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example structure:\"}]}],\"\\n\",[\"$\",\"$L2d\",null,{\"chart\":\"flowchart TD\\n    Client[Mobile App]\\n    CDN[CDN Static Assets]\\n    LB[Load Balancer]\\n    API1[API Server 1]\\n    API2[API Server 2]\\n    Cache[Redis Cache]\\n    DB[(Database)]\\n    Queue[Message Queue]\\n    Worker[Background Workers]\\n    \\n    Client --\u003e CDN\\n    Client --\u003e LB\\n    LB --\u003e API1\\n    LB --\u003e API2\\n    API1 --\u003e Cache\\n    API2 --\u003e Cache\\n    Cache --\u003e DB\\n    API1 --\u003e Queue\\n    Queue --\u003e Worker\\n    Worker --\u003e DB\"}],\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\",\"\\n\",\"$Lc9\",\"\\n\",\"$Lca\",\"\\n\",\"$Lcb\",\"\\n\",\"$Lcc\",\"\\n\",\"$Lcd\",\"\\n\",\"$Lce\",\"\\n\",\"$Lcf\",\"\\n\",\"$Ld0\",\"\\n\",\"$Ld1\",\"\\n\",\"$Ld2\",\"\\n\",\"$Ld3\",\"\\n\",\"$Ld4\",\"\\n\",\"$Ld5\",\"\\n\",\"$Ld6\",\"\\n\",\"$Ld7\",\"\\n\",\"$Ld8\",\"\\n\",\"$Ld9\",\"\\n\",\"$Lda\",\"\\n\",\"$Ldb\",\"\\n\",\"$Ldc\",\"\\n\",\"$Ldd\",\"\\n\",\"$Lde\",\"\\n\",\"$Ldf\",\"\\n\",\"$Le0\",\"\\n\",\"$Le1\",\"\\n\",\"$Le2\",\"\\n\",\"$Le3\",\"\\n\",\"$Le4\",\"\\n\",\"$Le5\",\"\\n\",\"$Le6\",\"\\n\",\"$Le7\",\"\\n\",\"$Le8\",\"\\n\",\"$Le9\"]}]\n"])</script><script>self.__next_f.push([1,"2e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tips:\"}]}]\n2f:[\"$\",\"p\",null,{\"children\":\"Hãy suy luận dựa trên:\"}]\n30:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Scale\"}],\" - Bao nhiêu users? → Cần cache, LB, multiple servers\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Features\"}],\" - Real-time chat? → WebSocket servers, message queue\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Performance\"}],\" - Load nhanh? → CDN, aggressive caching\"]}],\"\\n\"]}]\n31:[\"$\",\"h4\",null,{\"id\":\"part-b-trace-data-flow\",\"children\":\"Part B: Trace Data Flow\"}]\n32:[\"$\",\"p\",null,{\"children\":[\"Pick \",[\"$\",\"strong\",null,{\"children\":\"1 user action\"}],\" và trace từ đầu đến cuối.\"]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Examples:\"}]}]\n34:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Instagram:\"}],\" User posts a photo\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Shopee:\"}],\" User places an order\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Grab:\"}],\" User books a ride\"]}],\"\\n\"]}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Format:\"}]}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. User action: [Describe]\\n\\n2. Request flow:\\n   Client → Component A → Component B → Component C\\n\\n3. Data transformations:\\n   - At Component A: [What happens]\\n   - At Component B: [What happens]\\n   - At Component C: [What happens]\\n\\n4. Response flow:\\n   Component C → Component B → Component A → Client\\n\\n5. Async processes (if any):\\n   - Background job X\\n   - Notification Y\\n\"}]}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example: Instagram Post Photo\"}]}]\n38:[\"$\",\"$L2d\",null,{\"chart\":\"sequenceDiagram\\n    participant U as User\\n    participant CDN as CDN\\n    participant LB as Load Balancer\\n    participant API as API Server\\n    participant Q as Message Queue\\n    participant W as Workers\\n    participant DB as Database\\n    participant Cache as Redis\\n    \\n    U-\u003e\u003eCDN: Upload image\\n    CDN--\u003e\u003eU: Return image URL\\n    U-\u003e\u003eLB: POST /api/posts {image_url, caption}\\n    LB-\u003e\u003eAPI: Forward request\\n    API-\u003e\u003eDB: Save post metadata\\n    API-\u003e\u003eQ: Add job: generate_thumbnail\\n    API-\u003e\u003eQ: Add job: fanout_to_followers\\n    API--\u003e\u003eU: Success (200ms)\\n    \\n    Q-\u003e\u003eW: Worker picks job\\n    W-\u003e\u003eCDN: Download image\\n    W-\u003e\u003eW: Generate thumbnail\\n    W-\u003e\u003eCDN: Upload thumbnail\\n    W-\u003e\u003eDB: Update post with thumbnail\\n    \\n    Q-\u003e\u003eW: Fanout worker\\n    W-\u003e\u003eDB: Get follower IDs\\n    W-\u003e\u003eCache: Write to each follower's feed cache\"}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Analysis:\"}]}]\n3a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Sync part (200ms):\\n- Upload image to CDN\\n- Save post metadata\\n- Add jobs to queue\\n- Return success\\n\\nAsync part (1-2 minutes):\\n- Generate thumbnails\\n- Distribute to followers' feeds\\n- Send notifications\\n\\nWhy async? \\n- User doesn't need to wait for thumbnail\\n- Followers don't need instant update\\n- Can handle millions of followers\\n\"}]}]\n3b:[\"$\",\"h4\",null,{\"id\":\"part-c-dự-đoán-bottlenecks\",\"children\":\"Part C: Dự Đoán Bottlenecks\"}]\n3c:[\"$\",\"p\",null,{\"children\":\"Based on sơ đồ của bạn, identify:\"}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Current bottleneck (at normal load):\"}]}]\n3e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Component: [?]\\nReason: [Why is this slow?]\\nEvidence: [How do you know?]\\n\"}]}]\n3f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Future bottleneck (at 10x scale):\"}]}]\n40:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Component: [?]\\nReason: [What will break first?]\\nImpact: [What happens when it breaks?]\\n\"}]}]\n41:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Solutions:\"}]}]\n42:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Short-term: [Quick fix]\\nLong-term: [Proper "])</script><script>self.__next_f.push([1,"solution]\\nTrade-offs: [What do we sacrifice?]\\n\"}]}]\n43:[\"$\",\"h3\",null,{\"id\":\"giải-mẫu-tham-khảo\",\"children\":\"Giải Mẫu Tham Khảo\"}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example: Shopee - User Places Order\"}]}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Components:\"}]}]\n46:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Client: Mobile app\\nCDN: Product images, static assets\\nLoad Balancer: Distribute traffic\\nAPI Servers: Order processing (10+ servers)\\nCache: Redis (product info, inventory)\\nDatabases:\\n  - Product DB (read replicas)\\n  - Order DB (master-slave)\\n  - User DB (master-slave)\\nMessage Queue: RabbitMQ\\nWorkers: Payment processing, notification\\n\"}]}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Data Flow:\"}]}]\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. User clicks \\\"Place Order\\\"\\n\\n2. Request:\\n   App → LB → API Server\\n\\n3. API Server:\\n   - Validate cart items (from cache)\\n   - Check inventory (Redis)\\n   - Create order (Order DB)\\n   - Reserve inventory (decrease count)\\n   - Add to payment queue\\n   - Return order_id\\n\\n4. Response:\\n   API → LB → App (show \\\"Processing...\\\")\\n\\n5. Async:\\n   - Payment worker charges card\\n   - If success: Update order status\\n   - If fail: Release inventory, notify user\\n   - Notification worker sends email/SMS\\n\"}]}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bottlenecks:\"}]}]\n4a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Current:\\n- Inventory check (Redis)\\n- Many concurrent users checking same products\\n- Solution: Optimistic locking\\n\\nAt 10x scale:\\n- Order DB writes (master bottleneck)\\n- Solution: Shard by user_id or order_id\\n- Trade-off: Cross-shard queries harder\\n\"}]}]\n4b:[\"$\",\"h3\",null,{\"id\":\"self-check\",\"children\":\"Self-Check\"}]\n4c:[\"$\",\"p\",null,{\"children\":\"Bạn pass bài này khi:\"}]\n4d:[\"$\",\"ul\",null,{\"className\":\"contains-task-list\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Diagram có ít nhất 5 components rõ ràng\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Data flow logical và complete\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Bottleneck predictions có reasoning\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Solutions có trade-off analysis\"]}],\"\\n\"]}]\n4e:[\"$\",\"h2\",null,{\"id\":\"bài-2-design-url-shortener-bitly\",\"children\":\"Bài 2: Design URL Shortener (bit.ly)\"}]\n4f:[\"$\",\"h3\",null,{\"id\":\"mục-tiêu-1\",\"children\":\"Mục Tiêu\"}]\n50:[\"$\",\"p\",null,{\"children\":\"Thiết kế một hệ thống hoàn chỉnh từ requirements đến implementation details.\"}]\n51:[\"$\",\"h3\",null,{\"id\":\"requirements\",\"children\":\"Requirements\"}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Functional:\"}]}]\n53:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"User submits long URL → System returns short URL\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"User clicks short URL → Redirect to original URL\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Custom short URLs (optional)\"}],\"\\n\"]}]\n54:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Non-functional:\"}]}]\n55:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Write:\"}],\" 1 million URLs shortened/day\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Read:\"}],\" 100 million redirects/day\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Latency:\"}],\" \u003c 10ms for redirects\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Availability:\"}],\" 99.9%\"]}],\"\\n\"]}]\n56:[\"$\",\"h3\",null,{\"id\":\"part-a-capacity-estimation\",\"children\":\"Part A: Capacity Estimation\"}]\n57:[\"$\",\"p\",null,{\"children\":\"Calculate để understand scale.\"}]\n58:[\"$\",\"p\",null,{"])</script><script>self.__next_f.push([1,"\"children\":[\"$\",\"strong\",null,{\"children\":\"Write (Shorten):\"}]}]\n59:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1M URLs/day\\n= 1M / (24 * 3600) \\n≈ 12 URLs/second\\n\\nPeak (3x average): 36 URLs/second\\n\\nConclusion: Write is light, easy to handle\\n\"}]}]\n5a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Read (Redirect):\"}]}]\n5b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"100M redirects/day\\n= 100M / (24 * 3600)\\n≈ 1,157 requests/second\\n\\nPeak (3x): ~3,500 requests/second\\n\\nConclusion: Read-heavy (100:1 ratio) → Cache-friendly\\n\"}]}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Storage:\"}]}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1 URL mapping ≈ 500 bytes\\n1M URLs/day * 365 days * 5 years = 1.825B URLs\\n1.825B * 500 bytes ≈ 912 GB ≈ 1 TB\\n\\nConclusion: Storage không phải vấn đề\\n\"}]}]\n5e:[\"$\",\"h3\",null,{\"id\":\"part-b-api-design\",\"children\":\"Part B: API Design\"}]\n5f:[\"$\",\"p\",null,{\"children\":\"Define clear interfaces.\"}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"POST /api/shorten\\nRequest:\\n{\\n  \\\"long_url\\\": \\\"https://example.com/very/long/url\\\",\\n  \\\"custom_alias\\\": \\\"mylink\\\" (optional)\\n}\\n\\nResponse:\\n{\\n  \\\"short_url\\\": \\\"https://short.ly/abc123\\\",\\n  \\\"long_url\\\": \\\"https://example.com/very/long/url\\\",\\n  \\\"created_at\\\": \\\"2024-01-15T10:30:00Z\\\"\\n}\\n\\n---\\n\\nGET /{short_code}\\nResponse: 302 Redirect to long_url\\n\"}]}]\n61:[\"$\",\"h3\",null,{\"id\":\"part-c-core-problem---generate-short-code\",\"children\":\"Part C: Core Problem - Generate Short Code\"}]\n62:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Challenge:\"}],\" Convert long URL → short unique code\"]}]\n63:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option 1: Hash-based\"}]}]\n64:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import hashlib\\n\\ndef generate_short_code(long_url):\\n    hash_value = hashlib.md5(long_url.encode()).hexdigest()\\n    short_code = hash_value[:7]  # Take first 7 chars\\n    return short_code\\n\\n# Example:\\n# \\\"https://example.com/long/url\\\" → \\\"a3f8c2b\\\"\\n\"}]}]\n65:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Analysis:\"}]}]\n66:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Deterministic (same URL → same code)\\nCollision possible\\nNeed to check DB for duplicates\\nPredictable (security issue)\\n\"}]}]\n67:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option 2: Auto-increment + Base62 Encode\"}]}]\n68:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"BASE62 = \\\"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\\\"\\n\\ndef encode_base62(num):\\n    if num == 0:\\n        return BASE62[0]\\n    \\n    result = []\\n    while num:\\n        result.append(BASE62[num % 62])\\n        num //= 62\\n    return ''.join(reversed(result))\\n\\n# Example:\\n# ID 1 → \\\"1\\\"\\n# ID 62 → \\\"10\\\" \\n# ID 1000000 → \\\"4c92\\\"\\n\"}]}]\n69:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Length calculation:\"}]}]\n6a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"62^6 = 56 billion combinations\\n62^7 = 3.5 trillion combinations\\n\\nWith 6 characters: 56B URLs (enough!)\\n\"}]}]\n6b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Analysis:\"}]}]\n6c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"No collision (unique ID)\\nShort codes (6-7 chars)\\nPredictable order (can be feature or bug)\\nSequential (might reveal volume)\\n\"}]}]\n6d:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Recommendation:\"}],\" Use Option 2 (Base62) cho simplicity và reliability.\"]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"part-d-database-schema\",\"children\":\"Part D: Database Schema\"}]\n6f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"CREATE TABLE urls (\\n    id BIGSERIAL PRIMARY KEY,\\n    short_code VARCHAR(10) UNIQUE NOT NULL,\\n    long_url TEXT NOT NULL,\\n    created_at TIMESTAMP DEFAULT NOW(),\\n    expires_at TIMESTAMP,\\n    user_id BIGINT,\\n    click_count INT DEFAULT 0,\\n    \\n    INDEX "])</script><script>self.__next_f.push([1,"idx_short_code (short_code),\\n    INDEX idx_user_id (user_id)\\n);\\n\\nCREATE TABLE clicks (\\n    id BIGSERIAL PRIMARY KEY,\\n    short_code VARCHAR(10) NOT NULL,\\n    clicked_at TIMESTAMP DEFAULT NOW(),\\n    ip_address VARCHAR(45),\\n    user_agent TEXT,\\n    referer TEXT,\\n    country VARCHAR(2),\\n    \\n    INDEX idx_short_code (short_code),\\n    INDEX idx_clicked_at (clicked_at)\\n);\\n\"}]}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why this design:\"}]}]\n71:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"urls:\"}],\" Core data, need fast lookup by short_code\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"clicks:\"}],\" Analytics data, can be separate (won't slow down redirects)\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Indexes:\"}],\" Critical for performance\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"click_count:\"}],\" Denormalized for quick display\"]}],\"\\n\"]}]\n72:[\"$\",\"h3\",null,{\"id\":\"part-e-architecture-design\",\"children\":\"Part E: Architecture Design\"}]\n73:[\"$\",\"$L2d\",null,{\"chart\":\"flowchart TD\\n    User[Users]\\n    DNS[DNS/CDN]\\n    LB[Load Balancer]\\n    API1[API Server 1]\\n    API2[API Server 2]\\n    API3[API Server 3]\\n    Cache[(Redis Cache)]\\n    DB[(PostgreSQL)]\\n    Analytics[Analytics Queue]\\n    Worker[Analytics Workers]\\n    \\n    User --\u003e DNS\\n    DNS --\u003e LB\\n    LB --\u003e API1\\n    LB --\u003e API2\\n    LB --\u003e API3\\n    \\n    API1 --\u003e Cache\\n    API2 --\u003e Cache\\n    API3 --\u003e Cache\\n    \\n    Cache -.-\u003e|Cache miss| DB\\n    \\n    API1 --\u003e Analytics\\n    Analytics --\u003e Worker\\n    Worker --\u003e DB\"}]\n74:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Flow: Shorten URL\"}]}]\n75:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. User → POST /api/shorten\\n2. API Server:\\n   - Generate ID (auto-increment)\\n   - Encode to Base62\\n   - Save to DB\\n   - Return short URL\\n3. Time: ~50ms\\n\"}]}]\n76:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Flow: Redirect\"}]}]\n77:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. User → GET /abc123\\n2. API Server:\\n   - Check Redis cache\\n   - If hit: Return long_url (5ms)\\n   - If miss: Query DB → Cache result → Return (50ms)\\n3. Log click event (async, don't wait)\\n4. 302 Redirect\\n\"}]}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Caching Strategy:\"}]}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def redirect(short_code):\\n    # 1. Try cache\\n    long_url = cache.get(f\\\"url:{short_code}\\\")\\n    if long_url:\\n        # Log async (fire and forget)\\n        analytics_queue.add({\\n            \\\"short_code\\\": short_code,\\n            \\\"timestamp\\\": now(),\\n            \\\"ip\\\": request.ip\\n        })\\n        return redirect_response(long_url)\\n    \\n    # 2. Cache miss → DB\\n    url_obj = db.query(\\n        \\\"SELECT long_url FROM urls WHERE short_code = ?\\\",\\n        short_code\\n    )\\n    \\n    if not url_obj:\\n        return 404\\n    \\n    # 3. Cache for next time\\n    cache.set(\\n        f\\\"url:{short_code}\\\",\\n        url_obj.long_url,\\n        ttl=86400  # 24 hours\\n    )\\n    \\n    # 4. Log async\\n    analytics_queue.add({...})\\n    \\n    return redirect_response(url_obj.long_url)\\n\"}]}]\n7a:[\"$\",\"h3\",null,{\"id\":\"part-f-scale-to-100m-clicksday\",\"children\":\"Part F: Scale to 100M Clicks/Day\"}]\n7b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\n7c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"100M clicks/day = 1,157 req/s (avg)\\nPeak: 3,500 req/s\\n\\nChallenges:\\n1. Database read load\\n2. Cache capacity\\n3. Analytics writes\\n\"}]}]\n7d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\n7e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Database Reads:\"}]}]\n7f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem: 3,500 req/s * 50ms = 175 concurrent queries\\n\\nSolution A: Add read replicas (3 slaves)\\n- Distribute reads across replicas\\n- Each handles ~1,200 req/s → Easy\\n\\nS"])</script><script>self.__next_f.push([1,"olution B: Aggressive caching (99% hit rate)\\n- Only 1% goes to DB = 35 req/s\\n- Very manageable\\n\"}]}]\n80:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Cache Strategy:\"}]}]\n81:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Cache hot URLs:\\n- 80/20 rule: 20% URLs get 80% traffic\\n- Cache top 1M URLs\\n- Memory: 1M * 500 bytes = 500 MB\\n- Cheap, fast\\n\\nLRU eviction:\\n- Auto-remove least recently used\\n- Always keep hot data\\n\"}]}]\n82:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Analytics:\"}]}]\n83:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem: 3,500 writes/second to clicks table\\n\\nSolution: Async queue + batch writes\\n- Buffer clicks in queue\\n- Worker batch insert every 10 seconds\\n- Reduces DB writes by 10x\\n\\nTrade-off: Analytics delayed by ~10s (acceptable)\\n\"}]}]\n84:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Final Architecture:\"}]}]\n85:[\"$\",\"$L2d\",null,{\"chart\":\"flowchart TD\\n    Users[Users Worldwide]\\n    GeoDNS[GeoDNS]\\n    CDN1[CDN - US Region]\\n    CDN2[CDN - Asia Region]\\n    \\n    LB1[Load Balancer US]\\n    LB2[Load Balancer Asia]\\n    \\n    API1[API Servers US]\\n    API2[API Servers Asia]\\n    \\n    Cache1[(Redis US)]\\n    Cache2[(Redis Asia)]\\n    \\n    DB_Master[(DB Master)]\\n    DB_Slave1[(DB Slave 1)]\\n    DB_Slave2[(DB Slave 2)]\\n    \\n    Queue[Analytics Queue]\\n    Workers[Batch Workers]\\n    \\n    Users --\u003e GeoDNS\\n    GeoDNS --\u003e|US traffic| CDN1\\n    GeoDNS --\u003e|Asia traffic| CDN2\\n    \\n    CDN1 --\u003e LB1\\n    CDN2 --\u003e LB2\\n    \\n    LB1 --\u003e API1\\n    LB2 --\u003e API2\\n    \\n    API1 --\u003e Cache1\\n    API2 --\u003e Cache2\\n    \\n    Cache1 -.-\u003e|Miss| DB_Slave1\\n    Cache2 -.-\u003e|Miss| DB_Slave2\\n    \\n    API1 --\u003e Queue\\n    API2 --\u003e Queue\\n    Queue --\u003e Workers\\n    Workers --\u003e DB_Master\\n    \\n    DB_Master -.-\u003e|Replicate| DB_Slave1\\n    DB_Master -.-\u003e|Replicate| DB_Slave2\"}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why this works:\"}]}]\n87:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"GeoDNS:\"}],\" Route users to nearest region → Low latency\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"CDN:\"}],\" Cache redirects at edge → Ultra fast\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Multiple regions:\"}],\" High availability\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Redis cache:\"}],\" 99% hit rate → Minimal DB load\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Read replicas:\"}],\" Scale reads easily\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Async analytics:\"}],\" Don't slow down redirects\"]}],\"\\n\"]}]\n88:[\"$\",\"h3\",null,{\"id\":\"self-check-1\",\"children\":\"Self-Check\"}]\n89:[\"$\",\"p\",null,{\"children\":\"Bạn pass bài này khi:\"}]\n8a:[\"$\",\"ul\",null,{\"className\":\"contains-task-list\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Capacity estimation có calculations rõ ràng\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"API design clean và RESTful\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Database schema có indexes đúng chỗ\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Architecture handle được scale requirements\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Có explain trade-offs của decisions\"]}],\"\\n\"]}]\n8b:[\"$\",\"h2\",null,{\"id\":\"bài-3-trade-off-analysis---user-upload-avatar\",\"children\":\"Bài 3: Trade-off Analysis - User Upload Avatar\"}]\n8c:[\"$\",\"h3\",null,{\"id\":\"mục-tiêu-2\",\"children\":\"Mục Tiêu\"}]\n8d:[\"$\",\"p\",null,{\"children\":\"Practice so sánh approaches và make informed decisions.\"}]\n8e:[\"$\",\"h3\",null,{\"id\":\"context\",\"children\":\"Context\"}]\n8"])</script><script>self.__next_f.push([1,"f:[\"$\",\"p\",null,{\"children\":\"Feature: User uploads avatar (profile picture)\"}]\n90:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Processing needed:\"}]}]\n91:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Validate image (format, size)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Resize to multiple sizes (thumbnail, medium, large)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Upload to S3\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Update user record\"}],\"\\n\"]}]\n92:[\"$\",\"h3\",null,{\"id\":\"approach-a-synchronous\",\"children\":\"Approach A: Synchronous\"}]\n93:[\"$\",\"$L2d\",null,{\"chart\":\"sequenceDiagram\\n    participant U as User\\n    participant API as API Server\\n    participant S3 as AWS S3\\n    participant DB as Database\\n    \\n    U-\u003e\u003eAPI: Upload image\\n    API-\u003e\u003eAPI: Validate (500ms)\\n    API-\u003e\u003eAPI: Resize 3 sizes (2s)\\n    API-\u003e\u003eS3: Upload originals (1s)\\n    API-\u003e\u003eS3: Upload resized (1s)\\n    API-\u003e\u003eDB: Update user record (100ms)\\n    API--\u003e\u003eU: Success (4.6s total)\"}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation:\"}]}]\n95:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.route('/upload-avatar', methods=['POST'])\\ndef upload_avatar_sync():\\n    # 1. Validate\\n    if not is_valid_image(request.file):\\n        return error(400, \\\"Invalid image\\\")\\n    \\n    # 2. Resize\\n    thumbnail = resize(request.file, 100, 100)\\n    medium = resize(request.file, 300, 300)\\n    large = resize(request.file, 600, 600)\\n    \\n    # 3. Upload to S3\\n    original_url = s3.upload(request.file)\\n    thumbnail_url = s3.upload(thumbnail)\\n    medium_url = s3.upload(medium)\\n    large_url = s3.upload(large)\\n    \\n    # 4. Update DB\\n    db.update_user(user_id, {\\n        'avatar_original': original_url,\\n        'avatar_thumbnail': thumbnail_url,\\n        'avatar_medium': medium_url,\\n        'avatar_large': large_url\\n    })\\n    \\n    # 5. Return\\n    return success({\\n        'avatar_url': thumbnail_url\\n    })\\n    \\n# User waits 4.6 seconds\\n\"}]}]\n96:[\"$\",\"h3\",null,{\"id\":\"approach-b-asynchronous\",\"children\":\"Approach B: Asynchronous\"}]\n97:[\"$\",\"$L2d\",null,{\"chart\":\"sequenceDiagram\\n    participant U as User\\n    participant API as API Server\\n    participant S3 as AWS S3\\n    participant Q as Message Queue\\n    participant W as Worker\\n    participant DB as Database\\n    \\n    U-\u003e\u003eAPI: Upload image\\n    API-\u003e\u003eAPI: Validate (500ms)\\n    API-\u003e\u003eS3: Upload original (1s)\\n    API-\u003e\u003eDB: Save temp URL (100ms)\\n    API-\u003e\u003eQ: Add resize job\\n    API--\u003e\u003eU: Success (1.6s)\\n    \\n    Note over U: User sees upload success\\n    \\n    Q-\u003e\u003eW: Worker picks job\\n    W-\u003e\u003eS3: Download original\\n    W-\u003e\u003eW: Resize 3 sizes (2s)\\n    W-\u003e\u003eS3: Upload resized (1s)\\n    W-\u003e\u003eDB: Update final URLs (100ms)\\n    \\n    Note over U: Avatar appears after ~5s\"}]\n98:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation:\"}]}]\nea:T520,@app.route('/upload-avatar', methods=['POST'])\ndef upload_avatar_async():\n    # 1. Quick validation\n    if not is_valid_image(request.file):\n        return error(400, \"Invalid image\")\n    \n    # 2. Upload original only\n    original_url = s3.upload(request.file)\n    \n    # 3. Save temp state\n    db.update_user(user_id, {\n        'avatar_original': original_url,\n        'avatar_status': 'processing'\n    })\n    \n    # 4. Queue background job\n    queue.add_job('resize_avatar', {\n        'user_id': user_id,\n        'original_url': original_url\n    })\n    \n    # 5. Return immediately\n    return success({\n        'avatar_url': original_url,\n        'status': 'processing'\n    })\n\n# User waits 1.6 seconds\n\n# Background worker (separate process)\ndef resize_avatar_worker(job):\n    # Download\n    image = s3.download(job['original_url'])\n    \n    # Resize\n    thumbnail = resize(image, 100, 100)\n    medium = resize(image, 300, 300)\n    large = resize(image, 600, 600)\n    \n    # Upload\n    thumbnail_url = s3.upload(thumbnail)\n    medium_url = s3.upload(medium)\n    large_url = s3.upload(large)\n    \n    # Update DB\n    db.update_user(job['user_id'], {\n        'avatar_thumbnail': thumb"])</script><script>self.__next_f.push([1,"nail_url,\n        'avatar_medium': medium_url,\n        'avatar_large': large_url,\n        'avatar_status': 'completed'\n    })\n99:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$ea\"}]}]\n9a:[\"$\",\"h3\",null,{\"id\":\"part-a-comparative-analysis\",\"children\":\"Part A: Comparative Analysis\"}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Latency:\"}]}]\n9c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Synchronous:\\n- User waits: 4.6 seconds\\n- Perceived speed: Slow\\n- Timeout risk: High (if \u003e 30s)\\n\\nAsynchronous:\\n- User waits: 1.6 seconds (65% faster)\\n- Perceived speed: Fast\\n- Timeout risk: Low\\n\"}]}]\n9d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"User Experience:\"}]}]\n9e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Synchronous:\\nImmediate result\\nSimple UX (upload → done)\\nLong wait time\\nProgress bar needed\\nUser can't do anything else\\n\\nAsynchronous:\\nFast feedback\\nCan continue using app\\nDelayed result\\nNeed to show \\\"processing\\\" state\\nNeed to handle refresh (state persistence)\\n\"}]}]\n9f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Complexity:\"}]}]\na0:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Synchronous:\\nSimple code\\nEasy to debug\\nNo infrastructure needed\\nHard to scale (blocks server thread)\\n\\nAsynchronous:\\nScalable (handle traffic spikes)\\nServer threads freed up\\nMore complex code\\nNeed message queue infrastructure\\nError handling harder (retry logic)\\nNeed monitoring\\n\"}]}]\na1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Error Handling:\"}]}]\na2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Synchronous:\\n- Error → Return to user immediately\\n- User can retry\\n- Simple rollback\\n\\nAsynchronous:\\n- Error → User already got success response\\n- Need notification system\\n- Complex retry logic\\n- Partial state handling\\n\"}]}]\na3:[\"$\",\"h3\",null,{\"id\":\"part-b-decision-framework\",\"children\":\"Part B: Decision Framework\"}]\na4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Choose Synchronous when:\"}]}]\na5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Processing is fast (\u003c 2 seconds)\\nUser needs immediate confirmation\\nSimple use case\\nLow traffic\\nTeam small (can't maintain complex infrastructure)\\n\\nExamples:\\n- Form submission\\n- Simple CRUD operations\\n- User login\\n\"}]}]\na6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Choose Asynchronous when:\"}]}]\na7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Processing is slow (\u003e 3 seconds)\\nUser can wait for result\\nHigh traffic (need to handle spikes)\\nMultiple expensive operations\\nCan tolerate eventual consistency\\n\\nExamples:\\n- File uploads with processing\\n- Report generation\\n- Email sending\\n- Video transcoding\\n- Data import/export\\n\"}]}]\na8:[\"$\",\"h3\",null,{\"id\":\"part-c-hybrid-approach-best-of-both-worlds\",\"children\":\"Part C: Hybrid Approach (Best of Both Worlds)\"}]\na9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy: Quick sync + Deep async\"}]}]\naa:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.route('/upload-avatar', methods=['POST'])\\ndef upload_avatar_hybrid():\\n    # SYNC: Fast operations\\n    if not is_valid_image(request.file):\\n        return error(400)\\n    \\n    original_url = s3.upload(request.file)\\n    \\n    # Generate quick thumbnail (500ms)\\n    quick_thumb = resize_fast(request.file, 100, 100)\\n    thumb_url = s3.upload(quick_thumb)\\n    \\n    # Update with quick thumbnail\\n    db.update_user(user_id, {\\n        'avatar_thumbnail': thumb_url,\\n        'avatar_status': 'processing'\\n    })\\n    \\n    # ASYNC: Quality resizes\\n    queue.add_job('resize_hq_avatar', {\\n        'user_id': user_id,\\n        'original_url': original_url\\n    })\\n    \\n    return success({\\n        'avatar_url': thumb_url,\\n        'status': 'processing'\\n    })\\n\\n# User sees low-quality avatar immediately\\n# High-quality versions replace after few seconds\\n\"}]}]\nab:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"childre"])</script><script>self.__next_f.push([1,"n\":\"Why this is often best:\"}]}]\nac:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Fast user feedback (2s)\\nSomething to show immediately\\nBetter quality eventually\\nHandles traffic spikes\\nMore complex implementation\\n\"}]}]\nad:[\"$\",\"h3\",null,{\"id\":\"part-d-real-world-example\",\"children\":\"Part D: Real-World Example\"}]\nae:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"What does Facebook/Instagram do?\"}]}]\naf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Instagram approach:\"}]}]\nb0:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. User uploads photo\\n2. Instant upload to CDN (original)\\n3. Show original immediately (may be large)\\n4. Background: Process filters, generate sizes\\n5. Swap to processed version when ready\\n6. User sees progress: \\\"Processing...\\\" → Done\\n\\nWhy?\\n- 1B+ users → Must be async\\n- User engagement \u003e Perfect quality\\n- Can't make user wait 10 seconds\\n\"}]}]\nb1:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key insight:\"}],\" User experience \u003e Technical perfection.\"]}]\nb2:[\"$\",\"h3\",null,{\"id\":\"self-check-2\",\"children\":\"Self-Check\"}]\nb3:[\"$\",\"p\",null,{\"children\":\"Bạn pass bài này khi:\"}]\nb4:[\"$\",\"ul\",null,{\"className\":\"contains-task-list\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"So sánh được latency của 2 approaches\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Explain UX differences clearly\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Understand complexity trade-offs\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Có decision framework rõ ràng\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",\"Can propose hybrid approach\"]}],\"\\n\"]}]\nb5:[\"$\",\"h2\",null,{\"id\":\"checklist-tổng-hợp-phase-1\",\"children\":\"Checklist Tổng Hợp Phase 1\"}]\nb6:[\"$\",\"p\",null,{\"children\":\"Sau khi hoàn thành 3 bài tập, đánh giá bản thân:\"}]\nb7:[\"$\",\"h3\",null,{\"id\":\"core-understanding\",\"children\":\"Core Understanding\"}]\n"])</script><script>self.__next_f.push([1,"b8:[\"$\",\"ul\",null,{\"className\":\"contains-task-list\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi có thể vẽ architecture diagram\"}],\" của bất kỳ app nào tôi dùng\"]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Chọn 1 app random, vẽ trong 10 phút\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi hiểu bottleneck và cách tìm\"}]]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Given diagram, identify bottleneck và explain why\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi có thể trace data flow\"}],\" từ client đến database\"]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Explain flow của 1 user action bất kỳ\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi hiểu sync vs async trade-offs\"}]]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Given feature, choose approach và defend decision\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\"]}]\n"])</script><script>self.__next_f.push([1,"b9:[\"$\",\"h3\",null,{\"id\":\"practical-skills\",\"children\":\"Practical Skills\"}]\n"])</script><script>self.__next_f.push([1,"ba:[\"$\",\"ul\",null,{\"className\":\"contains-task-list\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi có thể estimate capacity\"}]]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Calculate QPS, storage cho requirements\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi có thể design API\"}]]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Define endpoints cho 1 feature\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi có thể design database schema\"}]]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Create tables với proper indexes\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi biết khi nào cần cache\"}]]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Identify cacheable data và TTL strategy\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\"]}]\n"])</script><script>self.__next_f.push([1,"bb:[\"$\",\"h3\",null,{\"id\":\"concept-mastery\",\"children\":\"Concept Mastery\"}]\n"])</script><script>self.__next_f.push([1,"bc:[\"$\",\"ul\",null,{\"className\":\"contains-task-list\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi hiểu Latency vs Throughput\"}]]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Explain difference với real example\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi hiểu Availability tính toán\"}]]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Calculate downtime cho 99.9% vs 99.99%\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi hiểu CAP theorem\"}],\" ở mức basic\"]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Given system, identify CA, CP, or AP\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"className\":\"task-list-item\",\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"input\",null,{\"type\":\"checkbox\",\"disabled\":true}],\" \",[\"$\",\"strong\",null,{\"children\":\"Tôi có thể analyze trade-offs\"}]]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test: Compare 2 approaches với pros/cons\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\"]}]\n"])</script><script>self.__next_f.push([1,"bd:[\"$\",\"h3\",null,{\"id\":\"scoring\",\"children\":\"Scoring\"}]\nbe:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"10-12 checked: Excellent - Ready for Phase 2 ✅\\n7-9 checked: Good - Review weak areas, then move on\\n4-6 checked: Need more practice - Redo exercises\\n0-3 checked: Review Phase 1 content again\\n\"}]}]\nbf:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Honest self-assessment is critical.\"}],\" Don't rush.\"]}]\nc0:[\"$\",\"h2\",null,{\"id\":\"common-mistakes--how-to-fix\",\"children\":\"Common Mistakes \u0026 How to Fix\"}]\nc1:[\"$\",\"h3\",null,{\"id\":\"mistake-1-over-engineering\",\"children\":\"Mistake 1: Over-Engineering\"}]\nc2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptom:\"}]}]\nc3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bài URL shortener:\\n- Kubernetes cluster\\n- Microservices (5 services)\\n- Event sourcing\\n- CQRS\\n- Service mesh\\n\\nFor 1M URLs/day → Overkill!\\n\"}]}]\nc4:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Fix:\"}],\" Start simple. Prove need before adding complexity.\"]}]\nc5:[\"$\",\"h3\",null,{\"id\":\"mistake-2-under-specifying\",\"children\":\"Mistake 2: Under-Specifying\"}]\nc6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptom:\"}]}]\nc7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Dùng database\\\"\\n- SQL hay NoSQL?\\n- Schema như thế nào?\\n- Indexes ở đâu?\\n\"}]}]\nc8:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Fix:\"}],\" Be specific. Justify choices.\"]}]\nc9:[\"$\",\"h3\",null,{\"id\":\"mistake-3-ignoring-numbers\",\"children\":\"Mistake 3: Ignoring Numbers\"}]\nca:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptom:\"}]}]\ncb:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Cần cache vì performance\\\"\\n- Không tính QPS\\n- Không estimate hit rate\\n- Không tính memory needed\\n\"}]}]\ncc:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Fix:\"}],\" Always calculate. Numbers inform decisions.\"]}]\ncd:[\"$\",\"h3\",null,{\"id\":\"mistake-4-no-trade-off-analysis\",\"children\":\"Mistake 4: No Trade-off Analysis\"}]\nce:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptom:\"}]}]\ncf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Dùng approach A\\\"\\n- Không mention downsides\\n- Không compare với alternatives\\n\"}]}]\nd0:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Fix:\"}],\" Every decision có trade-offs. State them.\"]}]\nd1:[\"$\",\"h2\",null,{\"id\":\"next-steps\",\"children\":\"Next Steps\"}]\nd2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nếu pass checklist:\"}]}]\nd3:[\"$\",\"p\",null,{\"children\":\"🎉 Congratulations! Bạn đã complete Phase 1.\"}]\nd4:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Phase 2: Core Building Blocks\"}],\" đang đợi bạn:\"]}]\nd5:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Deep dive vào Cache strategies\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database scaling patterns\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Message queues\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"And more...\"}],\"\\n\"]}]\nd6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nếu chưa pass:\"}]}]\nd7:[\"$\",\"p\",null,{\"children\":\"Đừng rush. System design không phải race.\"}]\nd8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Recommendations:\"}]}]\nd9:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Review Phase 1 lessons\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Redo exercises với approach khác\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Explain concepts cho người khác\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Practice with more real apps\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Revisit checklist sau 1 tuần\"}],\"\\n\"]}]\nda:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\ndb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Practice \u003e Theory\"}]}]\ndc:[\"$\",\"p\",null,{\"children\":\"Bạn có thể đọc 100 cuốn sách về system design, nhưng không practice thì vẫn không design được.\"}]\ndd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Think, Don't Memorize\"}]}]\nde:[\"$\",\"p\",null,{\"children\":\"Không có template cố"])</script><script>self.__next_f.push([1," định. Mỗi system khác nhau. Học cách think, không phải remember solutions.\"}]\ndf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs Everywhere\"}]}]\ne0:[\"$\",\"p\",null,{\"children\":\"Mọi decision có trade-offs. Good architect là người:\"}]\ne1:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Hiểu trade-offs\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Choose based on context\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Can defend decisions\"}],\"\\n\"]}]\ne2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Start Simple, Iterate\"}]}]\ne3:[\"$\",\"p\",null,{\"children\":\"Best designs thường evolve từ simple designs. Don't over-engineer từ đầu.\"}]\ne4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Numbers Matter\"}]}]\ne5:[\"$\",\"p\",null,{\"children\":\"Capacity estimation, QPS calculation, storage sizing - Không phải decoration. Chúng inform critical decisions.\"}]\ne6:[\"$\",\"hr\",null,{}]\ne7:[\"$\",\"p\",null,{\"children\":\"Hãy dành thời gian với 3 bài tập này. Làm kỹ. Hiểu sâu.\"}]\ne8:[\"$\",\"p\",null,{\"children\":\"Foundation vững = Everything sau dễ hơn.\"}]\ne9:[\"$\",\"p\",null,{\"children\":\"Good luck! 🚀\"}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"eb:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế | Phase 1 — Foundation: Thinking in Systems | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade off analysis. Củng cố kiến thức Phase 1 với checklist\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế | Phase 1 — Foundation: Thinking in Systems\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade off analysis. Củng cố kiến thức Phase 1 với checklist\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế | Phase 1 — Foundation: Thinking in Systems\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Thực hành thiết kế hệ thống qua 3 bài tập thực tế: phân tích app hiện có, thiết kế URL shortener, và trade off analysis. Củng cố kiến thức Phase 1 với checklist\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$Leb\",\"14\",{}]]\n"])</script></body></html>

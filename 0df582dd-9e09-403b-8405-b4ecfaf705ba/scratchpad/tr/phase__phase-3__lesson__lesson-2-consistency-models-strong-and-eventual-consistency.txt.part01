@@ -1,0 +1,312 @@
+@0
+Các ⟦Mô Hình Nhất Quán|Consistency Models⟧: ⟦Nhất Quán Mạnh|Strong Consistency⟧ và ⟦Nhất Quán Cuối Cùng|Eventual Consistency⟧
+@1
+Tôi còn nhớ cái ngày tôi gây ra một ⟦lỗi|bug⟧ nghiêm trọng vì không hiểu ⟦tính nhất quán|consistency⟧.
+@2
+Một hệ thống thương mại điện tử. Người dùng đặt mua sản phẩm cuối cùng trong kho. Nhưng vì ⟦nhất quán cuối cùng|eventual consistency⟧, 2 người dùng cùng thấy "còn hàng" và đặt hàng thành công.
+@3
+Kết quả? Bán vượt số lượng tồn kho. Phải hoàn tiền cho một người. Bộ phận chăm sóc khách hàng gặp ác mộng. CEO gọi họp.
+@4
+Tôi học được bài học đắt giá: **⟦Tính nhất quán|Consistency⟧ không phải sở thích kỹ thuật. Nó là quyết định kinh doanh.**
+@5
+Bài học này sẽ giúp bạn tránh sai lầm đó.
+@6
+Tại Sao ⟦Tính Nhất Quán|Consistency⟧ Quan Trọng?
+@7
+Trong một ⟦cơ sở dữ liệu|database⟧ duy nhất, ⟦tính nhất quán|consistency⟧ là điều đương nhiên:
+@8
+Người dùng A: Ghi X = 10
+Người dùng B: Đọc X → Luôn thấy 10
+
+Đơn giản. Luôn đúng.
+
+@9
+Nhưng trong ⟦hệ thống phân tán|distributed systems⟧ với nhiều ⟦cơ sở dữ liệu|databases⟧:
+@10
+Người dùng A: Ghi X = 10 vào CSDL 1
+        CSDL 1 → Nhân bản sang CSDL 2 (mất thời gian)
+Người dùng B: Đọc X từ CSDL 2 → Có thể thấy giá trị cũ (X = 5)
+
+Không đơn giản. Có thể sai.
+
+@11
+**Câu hỏi:** Người dùng B có nên thấy giá trị cũ không?
+@12
+**Trả lời:** Còn tùy. Đó chính là các ⟦mô hình nhất quán|consistency models⟧.
+@13
+⟦Nhất Quán Mạnh|Strong Consistency⟧: Luôn Đúng, Nhưng Chậm
+@15
+**⟦Nhất quán mạnh|Strong consistency⟧ = Mọi thao tác đọc đều thấy thao tác ghi gần nhất**
+@16
+sequenceDiagram
+    participant UserA
+    participant DB1
+    participant DB2
+    participant UserB
+
+    UserA->>DB1: Ghi X = 10
+    DB1->>DB2: Nhân bản X = 10
+    Note over DB1,DB2: Chờ đến khi nhân bản xong
+    DB1-->>UserA: Xác nhận ghi
+    UserB->>DB2: Đọc X
+    DB2-->>UserB: Trả về X = 10
+
+    Note over UserA,UserB: Người dùng B LUÔN thấy giá trị mới nhất
+@17
+*⟦Nhất quán mạnh|Strong consistency⟧: Thao tác ghi chỉ được xác nhận sau khi ⟦nhân bản|replicate⟧ xong*
+@18
+**Hành vi:**
+@19
+Dòng thời gian:
+10:00:00.000 - Người dùng A ghi X = 10
+10:00:00.050 - Hệ thống nhân bản sang tất cả các nút (50ms)
+10:00:00.051 - Xác nhận ghi cho Người dùng A
+10:00:00.052 - Người dùng B đọc X → Thấy 10
+
+Người dùng B LUÔN LUÔN thấy giá trị mới nhất
+Giống như chỉ có 1 cơ sở dữ liệu duy nhất
+
+@20
+⟦Tính Tuyến Tính Hóa|Linearizability⟧: Dạng Mạnh Nhất
+@21
+**⟦Tính tuyến tính hóa|Linearizability⟧ = Các thao tác dường như xảy ra tức thời tại một thời điểm nào đó giữa lúc bắt đầu và lúc kết thúc**
+@22
+Nghe trừu tượng? Hãy xem ví dụ:
+@23
+Dòng thời gian:
+
+User A: Write X = 10   [====== 50ms ======]
+User B:                     Read X     → Phải thấy 10 (xảy ra sau khi ghi đã bắt đầu)
+User C:        Read X   → Có thể thấy 5 hoặc 10 (đồng thời với thao tác ghi)
+User D:                                          Read X → Phải thấy 10
+
+Quy tắc:
+- Nếu đọc bắt đầu sau khi ghi hoàn tất → Phải thấy giá trị mới
+- Nếu đọc đồng thời với ghi → Có thể thấy giá trị cũ hoặc mới
+- Nếu ghi đã hoàn tất → Mọi thao tác đọc sau đó đều thấy giá trị mới
+
+@24
+**Ví dụ tương tự ngoài đời thực:**
+@25
+Tưởng tượng bạn đăng bài trên Facebook:
+@26
+Nhất quán mạnh (tuyến tính hóa - Linearizable):
+- Bạn đăng ảnh lúc 10:00
+- Bạn bè tải lại trang lúc 10:01 → PHẢI thấy ảnh
+- Không bao giờ có chuyện "bạn thấy ảnh nhưng bạn bè không thấy"
+
+Giống như dán thông báo lên tường nhà
+→ Ai đi ngang qua đều thấy
+
+@27
+Chi Phí Triển Khai
+@28
+**Để đạt được ⟦nhất quán mạnh|strong consistency⟧:**
+@29
+**Tác động đến ⟦hiệu năng|performance⟧:**
+@30
+Một cơ sở dữ liệu duy nhất:
+Độ trễ ghi: 10ms
+
+Nhất quán mạnh (3 bản sao):
+Độ trễ ghi:
+- Ghi cục bộ: 10ms
+- Nhân bản sang Bản sao 1: 50ms (mạng)
+- Nhân bản sang Bản sao 2: 50ms (mạng)
+- Nhân bản sang Bản sao 3: 50ms (mạng)
+- Chờ tất cả: max(50, 50, 50) = 50ms
+
+Tổng: 10 + 50 = 60ms (chậm hơn 6 lần!)
+
+Nếu có bản sao ở xa:
+- Bản sao Mỹ → châu Âu: 100ms
+- Bản sao Mỹ → châu Á: 200ms
+Tổng: 10 + 200 = 210ms (chậm hơn 21 lần!)
+
+@31
+⟦Đánh Đổi|Trade-offs⟧
+@32
+Nhất quán mạnh:
+
+Ưu điểm:
+- Luôn đúng
+- Không có dữ liệu cũ
+- Dễ suy luận (như một cơ sở dữ liệu duy nhất)
+- Không cần giải quyết xung đột ở tầng ứng dụng
+
+Nhược điểm:
+- Chậm (phải chờ nhân bản)
+- Tính sẵn sàng thấp hơn (nếu bản sao bị sập, không thể ghi)
+- Phân tán theo địa lý rất tốn kém
+- Giới hạn khả năng mở rộng (càng nhiều bản sao = càng chậm)
+
+@33
+Khi Nào Cần ⟦Nhất Quán Mạnh|Strong Consistency⟧?
+@34
+**Cần ⟦nhất quán mạnh|strong consistency⟧ khi:**
+@35
+✓ Giao dịch tài chính
+  - Chuyển khoản ngân hàng
+  - Xử lý thanh toán
+  - Kế toán
+
+✓ Quản lý tồn kho
+  - Món hàng cuối cùng trong kho
+  - Đặt chỗ ngồi
+  - Bán hàng phiên bản giới hạn
+
+✓ Xác thực
+  - Đổi mật khẩu
+  - Cập nhật quyền
+  - Token bảo mật
+
+✓ Logic nghiệp vụ quan trọng
+  - Chuyển trạng thái đơn hàng
+  - Ký hợp đồng
+  - Văn bản pháp lý
+
+@37
+⟦Nhất Quán Cuối Cùng|Eventual Consistency⟧: Nhanh Nhưng Có Thể Sai Tạm Thời
+@39
+**⟦Nhất quán cuối cùng|Eventual consistency⟧ = Nếu không có thao tác ghi mới, cuối cùng tất cả các ⟦bản sao|replicas⟧ sẽ hội tụ về cùng một giá trị**
+@40
+sequenceDiagram
+    participant UserA
+    participant DB1
+    participant DB2
+    participant UserB
+
+    UserA->>DB1: Ghi X = 10
+    DB1-->>UserA: Xác nhận ghi ngay lập tức
+    Note over DB1: Không chờ nhân bản
+    DB1--)DB2: Nhân bản bất đồng bộ
+    UserB->>DB2: Đọc X
+    DB2-->>UserB: Trả về X = 5 - giá trị cũ
+    Note over DB2: Cuối cùng nhận được X = 10
+    UserB->>DB2: Đọc X lần nữa
+    DB2-->>UserB: Trả về X = 10 - giá trị mới
+
+    Note over UserA,UserB: Người dùng B có thể tạm thời thấy dữ liệu cũ
+@41
+*⟦Nhất quán cuối cùng|Eventual consistency⟧: Thao tác ghi được xác nhận ngay, ⟦nhân bản|replicate⟧ ⟦bất đồng bộ|async⟧*
+@42
+**Hành vi:**
+@43
+Dòng thời gian:
+10:00:00.000 - Người dùng A ghi X = 10 vào DB1
+10:00:00.001 - Xác nhận ghi ngay lập tức (1ms)
+10:00:00.010 - Người dùng B đọc từ DB2 → Thấy X = 5 (dữ liệu cũ!)
+10:00:00.050 - DB1 nhân bản sang DB2
+10:00:00.100 - Người dùng B đọc lại → Thấy X = 10
+
+Người dùng B thấy dữ liệu cũ trong 50ms
+Sau đó dữ liệu nhất quán cuối cùng
+
+@44
+Ví Dụ Tương Tự Ngoài Đời Thực
+@45
+Lượt thích trên Facebook:
+- Bạn thích một bài đăng
+- Lượt thích của bạn hiện ra ngay (cập nhật lạc quan - optimistic update)
+- Phía backend nhân bản bất đồng bộ
+- Bạn bè có thể thấy số đếm khác nhau
+- Sau vài giây, mọi người đều thấy cùng số đếm
+
+Chấp nhận được vì:
+- Số lượt thích không quan trọng
+- Trải nghiệm người dùng tốt hơn (nhanh)
+- Đúng dần theo thời gian là đủ
+
+@46
+Triển Khai
+@47
+⟦Giải Quyết Xung Đột|Conflict Resolution⟧
+@48
+**Vấn đề với ⟦nhất quán cuối cùng|eventual consistency⟧:**
+@49
+Kịch bản:
+10:00:00 - Người dùng A ghi X = 10 vào DB1
+10:00:00 - Người dùng B ghi X = 20 vào DB2 (đồng thời!)
+
+Xung đột! Cả hai thao tác ghi đều thành công, nhưng giá trị nào đúng?
+
+DB1 cho rằng X = 10
+DB2 cho rằng X = 20
+
+Khi nhân bản → Xung đột!
+
+@50
+**Các chiến lược giải quyết:**
+@51
+**Chiến lược 1: ⟦Ghi sau cùng thắng|Last Write Wins⟧ (LWW)**
+@52
+**Chiến lược 2: ⟦Hợp nhất ở tầng ứng dụng|Application-Level Merge⟧**
+@53
+**Chiến lược 3: Giữ cả hai (CRDTs)**
+@54
+⟦Đánh Đổi|Trade-offs⟧
+@55
+Nhất quán cuối cùng:
+
+Ưu điểm:
+- Ghi nhanh (không phải chờ)
+- Tính sẵn sàng cao (các bản sao độc lập)
+- Phù hợp với hệ thống phân tán theo địa lý
+- Mở rộng tốt
+
+Nhược điểm:
+- Có thể đọc phải dữ liệu cũ
+- Ứng dụng phải xử lý tình trạng thiếu nhất quán
+- Độ phức tạp của việc giải quyết xung đột
+- Khó suy luận hơn
+
+@56
+Khi Nào Dùng ⟦Nhất Quán Cuối Cùng|Eventual Consistency⟧?
+@57
+**⟦Nhất quán cuối cùng|Eventual consistency⟧ chấp nhận được khi:**
+@58
+✓ Tính năng mạng xã hội
+  - Số lượt thích, lượt xem
+  - Số người theo dõi
+  - Bảng tin hoạt động
+
+✓ Phân tích
+  - Bảng điều khiển
+  - Số liệu đo
+  - Báo cáo
+
+✓ Gợi ý
+  - Gợi ý sản phẩm
+  - Bảng tin nội dung
+  - Kết quả tìm kiếm
+
+✓ Cập nhật không quan trọng
+  - Thay đổi hồ sơ
+  - Tùy chọn cá nhân
+  - Cài đặt giao diện
+
+@60
+⟦Đánh Đổi|Trade-offs⟧ Giữa Đọc và Ghi
+@61
+⟦Sự Đánh Đổi|Trade-off⟧ Cốt Lõi
+@62
+Tính nhất quán vs Hiệu năng vs Tính sẵn sàng
+
+Chọn 2:
+- Nhất quán mạnh + Tính sẵn sàng cao → Chậm
+- Nhất quán mạnh + Nhanh → Tính sẵn sàng thấp hơn
+- Nhanh + Tính sẵn sàng cao → Nhất quán cuối cùng
+
+@63
+**So sánh trực quan:**
+@64
+Nhất quán mạnh:
+Ghi:   ████████████ 60ms
+Đọc:   ███ 10ms
+Tính sẵn sàng: 99.9%
+
+Nhất quán cuối cùng:
+Ghi:   █ 5ms
+Đọc:   █ 5ms
+Tính sẵn sàng: 99.99%
+

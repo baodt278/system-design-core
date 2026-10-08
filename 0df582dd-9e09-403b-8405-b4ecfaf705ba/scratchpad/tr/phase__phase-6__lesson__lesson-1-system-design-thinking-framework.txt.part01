@@ -1,0 +1,348 @@
+@0
+⟦Khung Tư Duy Thiết Kế Hệ Thống|System Design Thinking Framework⟧: Từ Biết ⟦Mẫu Thiết Kế|Pattern⟧ Đến Biết Tư Duy
+@1
+Chào mừng đến với Phần 6 - Làm Chủ ⟦Thiết Kế Hệ Thống|System Design⟧.
+@2
+Bạn đã đi qua 5 phần, học về các ⟦thành phần|components⟧, ⟦hệ thống phân tán|distributed systems⟧, các ⟦mẫu mở rộng|scalability patterns⟧, các ⟦kiến trúc|architectures⟧ ngoài thực tế. Bạn biết rất nhiều ⟦mẫu thiết kế|patterns⟧.
+@3
+Nhưng có một sự thật tôi phải nói thẳng:
+@4
+**Biết ⟦mẫu thiết kế|patterns⟧ không đồng nghĩa với giỏi ⟦thiết kế hệ thống|system design⟧.**
+@5
+Tôi từng ⟦phỏng vấn|interview⟧ một ứng viên rất giỏi. Anh ta thuộc lòng tất cả các ⟦mẫu thiết kế|patterns⟧: ⟦định lý CAP|CAP theorem⟧, ⟦băm nhất quán|consistent hashing⟧, CQRS, ⟦lưu trữ theo sự kiện|event sourcing⟧...
+@6
+Tôi hỏi: *"Hãy thiết kế một dịch vụ rút gọn URL."*
+@7
+Anh ta trả lời ngay lập tức: *"Em sẽ dùng NoSQL, ⟦bộ nhớ đệm|cache⟧ Redis, CDN, ⟦vi dịch vụ|microservices⟧, ⟦kiến trúc hướng sự kiện|event-driven architecture⟧..."*
+@8
+Tôi: *"Tại sao?"*
+@9
+Anh ta: *"Vì... đó là ⟦thực hành tốt nhất|best practices⟧ ạ?"*
+@10
+**Anh ta trượt buổi phỏng vấn.**
+@11
+Không phải vì thiếu kiến thức. Mà vì **thiếu ⟦tư duy thiết kế hệ thống|system design thinking⟧**.
+@12
+Bài học này sẽ dạy bạn điều quan trọng nhất: **Cách tư duy khi tiếp cận một vấn đề.**
+@13
+⟦Tư Duy Thiết Kế Hệ Thống|System Design Thinking⟧ Là Gì?
+@15
+**⟦Tư duy thiết kế hệ thống|System design thinking⟧ = ⟦Khung tư duy|Mental framework⟧ để tiếp cận và giải quyết các bài toán ⟦kiến trúc|architecture⟧**
+@17
+Thuộc lòng ⟦mẫu thiết kế|patterns⟧
+@18
+Biết nhiều công nghệ
+@19
+Sao chép giải pháp
+@21
+Hiểu vấn đề một cách sâu sắc
+@22
+Lập luận từ ⟦nguyên lý gốc|first principles⟧
+@23
+Đưa ra các quyết định ⟦đánh đổi|trade-off⟧
+@24
+Lý giải được mọi lựa chọn
+@26
+**Tư duy theo ⟦mẫu thiết kế|Pattern⟧ (Tệ):**
+@27
+Bài toán: Xây dựng mạng xã hội
+Cách tiếp cận:
+1. Mạng xã hội = cần bảng tin
+2. Bảng tin = cần phân phát (fan-out)
+3. Dùng mẫu fan-out khi ghi (fan-out on write)
+4. Xong!
+
+Kết quả: Thiết kế thừa cho một công ty khởi nghiệp với 100 người dùng
+
+@28
+**⟦Tư duy thiết kế hệ thống|System design thinking⟧ (Tốt):**
+@29
+Bài toán: Xây dựng mạng xã hội
+
+Câu hỏi:
+1. Quy mô? (100 người dùng hay 100 triệu người dùng?)
+2. Đặc điểm lưu lượng? (thiên về đọc hay thiên về ghi?)
+3. Yêu cầu nhất quán? (thời gian thực hay nhất quán cuối cùng là được?)
+4. Quy mô nhóm? (2 lập trình viên hay 50?)
+5. Thời hạn? (MVP trong 1 tháng hay 1 năm?)
+6. Ngân sách? (hạn chế hay không giới hạn?)
+
+Với 100 người dùng, 2 lập trình viên, thời hạn 1 tháng:
+→ Một cơ sở dữ liệu SQL đơn giản
+→ Truy vấn bài viết của những người mình theo dõi khi cần
+→ Sắp xếp đơn giản theo thời gian
+→ Chưa cần bộ nhớ đệm
+
+Mở rộng sau khi đã chứng minh là cần thiết.
+
+Kết quả: Ra mắt đúng hạn, cải tiến nhanh
+
+@31
+Tư duy theo mẫu thiết kế = Áp dụng giải pháp có sẵn
+@32
+⟦Tư duy thiết kế hệ thống|System design thinking⟧ = **Hiểu vấn đề → Chọn giải pháp phù hợp**
+@33
+Chuyển Đổi Tư Duy: Từ "Dùng Công Nghệ Gì" Sang "Giải Quyết Vấn Đề Gì"
+@34
+Tư Duy Cũ (Dùng Công Nghệ Gì)
+@35
+Kỹ sư lâu năm: "Thiết kế hệ thống thông báo đi"
+
+Kỹ sư mới vào nghề nghĩ:
+- "Dùng công nghệ gì nhỉ?"
+- "Kafka hay RabbitMQ?"
+- "WebSocket hay Server-Sent Events?"
+- "PostgreSQL hay MongoDB?"
+
+→ Tư duy ưu tiên công nghệ
+→ Đi "mua sắm" giải pháp
+
+@37
+Chưa hiểu vấn đề
+Không biết các ràng buộc
+Không lý giải được các đánh đổi
+Có thể thiết kế thừa
+Có thể thiết kế thiếu
+
+@38
+Tư Duy Mới (Giải Quyết Vấn Đề Gì)
+@39
+Kỹ sư lâu năm: "Thiết kế hệ thống thông báo đi"
+
+Kỹ sư lâu năm nghĩ:
+- "Đang giải quyết vấn đề gì?"
+- "Quy mô bao nhiêu? (1 nghìn hay 1 tỷ thông báo/ngày?)"
+- "Yêu cầu độ trễ? (thời gian thực hay nhất quán cuối cùng là được?)"
+- "Đảm bảo gửi? (ít nhất một lần hay đúng một lần?)"
+- "Các loại thông báo? (push, email, SMS?)"
+- "Tuỳ chọn của người dùng? (tắt tiếng, tần suất?)"
+
+→ Tư duy ưu tiên vấn đề
+→ Thiết kế dựa trên yêu cầu
+
+@40
+**⟦Khung tư duy|Framework⟧:**
+@41
+graph TB
+    START[Bài toán thiết kế hệ thống]
+
+    START --> Q1[Làm rõ yêu cầu]
+    Q1 --> Q2[Xác định ràng buộc]
+    Q2 --> Q3[Liệt kê các đánh đổi]
+    Q3 --> Q4[Chọn cách tiếp cận]
+    Q4 --> Q5[Lý giải quyết định]
+    Q5 --> Q6[Lặp lại và cải tiến]
+
+    style START fill:#ffd43b
+    style Q4 fill:#51cf66
+    style Q5 fill:#ff6b6b
+@42
+*Quy trình ⟦tư duy thiết kế hệ thống|system design thinking⟧: Yêu cầu → Ràng buộc → Đánh đổi → Quyết định → Lý giải*
+@43
+Thiết Kế Dựa Trên ⟦Yêu Cầu|Requirement⟧
+@44
+**Bắt đầu mọi thiết kế bằng ⟦yêu cầu|requirements⟧. Luôn luôn như vậy.**
+@45
+⟦Yêu Cầu Chức Năng|Functional Requirements⟧
+@46
+**Định nghĩa:** Hệ thống phải làm gì?
+@47
+**Kỹ thuật làm rõ yêu cầu:**
+@48
+Người phỏng vấn: "Thiết kế dịch vụ rút gọn URL"
+
+Bạn: "Cho phép tôi làm rõ các yêu cầu chức năng:
+1. Có hỗ trợ URL rút gọn tuỳ chỉnh không?
+2. Có cần thống kê (theo dõi lượt nhấp) không?
+3. URL có hết hạn không?
+4. Có cần tài khoản người dùng không?
+5. Người dùng có thể sửa/xoá URL của họ không?
+6. Có cần giới hạn tần suất gọi API không?"
+
+Mỗi câu trả lời đều thay đổi thiết kế đáng kể!
+
+@49
+⟦Yêu Cầu Phi Chức Năng|Non-Functional Requirements⟧ (Cực Kỳ Quan Trọng!)
+@50
+**Định nghĩa:** Hệ thống phải vận hành với ⟦hiệu năng|perform⟧ như thế nào?
+@51
+**Các phép ⟦ước tính nhanh|back-of-envelope⟧:**
+@52
+**Tại sao tính toán lại quan trọng:**
+@53
+Không tính toán:
+"Cần xử lý hàng triệu người dùng!"
+→ Thiết kế thừa với vi dịch vụ, Kafka, phân mảnh dữ liệu
+
+Có tính toán:
+"40 lượt ghi/giây, 4 nghìn lượt đọc/giây, 3TB dữ liệu"
+→ Một máy chủ + bộ nhớ đệm Redis là đủ
+→ Ra mắt trong 2 tuần, không phải 6 tháng
+
+@54
+Tư Duy Ưu Tiên ⟦Ràng Buộc|Constraint⟧
+@55
+**⟦Ràng buộc|Constraints⟧ định hình thiết kế. Hãy xác định ⟦ràng buộc|constraints⟧ TRƯỚC KHI thiết kế.**
+@56
+Các Loại ⟦Ràng Buộc|Constraints⟧
+@57
+**1. ⟦Ràng buộc|Constraints⟧ kỹ thuật**
+@58
+**2. ⟦Ràng buộc|Constraints⟧ kinh doanh**
+@59
+**3. ⟦Ràng buộc|Constraints⟧ về ⟦quy mô|scale⟧**
+@60
+⟦Khung Phân Tích Ràng Buộc|Constraint Analysis Framework⟧
+@61
+**Ví dụ thực tế:**
+@62
+Kịch bản công ty khởi nghiệp:
+- Ngân sách: $2000/tháng
+- Nhóm: 3 lập trình viên (Python)
+- Thời hạn: 2 tháng để ra MVP
+- Quy mô: Dự kiến 5 nghìn người dùng ban đầu
+
+Các ràng buộc quyết định:
+Không dùng: Kubernetes, Kafka, Cassandra
+   → Quá đắt, quá phức tạp, quá mức cần thiết
+
+Nên dùng:
+   - Heroku hoặc AWS Elastic Beanstalk (dịch vụ được quản lý)
+   - PostgreSQL (quen thuộc, đủ mạnh)
+   - Redis (lưu đệm đơn giản)
+   - Hệ thống nguyên khối (phát triển nhanh)
+
+Quyết định được lý giải bằng ràng buộc, không phải bằng "thực hành tốt nhất"
+
+@63
+Thiết Kế ⟦Từ Trên Xuống|Top-Down⟧ và ⟦Từ Dưới Lên|Bottom-Up⟧
+@64
+Có 2 cách tiếp cận để thiết kế hệ thống. Hãy biết khi nào dùng cách nào.
+@65
+Thiết Kế ⟦Từ Trên Xuống|Top-Down⟧ (Khuyên Dùng Khi Phỏng Vấn)
+@66
+**Cách tiếp cận: Bắt đầu từ tổng quan, rồi đi sâu vào chi tiết**
+@67
+graph TB
+    A[Kiến trúc tổng quan] --> B[Các thành phần cốt lõi]
+    B --> C[Tương tác giữa các thành phần]
+    C --> D[Luồng dữ liệu]
+    D --> E[Thiết kế API]
+    E --> F[Mô hình dữ liệu]
+    F --> G[Đi sâu vào phần cụ thể]
+
+    style A fill:#ffd43b
+    style G fill:#51cf66
+@68
+*⟦Từ trên xuống|Top-down⟧: Từ tổng quan đến chi tiết*
+@69
+**Quy trình:**
+@71
+Có cái nhìn toàn diện từ sớm
+Phát hiện vấn đề kiến trúc nhanh
+Dễ trao đổi
+Phù hợp khi phỏng vấn (thể hiện quá trình tư duy)
+Có thể điều chỉnh trước khi đi sâu vào triển khai
+
+@73
+Có thể bỏ sót chi tiết
+Các giả định có thể sai
+Khó hơn nếu chưa có kinh nghiệm
+
+@74
+Thiết Kế ⟦Từ Dưới Lên|Bottom-Up⟧ (Phù Hợp Khi Hiện Thực Hoá)
+@75
+**Cách tiếp cận: Bắt đầu từ bài toán cốt lõi, rồi xây dần lên**
+@76
+graph BT
+    G[Mô hình dữ liệu] --> F[Logic cốt lõi]
+    F --> E[Tầng API]
+    E --> D[Tầng bộ nhớ đệm]
+    D --> C[Cân bằng tải]
+    C --> B[Giám sát]
+    B --> A[Hệ thống hoàn chỉnh]
+
+    style G fill:#ffd43b
+    style A fill:#51cf66
+@77
+*⟦Từ dưới lên|Bottom-up⟧: Xây dần lên từ nền móng*
+@78
+**Quy trình:**
+@80
+Nền móng vững chắc
+Ít phải làm lại
+Không bỏ sót chi tiết
+Phù hợp khi hiện thực hoá
+
+@82
+Không thấy bức tranh tổng thể từ sớm
+Có thể tối ưu chi tiết quá mức
+Khó chuyển hướng hơn
+Kém hiệu quả khi phỏng vấn
+
+@83
+Khi Nào Dùng Cách Tiếp Cận Nào?
+@84
+Từ trên xuống:
+✓ Phỏng vấn thiết kế hệ thống
+✓ Các buổi họp lên kế hoạch kiến trúc
+✓ Dự án mới hoàn toàn (greenfield)
+✓ Trao đổi với các bên liên quan
+✓ Khi cần nhanh chóng kiểm chứng ý tưởng (proof of concept)
+
+Từ dưới lên:
+✓ Giai đoạn hiện thực hoá
+✓ Tái cấu trúc hệ thống hiện có
+✓ Khi chi tiết là quan trọng (bảo mật, tuân thủ)
+✓ Các bài toán thuật toán phức tạp
+✓ Thiết kế lược đồ cơ sở dữ liệu
+
+@85
+**Cách tiếp cận kết hợp (Tốt nhất trong thực tế):**
+@86
+1. Từ trên xuống: Vẽ kiến trúc tổng quan
+2. Xác định các thành phần then chốt
+3. Từ dưới lên: Chi tiết hoá các phần then chốt
+4. Từ trên xuống: Kiểm tra các phần khớp với nhau
+5. Lặp lại
+
+@87
+Tư Duy Về ⟦Khả Năng Mở Rộng|Scalability⟧
+@88
+**Tư duy về ⟦khả năng mở rộng|scalability⟧ ≠ "Làm cho nó chịu được hàng triệu người dùng"**
+@89
+**Tư duy về ⟦khả năng mở rộng|scalability⟧ = Thiết kế để có thể ⟦mở rộng|scale⟧ khi cần, mà không phải viết lại**
+@90
+Phổ ⟦Khả Năng Mở Rộng|Scalability⟧
+@91
+Thiết kế thừa ←→ Vừa vặn ←→ Thiết kế thiếu
+
+[Microservices]   [Monolith    [Mã
+[Kubernetes]      mô-đun hoá]  rối rắm]
+[Kafka]           [PostgreSQL] [CSDL không
+[Sharding]        [Redis]      có chỉ mục]
+
+Trái: Tối ưu hoá quá sớm
+Giữa: Vùng Goldilocks (vừa đủ) ✓
+Phải: Nợ kỹ thuật
+
+@92
+**Tìm vùng Goldilocks:**
+@93
+Thiết Kế Để Mở Rộng Mà Không ⟦Thiết Kế Thừa|Over-Engineering⟧
+@94
+**Nguyên tắc:**
+@95
+**1. Máy chủ ứng dụng ⟦phi trạng thái|stateless⟧**
+@96
+**2. ⟦Chỉ mục|indexes⟧ cơ sở dữ liệu ngay từ ngày đầu**
+@97
+**3. ⟦Giám sát|Monitoring⟧ ngay từ ngày đầu**
+@98
+**4. ⟦Bất đồng bộ|Async⟧ ở những chỗ phù hợp**
+@99
+**5. Cấu trúc mã theo ⟦mô-đun|modular⟧**
+@100
+Tư Duy Thiết Kế và Tư Duy Hiện Thực Hoá
+@101
+**Điểm phân biệt then chốt: Thiết kế ≠ Hiện thực hoá**

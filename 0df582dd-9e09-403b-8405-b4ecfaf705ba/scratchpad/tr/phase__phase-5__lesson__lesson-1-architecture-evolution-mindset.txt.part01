@@ -1,0 +1,399 @@
+@0
+Tư Duy ⟦Tiến Hoá Kiến Trúc|Architecture Evolution⟧ - Bắt Đầu Đơn Giản, Mở Rộng Dần Dần
+@1
+Có một sai lầm phổ biến mà các ⟦lập trình viên|developer⟧ hay mắc phải khi học ⟦thiết kế hệ thống|system design⟧:
+@2
+**Học về ⟦vi dịch vụ|microservices⟧, Kubernetes, ⟦kiến trúc hướng sự kiện|event-driven architecture⟧ → Nghĩ rằng mọi dự án đều cần những thứ này ngay từ đầu.**
+@3
+**Đây là ⟦thiết kế thừa|over-engineering⟧ - và nó giết chết các ⟦công ty khởi nghiệp|startups⟧.**
+@4
+Bạn có biết:
+@5
+**Instagram:** Một ứng dụng Django ⟦nguyên khối|monolith⟧ khi được Facebook mua lại với giá 1 tỷ đô la
+@6
+**Shopify:** Một ứng dụng Rails nguyên khối cho đến khi có hàng triệu nhà bán hàng
+@7
+**Stack Overflow:** Một ứng dụng .NET nguyên khối phục vụ hàng tỷ ⟦yêu cầu|requests⟧ mỗi tháng
+@8
+**GitHub:** Một ứng dụng Rails nguyên khối cho đến khi có hơn 40 triệu ⟦người dùng|users⟧
+@9
+**Họ không bắt đầu với vi dịch vụ. Họ đã tiến hoá từ đơn giản đến phức tạp khi THỰC SỰ CẦN THIẾT.**
+@10
+Bài này - có lẽ là bài quan trọng nhất trong Phần 5 - dạy bạn **tư duy ⟦tiến hoá kiến trúc|architecture evolution⟧**:
+@11
+Khi nào dùng ⟦hệ thống nguyên khối|monolith⟧, khi nào ⟦chuyển đổi|migrate⟧
+@12
+Các ⟦tín hiệu cần mở rộng|scale triggers⟧ trong thực tế
+@13
+Các ⟦phản mẫu|anti-patterns⟧ cần tránh
+@14
+Tư duy ⟦đánh đổi|trade-off⟧
+@15
+**⟦Mô hình tư duy|Mental model⟧:** "Bắt đầu đơn giản, tiến hoá dần dần" - chứ không phải "Bắt đầu phức tạp vì sợ sau này phải ⟦mở rộng|scale⟧".
+@16
+Các Giai Đoạn Tiến Hoá Kiến Trúc
+@17
+**⟦Kiến trúc|Architecture⟧ không phải là lựa chọn nhị phân (nguyên khối hay vi dịch vụ). Nó là một dải liên tục.**
+@18
+flowchart LR
+    MVP[MVP<br/>Nguyên khối] --> Scaled[Nguyên khối<br/>đã mở rộng]
+    Scaled --> Modular[Nguyên khối<br/>mô-đun hoá]
+    Modular --> Micro[Vi dịch vụ]
+
+    style MVP fill:#90EE90
+    style Scaled fill:#FFD700
+    style Modular fill:#FFA500
+    style Micro fill:#FF6347
+@19
+**Mỗi giai đoạn phù hợp với một ⟦quy mô|scale⟧ và quy mô nhóm khác nhau.**
+@20
+Giai Đoạn 1: MVP ⟦Nguyên Khối|Monolith⟧ (0-10 Nghìn Người Dùng)
+@21
+**Một ⟦mã nguồn|codebase⟧, một ⟦cơ sở dữ liệu|database⟧, một lần ⟦triển khai|deployment⟧.**
+@22
+flowchart TB
+    Users[Người dùng] --> LB[Bộ cân bằng tải]
+    LB --> App[Máy chủ ứng dụng<br/>Rails/Django/Express]
+    App --> DB[(CSDL)]
+    App --> Cache[(Redis)]
+@23
+**Đặc điểm:**
+@24
+**Ưu điểm:**
+@25
+Tốc độ phát triển nhanh nhất
+@26
+Triển khai đơn giản (git push)
+@27
+Dễ ⟦gỡ lỗi|debugging⟧ (chỉ 1 mã nguồn)
+@28
+Không có ⟦độ phức tạp|complexity⟧ của ⟦hệ thống phân tán|distributed system⟧
+@29
+⟦Chi phí phụ|overhead⟧ vận hành thấp
+@30
+**Nhược điểm:**
+@31
+⟦Điểm lỗi duy nhất|Single point of failure⟧
+@32
+Toàn bộ mã ⟦liên kết chặt|couples⟧ với nhau
+@33
+Khó mở rộng riêng từng phần
+@34
+Bị giới hạn trong một ngôn ngữ/framework
+@35
+**Ví dụ ⟦bộ công nghệ|tech stack⟧:**
+@36
+Frontend: React/Vue (được phục vụ bởi cùng máy chủ)
+Backend: Rails/Django/Laravel/Express
+Cơ sở dữ liệu: PostgreSQL/MySQL
+Bộ nhớ đệm: Redis
+Triển khai: Heroku/Railway/một VPS duy nhất
+
+@37
+**Khi nào dùng:**
+@38
+Trước khi đạt ⟦độ phù hợp sản phẩm – thị trường|product-market-fit⟧
+@39
+Công ty khởi nghiệp dưới 10 ⟦kỹ sư|engineers⟧
+@40
+⟦Lưu lượng|Traffic⟧ dưới 100 req/s
+@41
+Đang chứng minh ý tưởng
+@42
+**Ví dụ thực tế:**
+@43
+Basecamp (vẫn là nguyên khối ở quy mô khổng lồ)
+@44
+Shopify (bắt đầu với nguyên khối)
+@45
+GitHub (bắt đầu với nguyên khối)
+@46
+Giai Đoạn 2: Nguyên Khối Đã Mở Rộng (10 Nghìn - 100 Nghìn Người Dùng)
+@47
+**Cùng một mã nguồn, thêm ⟦máy chủ|servers⟧ + tối ưu cơ sở dữ liệu.**
+@48
+flowchart TB
+    Users[Người dùng] --> LB[Bộ cân bằng tải]
+
+    subgraph AppServers[Tầng ứng dụng]
+        App1[Máy chủ ứng dụng 1]
+        App2[Máy chủ ứng dụng 2]
+        App3[Máy chủ ứng dụng 3]
+    end
+
+    LB --> App1
+    LB --> App2
+    LB --> App3
+
+    App1 --> Primary[(CSDL chính)]
+    App2 --> Primary
+    App3 --> Primary
+
+    Primary -.Nhân bản.-> Replica1[(Bản sao chỉ đọc 1)]
+    Primary -.Nhân bản.-> Replica2[(Bản sao chỉ đọc 2)]
+
+    App1 --> Replica1
+    App2 --> Replica2
+    App3 --> Replica1
+@49
+**Thay đổi so với Giai đoạn 1:**
+@50
+**⟦Hạ tầng|Infrastructure⟧:**
+@51
+⟦Mở rộng theo chiều ngang|Horizontal scaling⟧ (nhiều máy chủ ứng dụng)
+@52
+⟦Bản sao chỉ đọc|read replicas⟧ cho cơ sở dữ liệu
+@53
+CDN cho ⟦tài nguyên tĩnh|static assets⟧
+@54
+⟦Cụm|cluster⟧ Redis cho ⟦phiên|sessions⟧
+@55
+**Tối ưu mã:**
+@56
+Tối ưu ⟦truy vấn|query⟧
+@57
+Sửa lỗi N+1
+@58
+Tầng ⟦lưu đệm|caching⟧
+@59
+⟦Tác vụ nền|Background jobs⟧ (Sidekiq/Celery)
+@60
+**Vẫn là nguyên khối, nhưng đã được mở rộng.**
+@61
+**Khi nào chuyển sang giai đoạn này:**
+@62
+Lưu lượng 100-1000 req/s
+@63
+CPU của một máy chủ liên tục trên 70%
+@64
+⟦Thời gian phản hồi|Response time⟧ ngày càng xấu đi
+@65
+Nhóm 10-30 kỹ sư
+@66
+**⟦Chi phí|Cost⟧ so với ⟦độ phức tạp|complexity⟧:**
+@67
+Giai đoạn 1: $50-200/tháng
+Giai đoạn 2: $500-2000/tháng
+Độ phức tạp: +20%
+
+@68
+**Một ⟦sự đánh đổi|trade-off⟧ hợp lý cho tăng trưởng.**
+@69
+Giai Đoạn 3: ⟦Nguyên Khối Mô-đun Hoá|Modular Monolith⟧ (100 Nghìn - 1 Triệu Người Dùng)
+@70
+**Một lần triển khai duy nhất, nhưng mã được tổ chức thành các ⟦mô-đun|modules⟧.**
+@71
+flowchart TB
+    subgraph Monolith["Nguyên khối mô-đun hoá"]
+        Auth[Mô-đun xác thực]
+        Users[Mô-đun người dùng]
+        Orders[Mô-đun đơn hàng]
+        Payments[Mô-đun thanh toán]
+
+        Auth -.->|API được định nghĩa rõ ràng| Users
+        Users -.->|API được định nghĩa rõ ràng| Orders
+        Orders -.->|API được định nghĩa rõ ràng| Payments
+    end
+
+    Monolith --> DB[(CSDL dùng chung)]
+@72
+**Cấu trúc mô-đun:**
+@73
+/app
+  /modules
+    /auth
+      - controllers/
+      - services/
+      - models/
+      - api.ts (giao diện công khai)
+    /users
+      - controllers/
+      - services/
+      - models/
+      - api.ts
+    /orders
+      - controllers/
+      - services/
+      - models/
+      - api.ts
+
+@74
+**Quy tắc:**
+@75
+Các mô-đun giao tiếp với nhau qua các API được định nghĩa rõ ràng
+@76
+Không truy cập trực tiếp cơ sở dữ liệu của mô-đun khác
+@77
+Ranh giới rõ ràng
+@78
+Chuẩn bị cho vi dịch vụ (nếu cần)
+@79
+**Lợi ích:**
+@80
+⟦Quyền sở hữu theo nhóm|Team ownership⟧ (nhóm A sở hữu mô-đun xác thực)
+@81
+Kiểm thử dễ hơn (các mô-đun được cô lập)
+@82
+Có thể tách thành ⟦vi dịch vụ|microservice⟧ về sau
+@83
+Vẫn giữ được sự đơn giản của nguyên khối
+@84
+**Khi nào dùng:**
+@85
+Nhóm 30-100 kỹ sư
+@86
+⟦Logic nghiệp vụ|domain logic⟧ phức tạp
+@87
+Chuẩn bị cho khả năng chuyển sang vi dịch vụ
+@88
+Muốn các nhóm tự chủ nhưng chưa sẵn sàng cho vi dịch vụ
+@89
+**Ví dụ thực tế:**
+@90
+Shopify (nguyên khối mô-đun hoá trước khi chuyển sang vi dịch vụ)
+@91
+Basecamp (kiến trúc hiện tại)
+@92
+Giai Đoạn 4: ⟦Vi Dịch Vụ|Microservices⟧ (Trên 1 Triệu Người Dùng)
+@93
+**Nhiều ⟦dịch vụ|services⟧ độc lập, mỗi dịch vụ có cơ sở dữ liệu riêng.**
+@94
+flowchart TB
+    subgraph Gateway
+        API[API Gateway]
+    end
+
+    subgraph Services
+        Auth[Dịch vụ xác thực]
+        Users[Dịch vụ người dùng]
+        Orders[Dịch vụ đơn hàng]
+        Payments[Dịch vụ thanh toán]
+    end
+
+    subgraph Databases
+        AuthDB[(CSDL xác thực)]
+        UsersDB[(CSDL người dùng)]
+        OrdersDB[(CSDL đơn hàng)]
+        PaymentDB[(CSDL thanh toán)]
+    end
+
+    API --> Auth
+    API --> Users
+    API --> Orders
+    API --> Payments
+
+    Auth --> AuthDB
+    Users --> UsersDB
+    Orders --> OrdersDB
+    Payments --> PaymentDB
+
+    Orders -.HTTP.-> Users
+    Orders -.HTTP.-> Payments
+@95
+**Đặc điểm:**
+@96
+**Ưu điểm:**
+@97
+Mở rộng độc lập
+@98
+Triển khai độc lập
+@99
+Linh hoạt về công nghệ
+@100
+Các nhóm tự chủ
+@101
+⟦Cô lập lỗi|Fault isolation⟧
+@102
+**Nhược điểm:**
+@103
+Độ phức tạp của hệ thống phân tán
+@104
+⟦Độ trễ|latency⟧ mạng
+@105
+Thách thức về ⟦tính nhất quán|consistency⟧ dữ liệu
+@106
+Chi phí phụ vận hành
+@107
+Kiểm thử phức tạp
+@108
+Triển khai phức tạp
+@109
+**Khi nào chuyển đổi:**
+@110
+**Chuyển đổi khi:**
+@111
+Nhóm trên 100 kỹ sư
+@112
+Ranh giới ⟦miền nghiệp vụ|domain⟧ rõ ràng
+@113
+Mỗi mô-đun có nhu cầu mở rộng khác nhau
+@114
+Hệ thống nguyên khối trở thành ⟦điểm nghẽn|bottleneck⟧ về mặt tổ chức
+@115
+Có đủ ngân sách + chuyên môn để gánh độ phức tạp
+@116
+**KHÔNG chuyển đổi khi:**
+@117
+Nhóm dưới 30 kỹ sư
+@118
+Ranh giới miền nghiệp vụ còn mơ hồ
+@119
+⟦Tối ưu quá sớm|Premature optimization⟧
+@120
+Chưa có chuyên môn DevOps
+@121
+Ngân sách hạn chế
+@122
+**Bước nhảy chi phí:**
+@123
+Nguyên khối mô-đun hoá: $2k-5k/tháng
+Vi dịch vụ: $10k-50k+/tháng
+
+Hạ tầng + nhóm DevOps + giám sát + điều phối (orchestration)
+
+@124
+**Bước nhảy độ phức tạp: gấp 10 lần.**
+@125
+Tín Hiệu Cần Mở Rộng - Khi Nào Nên Tiến Hoá?
+@126
+**Đừng tiến hoá vì xu hướng. Hãy tiến hoá vì những ⟦điểm đau|pain points⟧ thực sự.**
+@127
+Tín Hiệu 1: ⟦Điểm Nghẽn Hiệu Năng|Performance Bottleneck⟧
+@128
+**Triệu chứng:**
+@129
+Một thành phần duy nhất gây nghẽn:
+- Xử lý ảnh: 80% CPU
+- Phần còn lại của ứng dụng: 20% CPU
+
+@130
+**Giải pháp:** Tách riêng dịch vụ xử lý ảnh.
+@131
+Trước: Hệ thống nguyên khối xử lý ảnh
+Sau: Dịch vụ ảnh riêng biệt
+  → Mở rộng độc lập
+  → Dùng máy chủ có GPU
+  → Không lãng phí tài nguyên cho các phần khác
+
+@132
+**Tiêu chí quyết định:**
+@133
+Điểm nghẽn được cô lập rõ ràng
+@134
+Nhu cầu tài nguyên khác nhau (CPU hay bộ nhớ hay GPU)
+@135
+Việc tách riêng giải quyết được vấn đề
+@136
+Tín Hiệu 2: Điểm Nghẽn Khi ⟦Mở Rộng|Scaling⟧ Nhóm
+@137
+**Triệu chứng:**
+@138
+Quy mô nhóm: 50 kỹ sư
+Tần suất triển khai: 1 lần/tuần
+Xung đột khi merge: Hằng ngày
+Chờ triển khai: Hàng giờ liền
+
+@139
+**Mọi người giẫm chân lên nhau.**
+@140
+**Giải pháp:** Chia tách mã nguồn theo quyền sở hữu của từng nhóm.

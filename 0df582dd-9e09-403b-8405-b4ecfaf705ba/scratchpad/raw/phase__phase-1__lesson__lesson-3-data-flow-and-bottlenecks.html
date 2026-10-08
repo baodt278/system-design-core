@@ -1,0 +1,705 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống | Phase 1 — Foundation: Thinking in Systems | System Design Core</title><meta name="description" content="Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và "/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks"/><meta property="og:title" content="Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống | Phase 1 — Foundation: Thinking in Systems"/><meta property="og:description" content="Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và "/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống | Phase 1 — Foundation: Thinking in Systems"/><meta name="twitter:description" content="Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và "/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 1 — Foundation: Thinking in Systems</p><p class="mt-3 text-xl font-semibold text-ink">Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và cách measure để tìm bottleneck thực sự.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Components Trong Hệ Thống Web - Hiểu Từng Building Block</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-2-communication-patterns"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Communication Patterns - Sync vs Async trong Distributed Systems</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-1">Phase 1 — Foundation: Thinking in Systems</a></li><li>/</li><li aria-current="page" class="text-ink">Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và cách measure để tìm bottleneck thực sự.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống"><article class="prose-ui"><h1 id="data-flow--bottlenecks-tìm-và-tối-ưu-điểm-nghẽn">Data Flow &amp; Bottlenecks: Tìm Và Tối Ưu Điểm Nghẽn</h1>
+<p>Tôi còn nhớ lần đầu tiên được gọi vào war room lúc 3 giờ sáng.</p>
+<p>&quot;Production chậm kinh khủng! Users complain response time 10 giây!&quot;</p>
+<p>Team đang panic. Ai cũng có theory riêng:</p>
+<ul>
+<li>Dev A: &quot;Database chậm, cần upgrade server!&quot;</li>
+<li>Dev B: &quot;Network lag, cần thêm bandwidth!&quot;</li>
+<li>Dev C: &quot;Code inefficient, cần refactor!&quot;</li>
+</ul>
+<p>Senior architect bước vào, yên lặng mở monitoring tool. 5 phút sau, anh chỉ vào một graph:</p>
+<p><em>&quot;Redis connection pool chỉ có 10 connections. Có 1000 requests đang chờ. Fix cái này trước.&quot;</em></p>
+<p>Tăng pool lên 100. Response time về 200ms. Problem solved.</p>
+<p><strong>Bài học:</strong> Đừng optimize bừa. <strong>Measure, find bottleneck, fix bottleneck.</strong></p>
+<h2 id="tại-sao-data-flow--bottlenecks-quan-trọng">Tại Sao Data Flow &amp; Bottlenecks Quan Trọng?</h2>
+<p>Khi hệ thống chậm, 90% engineers làm sai một điều: <strong>Optimize không đúng chỗ.</strong></p>
+<p>Họ:</p>
+<ul>
+<li>Optimize code đã nhanh</li>
+<li>Add cache không cần thiết</li>
+<li>Upgrade hardware không phải bottleneck</li>
+</ul>
+<p><strong>Result:</strong> Waste time, waste money, vấn đề vẫn còn.</p>
+<p><strong>Architect giỏi khác ở chỗ:</strong> Họ biết <strong>tìm bottleneck trước khi optimize</strong>.</p>
+<p>Data flow analysis là skill này. Nó giúp bạn:</p>
+<ul>
+<li><strong>Visualize</strong> request đi qua những gì</li>
+<li><strong>Measure</strong> mỗi step mất bao lâu</li>
+<li><strong>Identify</strong> bottleneck thực sự</li>
+<li><strong>Optimize</strong> đúng chỗ, high impact</li>
+</ul>
+<h2 id="luật-vàng-hệ-thống-chỉ-nhanh-bằng-component-chậm-nhất">Luật Vàng: Hệ Thống Chỉ Nhanh Bằng Component Chậm Nhất</h2>
+<p><strong>The Weakest Link Principle.</strong></p>
+<p>Imagine chuỗi sản xuất:</p>
+<pre><code>Bước 1: Cắt vải (1 phút/sản phẩm)
+Bước 2: May (5 phút/sản phẩm) ← BOTTLENECK
+Bước 3: Đóng gói (30 giây/sản phẩm)
+
+Throughput: 1 sản phẩm mỗi 5 phút
+</code></pre>
+<p>Optimize bước 1 từ 1 phút → 10 giây? <strong>Không effect gì.</strong> Bottleneck vẫn là bước 2.</p>
+<p>Chỉ khi optimize bước 2 (bottleneck), throughput mới tăng.</p>
+<p><strong>Same với systems:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    A[Client&lt;br/&gt;50ms] --&gt; B[Server&lt;br/&gt;10ms]
+    B --&gt; C[Database&lt;br/&gt;500ms]
+    C --&gt; B
+    B --&gt; A
+    
+    style C fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px</code></pre>
+<p><strong>Total latency: 50 + 10 + 500 + 10 + 50 = 620ms</strong></p>
+<p>Database chiếm <strong>500ms / 620ms = 81%</strong> của total time.</p>
+<p>Optimize server từ 10ms → 1ms? Save được 18ms (3% improvement).</p>
+<p>Optimize database từ 500ms → 50ms? Save được 450ms (73% improvement)!</p>
+<p><strong>Lesson:</strong> Always optimize bottleneck first. Biggest ROI.</p>
+<h2 id="cách-tư-duy-3-step-bottleneck-analysis">Cách Tư Duy: 3-Step Bottleneck Analysis</h2>
+<h3 id="step-1-đo-thời-gian-mỗi-bước">Step 1: Đo Thời Gian Mỗi Bước</h3>
+<p><strong>Không đoán. Đo.</strong></p>
+<p><strong>Example: User loads profile page</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant C as Client
+    participant LB as Load Balancer
+    participant API as API Server
+    participant Cache as Redis
+    participant DB as Database
+    
+    C-&gt;&gt;LB: GET /profile/123
+    Note over C,LB: 50ms (network)
+    LB-&gt;&gt;API: Forward request
+    Note over LB,API: 10ms
+    API-&gt;&gt;Cache: Check cache
+    Note over API,Cache: 5ms (cache miss)
+    API-&gt;&gt;DB: Query user data
+    Note over API,DB: 300ms
+    DB--&gt;&gt;API: Return data
+    API-&gt;&gt;Cache: Store in cache
+    Note over API,Cache: 2ms
+    API--&gt;&gt;LB: Response
+    Note over API,LB: 10ms
+    LB--&gt;&gt;C: Response
+    Note over LB,C: 50ms</code></pre>
+<p><strong>Breakdown:</strong></p>
+<pre><code>Client → Load Balancer:     50ms
+Load Balancer → API:        10ms
+API → Cache check:           5ms (miss)
+API → Database query:      300ms ← BOTTLENECK
+API → Cache store:           2ms
+API → Load Balancer:        10ms
+Load Balancer → Client:     50ms
+
+Total: 427ms
+Database: 300ms (70% of total)
+</code></pre>
+<h3 id="step-2-tìm-bottleneck">Step 2: Tìm Bottleneck</h3>
+<p><strong>Bottleneck = Component chiếm thời gian nhiều nhất.</strong></p>
+<p>Trong example trên: <strong>Database (300ms / 427ms = 70%)</strong></p>
+<p><strong>How to measure trong production:</strong></p>
+<p><strong>Tool 1: APM (Application Performance Monitoring)</strong></p>
+<pre><code class="language-python"># New Relic, DataDog, hoặc tương tự
+from apm import trace
+
+@trace(&quot;load_profile&quot;)
+def load_profile(user_id):
+    with trace(&quot;cache_check&quot;):
+        user = cache.get(f&quot;user:{user_id}&quot;)
+    
+    if not user:
+        with trace(&quot;db_query&quot;):  # Measure this
+            user = db.query(&quot;SELECT * FROM users WHERE id = ?&quot;, user_id)
+        
+        with trace(&quot;cache_store&quot;):
+            cache.set(f&quot;user:{user_id}&quot;, user)
+    
+    return user
+
+# APM dashboard sẽ show:
+# - load_profile: 307ms total
+# - cache_check: 5ms
+# - db_query: 300ms ← BOTTLENECK FOUND
+# - cache_store: 2ms
+</code></pre>
+<p><strong>Tool 2: Custom timing logs</strong></p>
+<pre><code class="language-python">import time
+
+def load_profile(user_id):
+    start = time.time()
+    
+    # Step 1: Cache check
+    cache_start = time.time()
+    user = cache.get(f&quot;user:{user_id}&quot;)
+    cache_time = time.time() - cache_start
+    
+    # Step 2: DB query if cache miss
+    if not user:
+        db_start = time.time()
+        user = db.query(&quot;SELECT * FROM users WHERE id = ?&quot;, user_id)
+        db_time = time.time() - db_start
+        
+        cache.set(f&quot;user:{user_id}&quot;, user)
+    else:
+        db_time = 0
+    
+    total_time = time.time() - start
+    
+    # Log breakdown
+    logger.info(f&quot;Profile load: {total_time:.3f}s | &quot;
+                f&quot;Cache: {cache_time:.3f}s | &quot;
+                f&quot;DB: {db_time:.3f}s&quot;)
+    
+    return user
+
+# Logs show:
+# Profile load: 0.307s | Cache: 0.005s | DB: 0.300s
+</code></pre>
+<p><strong>Tool 3: Database query profiling</strong></p>
+<pre><code class="language-sql">-- PostgreSQL
+EXPLAIN ANALYZE
+SELECT * FROM users WHERE email = &#x27;john@example.com&#x27;;
+
+-- Output shows:
+Seq Scan on users (cost=0.00..18334.00 rows=1 width=123)
+  (actual time=0.011..285.234 rows=1 loops=1)
+  Filter: (email = &#x27;john@example.com&#x27;)
+  Rows Removed by Filter: 999999
+Planning Time: 0.082 ms
+Execution Time: 285.256 ms  ← 285ms! Missing index!
+</code></pre>
+<h3 id="step-3-optimize-bottleneck-đó">Step 3: Optimize Bottleneck Đó</h3>
+<p><strong>Chỉ optimize component là bottleneck.</strong></p>
+<p>Trong example, database là bottleneck (300ms).</p>
+<p><strong>Optimization options:</strong></p>
+<p><strong>Option A: Add index (Low effort, High impact)</strong></p>
+<pre><code class="language-sql">-- Before: Full table scan, 300ms
+SELECT * FROM users WHERE email = &#x27;john@example.com&#x27;;
+
+-- Add index
+CREATE INDEX idx_users_email ON users(email);
+
+-- After: Index scan, 5ms
+-- 60x faster!
+</code></pre>
+<p><strong>Option B: Cache more aggressively</strong></p>
+<pre><code class="language-python"># Before: Cache miss → DB query (300ms)
+
+# After: Pre-warm cache
+def warm_cache():
+    popular_users = db.query(&quot;SELECT * FROM users ORDER BY login_count DESC LIMIT 1000&quot;)
+    for user in popular_users:
+        cache.set(f&quot;user:{user.id}&quot;, user, ttl=3600)
+
+# Result: Cache hit rate 95% → Only 5% queries hit DB
+</code></pre>
+<p><strong>Option C: Optimize query</strong></p>
+<pre><code class="language-sql">-- Before: Select all columns (waste)
+SELECT * FROM users WHERE email = &#x27;john@example.com&#x27;;
+
+-- After: Select only needed columns
+SELECT id, name, email, avatar FROM users WHERE email = &#x27;john@example.com&#x27;;
+
+-- Smaller data → Faster transfer → 300ms → 200ms
+</code></pre>
+<p><strong>Measure after optimization:</strong></p>
+<pre><code>Original:
+Total: 427ms | DB: 300ms (70%)
+
+After adding index:
+Total: 132ms | DB: 5ms (4%)
+
+Improvement: 427ms → 132ms (69% faster!)
+</code></pre>
+<p><strong>Key insight:</strong> Optimize bottleneck = Biggest impact với least effort.</p>
+<h2 id="common-bottlenecks--how-to-detect">Common Bottlenecks &amp; How to Detect</h2>
+<h3 id="bottleneck-1-database-queries">Bottleneck 1: Database Queries</h3>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>High query latency (&gt; 100ms)</li>
+<li>Database CPU/IO maxed out</li>
+<li>Slow response time under load</li>
+</ul>
+<p><strong>Detection:</strong></p>
+<pre><code class="language-sql">-- PostgreSQL: Find slow queries
+SELECT 
+    query,
+    calls,
+    total_time,
+    mean_time,
+    max_time
+FROM pg_stat_statements
+ORDER BY mean_time DESC
+LIMIT 10;
+
+-- Output shows queries taking &gt; 100ms average
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<pre><code>1. Add indexes (most common fix)
+   - Before: 500ms full table scan
+   - After: 5ms index scan
+
+2. Optimize query structure
+   - Avoid SELECT *
+   - Use appropriate JOINs
+   - Add LIMIT when possible
+
+3. Add query cache
+   - Cache frequent queries
+   - Reduce DB load 80-90%
+
+4. Database optimization
+   - Analyze query plans
+   - Update statistics
+   - Vacuum/optimize tables
+
+5. Add read replicas (last resort)
+   - Scale reads horizontally
+   - Route read queries to replicas
+</code></pre>
+<h3 id="bottleneck-2-network-latency">Bottleneck 2: Network Latency</h3>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>High latency between services</li>
+<li>Timeouts under load</li>
+<li>Geographic distance issues</li>
+</ul>
+<p><strong>Detection:</strong></p>
+<pre><code class="language-python">import time
+import requests
+
+def measure_network_latency():
+    start = time.time()
+    response = requests.get(&quot;https://api.example.com/health&quot;)
+    latency = time.time() - start
+    
+    print(f&quot;Network latency: {latency * 1000:.0f}ms&quot;)
+
+# Run from different regions:
+# US East → US West: 50ms
+# US East → Asia: 200ms
+# Asia → Europe: 300ms
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<pre><code>1. CDN for static assets
+   - Images, CSS, JS
+   - Serve from edge locations
+   - 300ms → 20ms
+
+2. Regional deployments
+   - Deploy servers closer to users
+   - US users → US servers
+   - Asia users → Asia servers
+
+3. Reduce payload size
+   - Compress responses (gzip)
+   - Remove unnecessary data
+   - Pagination
+
+4. Connection pooling
+   - Reuse connections
+   - Avoid handshake overhead
+
+5. HTTP/2 or HTTP/3
+   - Multiplexing
+   - Header compression
+</code></pre>
+<h3 id="bottleneck-3-application-logic">Bottleneck 3: Application Logic</h3>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>High CPU usage on app servers</li>
+<li>Slow processing time</li>
+<li>Code execution takes long</li>
+</ul>
+<p><strong>Detection:</strong></p>
+<pre><code class="language-python">import cProfile
+import pstats
+
+# Profile slow function
+def profile_function():
+    profiler = cProfile.Profile()
+    profiler.enable()
+    
+    # Run function
+    result = slow_function()
+    
+    profiler.disable()
+    
+    # Print stats
+    stats = pstats.Stats(profiler)
+    stats.sort_stats(&#x27;cumulative&#x27;)
+    stats.print_stats(10)  # Top 10 slowest functions
+
+# Output shows:
+# Function A: 500ms (bottleneck!)
+# Function B: 50ms
+# Function C: 10ms
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<pre><code>1. Optimize algorithms
+   - O(n²) → O(n log n)
+   - Use better data structures
+   - Avoid nested loops
+
+2. Async processing
+   - Move heavy work to background
+   - Use message queues
+   - Don&#x27;t block user request
+
+3. Caching expensive computations
+   - Memoization
+   - Cache computed results
+
+4. Horizontal scaling
+   - Add more app servers
+   - Load balance
+
+5. Language/runtime optimization
+   - Use compiled language for hot paths
+   - JIT compilation
+   - Profile-guided optimization
+</code></pre>
+<h3 id="bottleneck-4-external-api-calls">Bottleneck 4: External API Calls</h3>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Waiting for third-party services</li>
+<li>Timeouts from external APIs</li>
+<li>Cascading delays</li>
+</ul>
+<p><strong>Detection:</strong></p>
+<pre><code class="language-python">import httpx
+import time
+
+async def measure_external_apis():
+    apis = [
+        &quot;https://api.stripe.com/health&quot;,
+        &quot;https://api.twilio.com/health&quot;,
+        &quot;https://maps.googleapis.com/health&quot;
+    ]
+    
+    async with httpx.AsyncClient() as client:
+        for api in apis:
+            start = time.time()
+            try:
+                response = await client.get(api, timeout=5.0)
+                latency = time.time() - start
+                print(f&quot;{api}: {latency * 1000:.0f}ms&quot;)
+            except httpx.TimeoutException:
+                print(f&quot;{api}: TIMEOUT (&gt; 5000ms)&quot;)
+
+# Output:
+# Stripe API: 150ms
+# Twilio API: 3500ms ← BOTTLENECK
+# Google Maps: 80ms
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<pre><code>1. Async calls (parallel)
+   # Before: Sequential (3.5s + 0.15s + 0.08s = 3.73s)
+   stripe_data = call_stripe()
+   twilio_data = call_twilio()
+   maps_data = call_google_maps()
+   
+   # After: Parallel (max(3.5s, 0.15s, 0.08s) = 3.5s)
+   results = await asyncio.gather(
+       call_stripe(),
+       call_twilio(),
+       call_google_maps()
+   )
+
+2. Cache API responses
+   - Cache for appropriate TTL
+   - Reduce external calls 90%
+
+3. Circuit breaker pattern
+   - Fail fast when API down
+   - Don&#x27;t wait for timeout
+
+4. Timeouts
+   - Set aggressive timeouts
+   - Don&#x27;t let slow APIs block
+
+5. Fallback mechanisms
+   - Graceful degradation
+   - Return cached/default data
+</code></pre>
+<h2 id="real-world-example-e-commerce-checkout">Real-World Example: E-commerce Checkout</h2>
+<p><strong>Scenario:</strong> Checkout page loading chậm (3 giây)</p>
+<h3 id="step-1-measure-data-flow">Step 1: Measure Data Flow</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TD
+    A[User clicks Checkout] --&gt; B[Load Balancer&lt;br/&gt;20ms]
+    B --&gt; C[API Server&lt;br/&gt;50ms]
+    C --&gt; D{Cache Check&lt;br/&gt;10ms}
+    D --&gt;|Hit| E[Return Data&lt;br/&gt;50ms]
+    D --&gt;|Miss| F[Get Cart&lt;br/&gt;200ms]
+    F --&gt; G[Get User&lt;br/&gt;150ms]
+    G --&gt; H[Calculate Shipping&lt;br/&gt;2000ms]
+    H --&gt; I[Calculate Tax&lt;br/&gt;100ms]
+    I --&gt; J[Store in Cache&lt;br/&gt;10ms]
+    J --&gt; E
+    
+    style H fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px</code></pre>
+<p><strong>Breakdown:</strong></p>
+<pre><code>Load Balancer:           20ms
+API processing:          50ms
+Cache check:             10ms (miss)
+Get cart from DB:       200ms
+Get user from DB:       150ms
+Calculate shipping:    2000ms ← BOTTLENECK (67% of total)
+Calculate tax:          100ms
+Store in cache:          10ms
+Return to client:        50ms
+
+Total: ~2,590ms
+Shipping API: 2,000ms (77% of total)
+</code></pre>
+<h3 id="step-2-identify-bottleneck">Step 2: Identify Bottleneck</h3>
+<p><strong>Shipping API call (2000ms) là clear bottleneck.</strong></p>
+<p>Why so slow?</p>
+<ul>
+<li>External API (third-party shipping provider)</li>
+<li>Calculates real-time rates from 5 carriers</li>
+<li>Network latency + computation time</li>
+</ul>
+<h3 id="step-3-optimize-bottleneck">Step 3: Optimize Bottleneck</h3>
+<p><strong>Solution 1: Cache shipping rates</strong></p>
+<pre><code class="language-python"># Before: Call API every time
+def calculate_shipping(address, weight):
+    return shipping_api.get_rates(address, weight)  # 2000ms
+
+# After: Cache by address + weight
+def calculate_shipping(address, weight):
+    cache_key = f&quot;shipping:{hash(address)}:{weight}&quot;
+    
+    rates = cache.get(cache_key)
+    if rates:
+        return rates  # 5ms (cache hit)
+    
+    rates = shipping_api.get_rates(address, weight)  # 2000ms (cache miss)
+    cache.set(cache_key, rates, ttl=3600)  # Cache 1 hour
+    
+    return rates
+
+# Result: Cache hit rate 85%
+# Average time: 0.85 * 5ms + 0.15 * 2000ms = 304ms
+# Improvement: 2000ms → 304ms (85% faster!)
+</code></pre>
+<p><strong>Solution 2: Async calculation</strong></p>
+<pre><code class="language-python"># Before: User waits for shipping calculation
+def checkout():
+    cart = get_cart()
+    user = get_user()
+    shipping = calculate_shipping()  # User waits 2s
+    tax = calculate_tax()
+    return render_page(cart, user, shipping, tax)
+
+# After: Calculate shipping in background
+def checkout():
+    cart = get_cart()
+    user = get_user()
+    
+    # Return page immediately với estimated shipping
+    estimated_shipping = get_estimated_shipping(user.zipcode)
+    
+    # Calculate real shipping in background
+    task_queue.add({
+        &quot;type&quot;: &quot;calculate_shipping&quot;,
+        &quot;user_id&quot;: user.id,
+        &quot;cart_id&quot;: cart.id
+    })
+    
+    return render_page(cart, user, estimated_shipping, tax)
+
+# User sees page immediately (500ms)
+# Real shipping rates update via WebSocket (2s later)
+</code></pre>
+<p><strong>Solution 3: Parallel API calls</strong></p>
+<pre><code class="language-python"># Before: Sequential (2000 + 100 = 2100ms)
+shipping = calculate_shipping()
+tax = calculate_tax()
+
+# After: Parallel (max(2000, 100) = 2000ms)
+shipping, tax = await asyncio.gather(
+    calculate_shipping(),
+    calculate_tax()
+)
+
+# Saved: 100ms
+</code></pre>
+<p><strong>Result after optimizations:</strong></p>
+<pre><code>Original: 2,590ms
+After cache (85% hit): 590ms
+After async: 500ms (perceived)
+
+Improvement: 2590ms → 500ms (81% faster!)
+User satisfaction: 📈📈📈
+</code></pre>
+<h2 id="anti-patterns-optimization-mistakes">Anti-Patterns: Optimization Mistakes</h2>
+<h3 id="mistake-1-premature-optimization">Mistake 1: Premature Optimization</h3>
+<pre><code class="language-python"># BAD: Optimize before measuring
+def get_users():
+    # Add complex caching without knowing if DB is slow
+    # Add pagination without knowing if data is large
+    # Use redis cluster without measuring redis load
+    pass
+
+# GOOD: Measure first
+def get_users():
+    # Measure: DB query takes 500ms → bottleneck found
+    # Then optimize: Add cache → 5ms
+    pass
+</code></pre>
+<p><strong>Lesson:</strong> &quot;Premature optimization is the root of all evil&quot; - Donald Knuth</p>
+<p>Measure → Find bottleneck → Then optimize.</p>
+<h3 id="mistake-2-optimize-wrong-component">Mistake 2: Optimize Wrong Component</h3>
+<pre><code class="language-python"># Example: API slow (1000ms total)
+# Breakdown:
+# - Server processing: 50ms
+# - Database query: 950ms ← Real bottleneck
+
+# BAD: Optimize server code
+def handle_request():
+    # Refactor code: 50ms → 10ms
+    # Total: 1000ms → 960ms (4% improvement)
+    # Waste of time!
+    pass
+
+# GOOD: Optimize database
+# Add index: 950ms → 50ms
+# Total: 1000ms → 100ms (90% improvement)
+</code></pre>
+<p><strong>Lesson:</strong> Optimize bottleneck, not random components.</p>
+<h3 id="mistake-3-optimize-without-re-measuring">Mistake 3: Optimize Without Re-Measuring</h3>
+<pre><code class="language-python"># Add optimization
+add_cache_layer()
+
+# BAD: Assume it worked, move on
+
+# GOOD: Measure improvement
+before = measure_latency()  # 500ms
+add_cache_layer()
+after = measure_latency()   # 50ms
+
+improvement = (before - after) / before * 100
+print(f&quot;Improvement: {improvement:.1f}%&quot;)  # 90%
+
+# If improvement &lt; 10%, optimization không có effect
+# Investigate why hoặc try different approach
+</code></pre>
+<p><strong>Lesson:</strong> Always verify optimization worked.</p>
+<h3 id="mistake-4-over-optimization">Mistake 4: Over-Optimization</h3>
+<pre><code class="language-python"># API currently: 100ms (already fast)
+# User perception threshold: ~100ms
+
+# BAD: Spend 2 weeks optimizing 100ms → 50ms
+# Users don&#x27;t notice difference
+# Developer time wasted
+
+# GOOD: Optimize only if:
+# - Current performance &lt; acceptable
+# - Optimization has high ROI
+# - User experience improves noticeably
+</code></pre>
+<p><strong>Lesson:</strong> Good enough &gt; Perfect. Know when to stop.</p>
+<h2 id="practical-exercise-analyze-your-system">Practical Exercise: Analyze Your System</h2>
+<p><strong>Exercise 1: Trace a Request</strong></p>
+<p>Pick một endpoint trong system bạn đang làm.</p>
+<p><strong>Steps:</strong></p>
+<ol>
+<li><strong>Instrument code với timing:</strong></li>
+</ol>
+<pre><code class="language-python">import time
+
+def track_time(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        duration = time.time() - start
+        print(f&quot;{func.__name__}: {duration * 1000:.0f}ms&quot;)
+        return result
+    return wrapper
+
+@track_time
+def get_product(product_id):
+    user = get_current_user()         # ?ms
+    product = get_product_from_db(product_id)  # ?ms
+    reviews = get_reviews(product_id)          # ?ms
+    recommendations = get_recommendations()     # ?ms
+    return render(product, reviews, recommendations)
+</code></pre>
+<ol start="2">
+<li><strong>Run và record times:</strong></li>
+</ol>
+<pre><code>get_current_user: 50ms
+get_product_from_db: 200ms
+get_reviews: 150ms
+get_recommendations: 800ms ← BOTTLENECK
+render: 30ms
+
+Total: 1,230ms
+</code></pre>
+<ol start="3">
+<li><strong>Identify bottleneck:</strong></li>
+</ol>
+<p>get_recommendations chiếm 800/1230 = 65% của time.</p>
+<ol start="4">
+<li><strong>Optimize bottleneck:</strong></li>
+</ol>
+<p>Add cache, async processing, hoặc improve algorithm.</p>
+<ol start="5">
+<li><strong>Re-measure:</strong></li>
+</ol>
+<pre><code>Before: 1,230ms
+After: 430ms (65% faster)
+</code></pre>
+<p><strong>Exercise 2: Find Your Slowest Endpoints</strong></p>
+<p><strong>Query APM tool hoặc access logs:</strong></p>
+<pre><code class="language-sql">-- Find slowest API endpoints (if logging to DB)
+SELECT 
+    endpoint,
+    COUNT(*) as request_count,
+    AVG(response_time_ms) as avg_time,
+    MAX(response_time_ms) as max_time
+FROM api_logs
+WHERE created_at &gt; NOW() - INTERVAL &#x27;1 day&#x27;
+GROUP BY endpoint
+ORDER BY avg_time DESC
+LIMIT 10;
+
+-- Output:
+-- /api/search: 2,500ms avg (BOTTLENECK)
+-- /api/checkout: 1,200ms avg
+-- /api/products: 300ms avg
+</code></pre>
+<p><strong>Focus optimization trên top 3 slowest endpoints.</strong></p>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Luật vàng của bottleneck optimization:</strong></p>
+<ol>
+<li><strong>Measure first</strong> - Không đoán, đo thực tế</li>
+<li><strong>Find bottleneck</strong> - Component chậm nhất</li>
+<li><strong>Optimize bottleneck</strong> - Đừng optimize random</li>
+<li><strong>Re-measure</strong> - Verify improvement</li>
+<li><strong>Repeat</strong> - Find next bottleneck</li>
+</ol>
+<p><strong>Common bottlenecks:</strong></p>
+<ul>
+<li><strong>Database</strong> - Slow queries, missing indexes</li>
+<li><strong>Network</strong> - Latency, external APIs</li>
+<li><strong>Application</strong> - Inefficient algorithms</li>
+<li><strong>External services</strong> - Third-party APIs</li>
+</ul>
+<p><strong>Optimization strategies:</strong></p>
+<ul>
+<li><strong>Indexes</strong> - 100x faster queries</li>
+<li><strong>Caching</strong> - 10-100x faster reads</li>
+<li><strong>Async processing</strong> - Don&#x27;t block users</li>
+<li><strong>Query optimization</strong> - Better SQL</li>
+<li><strong>Horizontal scaling</strong> - More capacity</li>
+</ul>
+<p><strong>Remember:</strong> Hệ thống chỉ nhanh bằng component chậm nhất. Optimize bottleneck = Biggest impact.</p>
+<p><strong>Mental model:</strong></p>
+<p>Think như một detective:</p>
+<ol>
+<li>Có vấn đề (slow system)</li>
+<li>Thu thập evidence (measurements)</li>
+<li>Tìm thủ phạm (bottleneck)</li>
+<li>Giải quyết (optimize)</li>
+<li>Verify (re-measure)</li>
+</ol>
+<p><strong>Next step:</strong> Apply vào production system của bạn. Measure, find bottlenecks, optimize. Repeat.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-1/lesson/lesson-2-communication-patterns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Communication Patterns - Sync vs Async trong Distributed Systems</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong">Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-1\",\"lesson\",\"lesson-3-data-flow-and-bottlenecks\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-1\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-3-data-flow-and-bottlenecks\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 1 — Foundation: Thinking in Systems\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và cách measure để tìm bottleneck thực sự.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-components-trong-he-thong-web\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block\"}]]}]}],[\"$\",\"li\",\"lesson-2-communication-patterns\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-2-communication-patterns\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Communication Patterns - Sync vs Async trong Distributed Systems\"}]]}]}],[\"$\",\"li\",\"lesson-3-data-flow-and-bottlenecks\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống\"}]]}]}],[\"$\",\"li\",\"lesson-4-cac-khai-niem-quan-trong\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem\"}]]}]}],[\"$\",\"li\",\"lesson-5-bai-tap-tong-hop\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[\"$L24\",\"Tổng quan phase\"]}]]}],\"$L25\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"26:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"25:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1\",\"className\":\"hover:text-ink\",\"children\":\"Phase 1 — Foundation: Thinking in Systems\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và cách measure để tìm bottleneck thực sự.\"}]]}],[\"$\",\"$L26\",null,{\"path\":\"/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks\",\"title\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống\",\"description\":\"Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và cách measure để tìm bottleneck thực sự.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống\",\"children\":\"$L27\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-2-communication-patterns\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Communication Patterns - Sync vs Async trong Distributed Systems\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"28:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"data-flow--bottlenecks-tìm-và-tối-ưu-điểm-nghẽn\",\"children\":\"Data Flow \u0026 Bottlenecks: Tìm Và Tối Ưu Điểm Nghẽn\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ lần đầu tiên được gọi vào war room lúc 3 giờ sáng.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"\\\"Production chậm kinh khủng! Users complain response time 10 giây!\\\"\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Team đang panic. Ai cũng có theory riêng:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Dev A: \\\"Database chậm, cần upgrade server!\\\"\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Dev B: \\\"Network lag, cần thêm bandwidth!\\\"\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Dev C: \\\"Code inefficient, cần refactor!\\\"\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Senior architect bước vào, yên lặng mở monitoring tool. 5 phút sau, anh chỉ vào một graph:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"\\\"Redis connection pool chỉ có 10 connections. Có 1000 requests đang chờ. Fix cái này trước.\\\"\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tăng pool lên 100. Response time về 200ms. Problem solved.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Bài học:\"}],\" Đừng optimize bừa. \",[\"$\",\"strong\",null,{\"children\":\"Measure, find bottleneck, fix bottleneck.\"}]]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-data-flow--bottlenecks-quan-trọng\",\"children\":\"Tại Sao Data Flow \u0026 Bottlenecks Quan Trọng?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Khi hệ thống chậm, 90% engineers làm sai một điều: \",[\"$\",\"strong\",null,{\"children\":\"Optimize không đúng chỗ.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Họ:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Optimize code đã nhanh\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Add cache không cần thiết\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Upgrade hardware không phải bottleneck\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Result:\"}],\" Waste time, waste money, vấn đề vẫn còn.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Architect giỏi khác ở chỗ:\"}],\" Họ biết \",[\"$\",\"strong\",null,{\"children\":\"tìm bottleneck trước khi optimize\"}],\".\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Data flow analysis là skill này. Nó giúp bạn:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Visualize\"}],\" request đi qua những gì\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Measure\"}],\" mỗi step mất bao lâu\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Identify\"}],\" bottleneck thực sự\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Optimize\"}],\" đúng chỗ, high impact\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"luật-vàng-hệ-thống-chỉ-nhanh-bằng-component-chậm-nhất\",\"children\":\"Luật Vàng: Hệ Thống Chỉ Nhanh Bằng Component Chậm Nhất\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The Weakest Link Principle.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Imagine chuỗi sản xuất:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bước 1: Cắt vải (1 phút/sản phẩm)\\nBước 2: May (5 phút/sản phẩm) ← BOTTLENECK\\nBước 3: Đóng gói (30 giây/sản phẩm)\\n\\nThroughput: 1 sản phẩm mỗi 5 phút\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Optimize bước 1 từ 1 phút → 10 giây? \",[\"$\",\"strong\",null,{\"children\":\"Không effect gì.\"}],\" Bottleneck vẫn là bước 2.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Chỉ khi optimize bước 2 (bottleneck), throughput mới tăng.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Same với systems:\"}]}],\"\\n\",[\"$\",\"$L28\",null,{\"chart\":\"graph LR\\n    A[Client\u003cbr/\u003e50ms] --\u003e B[Server\u003cbr/\u003e10ms]\\n    B --\u003e C[Database\u003cbr/\u003e500ms]\\n    C --\u003e B\\n    B --\u003e A\\n    \\n    style C fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Total latency: 50 + 10 + 500 + 10 + 50 = 620ms\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Database chiếm \",[\"$\",\"strong\",null,{\"children\":\"500ms / 620ms = 81%\"}],\" của total time.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Optimize server từ 10ms → 1ms? Save được 18ms (3% improvement).\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Optimize database từ 500ms → 50ms? Save được 450ms (73% improvement)!\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Lesson:\"}],\" Always optimize bottleneck first. Biggest ROI.\"]}],\"\\n\",\"$L29\",\"\\n\",\"$L2a\",\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\"]}]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"h2\",null,{\"id\":\"cách-tư-duy-3-step-bottleneck-analysis\",\"children\":\"Cách Tư Duy: 3-Step Bottleneck Analysis\"}]\n2a:[\"$\",\"h3\",null,{\"id\":\"step-1-đo-thời-gian-mỗi-bước\",\"children\":\"Step 1: Đo Thời Gian Mỗi Bước\"}]\n2b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không đoán. Đo.\"}]}]\n2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example: User loads profile page\"}]}]\n2d:[\"$\",\"$L28\",null,{\"chart\":\"sequenceDiagram\\n    participant C as Client\\n    participant LB as Load Balancer\\n    participant API as API Server\\n    participant Cache as Redis\\n    participant DB as Database\\n    \\n    C-\u003e\u003eLB: GET /profile/123\\n    Note over C,LB: 50ms (network)\\n    LB-\u003e\u003eAPI: Forward request\\n    Note over LB,API: 10ms\\n    API-\u003e\u003eCache: Check cache\\n    Note over API,Cache: 5ms (cache miss)\\n    API-\u003e\u003eDB: Query user data\\n    Note over API,DB: 300ms\\n    DB--\u003e\u003eAPI: Return data\\n    API-\u003e\u003eCache: Store in cache\\n    Note over API,Cache: 2ms\\n    API--\u003e\u003eLB: Response\\n    Note over API,LB: 10ms\\n    LB--\u003e\u003eC: Response\\n    Note over LB,C: 50ms\"}]\n2e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Breakdown:\"}]}]\n2f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Client → Load Balancer:     50ms\\nLoad Balancer → API:        10ms\\nAPI → Cache check:           5ms (miss)\\nAPI → Database query:      300ms ← BOTTLENECK\\nAPI → Cache store:           2ms\\nAPI → Load Balancer:        10ms\\nLoad Balancer → Client:     50ms\\n\\nTotal: 427ms\\nDatabase: 300ms (70% of total)\\n\"}]}]\n30:[\"$\",\"h3\",null,{\"id\":\"step-2-tìm-bottleneck\",\"children\":\"Step 2: Tìm Bottleneck\"}]\n31:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bottleneck = Component chiếm thời gian nhiều nhất.\"}]}]\n32:[\"$\",\"p\",null,{\"children\":[\"Trong example trên: \",[\"$\",\"strong\",null,{\"children\":\"Database (300ms / 427ms = 70%)\"}]]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"How to measure trong production:\"}]}]\n34:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tool 1: APM (Application Performance Monitoring)\"}]}]\n35:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# New Relic, DataDog, hoặc tương tự\\nfrom apm import trace\\n\\n@trace(\\\"load_profile\\\")\\ndef load_profile(user_id):\\n    with trace(\\\"cache_check\\\"):\\n        user = cache.get(f\\\"user:{user_id}\\\")\\n    \\n    if not user:\\n        with trace(\\\"db_query\\\"):  # Measure this\\n            user = db.query(\\\"SELECT * FROM users WHERE id = ?\\\", user_id)\\n        \\n        with trace(\\\"cache_store\\\"):\\n            cache.set(f\\\"user:{user_id}\\\", user)\\n    \\n    return user\\n\\n# APM dashboard sẽ show:\\n# - load_profile: 307ms total\\n# - cache_check: 5ms\\n# - db_query: 300ms ← BOTTLENECK FOUND\\n# - cache_store: 2ms\\n\"}]}]\n36:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tool 2: Custom timing logs\"}]}]\n37:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import time\\n\\ndef load_profile(user_id):\\n    start = time.time()\\n    \\n    # Step 1: Cache check\\n    cache_start = time.time()\\n    user = cache.get(f\\\"user:{user_id}\\\")\\n    cache_time = time.time() - cache_start\\n    \\n    # Step 2: DB query if cache miss\\n    if not user:\\n        db_start = time.time()\\n        user = db.query(\\\"SELECT * FROM users WHERE id = ?\\\", user_id)\\n        db_time = time.time() - db_start\\n        \\n        cache.set(f\\\"user:{user_id}\\\", user)\\n    else:\\n        db_time = 0\\n    \\n    total_time = time.time() - start\\n    \\n    # Log breakdown\\n    logger.info(f\\\"Profile load: {total_time:.3f}s | \\\"\\n                f\\\"Cache: {cache_time:.3f}s | \\\"\\n                f\\\"DB: {db_time:.3f}s\\\")\\n    \\n    return user\\n\\n# Logs show:\\n# Profile load: 0.307s | Cache: 0.005s | DB: 0.300s\\n\"}]}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tool 3: Database query profiling\"}]}]\n39:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- PostgreSQL\\nEXPLAIN ANALYZE\\nSELECT * FROM users WHERE ema"])</script><script>self.__next_f.push([1,"il = 'john@example.com';\\n\\n-- Output shows:\\nSeq Scan on users (cost=0.00..18334.00 rows=1 width=123)\\n  (actual time=0.011..285.234 rows=1 loops=1)\\n  Filter: (email = 'john@example.com')\\n  Rows Removed by Filter: 999999\\nPlanning Time: 0.082 ms\\nExecution Time: 285.256 ms  ← 285ms! Missing index!\\n\"}]}]\n3a:[\"$\",\"h3\",null,{\"id\":\"step-3-optimize-bottleneck-đó\",\"children\":\"Step 3: Optimize Bottleneck Đó\"}]\n3b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Chỉ optimize component là bottleneck.\"}]}]\n3c:[\"$\",\"p\",null,{\"children\":\"Trong example, database là bottleneck (300ms).\"}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Optimization options:\"}]}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option A: Add index (Low effort, High impact)\"}]}]\n3f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Before: Full table scan, 300ms\\nSELECT * FROM users WHERE email = 'john@example.com';\\n\\n-- Add index\\nCREATE INDEX idx_users_email ON users(email);\\n\\n-- After: Index scan, 5ms\\n-- 60x faster!\\n\"}]}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option B: Cache more aggressively\"}]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Before: Cache miss → DB query (300ms)\\n\\n# After: Pre-warm cache\\ndef warm_cache():\\n    popular_users = db.query(\\\"SELECT * FROM users ORDER BY login_count DESC LIMIT 1000\\\")\\n    for user in popular_users:\\n        cache.set(f\\\"user:{user.id}\\\", user, ttl=3600)\\n\\n# Result: Cache hit rate 95% → Only 5% queries hit DB\\n\"}]}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option C: Optimize query\"}]}]\n43:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Before: Select all columns (waste)\\nSELECT * FROM users WHERE email = 'john@example.com';\\n\\n-- After: Select only needed columns\\nSELECT id, name, email, avatar FROM users WHERE email = 'john@example.com';\\n\\n-- Smaller data → Faster transfer → 300ms → 200ms\\n\"}]}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Measure after optimization:\"}]}]\n45:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Original:\\nTotal: 427ms | DB: 300ms (70%)\\n\\nAfter adding index:\\nTotal: 132ms | DB: 5ms (4%)\\n\\nImprovement: 427ms → 132ms (69% faster!)\\n\"}]}]\n46:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key insight:\"}],\" Optimize bottleneck = Biggest impact với least effort.\"]}]\n47:[\"$\",\"h2\",null,{\"id\":\"common-bottlenecks--how-to-detect\",\"children\":\"Common Bottlenecks \u0026 How to Detect\"}]\n48:[\"$\",\"h3\",null,{\"id\":\"bottleneck-1-database-queries\",\"children\":\"Bottleneck 1: Database Queries\"}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptoms:\"}]}]\n4a:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"High query latency (\u003e 100ms)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database CPU/IO maxed out\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Slow response time under load\"}],\"\\n\"]}]\n4b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Detection:\"}]}]\n4c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- PostgreSQL: Find slow queries\\nSELECT \\n    query,\\n    calls,\\n    total_time,\\n    mean_time,\\n    max_time\\nFROM pg_stat_statements\\nORDER BY mean_time DESC\\nLIMIT 10;\\n\\n-- Output shows queries taking \u003e 100ms average\\n\"}]}]\n4d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\n4e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Add indexes (most common fix)\\n   - Before: 500ms full table scan\\n   - After: 5ms index scan\\n\\n2. Optimize query structure\\n   - Avoid SELECT *\\n   - Use appropriate JOINs\\n   - Add LIMIT when possible\\n\\n3. Add query cache\\n   - Cache frequent queries\\n   - Reduce DB load 80-90%\\n\\n4. Database optimization\\n   - Analyze query plans\\n   - Update statistics\\n   - Vacuum/optimize tables\\n\\n5. Add read replicas (last resort)\\n   - Scale reads horizontally\\n   - Route read queries to replicas\\n\"}]}]\n4f:[\"$\",\"h3\",nul"])</script><script>self.__next_f.push([1,"l,{\"id\":\"bottleneck-2-network-latency\",\"children\":\"Bottleneck 2: Network Latency\"}]\n50:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptoms:\"}]}]\n51:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"High latency between services\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Timeouts under load\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Geographic distance issues\"}],\"\\n\"]}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Detection:\"}]}]\n53:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import time\\nimport requests\\n\\ndef measure_network_latency():\\n    start = time.time()\\n    response = requests.get(\\\"https://api.example.com/health\\\")\\n    latency = time.time() - start\\n    \\n    print(f\\\"Network latency: {latency * 1000:.0f}ms\\\")\\n\\n# Run from different regions:\\n# US East → US West: 50ms\\n# US East → Asia: 200ms\\n# Asia → Europe: 300ms\\n\"}]}]\n54:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\n55:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. CDN for static assets\\n   - Images, CSS, JS\\n   - Serve from edge locations\\n   - 300ms → 20ms\\n\\n2. Regional deployments\\n   - Deploy servers closer to users\\n   - US users → US servers\\n   - Asia users → Asia servers\\n\\n3. Reduce payload size\\n   - Compress responses (gzip)\\n   - Remove unnecessary data\\n   - Pagination\\n\\n4. Connection pooling\\n   - Reuse connections\\n   - Avoid handshake overhead\\n\\n5. HTTP/2 or HTTP/3\\n   - Multiplexing\\n   - Header compression\\n\"}]}]\n56:[\"$\",\"h3\",null,{\"id\":\"bottleneck-3-application-logic\",\"children\":\"Bottleneck 3: Application Logic\"}]\n57:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptoms:\"}]}]\n58:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"High CPU usage on app servers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Slow processing time\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Code execution takes long\"}],\"\\n\"]}]\n59:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Detection:\"}]}]\n5a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import cProfile\\nimport pstats\\n\\n# Profile slow function\\ndef profile_function():\\n    profiler = cProfile.Profile()\\n    profiler.enable()\\n    \\n    # Run function\\n    result = slow_function()\\n    \\n    profiler.disable()\\n    \\n    # Print stats\\n    stats = pstats.Stats(profiler)\\n    stats.sort_stats('cumulative')\\n    stats.print_stats(10)  # Top 10 slowest functions\\n\\n# Output shows:\\n# Function A: 500ms (bottleneck!)\\n# Function B: 50ms\\n# Function C: 10ms\\n\"}]}]\n5b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\n5c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Optimize algorithms\\n   - O(n²) → O(n log n)\\n   - Use better data structures\\n   - Avoid nested loops\\n\\n2. Async processing\\n   - Move heavy work to background\\n   - Use message queues\\n   - Don't block user request\\n\\n3. Caching expensive computations\\n   - Memoization\\n   - Cache computed results\\n\\n4. Horizontal scaling\\n   - Add more app servers\\n   - Load balance\\n\\n5. Language/runtime optimization\\n   - Use compiled language for hot paths\\n   - JIT compilation\\n   - Profile-guided optimization\\n\"}]}]\n5d:[\"$\",\"h3\",null,{\"id\":\"bottleneck-4-external-api-calls\",\"children\":\"Bottleneck 4: External API Calls\"}]\n5e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Symptoms:\"}]}]\n5f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Waiting for third-party services\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Timeouts from external APIs\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cascading delays\"}],\"\\n\"]}]\n60:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Detection:\"}]}]\n61:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import httpx\\nimport time\\n\\nasync def measure_external_apis():\\n    apis = [\\n        \\\"https://api.stripe.com/health\\\",\\n        \\\"https://api.twilio.com/health\\\",\\n        \\\"https://maps.googleapis.com/health\\\"\\n    ]\\n    \\n    async with httpx.AsyncClient("])</script><script>self.__next_f.push([1,") as client:\\n        for api in apis:\\n            start = time.time()\\n            try:\\n                response = await client.get(api, timeout=5.0)\\n                latency = time.time() - start\\n                print(f\\\"{api}: {latency * 1000:.0f}ms\\\")\\n            except httpx.TimeoutException:\\n                print(f\\\"{api}: TIMEOUT (\u003e 5000ms)\\\")\\n\\n# Output:\\n# Stripe API: 150ms\\n# Twilio API: 3500ms ← BOTTLENECK\\n# Google Maps: 80ms\\n\"}]}]\n62:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\n63:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Async calls (parallel)\\n   # Before: Sequential (3.5s + 0.15s + 0.08s = 3.73s)\\n   stripe_data = call_stripe()\\n   twilio_data = call_twilio()\\n   maps_data = call_google_maps()\\n   \\n   # After: Parallel (max(3.5s, 0.15s, 0.08s) = 3.5s)\\n   results = await asyncio.gather(\\n       call_stripe(),\\n       call_twilio(),\\n       call_google_maps()\\n   )\\n\\n2. Cache API responses\\n   - Cache for appropriate TTL\\n   - Reduce external calls 90%\\n\\n3. Circuit breaker pattern\\n   - Fail fast when API down\\n   - Don't wait for timeout\\n\\n4. Timeouts\\n   - Set aggressive timeouts\\n   - Don't let slow APIs block\\n\\n5. Fallback mechanisms\\n   - Graceful degradation\\n   - Return cached/default data\\n\"}]}]\n64:[\"$\",\"h2\",null,{\"id\":\"real-world-example-e-commerce-checkout\",\"children\":\"Real-World Example: E-commerce Checkout\"}]\n65:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Scenario:\"}],\" Checkout page loading chậm (3 giây)\"]}]\n66:[\"$\",\"h3\",null,{\"id\":\"step-1-measure-data-flow\",\"children\":\"Step 1: Measure Data Flow\"}]\n67:[\"$\",\"$L28\",null,{\"chart\":\"graph TD\\n    A[User clicks Checkout] --\u003e B[Load Balancer\u003cbr/\u003e20ms]\\n    B --\u003e C[API Server\u003cbr/\u003e50ms]\\n    C --\u003e D{Cache Check\u003cbr/\u003e10ms}\\n    D --\u003e|Hit| E[Return Data\u003cbr/\u003e50ms]\\n    D --\u003e|Miss| F[Get Cart\u003cbr/\u003e200ms]\\n    F --\u003e G[Get User\u003cbr/\u003e150ms]\\n    G --\u003e H[Calculate Shipping\u003cbr/\u003e2000ms]\\n    H --\u003e I[Calculate Tax\u003cbr/\u003e100ms]\\n    I --\u003e J[Store in Cache\u003cbr/\u003e10ms]\\n    J --\u003e E\\n    \\n    style H fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px\"}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Breakdown:\"}]}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Load Balancer:           20ms\\nAPI processing:          50ms\\nCache check:             10ms (miss)\\nGet cart from DB:       200ms\\nGet user from DB:       150ms\\nCalculate shipping:    2000ms ← BOTTLENECK (67% of total)\\nCalculate tax:          100ms\\nStore in cache:          10ms\\nReturn to client:        50ms\\n\\nTotal: ~2,590ms\\nShipping API: 2,000ms (77% of total)\\n\"}]}]\n6a:[\"$\",\"h3\",null,{\"id\":\"step-2-identify-bottleneck\",\"children\":\"Step 2: Identify Bottleneck\"}]\n6b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Shipping API call (2000ms) là clear bottleneck.\"}]}]\n6c:[\"$\",\"p\",null,{\"children\":\"Why so slow?\"}]\n6d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"External API (third-party shipping provider)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Calculates real-time rates from 5 carriers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Network latency + computation time\"}],\"\\n\"]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"step-3-optimize-bottleneck\",\"children\":\"Step 3: Optimize Bottleneck\"}]\n6f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution 1: Cache shipping rates\"}]}]\n70:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Before: Call API every time\\ndef calculate_shipping(address, weight):\\n    return shipping_api.get_rates(address, weight)  # 2000ms\\n\\n# After: Cache by address + weight\\ndef calculate_shipping(address, weight):\\n    cache_key = f\\\"shipping:{hash(address)}:{weight}\\\"\\n    \\n    rates = cache.get(cache_key)\\n    if rates:\\n        return rates  # 5ms (cache hit)\\n    \\n    rates = shipping_api.get_rates(address, weight)  # 2000ms (cache miss)\\n    cache.set(cache_key, rates, ttl=3600)  # Cache 1 hour\\n    \\n    return rates\\n\\n# Result: Cache hit rate 85%\\n# Average time: 0.85 * 5ms + 0.15 * 2000ms = 304ms\\n# Improvement: 2000ms → 304ms (85% fa"])</script><script>self.__next_f.push([1,"ster!)\\n\"}]}]\n71:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution 2: Async calculation\"}]}]\n72:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Before: User waits for shipping calculation\\ndef checkout():\\n    cart = get_cart()\\n    user = get_user()\\n    shipping = calculate_shipping()  # User waits 2s\\n    tax = calculate_tax()\\n    return render_page(cart, user, shipping, tax)\\n\\n# After: Calculate shipping in background\\ndef checkout():\\n    cart = get_cart()\\n    user = get_user()\\n    \\n    # Return page immediately với estimated shipping\\n    estimated_shipping = get_estimated_shipping(user.zipcode)\\n    \\n    # Calculate real shipping in background\\n    task_queue.add({\\n        \\\"type\\\": \\\"calculate_shipping\\\",\\n        \\\"user_id\\\": user.id,\\n        \\\"cart_id\\\": cart.id\\n    })\\n    \\n    return render_page(cart, user, estimated_shipping, tax)\\n\\n# User sees page immediately (500ms)\\n# Real shipping rates update via WebSocket (2s later)\\n\"}]}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution 3: Parallel API calls\"}]}]\n74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Before: Sequential (2000 + 100 = 2100ms)\\nshipping = calculate_shipping()\\ntax = calculate_tax()\\n\\n# After: Parallel (max(2000, 100) = 2000ms)\\nshipping, tax = await asyncio.gather(\\n    calculate_shipping(),\\n    calculate_tax()\\n)\\n\\n# Saved: 100ms\\n\"}]}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Result after optimizations:\"}]}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Original: 2,590ms\\nAfter cache (85% hit): 590ms\\nAfter async: 500ms (perceived)\\n\\nImprovement: 2590ms → 500ms (81% faster!)\\nUser satisfaction: 📈📈📈\\n\"}]}]\n77:[\"$\",\"h2\",null,{\"id\":\"anti-patterns-optimization-mistakes\",\"children\":\"Anti-Patterns: Optimization Mistakes\"}]\n78:[\"$\",\"h3\",null,{\"id\":\"mistake-1-premature-optimization\",\"children\":\"Mistake 1: Premature Optimization\"}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# BAD: Optimize before measuring\\ndef get_users():\\n    # Add complex caching without knowing if DB is slow\\n    # Add pagination without knowing if data is large\\n    # Use redis cluster without measuring redis load\\n    pass\\n\\n# GOOD: Measure first\\ndef get_users():\\n    # Measure: DB query takes 500ms → bottleneck found\\n    # Then optimize: Add cache → 5ms\\n    pass\\n\"}]}]\n7a:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Lesson:\"}],\" \\\"Premature optimization is the root of all evil\\\" - Donald Knuth\"]}]\n7b:[\"$\",\"p\",null,{\"children\":\"Measure → Find bottleneck → Then optimize.\"}]\n7c:[\"$\",\"h3\",null,{\"id\":\"mistake-2-optimize-wrong-component\",\"children\":\"Mistake 2: Optimize Wrong Component\"}]\n7d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Example: API slow (1000ms total)\\n# Breakdown:\\n# - Server processing: 50ms\\n# - Database query: 950ms ← Real bottleneck\\n\\n# BAD: Optimize server code\\ndef handle_request():\\n    # Refactor code: 50ms → 10ms\\n    # Total: 1000ms → 960ms (4% improvement)\\n    # Waste of time!\\n    pass\\n\\n# GOOD: Optimize database\\n# Add index: 950ms → 50ms\\n# Total: 1000ms → 100ms (90% improvement)\\n\"}]}]\n7e:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Lesson:\"}],\" Optimize bottleneck, not random components.\"]}]\n7f:[\"$\",\"h3\",null,{\"id\":\"mistake-3-optimize-without-re-measuring\",\"children\":\"Mistake 3: Optimize Without Re-Measuring\"}]\n80:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Add optimization\\nadd_cache_layer()\\n\\n# BAD: Assume it worked, move on\\n\\n# GOOD: Measure improvement\\nbefore = measure_latency()  # 500ms\\nadd_cache_layer()\\nafter = measure_latency()   # 50ms\\n\\nimprovement = (before - after) / before * 100\\nprint(f\\\"Improvement: {improvement:.1f}%\\\")  # 90%\\n\\n# If improvement \u003c 10%, optimization không có effect\\n# Investigate why hoặc try different approach\\n\"}]}]\n81:[\"$\",\"p\",null,"])</script><script>self.__next_f.push([1,"{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Lesson:\"}],\" Always verify optimization worked.\"]}]\n82:[\"$\",\"h3\",null,{\"id\":\"mistake-4-over-optimization\",\"children\":\"Mistake 4: Over-Optimization\"}]\n83:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# API currently: 100ms (already fast)\\n# User perception threshold: ~100ms\\n\\n# BAD: Spend 2 weeks optimizing 100ms → 50ms\\n# Users don't notice difference\\n# Developer time wasted\\n\\n# GOOD: Optimize only if:\\n# - Current performance \u003c acceptable\\n# - Optimization has high ROI\\n# - User experience improves noticeably\\n\"}]}]\n84:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Lesson:\"}],\" Good enough \u003e Perfect. Know when to stop.\"]}]\n85:[\"$\",\"h2\",null,{\"id\":\"practical-exercise-analyze-your-system\",\"children\":\"Practical Exercise: Analyze Your System\"}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Exercise 1: Trace a Request\"}]}]\n87:[\"$\",\"p\",null,{\"children\":\"Pick một endpoint trong system bạn đang làm.\"}]\n88:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Steps:\"}]}]\n89:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Instrument code với timing:\"}]}],\"\\n\"]}]\n8a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import time\\n\\ndef track_time(func):\\n    def wrapper(*args, **kwargs):\\n        start = time.time()\\n        result = func(*args, **kwargs)\\n        duration = time.time() - start\\n        print(f\\\"{func.__name__}: {duration * 1000:.0f}ms\\\")\\n        return result\\n    return wrapper\\n\\n@track_time\\ndef get_product(product_id):\\n    user = get_current_user()         # ?ms\\n    product = get_product_from_db(product_id)  # ?ms\\n    reviews = get_reviews(product_id)          # ?ms\\n    recommendations = get_recommendations()     # ?ms\\n    return render(product, reviews, recommendations)\\n\"}]}]\n8b:[\"$\",\"ol\",null,{\"start\":\"2\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Run và record times:\"}]}],\"\\n\"]}]\n8c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"get_current_user: 50ms\\nget_product_from_db: 200ms\\nget_reviews: 150ms\\nget_recommendations: 800ms ← BOTTLENECK\\nrender: 30ms\\n\\nTotal: 1,230ms\\n\"}]}]\n8d:[\"$\",\"ol\",null,{\"start\":\"3\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Identify bottleneck:\"}]}],\"\\n\"]}]\n8e:[\"$\",\"p\",null,{\"children\":\"get_recommendations chiếm 800/1230 = 65% của time.\"}]\n8f:[\"$\",\"ol\",null,{\"start\":\"4\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Optimize bottleneck:\"}]}],\"\\n\"]}]\n90:[\"$\",\"p\",null,{\"children\":\"Add cache, async processing, hoặc improve algorithm.\"}]\n91:[\"$\",\"ol\",null,{\"start\":\"5\",\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Re-measure:\"}]}],\"\\n\"]}]\n92:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Before: 1,230ms\\nAfter: 430ms (65% faster)\\n\"}]}]\n93:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Exercise 2: Find Your Slowest Endpoints\"}]}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Query APM tool hoặc access logs:\"}]}]\n95:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Find slowest API endpoints (if logging to DB)\\nSELECT \\n    endpoint,\\n    COUNT(*) as request_count,\\n    AVG(response_time_ms) as avg_time,\\n    MAX(response_time_ms) as max_time\\nFROM api_logs\\nWHERE created_at \u003e NOW() - INTERVAL '1 day'\\nGROUP BY endpoint\\nORDER BY avg_time DESC\\nLIMIT 10;\\n\\n-- Output:\\n-- /api/search: 2,500ms avg (BOTTLENECK)\\n-- /api/checkout: 1,200ms avg\\n-- /api/products: 300ms avg\\n\"}]}]\n96:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Focus optimization trên top 3 slowest endpoints.\"}]}]\n97:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n98:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Luật vàng của bottleneck optimization:\"}]}]\n99:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"childre"])</script><script>self.__next_f.push([1,"n\":\"Measure first\"}],\" - Không đoán, đo thực tế\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Find bottleneck\"}],\" - Component chậm nhất\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Optimize bottleneck\"}],\" - Đừng optimize random\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Re-measure\"}],\" - Verify improvement\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Repeat\"}],\" - Find next bottleneck\"]}],\"\\n\"]}]\n9a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Common bottlenecks:\"}]}]\n9b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Database\"}],\" - Slow queries, missing indexes\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Network\"}],\" - Latency, external APIs\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Application\"}],\" - Inefficient algorithms\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"External services\"}],\" - Third-party APIs\"]}],\"\\n\"]}]\n9c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Optimization strategies:\"}]}]\n9d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Indexes\"}],\" - 100x faster queries\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Caching\"}],\" - 10-100x faster reads\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Async processing\"}],\" - Don't block users\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Query optimization\"}],\" - Better SQL\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Horizontal scaling\"}],\" - More capacity\"]}],\"\\n\"]}]\n9e:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Remember:\"}],\" Hệ thống chỉ nhanh bằng component chậm nhất. Optimize bottleneck = Biggest impact.\"]}]\n9f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mental model:\"}]}]\na0:[\"$\",\"p\",null,{\"children\":\"Think như một detective:\"}]\na1:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Có vấn đề (slow system)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Thu thập evidence (measurements)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Tìm thủ phạm (bottleneck)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Giải quyết (optimize)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Verify (re-measure)\"}],\"\\n\"]}]\na2:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Next step:\"}],\" Apply vào production system của bạn. Measure, find bottlenecks, optimize. Repeat.\"]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"a3:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống | Phase 1 — Foundation: Thinking in Systems | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và \"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống | Phase 1 — Foundation: Thinking in Systems\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và \"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống | Phase 1 — Foundation: Thinking in Systems\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học cách phân tích data flow, identify bottlenecks và optimize đúng chỗ trong hệ thống phân tán. Hiểu luật vàng: hệ thống chỉ nhanh bằng component chậm nhất và \"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$La3\",\"14\",{}]]\n"])</script></body></html>

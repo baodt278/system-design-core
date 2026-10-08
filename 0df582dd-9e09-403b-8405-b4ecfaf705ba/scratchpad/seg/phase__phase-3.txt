@@ -1,0 +1,114 @@
+@0 h2
+1) Giới thiệu Phase
+@1 p
+Distributed systems khác bản chất với hệ thống chạy trên một máy đơn lẻ.
+@2 p
+Trong môi trường phân tán, failure là trạng thái bình thường: node có thể chết, network có thể partition, và dữ liệu có thể tạm thời lệch trạng thái.
+@3 p
+Vì vậy, consistency và coordination trở thành bài toán trung tâm. Đây là cột mốc kỹ thuật quan trọng để bạn chuyển từ "xây service" sang "thiết kế hệ thống phân tán".
+@4 h2
+2) Vì sao phase này tồn tại
+@5 p
+Tư duy single-server không đủ khi hệ thống mở rộng.
+@6 p
+Bạn cần hiểu rõ:
+@7 li
+Partial failure là thực tế không thể tránh.
+@8 li
+Network không đáng tin cậy tuyệt đối.
+@9 li
+Consistency guarantee luôn đi kèm trade-off.
+@10 li
+Dữ liệu trên nhiều node cần cơ chế coordination rõ ràng.
+@11 p
+Nếu không có distributed reasoning, rất khó thiết kế hệ thống hiện đại có độ tin cậy cao.
+@12 h2
+3) Learning Objectives
+@13 li
+Hiểu các failure model trong distributed systems.
+@14 li
+Hiểu CAP thinking ở mức ra quyết định kiến trúc.
+@15 li
+Hiểu trade-off giữa consistency và availability.
+@16 li
+Hiểu các cơ chế coordination trong hệ phân tán.
+@17 li
+Hiểu bài toán data integrity khi giao dịch đi qua nhiều thành phần.
+@18 li
+Hiểu vấn đề identity và ordering trong môi trường multi-node.
+@19 h2
+4) Bạn sẽ học gì trong phase này
+@20 li
+**Failure handling:** cách tư duy và phản ứng với lỗi trong môi trường phân tán.
+@21 li
+**Consistency trade-offs:** khi nào ưu tiên strong consistency, khi nào chấp nhận eventual.
+@22 li
+**Distributed coordination:** cơ chế để nhiều node đạt đồng thuận trong điều kiện không hoàn hảo.
+@23 li
+**Leader election:** vai trò leader/follower và các giới hạn khi election xảy ra.
+@24 li
+**Distributed transactions:** cách giữ tính nhất quán dữ liệu xuyên nhiều service/store.
+@25 li
+**System-wide integrity:** đảm bảo dữ liệu đúng ở quy mô hệ thống, không chỉ từng service.
+@26 li
+**Distributed ID:** tạo định danh duy nhất mà không trở thành bottleneck.
+@27 li
+**Event ordering:** xử lý thứ tự sự kiện trong hệ thống phân tán và bất đồng bộ.
+@28 h2
+5) Lessons Overview
+@29 h3
+Lesson 1 — Reality of Distributed Systems — Failure Models & CAP Thinking
+@30 li
+**Mô tả:** nhìn thẳng vào bản chất lỗi và giới hạn của hệ phân tán.
+@31 li
+**Bạn nhận được:** nền tư duy CAP và failure-first để ra quyết định thực tế.
+@32 h3
+Lesson 2 — Consistency Models — Strong vs Eventual Consistency
+@33 li
+**Mô tả:** so sánh các mức consistency trong bối cảnh sản phẩm thật.
+@34 li
+**Bạn nhận được:** khả năng chọn consistency model phù hợp theo yêu cầu nghiệp vụ.
+@35 h3
+Lesson 3 — Consensus & Leader Election — Distributed Agreement
+@36 li
+**Mô tả:** cơ chế đồng thuận và bầu leader để điều phối trạng thái hệ thống.
+@37 li
+**Bạn nhận được:** trực giác về distributed agreement và giới hạn của coordination.
+@38 h3
+Lesson 4 — Distributed Transactions & Data Integrity — Đảm Bảo Tính Nhất Quán Dữ Liệu
+@39 li
+**Mô tả:** giải bài toán nhất quán dữ liệu khi giao dịch đi qua nhiều service.
+@40 li
+**Bạn nhận được:** nền tảng để đánh giá transaction strategy và integrity guarantees.
+@41 h3
+Lesson 5 — Distributed ID & Ordering — Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán
+@42 li
+**Mô tả:** xử lý ID generation và ordering khi hệ thống không có một clock trung tâm.
+@43 li
+**Bạn nhận được:** khả năng thiết kế định danh và thứ tự sự kiện ở quy mô phân tán.
+@44 h2
+6) Kết quả sau khi hoàn thành Phase 3
+@45 p
+Bạn có thể:
+@46 li
+Lập luận trade-off cốt lõi trong distributed systems.
+@47 li
+Nhận diện rủi ro production liên quan đến failure và consistency.
+@48 li
+Đánh giá chiến lược coordination theo bối cảnh hệ thống.
+@49 li
+Thiết kế hệ thống với failure awareness ngay từ đầu.
+@50 h2
+7) Chuẩn bị cho Phase 4
+@51 p
+Phase 3 cho bạn nền tảng để hiểu vì sao hệ phân tán khó và cần trade-off nghiêm túc.
+@52 p
+Sang **Phase 4 — Scalability & Performance**, bạn sẽ tập trung vào:
+@53 li
+tối ưu hiệu năng ở quy mô lớn,
+@54 li
+chiến lược scaling nâng cao,
+@55 li
+tư duy tìm bottleneck theo hệ thống,
+@56 li
+và observability để vận hành ổn định trong production.

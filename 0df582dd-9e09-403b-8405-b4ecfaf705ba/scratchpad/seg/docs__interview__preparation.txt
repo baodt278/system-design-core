@@ -1,0 +1,300 @@
+@0 h1
+System Design Interview Preparation
+@1 p
+Tài liệu này dành cho developer đang muốn chuẩn bị nghiêm túc cho **system design interview** ở level mid đến senior.
+@2 p
+Mục tiêu không phải là học thuộc "template trả lời", mà là xây dựng tư duy kiến trúc có cấu trúc, giải thích được trade-off, và giao tiếp rõ ràng dưới áp lực phỏng vấn.
+@3 p
+**Ngữ cảnh lộ trình:** nội dung này phù hợp nhất khi bạn đã đi qua nền tảng từ Phase 0 đến Phase 5 và đang tiến vào mindset của **Phase 6 — System Design Mastery**.
+@4 h2
+1) System Design Interview là gì?
+@5 p
+System Design Interview kiểm tra cách bạn tư duy khi đứng trước một bài toán hệ thống mở, thiếu dữ kiện, có nhiều ràng buộc thực tế.
+@6 h3
+Mục đích chính
+@7 li
+Đánh giá khả năng **thiết kế hệ thống** chứ không chỉ viết code.
+@8 li
+Đánh giá cách bạn ra quyết định trong điều kiện không hoàn hảo.
+@9 li
+Đánh giá khả năng cân bằng giữa product, kỹ thuật, và vận hành.
+@10 h3
+Khác gì với coding interview?
+@11 li
+Coding interview: tập trung thuật toán, correctness, implementation chi tiết.
+@12 li
+System design interview: tập trung kiến trúc tổng thể, scale, reliability, trade-off, và communication.
+@13 h3
+Trọng tâm
+@14 p
+Bạn được kỳ vọng thể hiện tư duy của một kỹ sư có thể thiết kế hệ thống production, không chỉ là người hoàn thành một function.
+@15 h2
+2) Interviewer thực sự đánh giá điều gì?
+@16 h3
+1. Requirement clarification
+@17 li
+Bạn có biết hỏi đúng câu hỏi để làm rõ scope không?
+@18 li
+Bạn có phân biệt functional và non-functional requirement không?
+@19 h3
+2. Trade-off reasoning
+@20 li
+Bạn có giải thích được vì sao chọn phương án A thay vì B?
+@21 li
+Bạn có nhìn thấy chi phí vận hành và độ phức tạp đi kèm không?
+@22 h3
+3. Scalability thinking
+@23 li
+Bạn có biết đặt giả định về QPS, data size, growth không?
+@24 li
+Bạn có biết hệ thống sẽ vỡ ở đâu khi scale tăng?
+@25 h3
+4. Structured communication
+@26 li
+Câu trả lời có mạch lạc, theo thứ tự, dễ follow không?
+@27 li
+Bạn có chủ động dẫn dắt buổi trao đổi không?
+@28 h3
+5. Production awareness
+@29 li
+Bạn có nghĩ tới reliability, observability, failure handling, rollback?
+@30 li
+Bạn có biết khi nào nên giữ đơn giản và khi nào phải nâng cấp kiến trúc?
+@31 h2
+3) Quy trình interview chuẩn (Step-by-step)
+@32 h3
+Bước 1 — Clarify requirements
+@33 li
+Xác định rõ bài toán cốt lõi.
+@34 li
+Chốt use case ưu tiên.
+@35 li
+Làm rõ giới hạn: latency, consistency, availability, cost.
+@36 h3
+Bước 2 — Define scale & constraints
+@37 li
+Ước lượng users, QPS, storage, bandwidth.
+@38 li
+Xác định "điểm nóng" cần ưu tiên xử lý trước.
+@39 h3
+Bước 3 — High-level architecture
+@40 li
+Vẽ kiến trúc mức khối lớn.
+@41 li
+Xác định service chính, data flow, ranh giới trách nhiệm.
+@42 h3
+Bước 4 — Data model & API
+@43 li
+Thiết kế entity chính, key access pattern.
+@44 li
+Đề xuất API core để validate tính khả thi.
+@45 h3
+Bước 5 — Deep dive vào thành phần quan trọng
+@46 li
+Chọn 1-2 điểm quan trọng để đào sâu: cache, queue, DB partition, consistency model...
+@47 h3
+Bước 6 — Bottleneck & failure analysis
+@48 li
+Chỉ ra SPOF, hotspot, failure mode.
+@49 li
+Nêu chiến lược giảm rủi ro và phương án dự phòng.
+@50 h3
+Bước 7 — Trade-off & evolution
+@51 li
+Tóm tắt điểm mạnh/yếu của phương án.
+@52 li
+Nêu roadmap nâng cấp hệ thống theo giai đoạn tăng trưởng.
+@53 h2
+4) Framework gợi ý: SNAKE
+@54 p
+Một framework ngắn gọn, dễ nhớ để bạn không bị "trôi" trong interview.
+@55 h3
+S — Scope
+@56 li
+Bài toán là gì?
+@57 li
+Use case nào ưu tiên?
+@58 li
+Điều gì không nằm trong scope hôm nay?
+@59 h3
+N — Numbers
+@60 li
+Ước lượng QPS, payload, lưu trữ, peak traffic.
+@61 li
+Đặt số gần đúng để định hướng kiến trúc.
+@62 h3
+A — API
+@63 li
+Đề xuất API cốt lõi để chốt contract giữa client/server.
+@64 h3
+K — Key Components
+@65 li
+Dựng kiến trúc chính: LB, app, cache, DB, queue, worker, CDN...
+@66 h3
+E — Explore Deep Dive
+@67 li
+Đào sâu 1-2 vấn đề có rủi ro cao nhất.
+@68 li
+Nói rõ trade-off và kế hoạch scale tiếp theo.
+@69 h3
+Ví dụ nhanh (Design URL Shortener)
+@70 li
+**Scope:** tạo short URL, redirect nhanh, thống kê click cơ bản.
+@71 li
+**Numbers:** 50K req/s read, 5K req/s write, 5 năm dữ liệu.
+@72 li
+**API:** `POST /shorten`, `GET /{code}`.
+@73 li
+**Key components:** API service + KV store + cache + analytics pipeline.
+@74 li
+**Explore:** collision strategy, hot key, eventual consistency cho analytics.
+@75 h2
+5) Các câu hỏi interview phổ biến và thứ được kiểm tra
+@76 h3
+Design Twitter / X
+@77 p
+Kiểm tra: fan-out strategy, feed generation, read/write trade-off, timeline consistency.
+@78 h3
+Design YouTube
+@79 p
+Kiểm tra: upload pipeline, transcoding, CDN strategy, metadata store, recommendation boundaries.
+@80 h3
+Design Chat System
+@81 p
+Kiểm tra: real-time delivery, connection management, ordering, offline sync, presence.
+@82 h3
+Design URL Shortener
+@83 p
+Kiểm tra: ID generation, redirect latency, hot key handling, read-heavy optimization.
+@84 h3
+Design Notification System
+@85 p
+Kiểm tra: multi-channel delivery, retry policy, deduplication, rate limiting, observability.
+@86 h2
+6) Cách chuẩn bị hiệu quả
+@87 h3
+Theo lộ trình học
+@88 li
+Củng cố foundation (Phase 0-2).
+@89 li
+Nâng độ sâu distributed + scale (Phase 3-4).
+@90 li
+Luyện pattern thực tế và decision narrative (Phase 5-6).
+@91 h3
+Chiến lược luyện tập
+@92 li
+3-4 đề/tuần, mỗi đề 45-60 phút.
+@93 li
+1 buổi/tuần chỉ để review và sửa cách trình bày.
+@94 li
+Luyện cả breadth (nhiều loại đề) và depth (đào sâu 1 đề).
+@95 h3
+Whiteboard / diagram practice
+@96 li
+Vẽ nhanh kiến trúc ở mức component trước.
+@97 li
+Giảm chi tiết thừa, tăng tính rõ ràng data flow.
+@98 h3
+Communication practice
+@99 li
+Nói thành tiếng khi giải đề.
+@100 li
+Ghi âm 1-2 lần/tuần để tự phát hiện điểm rối.
+@101 h3
+Mock interviews
+@102 li
+Tập với bạn học hoặc mentor.
+@103 li
+Sau mỗi buổi, chốt 3 điểm mạnh và 3 điểm cần sửa.
+@104 h3
+Học từ hệ thống thật
+@105 li
+Đọc engineering blog (Uber, Netflix, Cloudflare, Meta...).
+@106 li
+Tóm tắt lại theo khung: bài toán -> giải pháp -> trade-off -> bài học.
+@107 h2
+7) Các lỗi rất thường gặp
+@108 li
+Nhảy vào giải pháp quá sớm khi chưa chốt requirement.
+@109 li
+Không hỏi số liệu scale nên kiến trúc thiếu cơ sở.
+@110 li
+Nói quá nhiều thành phần nhưng không giải thích trade-off.
+@111 li
+Over-engineering ngay từ đầu.
+@112 li
+Không phân biệt "must-have bây giờ" và "evolution sau".
+@113 li
+Bỏ qua reliability, failure handling, observability.
+@114 p
+**Checklist chống lỗi:** trước khi kết thúc, luôn tự hỏi "Nếu traffic tăng 10x, hệ thống sẽ vỡ ở đâu trước?"
+@115 h2
+8) Lộ trình chuẩn bị đề xuất (8 tuần)
+@116 h3
+Tuần 1-2
+@117 li
+Ôn framework trả lời (SNAKE).
+@118 li
+Luyện 4 đề cơ bản: URL shortener, rate limiter, notification, chat basic.
+@119 h3
+Tuần 3-4
+@120 li
+Tăng độ sâu distributed systems: consistency, partition, queue, cache invalidation.
+@121 li
+Luyện 4 đề trung bình: feed, file storage, search basic, analytics pipeline.
+@122 h3
+Tuần 5-6
+@123 li
+Tập medium-hard: YouTube, ride-hailing dispatch overview, ad serving overview.
+@124 li
+Tập bottleneck/failure analysis kỹ hơn.
+@125 h3
+Tuần 7
+@126 li
+Mock interview cường độ cao: 3-4 buổi/tuần.
+@127 li
+Chấm theo rubric: clarity, structure, trade-off, depth.
+@128 h3
+Tuần 8
+@129 li
+Final review: top lỗi cá nhân, top pattern cần nhớ, top câu hỏi clarifying.
+@130 li
+Giảm tải trước interview, tập trung vào sự rõ ràng và bình tĩnh.
+@131 h2
+9) Communication tips trong interview
+@132 h3
+Think aloud có cấu trúc
+@133 p
+Nói rõ bạn đang làm bước nào: requirement -> numbers -> architecture -> deep dive -> trade-off.
+@134 h3
+Dẫn dắt cuộc trao đổi
+@135 li
+Chủ động đề xuất giả định khi thiếu dữ liệu.
+@136 li
+Thường xuyên checkpoint: "Anh/chị muốn em đào sâu phần nào tiếp theo?"
+@137 h3
+Hỏi câu hỏi tốt
+@138 li
+Peak traffic hay average?
+@139 li
+Ưu tiên latency hay consistency?
+@140 li
+MVP trước hay long-term scale trước?
+@141 h3
+Khi gặp bài toán chưa từng làm
+@142 li
+Bình tĩnh quay về nguyên lý gốc.
+@143 li
+Chia nhỏ bài toán.
+@144 li
+Chọn baseline đơn giản trước rồi mở rộng.
+@145 h2
+10) Bắt đầu ngay
+@146 p
+Nếu bạn muốn chuẩn bị system design interview một cách bài bản:
+@147 li
+Hoàn thành các phase nền tảng nếu còn thiếu.
+@148 li
+Vào **Phase 6 — System Design Mastery** để luyện khung tư duy interview.
+@149 li
+Lên lịch mock interview định kỳ từ tuần này.

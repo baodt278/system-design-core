@@ -1,0 +1,299 @@
+@0
+⟦Khung Tư Duy|Framework⟧ SNAKE: Phương Pháp Để Chinh Phục Buổi ⟦Phỏng Vấn Thiết Kế Hệ Thống|System Design Interview⟧
+@1
+Tôi còn nhớ lần đầu tiên tham gia một buổi ⟦phỏng vấn thiết kế hệ thống|system design interview⟧.
+@2
+⟦Người phỏng vấn|Interviewer⟧: *"Thiết kế YouTube."*
+@3
+Tôi: *"Ừm... YouTube... video... cần ⟦cơ sở dữ liệu|database⟧... cần CDN... cần..."*
+@4
+Tôi vẽ vài cái hộp, nói về ⟦vi dịch vụ|microservices⟧, nhắc đến Kafka. 30 phút trôi qua trong mơ hồ.
+@5
+Người phỏng vấn: *"Em có cách tiếp cận nào có cấu trúc không?"*
+@6
+Tôi: *"... Không ạ."*
+@7
+**Tôi trượt buổi phỏng vấn đó.**
+@8
+Không phải vì thiếu kiến thức. Mà vì **không có phương pháp rõ ràng**.
+@9
+Sau đó, tôi học ⟦khung tư duy|framework⟧ SNAKE từ một ⟦kiến trúc sư lâu năm|senior architect⟧. Nó đã thay đổi cuộc chơi.
+@10
+SNAKE = **S**cope (Phạm vi) → **N**umbers (Con số) → **A**PI → **K**ey components (Thành phần chính) → **E**laborate (Đào sâu)
+@11
+Khung tư duy này đã thay đổi cách tôi tiếp cận các buổi phỏng vấn thiết kế hệ thống. Và nó cũng sẽ thay đổi cách bạn tiếp cận.
+@12
+Tại Sao Cần Khung Tư Duy?
+@13
+Vấn Đề Khi Không Có Cấu Trúc
+@14
+**Khi không có khung tư duy:**
+@15
+Người phỏng vấn: "Thiết kế Twitter"
+
+Trong đầu ứng viên:
+"Twitter... tweet... người dùng... người theo dõi... bảng tin...
+cơ sở dữ liệu... NoSQL? SQL? Bộ nhớ đệm? Vi dịch vụ?
+Kafka? Redis? Khoan, có nên bắt đầu từ cơ sở dữ liệu không?
+Hay API? Hay kiến trúc? Aaah..."
+
+→ Nhảy lung tung không theo thứ tự
+→ Bỏ sót các yêu cầu quan trọng
+→ Lãng phí thời gian vào chi tiết không liên quan
+→ Không có mạch trình bày rõ ràng
+→ Người phỏng vấn bối rối
+
+@16
+**Khi có khung tư duy (SNAKE):**
+@17
+Người phỏng vấn: "Thiết kế Twitter"
+
+Ứng viên:
+"Trước tiên em xin làm rõ các yêu cầu (Scope)
+Sau đó ước lượng quy mô (Numbers)
+Định nghĩa các hợp đồng API (API)
+Thiết kế kiến trúc tổng thể (Key components)
+Đào sâu vào các phần quan trọng (Elaborate)"
+
+→ Tiến trình rõ ràng
+→ Bao quát mọi khía cạnh
+→ Tư duy có cấu trúc
+→ Dễ theo dõi
+→ Người phỏng vấn ấn tượng
+
+@18
+**Điểm mấu chốt:** Phỏng vấn thiết kế hệ thống kiểm tra **quá trình tư duy**, không chỉ kiến thức.
+@19
+Khung tư duy cho thấy bạn có cách tiếp cận bài toán một cách bài bản.
+@20
+Tổng Quan Về Khung Tư Duy SNAKE
+@21
+graph LR
+    S[S - Phạm vi<br/>5-8 phút] --> N[N - Con số<br/>5-8 phút]
+    N --> A[A - API<br/>5-8 phút]
+    A --> K[K - Thành phần chính<br/>10-15 phút]
+    K --> E[E - Đào sâu<br/>10-15 phút]
+
+    style S fill:#ff6b6b
+    style N fill:#ffd43b
+    style A fill:#51cf66
+    style K fill:#339af0
+    style E fill:#e599f7
+@22
+*Khung tư duy SNAKE: 5 bước với cách phân bổ thời gian rõ ràng cho một buổi phỏng vấn 45 phút*
+@23
+**Tổng quỹ thời gian: 45 phút**
+@24
+Scope:          5-8 phút   (Làm rõ yêu cầu)
+Numbers:        5-8 phút   (Ước lượng quy mô)
+API:            5-8 phút   (Định nghĩa giao diện)
+Key Components: 10-15 phút (Thiết kế tổng thể)
+Elaborate:      10-15 phút (Đào sâu)
+Dự phòng:       5 phút     (Câu hỏi bất ngờ)
+
+@25
+**Mỗi bước có mục đích rõ ràng. Đừng bỏ qua bước nào.**
+@26
+S - Scope: Làm Rõ ⟦Yêu Cầu|Requirements⟧
+@27
+**Mục tiêu: Hiểu sâu bài toán trước khi thiết kế**
+@28
+Cần Làm Rõ Những Gì
+@29
+**1. ⟦Yêu cầu chức năng|Functional Requirements⟧ (Hệ thống làm gì)**
+@30
+**2. ⟦Yêu cầu phi chức năng|Non-Functional Requirements⟧ (Hệ thống vận hành ra sao)**
+@31
+**3. ⟦Ràng buộc|Constraints⟧**
+@32
+Cách Đặt Câu Hỏi (Kỹ Năng Giao Tiếp Rất Quan Trọng!)
+@33
+**Cách tiếp cận tồi:**
+@34
+Ứng viên: "Có bao nhiêu người dùng ạ?"
+Người phỏng vấn: "Em cho tôi biết đi."
+Ứng viên: "Ừm... 1 triệu?"
+Người phỏng vấn: "..."
+
+→ Thụ động, không thể hiện được tư duy
+
+@35
+**Cách tiếp cận tốt:**
+@36
+Ứng viên: "Em xin làm rõ quy mô. Với một hệ thống kiểu Twitter,
+em nghĩ chúng ta đang thiết kế cho:
+- 200 triệu người dùng hoạt động hằng tháng
+- 100 triệu người dùng hoạt động hằng ngày
+- 500 triệu tweet mỗi ngày
+- Khối lượng công việc thiên về đọc (95% đọc, 5% ghi)
+
+Như vậy có khớp với kỳ vọng của anh không, hay em nên điều chỉnh?"
+
+Người phỏng vấn: "Nghe hợp lý đấy."
+
+→ Nêu rõ giả định, mời phản hồi
+→ Thể hiện quá trình tư duy
+
+@37
+Danh Sách Kiểm Tra Cho Phạm Vi
+@38
+**Kiểm tra xem bạn đã làm rõ:**
+@39
+☑ Đã xác định các tính năng cốt lõi
+☑ Đã ghi nhận các tính năng "có thì tốt"
+☑ Đã nêu rõ những gì nằm ngoài phạm vi
+☑ Đã thống nhất các con số về quy mô
+☑ Yêu cầu hiệu năng đã rõ ràng
+☑ Đã hiểu yêu cầu về tính nhất quán
+☑ Đã ghi nhận các ràng buộc
+
+@40
+**Thời gian dành ra: 5-8 phút**
+@41
+**Đừng vội vàng ở bước này. Nền móng vững chắc = thiết kế tốt hơn.**
+@42
+N - Numbers: ⟦Ước Tính Nhanh|Back-of-Envelope Calculations⟧
+@43
+**Mục tiêu: Định lượng ⟦quy mô|scale⟧ để làm cơ sở cho các quyết định thiết kế**
+@44
+Cần Tính Toán Những Gì
+@45
+**1. Ước lượng ⟦lưu lượng|Traffic⟧**
+@46
+**2. Ước lượng ⟦lưu trữ|Storage⟧**
+@47
+**3. Ước lượng ⟦băng thông|Bandwidth⟧**
+@48
+**4. Ước lượng bộ nhớ (⟦Lưu đệm|Caching⟧)**
+@49
+Tại Sao Các Con Số Quan Trọng
+@50
+**Các con số định hướng quyết định thiết kế:**
+@51
+Kết quả tính toán cho thấy:
+- Đọc:Ghi = 5:1 → Chiến lược bộ nhớ đệm là then chốt
+- 7,2 GB/s dữ liệu đa phương tiện → Bắt buộc dùng CDN
+- 219 TB/5 năm → Sớm muộn cũng cần phân mảnh dữ liệu (sharding)
+- 36K req/s → Cần cân bằng tải
+- 12 TB bộ nhớ đệm → Cụm Redis phân tán
+
+Không có tính toán:
+→ Đoán mò
+→ Thiết kế thừa hoặc thiết kế thiếu
+→ Không có lý lẽ bảo vệ quyết định
+
+@52
+Danh Sách Kiểm Tra Cho Các Con Số
+@53
+☑ Lưu lượng (đọc, ghi, cao điểm)
+☑ Lưu trữ (hiện tại, tăng trưởng)
+☑ Băng thông (vào, ra, đa phương tiện)
+☑ Bộ nhớ (yêu cầu bộ nhớ đệm)
+☑ Đã xác định tỷ lệ Đọc:Ghi
+☑ Đã ghi nhận dự báo tăng trưởng
+
+@54
+**Thời gian dành ra: 5-8 phút**
+@55
+**Hãy trình bày phép tính! Viết lên bảng trắng.**
+@56
+A - API: Định Nghĩa Giao Diện
+@57
+**Mục tiêu: Thiết kế các hợp đồng API trước khi triển khai phần bên trong**
+@58
+Tại Sao Bắt Đầu Từ API?
+@59
+**Thiết kế API buộc mọi thứ phải rõ ràng:**
+@60
+Mơ hồ: "Hệ thống cho phép người dùng đăng và xem tweet"
+
+API rõ ràng:
+POST /tweets
+GET /feed
+GET /tweets/{id}
+POST /tweets/{id}/like
+
+→ Cụ thể, kiểm thử được, thảo luận được
+
+@61
+Thiết Kế API Theo Chuẩn REST
+@62
+**Ví dụ: Twitter**
+@63
+Các Nguyên Tắc Thiết Kế API
+@64
+**1. Đặt tên nhất quán**
+@65
+**2. ⟦Quản lý phiên bản|Versioning⟧**
+@66
+**3. ⟦Phân trang|Pagination⟧**
+@67
+**4. Phản hồi lỗi**
+@68
+Danh Sách Kiểm Tra Cho API
+@69
+☑ Đã định nghĩa các điểm cuối (endpoint) cốt lõi
+☑ Đã chỉ rõ định dạng yêu cầu/phản hồi
+☑ Phương thức HTTP phù hợp
+☑ Có nhắc đến xác thực
+☑ Đã chọn chiến lược phân trang
+☑ Đã ghi nhận cách xử lý lỗi
+☑ Đã cân nhắc giới hạn tần suất
+
+@70
+**Thời gian dành ra: 5-8 phút**
+@71
+**Đừng đi quá chi tiết. Hợp đồng ở mức tổng quan là đủ.**
+@72
+K - Key Components: ⟦Kiến Trúc Tổng Thể|High-Level Architecture⟧
+@73
+**Mục tiêu: Vẽ các hộp và mũi tên**
+@74
+Các Thành Phần Cần Có
+@75
+**Các thành phần tiêu chuẩn của một hệ thống web:**
+@76
+graph TB
+    subgraph Tầng máy khách
+        WEB[Ứng dụng web]
+        MOBILE[Ứng dụng di động]
+    end
+
+    subgraph Tầng biên
+        CDN[CDN]
+        LB[Bộ cân bằng tải]
+    end
+
+    subgraph Tầng ứng dụng
+        API[Máy chủ API]
+        FANOUT[Dịch vụ phân phát fan-out]
+    end
+
+    subgraph Tầng dữ liệu
+        CACHE[Bộ nhớ đệm Redis]
+        DB[(CSDL)]
+        S3[Lưu trữ đối tượng]
+    end
+
+    subgraph Tầng bất đồng bộ
+        QUEUE[Hàng đợi thông điệp]
+        WORKER[Tiến trình xử lý]
+    end
+
+    WEB --> CDN
+    MOBILE --> CDN
+    CDN --> LB
+    LB --> API
+    API --> CACHE
+    API --> DB
+    API --> QUEUE
+    QUEUE --> FANOUT
+    FANOUT --> CACHE
+    API --> S3
+    WORKER --> DB
+
+    style API fill:#51cf66
+    style CACHE fill:#ffd43b
+    style DB fill:#ff6b6b
+@77
+*Kiến trúc tổng thể cho một hệ thống kiểu Twitter với các ⟦thành phần|components⟧ chính*

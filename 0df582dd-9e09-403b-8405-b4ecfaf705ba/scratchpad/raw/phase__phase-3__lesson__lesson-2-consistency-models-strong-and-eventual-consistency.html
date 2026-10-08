@@ -1,0 +1,632 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Consistency Models - Strong vs Eventual Consistency | Phase 3 — Distributed Systems Fundamentals | System Design Core</title><meta name="description" content="Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade offs và cách đưa ra quyế"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency"/><meta property="og:title" content="Consistency Models - Strong vs Eventual Consistency | Phase 3 — Distributed Systems Fundamentals"/><meta property="og:description" content="Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade offs và cách đưa ra quyế"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Consistency Models - Strong vs Eventual Consistency | Phase 3 — Distributed Systems Fundamentals"/><meta name="twitter:description" content="Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade offs và cách đưa ra quyế"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 3 — Distributed Systems Fundamentals</p><p class="mt-3 text-xl font-semibold text-ink">Consistency Models - Strong vs Eventual Consistency</p><p class="mt-3 text-sm leading-7 text-ink-dim">Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade-offs và cách đưa ra quyết định consistency dựa trên business requirements.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Reality of Distributed Systems - Failure Models &amp; CAP Thinking</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Consistency Models - Strong vs Eventual Consistency</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-3-consensus-leader-election"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Consensus &amp; Leader Election - Distributed Agreement</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Time &amp; Event Ordering - Clock Problem Trong Distributed Systems</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-3">Phase 3 — Distributed Systems Fundamentals</a></li><li>/</li><li aria-current="page" class="text-ink">Consistency Models - Strong vs Eventual Consistency</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Consistency Models - Strong vs Eventual Consistency</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade-offs và cách đưa ra quyết định consistency dựa trên business requirements.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Consistency Models - Strong vs Eventual Consistency"><article class="prose-ui"><h1 id="consistency-models-strong-vs-eventual-consistency">Consistency Models: Strong vs Eventual Consistency</h1>
+<p>Tôi còn nhớ cái ngày tôi gây ra một bug nghiêm trọng vì không hiểu consistency.</p>
+<p>E-commerce system. User đặt hàng sản phẩm cuối cùng trong kho. Nhưng vì eventual consistency, 2 users cùng thấy &quot;còn hàng&quot; và đặt hàng thành công.</p>
+<p>Kết quả? Oversold. Phải refund một người. Customer service nightmare. CEO gọi meeting.</p>
+<p>Tôi học được bài học đắt giá: <strong>Consistency không phải technical preference. Nó là business decision.</strong></p>
+<p>Lesson này sẽ giúp bạn tránh sai lầm đó.</p>
+<h2 id="tại-sao-consistency-quan-trọng">Tại Sao Consistency Quan Trọng?</h2>
+<p>Trong single database, consistency là đương nhiên:</p>
+<pre><code>User A: Writes X = 10
+User B: Reads X → Always sees 10
+
+Simple. Always correct.
+</code></pre>
+<p>Nhưng trong distributed systems với multiple databases:</p>
+<pre><code>User A: Writes X = 10 to Database 1
+        Database 1 → Replicate to Database 2 (takes time)
+User B: Reads X from Database 2 → Might see old value (X = 5)
+
+Not simple. Might be wrong.
+</code></pre>
+<p><strong>Question:</strong> User B có nên thấy giá trị cũ không?</p>
+<p><strong>Answer:</strong> Depends. Đó chính là consistency models.</p>
+<h2 id="strong-consistency-luôn-đúng-nhưng-chậm">Strong Consistency: Luôn Đúng, Nhưng Chậm</h2>
+<h3 id="định-nghĩa">Định Nghĩa</h3>
+<p><strong>Strong consistency = Mọi read đều thấy most recent write</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant UserA
+    participant DB1
+    participant DB2
+    participant UserB
+    
+    UserA-&gt;&gt;DB1: Write X = 10
+    DB1-&gt;&gt;DB2: Replicate X = 10
+    Note over DB1,DB2: Wait until replicated
+    DB1--&gt;&gt;UserA: Write confirmed
+    UserB-&gt;&gt;DB2: Read X
+    DB2--&gt;&gt;UserB: Returns X = 10
+    
+    Note over UserA,UserB: User B LUÔN thấy giá trị mới nhất</code></pre>
+<p><em>Strong consistency: Write chỉ confirm sau khi replicate xong</em></p>
+<p><strong>Behavior:</strong></p>
+<pre><code>Timeline:
+10:00:00.000 - User A writes X = 10
+10:00:00.050 - System replicates to all nodes (50ms)
+10:00:00.051 - Write confirmed to User A
+10:00:00.052 - User B reads X → Sees 10
+
+User B LUÔN LUÔN thấy latest value
+Giống như chỉ có 1 database duy nhất
+</code></pre>
+<h3 id="linearizability-strongest-form">Linearizability: Strongest Form</h3>
+<p><strong>Linearizability = Operations appear to happen instantly at some point between start và end</strong></p>
+<p>Nghe abstract? Hãy xem ví dụ:</p>
+<pre><code>Timeline:
+
+User A: Write X = 10   [====== 50ms ======]
+User B:                     Read X     → Must see 10 (happened after write started)
+User C:        Read X   → Might see 5 or 10 (concurrent với write)
+User D:                                          Read X → Must see 10
+
+Rules:
+- Nếu read bắt đầu sau write complete → Phải thấy new value
+- Nếu read concurrent với write → Có thể thấy old hoặc new
+- Nếu write complete → Mọi read sau đó thấy new value
+</code></pre>
+<p><strong>Real-world analogy:</strong></p>
+<p>Tưởng tượng bạn post trên Facebook:</p>
+<pre><code>Strong consistency (Linearizable):
+- Bạn post photo lúc 10:00
+- Friend refresh lúc 10:01 → PHẢI thấy photo
+- Không bao giờ &quot;bạn thấy photo nhưng friend không thấy&quot;
+
+Giống như post lên tường nhà
+→ Ai đi ngang qua đều thấy
+</code></pre>
+<h3 id="implementation-cost">Implementation Cost</h3>
+<p><strong>Để achieve strong consistency:</strong></p>
+<pre><code class="language-python">def write_with_strong_consistency(key, value):
+    # 1. Write to primary
+    primary.write(key, value)
+    
+    # 2. Replicate to ALL replicas
+    for replica in replicas:
+        replica.write(key, value)
+        
+    # 3. Wait for ALL confirmations
+    wait_for_all_acks()
+    
+    # 4. Only then return success
+    return &quot;success&quot;
+
+# If ANY replica fails → Entire write fails
+# If network slow → Write is slow
+</code></pre>
+<p><strong>Performance impact:</strong></p>
+<pre><code>Single database:
+Write latency: 10ms
+
+Strong consistency (3 replicas):
+Write latency: 
+- Local write: 10ms
+- Replicate to Replica 1: 50ms (network)
+- Replicate to Replica 2: 50ms (network)
+- Replicate to Replica 3: 50ms (network)
+- Wait for all: max(50, 50, 50) = 50ms
+
+Total: 10 + 50 = 60ms (6x slower!)
+
+Nếu có replica ở xa:
+- US → EU replica: 100ms
+- US → Asia replica: 200ms
+Total: 10 + 200 = 210ms (21x slower!)
+</code></pre>
+<h3 id="trade-offs">Trade-offs</h3>
+<pre><code>Strong Consistency:
+
+Advantages:
+- Always correct
+- No stale data
+- Simple to reason about (như single database)
+- No application-level conflict resolution
+
+Disadvantages:
+- Slow (wait for replication)
+- Lower availability (nếu replica down, can&#x27;t write)
+- Geographic distribution expensive
+- Scale limits (more replicas = slower)
+</code></pre>
+<h3 id="khi-nào-cần-strong-consistency">Khi Nào Cần Strong Consistency?</h3>
+<p><strong>Cần strong consistency khi:</strong></p>
+<pre><code>✓ Financial transactions
+  - Bank transfers
+  - Payment processing
+  - Accounting
+
+✓ Inventory management
+  - Last item in stock
+  - Seat booking
+  - Limited edition sales
+
+✓ Authentication
+  - Password changes
+  - Permission updates
+  - Security tokens
+
+✓ Critical business logic
+  - Order state transitions
+  - Contract signing
+  - Legal documents
+</code></pre>
+<p><strong>Ví dụ thực tế:</strong></p>
+<pre><code class="language-python"># Bank transfer PHẢI strong consistency
+def transfer_money(from_account, to_account, amount):
+    with transaction():
+        # PHẢI atomic và immediate
+        deduct(from_account, amount)
+        add(to_account, amount)
+    
+    # Không chấp nhận:
+    # - User thấy tiền đã trừ nhưng chưa vào account đích
+    # - Retry gây duplicate transfer
+    # - Stale balance data
+</code></pre>
+<h2 id="eventual-consistency-nhanh-nhưng-có-thể-sai-tạm-thời">Eventual Consistency: Nhanh Nhưng Có Thể Sai Tạm Thời</h2>
+<h3 id="định-nghĩa-1">Định Nghĩa</h3>
+<p><strong>Eventual consistency = Nếu không có writes mới, eventually tất cả replicas sẽ converge về cùng value</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant UserA
+    participant DB1
+    participant DB2
+    participant UserB
+    
+    UserA-&gt;&gt;DB1: Write X = 10
+    DB1--&gt;&gt;UserA: Write confirmed immediately
+    Note over DB1: Don&#x27;t wait for replication
+    DB1--)DB2: Replicate async
+    UserB-&gt;&gt;DB2: Read X
+    DB2--&gt;&gt;UserB: Returns X = 5 (old value)
+    Note over DB2: Eventually receives X = 10
+    UserB-&gt;&gt;DB2: Read X again
+    DB2--&gt;&gt;UserB: Returns X = 10 (new value)
+    
+    Note over UserA,UserB: User B có thể thấy stale data tạm thời</code></pre>
+<p><em>Eventual consistency: Write confirm ngay, replicate async</em></p>
+<p><strong>Behavior:</strong></p>
+<pre><code>Timeline:
+10:00:00.000 - User A writes X = 10 to DB1
+10:00:00.001 - Write confirmed immediately (1ms)
+10:00:00.010 - User B reads from DB2 → Sees X = 5 (stale!)
+10:00:00.050 - DB1 replicates to DB2
+10:00:00.100 - User B reads again → Sees X = 10
+
+User B thấy stale data trong 50ms
+Sau đó eventually consistent
+</code></pre>
+<h3 id="real-world-analogy">Real-World Analogy</h3>
+<pre><code>Facebook likes:
+- Bạn like post
+- Your like appears immediately (optimistic update)
+- Backend replicate async
+- Friend có thể thấy count khác nhau
+- After vài giây, everyone sees same count
+
+Acceptable vì:
+- Like count không critical
+- User experience tốt hơn (fast)
+- Eventual correctness là enough
+</code></pre>
+<h3 id="implementation">Implementation</h3>
+<pre><code class="language-python">def write_with_eventual_consistency(key, value):
+    # 1. Write to primary
+    primary.write(key, value)
+    
+    # 2. Return success IMMEDIATELY
+    return &quot;success&quot;
+    
+    # 3. Replicate async in background
+    background_task.replicate_to_replicas(key, value)
+
+# Fast! Không wait replication
+# User không phải đợi
+
+def read_from_replica(key):
+    # Có thể đọc stale data
+    return replica.read(key)
+</code></pre>
+<h3 id="conflict-resolution">Conflict Resolution</h3>
+<p><strong>Problem với eventual consistency:</strong></p>
+<pre><code>Scenario:
+10:00:00 - User A writes X = 10 to DB1
+10:00:00 - User B writes X = 20 to DB2 (concurrent!)
+
+Conflict! Cả hai writes success, nhưng giá trị nào đúng?
+
+DB1 thinks X = 10
+DB2 thinks X = 20
+
+When replicate → Conflict!
+</code></pre>
+<p><strong>Resolution strategies:</strong></p>
+<p><strong>Strategy 1: Last Write Wins (LWW)</strong></p>
+<pre><code class="language-python">def resolve_conflict(value1, value2):
+    # Use timestamp
+    if value1.timestamp &gt; value2.timestamp:
+        return value1
+    else:
+        return value2
+
+# Simple nhưng có thể mất data
+# Nếu clocks không sync → Wrong decision
+</code></pre>
+<p><strong>Strategy 2: Application-Level Merge</strong></p>
+<pre><code class="language-python">def resolve_conflict(value1, value2):
+    # Application decides
+    if feature_flag_enabled:
+        return merge_values(value1, value2)
+    else:
+        return value1  # Primary wins
+
+# Flexible nhưng complex logic
+</code></pre>
+<p><strong>Strategy 3: Keep Both (CRDTs)</strong></p>
+<pre><code class="language-python"># Conflict-free Replicated Data Types
+# Example: Counter
+
+# DB1: increment counter
+counter_db1 = {node1: 5, node2: 3}  # total = 8
+
+# DB2: increment counter  
+counter_db2 = {node1: 5, node2: 4}  # total = 9
+
+# Merge: Take max per node
+counter_merged = {node1: 5, node2: 4}  # total = 9
+
+# No conflict! Deterministic merge
+</code></pre>
+<h3 id="trade-offs-1">Trade-offs</h3>
+<pre><code>Eventual Consistency:
+
+Advantages:
+- Fast writes (no wait)
+- High availability (replicas independent)
+- Good for geo-distributed
+- Scales well
+
+Disadvantages:
+- Stale reads possible
+- Application phải handle inconsistency
+- Conflict resolution complexity
+- Harder to reason about
+</code></pre>
+<h3 id="khi-nào-dùng-eventual-consistency">Khi Nào Dùng Eventual Consistency?</h3>
+<p><strong>Eventual consistency OK khi:</strong></p>
+<pre><code>✓ Social features
+  - Likes, views counts
+  - Follower counts
+  - Activity feeds
+
+✓ Analytics
+  - Dashboards
+  - Metrics
+  - Reports
+
+✓ Recommendations
+  - Product suggestions
+  - Content feeds
+  - Search results
+
+✓ Non-critical updates
+  - Profile changes
+  - Preferences
+  - UI settings
+</code></pre>
+<p><strong>Ví dụ thực tế:</strong></p>
+<pre><code class="language-python"># Social media like KHÔNG CẦN strong consistency
+def like_post(user_id, post_id):
+    # Write immediately
+    likes_db.increment(post_id)
+    
+    # User sees like immediately
+    return {&quot;likes&quot;: get_count_optimistic(post_id)}
+    
+    # Background: Replicate to analytics DB
+    # Eventual consistency acceptable
+    # Không ai care nếu count sai 1-2 trong vài giây
+</code></pre>
+<h2 id="readwrite-trade-offs">Read/Write Trade-offs</h2>
+<h3 id="the-fundamental-trade-off">The Fundamental Trade-off</h3>
+<pre><code>Consistency vs Performance vs Availability
+
+Pick 2:
+- Strong consistency + High availability → Slow
+- Strong consistency + Fast → Lower availability
+- Fast + High availability → Eventual consistency
+</code></pre>
+<p><strong>Visual comparison:</strong></p>
+<pre><code>Strong Consistency:
+Write: ████████████ 60ms
+Read:  ███ 10ms
+Availability: 99.9%
+
+Eventual Consistency:
+Write: █ 5ms
+Read:  █ 5ms  
+Availability: 99.99%
+</code></pre>
+<h3 id="tunable-consistency">Tunable Consistency</h3>
+<p>Một số systems cho phép tune consistency per operation:</p>
+<pre><code class="language-python"># Cassandra example
+def read_with_consistency_level(key, level):
+    if level == &quot;ALL&quot;:
+        # Read từ TẤT CẢ replicas, đợi all responses
+        # Strong consistency, slow
+        return db.read(key, consistency=&quot;ALL&quot;)
+        
+    elif level == &quot;QUORUM&quot;:
+        # Read từ majority replicas
+        # Good balance
+        return db.read(key, consistency=&quot;QUORUM&quot;)
+        
+    elif level == &quot;ONE&quot;:
+        # Read từ 1 replica bất kỳ
+        # Eventual consistency, fast
+        return db.read(key, consistency=&quot;ONE&quot;)
+
+# Ví dụ usage:
+# Critical read → QUORUM
+balance = read(&quot;account_balance&quot;, level=&quot;QUORUM&quot;)
+
+# Non-critical read → ONE
+recommendations = read(&quot;suggestions&quot;, level=&quot;ONE&quot;)
+</code></pre>
+<p><strong>Trade-off matrix:</strong></p>
+<pre><code>Consistency Level | Latency | Availability | Correctness
+------------------|---------|--------------|------------
+ALL               | High    | Low          | Perfect
+QUORUM            | Medium  | Medium       | Very Good
+ONE               | Low     | High         | Eventually
+</code></pre>
+<h2 id="real-world-decision-making">Real-World Decision Making</h2>
+<h3 id="framework-4-questions">Framework: 4 Questions</h3>
+<p>Khi design feature, tự hỏi 4 câu hỏi này:</p>
+<p><strong>Question 1: User có bị harm nếu thấy stale data không?</strong></p>
+<pre><code>Example:
+- Bank balance stale → YES harm (user overdraft)
+- Like count stale → NO harm (just display)
+
+If YES → Strong consistency
+If NO → Eventual consistency OK
+</code></pre>
+<p><strong>Question 2: Business loss nếu data inconsistent?</strong></p>
+<pre><code>Example:
+- Inventory oversold → YES loss (refund, reputation)
+- Feed order wrong → NO loss (just UX)
+
+If YES → Strong consistency  
+If NO → Eventual consistency OK
+</code></pre>
+<p><strong>Question 3: Có thể fix sau không?</strong></p>
+<pre><code>Example:
+- Money transfer wrong → CANNOT fix (legal issue)
+- Duplicate notification → CAN fix (just annoying)
+
+If CANNOT fix → Strong consistency
+If CAN fix → Eventual consistency OK
+</code></pre>
+<p><strong>Question 4: User có expect real-time không?</strong></p>
+<pre><code>Example:
+- Chat message → YES expect immediate
+- Email read status → NO expect (delay OK)
+
+If YES → Strong consistency (or appear so)
+If NO → Eventual consistency OK
+</code></pre>
+<h3 id="decision-matrix">Decision Matrix</h3>
+<pre><code>Feature Type              | Consistency  | Reasoning
+--------------------------|--------------|------------------
+Payment processing        | Strong       | Cannot be wrong
+Inventory (last item)     | Strong       | Oversell bad
+User authentication       | Strong       | Security critical
+Password change           | Strong       | Security critical
+Order status              | Strong       | User expectation
+--------------------------|--------------|------------------
+Like/view counts          | Eventual     | Approximate OK
+Activity feed             | Eventual     | Delay acceptable
+Recommendations           | Eventual     | Personalized anyway
+Analytics dashboard       | Eventual     | Batch updates fine
+Profile updates           | Eventual     | Not time-critical
+Search results            | Eventual     | Ranking varies
+Notification count        | Eventual     | Off by 1-2 OK
+</code></pre>
+<h3 id="hybrid-approach">Hybrid Approach</h3>
+<p>Trong thực tế, <strong>most systems dùng cả hai</strong>:</p>
+<pre><code class="language-python">class EcommerceSystem:
+    def checkout(self, cart_items):
+        # STRONG consistency cho critical path
+        with strong_consistency():
+            inventory = check_inventory(cart_items)  # Must be accurate
+            payment = process_payment(amount)         # Must be exact
+            order = create_order(cart_items)          # Must be atomic
+        
+        # EVENTUAL consistency cho non-critical
+        with eventual_consistency():
+            send_email_confirmation(order)            # Delay OK
+            update_analytics(order)                   # Approximate OK
+            generate_recommendations(user)            # Eventual OK
+            update_activity_feed(user, order)         # Delay fine
+
+# Critical = Strong
+# Non-critical = Eventual
+</code></pre>
+<h2 id="feature-based-consistency-decisions">Feature-Based Consistency Decisions</h2>
+<h3 id="case-study-1-e-commerce-checkout">Case Study 1: E-commerce Checkout</h3>
+<p><strong>Feature: Add to cart</strong></p>
+<pre><code>Decision: Eventual consistency
+
+Why?
+- Cart là temporary state
+- User có thể sửa before checkout
+- Delay vài giây acceptable
+- High availability quan trọng hơn
+
+Implementation:
+- Write to local cache immediately
+- Async replicate to database
+- User sees cart update instant
+</code></pre>
+<p><strong>Feature: Place order</strong></p>
+<pre><code>Decision: Strong consistency
+
+Why?
+- Payment processing critical
+- Inventory check must be accurate
+- No oversell allowed
+- User expect confirmation immediately
+
+Implementation:
+- Transaction across inventory + payment + order
+- Wait for all confirms
+- User đợi vài giây OK (expected)
+</code></pre>
+<h3 id="case-study-2-social-media">Case Study 2: Social Media</h3>
+<p><strong>Feature: Post content</strong></p>
+<pre><code>Decision: Hybrid
+
+Why?
+- User expect to see own post immediately (strong)
+- Followers có thể thấy sau (eventual)
+
+Implementation:
+- Write với strong consistency
+- User thấy post ngay
+- Replicate to followers async
+- Followers thấy trong vài giây
+</code></pre>
+<p><strong>Feature: Like count</strong></p>
+<pre><code>Decision: Eventual consistency
+
+Why?
+- Approximate count acceptable
+- High volume (thousands likes/second)
+- User không care nếu off by 10-20
+- Fast response critical
+
+Implementation:
+- Increment counter async
+- Update UI optimistically
+- Background sync to database
+- Eventually consistent count
+</code></pre>
+<h3 id="case-study-3-messaging-app">Case Study 3: Messaging App</h3>
+<p><strong>Feature: Send message</strong></p>
+<pre><code>Decision: Strong consistency
+
+Why?
+- Message order critical
+- User expect recipient sees immediately
+- Cannot lose messages
+- Delivery confirmation important
+
+Implementation:
+- Write to sender&#x27;s DB với strong consistency
+- Replicate to recipient&#x27;s DB synchronously
+- Confirm delivery after both writes
+- User waits vài ms (acceptable)
+</code></pre>
+<p><strong>Feature: &quot;Last seen&quot; status</strong></p>
+<pre><code>Decision: Eventual consistency
+
+Why?
+- Approximate time OK
+- High frequency updates
+- Not critical data
+- Slight delay acceptable
+
+Implementation:
+- Update async every 30 seconds
+- Users might see &quot;online&quot; với small delay
+- Eventually converges
+- Performance &gt; Accuracy
+</code></pre>
+<h2 id="mental-model-consistency--business-decision">Mental Model: Consistency = Business Decision</h2>
+<p><strong>Key insight:</strong> Consistency không phải technical preference.</p>
+<pre><code>Wrong thinking:
+&quot;Eventual consistency tốt hơn vì fast&quot;
+&quot;Strong consistency tốt hơn vì correct&quot;
+
+Right thinking:
+&quot;Feature này cần strong consistency vì business requirement X&quot;
+&quot;Feature này OK với eventual consistency vì business tolerates Y&quot;
+</code></pre>
+<p><strong>Framework:</strong></p>
+<pre><code>For each feature:
+
+1. Identify business requirement
+   → What matters most?
+
+2. Assess risk
+   → What&#x27;s worst case với stale data?
+
+3. Check user expectation
+   → User expect instant hoặc delay OK?
+
+4. Choose consistency model
+   → Strong nếu critical
+   → Eventual nếu acceptable
+
+5. Implement accordingly
+   → Don&#x27;t second-guess business needs
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Consistency models summary:</strong></p>
+<pre><code>Strong Consistency:
+- Always correct
+- Slower, lower availability
+- Use cho: payments, inventory, auth
+- Trade: Performance cho correctness
+
+Eventual Consistency:
+- Fast, high availability
+- Temporarily incorrect
+- Use cho: likes, feeds, analytics
+- Trade: Correctness cho performance
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code>Choose Strong Consistency nếu:
+✓ Data critical to business
+✓ Cannot tolerate errors
+✓ User harm nếu wrong
+✓ Legal/compliance requirements
+
+Choose Eventual Consistency nếu:
+✓ Approximate data OK
+✓ Can fix errors later
+✓ User không care về delays
+✓ Performance critical
+</code></pre>
+<p><strong>Hybrid approach best:</strong></p>
+<pre><code>Most real systems:
+- Strong consistency cho critical paths
+- Eventual consistency cho everything else
+
+Examples:
+- E-commerce: Strong cho checkout, Eventual cho browse
+- Social: Strong cho posts, Eventual cho likes
+- Banking: Strong cho transactions, Eventual cho statements
+</code></pre>
+<p><strong>Golden rule:</strong></p>
+<blockquote>
+<p>Consistency là business decision, không phải technical preference. Always start bằng business requirements, then choose consistency model accordingly.</p>
+</blockquote>
+<p><strong>Self-check questions:</strong></p>
+<p>Trước khi implement feature, tự hỏi:</p>
+<ol>
+<li><em>User có bị harm nếu data stale vài giây không?</em></li>
+<li><em>Business có loss nếu data inconsistent không?</em></li>
+<li><em>User có expect real-time updates không?</em></li>
+<li><em>Có thể compensate/fix errors sau không?</em></li>
+</ol>
+<p>Answers sẽ guide consistency decision.</p>
+<p><strong>Remember:</strong></p>
+<pre><code>Perfect consistency everywhere = Slow system
+No consistency anywhere = Wrong system
+
+Smart architect:
+- Strong consistency where needed
+- Eventual consistency where acceptable
+- Clear reasoning cho mỗi decision
+</code></pre>
+<p>Consistency models không phải về choosing &quot;better&quot; option. Nó về choosing <strong>right</strong> option cho <strong>context</strong> cụ thể.</p>
+<p>Business first. Technology second. Always.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Reality of Distributed Systems - Failure Models &amp; CAP Thinking</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-3/lesson/lesson-3-consensus-leader-election">Consensus &amp; Leader Election - Distributed Agreement<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n11:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-3\",\"lesson\",\"lesson-2-consistency-models-strong-and-eventual-consistency\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-3\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-2-consistency-models-strong-and-eventual-consistency\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],\"$L6\",\"$L7\"]}]]}]}],\"$L8\"]}]}]]}],{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{\"children\":[\"$Ld\",{},null,false,false]},[\"$Le\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Lf\",[],[]],false,false],\"$L10\",false]],\"m\":\"$undefined\",\"G\":[\"$11\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"12:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n14:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n15:\"$Sreact.suspense\"\n21:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n23:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}]\n7:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n8:[\"$\",\"$L12\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nd:[\"$\",\"$1\",\"c\",{\"children\":[\"$L13\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L14\",null,{\"children\":[\"$\",\"$15\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@16\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L17\",\"$L18\",\"$L19\",\"$L1a\"]}],\"$L1b\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1c\",\"$L1d\",\"$L1e\",\"$L1f\"]}],\"$L20\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"10:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L21\",null,{\"children\":\"$L22\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L23\",null,{\"children\":[\"$\",\"$15\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L24\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1b:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n20:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"13:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Consistency Models - Strong vs Eventual Consistency\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade-offs và cách đưa ra quyết định consistency dựa trên business requirements.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-reality-of-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\"}]]}]}],[\"$\",\"li\",\"lesson-2-consistency-models-strong-and-eventual-consistency\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consistency Models - Strong vs Eventual Consistency\"}]]}]}],[\"$\",\"li\",\"lesson-3-consensus-leader-election\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-3-consensus-leader-election\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consensus \u0026 Leader Election - Distributed Agreement\"}]]}]}],[\"$\",\"li\",\"lesson-4-distributed-transactions-data-integrity\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\"}]]}]}],[\"$\",\"li\",\"lesson-5-distributed-id-and-ordering\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\"}]]}]}],[\"$\",\"li\",\"lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L25\",\"$L26\"]}]}]]}]]}],\"$L27\"]}],\"$L28\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"29:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n25:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n26:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Time \u0026 Event Ordering - Clock Problem Trong Distributed Systems\"}]\n27:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"hover:text-ink\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Consistency Models - Strong vs Eventual Consistency\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Consistency Models - Strong vs Eventual Consistency\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade-offs và cách đưa ra quyết định consistency dựa trên business requirements.\"}]]}],[\"$\",\"$L29\",null,{\"path\":\"/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\",\"title\":\"Consistency Models - Strong vs Eventual Consistency\",\"description\":\"Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade-offs và cách đưa ra quyết định consistency dựa trên business requirements.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Consistency Models - Strong vs Eventual Consistency\",\"children\":\"$L2a\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-3-consensus-leader-election\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Consensus \u0026 Leader Election - Distributed Agreement\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2b:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"2a:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"consistency-models-strong-vs-eventual-consistency\",\"children\":\"Consistency Models: Strong vs Eventual Consistency\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ cái ngày tôi gây ra một bug nghiêm trọng vì không hiểu consistency.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"E-commerce system. User đặt hàng sản phẩm cuối cùng trong kho. Nhưng vì eventual consistency, 2 users cùng thấy \\\"còn hàng\\\" và đặt hàng thành công.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Kết quả? Oversold. Phải refund một người. Customer service nightmare. CEO gọi meeting.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi học được bài học đắt giá: \",[\"$\",\"strong\",null,{\"children\":\"Consistency không phải technical preference. Nó là business decision.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Lesson này sẽ giúp bạn tránh sai lầm đó.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-consistency-quan-trọng\",\"children\":\"Tại Sao Consistency Quan Trọng?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Trong single database, consistency là đương nhiên:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User A: Writes X = 10\\nUser B: Reads X → Always sees 10\\n\\nSimple. Always correct.\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Nhưng trong distributed systems với multiple databases:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User A: Writes X = 10 to Database 1\\n        Database 1 → Replicate to Database 2 (takes time)\\nUser B: Reads X from Database 2 → Might see old value (X = 5)\\n\\nNot simple. Might be wrong.\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Question:\"}],\" User B có nên thấy giá trị cũ không?\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Answer:\"}],\" Depends. Đó chính là consistency models.\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"strong-consistency-luôn-đúng-nhưng-chậm\",\"children\":\"Strong Consistency: Luôn Đúng, Nhưng Chậm\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"định-nghĩa\",\"children\":\"Định Nghĩa\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strong consistency = Mọi read đều thấy most recent write\"}]}],\"\\n\",[\"$\",\"$L2b\",null,{\"chart\":\"sequenceDiagram\\n    participant UserA\\n    participant DB1\\n    participant DB2\\n    participant UserB\\n    \\n    UserA-\u003e\u003eDB1: Write X = 10\\n    DB1-\u003e\u003eDB2: Replicate X = 10\\n    Note over DB1,DB2: Wait until replicated\\n    DB1--\u003e\u003eUserA: Write confirmed\\n    UserB-\u003e\u003eDB2: Read X\\n    DB2--\u003e\u003eUserB: Returns X = 10\\n    \\n    Note over UserA,UserB: User B LUÔN thấy giá trị mới nhất\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Strong consistency: Write chỉ confirm sau khi replicate xong\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Behavior:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Timeline:\\n10:00:00.000 - User A writes X = 10\\n10:00:00.050 - System replicates to all nodes (50ms)\\n10:00:00.051 - Write confirmed to User A\\n10:00:00.052 - User B reads X → Sees 10\\n\\nUser B LUÔN LUÔN thấy latest value\\nGiống như chỉ có 1 database duy nhất\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"linearizability-strongest-form\",\"children\":\"Linearizability: Strongest Form\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Linearizability = Operations appear to happen instantly at some point between start và end\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Nghe abstract? Hãy xem ví dụ:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Timeline:\\n\\nUser A: Write X = 10   [====== 50ms ======]\\nUser B:                     Read X     → Must see 10 (happened after write started)\\nUser C:        Read X   → Might see 5 or 10 (concurrent với write)\\nUser D:                                          Read X → Must see 10\\n\\nRules:\\n- Nếu read bắt đầu sau write complete → Phải thấy new value\\n- Nếu read concurrent với write → Có thể thấy old hoặc new\\n- Nếu write complete → Mọi read sau đó thấy new value\\n\"}]}],\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\"]}]\n"])</script><script>self.__next_f.push([1,"2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real-world analogy:\"}]}]\n2d:[\"$\",\"p\",null,{\"children\":\"Tưởng tượng bạn post trên Facebook:\"}]\n2e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Strong consistency (Linearizable):\\n- Bạn post photo lúc 10:00\\n- Friend refresh lúc 10:01 → PHẢI thấy photo\\n- Không bao giờ \\\"bạn thấy photo nhưng friend không thấy\\\"\\n\\nGiống như post lên tường nhà\\n→ Ai đi ngang qua đều thấy\\n\"}]}]\n2f:[\"$\",\"h3\",null,{\"id\":\"implementation-cost\",\"children\":\"Implementation Cost\"}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Để achieve strong consistency:\"}]}]\n31:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def write_with_strong_consistency(key, value):\\n    # 1. Write to primary\\n    primary.write(key, value)\\n    \\n    # 2. Replicate to ALL replicas\\n    for replica in replicas:\\n        replica.write(key, value)\\n        \\n    # 3. Wait for ALL confirmations\\n    wait_for_all_acks()\\n    \\n    # 4. Only then return success\\n    return \\\"success\\\"\\n\\n# If ANY replica fails → Entire write fails\\n# If network slow → Write is slow\\n\"}]}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Performance impact:\"}]}]\n33:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Single database:\\nWrite latency: 10ms\\n\\nStrong consistency (3 replicas):\\nWrite latency: \\n- Local write: 10ms\\n- Replicate to Replica 1: 50ms (network)\\n- Replicate to Replica 2: 50ms (network)\\n- Replicate to Replica 3: 50ms (network)\\n- Wait for all: max(50, 50, 50) = 50ms\\n\\nTotal: 10 + 50 = 60ms (6x slower!)\\n\\nNếu có replica ở xa:\\n- US → EU replica: 100ms\\n- US → Asia replica: 200ms\\nTotal: 10 + 200 = 210ms (21x slower!)\\n\"}]}]\n34:[\"$\",\"h3\",null,{\"id\":\"trade-offs\",\"children\":\"Trade-offs\"}]\n35:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Strong Consistency:\\n\\nAdvantages:\\n- Always correct\\n- No stale data\\n- Simple to reason about (như single database)\\n- No application-level conflict resolution\\n\\nDisadvantages:\\n- Slow (wait for replication)\\n- Lower availability (nếu replica down, can't write)\\n- Geographic distribution expensive\\n- Scale limits (more replicas = slower)\\n\"}]}]\n36:[\"$\",\"h3\",null,{\"id\":\"khi-nào-cần-strong-consistency\",\"children\":\"Khi Nào Cần Strong Consistency?\"}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cần strong consistency khi:\"}]}]\n38:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Financial transactions\\n  - Bank transfers\\n  - Payment processing\\n  - Accounting\\n\\n✓ Inventory management\\n  - Last item in stock\\n  - Seat booking\\n  - Limited edition sales\\n\\n✓ Authentication\\n  - Password changes\\n  - Permission updates\\n  - Security tokens\\n\\n✓ Critical business logic\\n  - Order state transitions\\n  - Contract signing\\n  - Legal documents\\n\"}]}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ví dụ thực tế:\"}]}]\n3a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Bank transfer PHẢI strong consistency\\ndef transfer_money(from_account, to_account, amount):\\n    with transaction():\\n        # PHẢI atomic và immediate\\n        deduct(from_account, amount)\\n        add(to_account, amount)\\n    \\n    # Không chấp nhận:\\n    # - User thấy tiền đã trừ nhưng chưa vào account đích\\n    # - Retry gây duplicate transfer\\n    # - Stale balance data\\n\"}]}]\n3b:[\"$\",\"h2\",null,{\"id\":\"eventual-consistency-nhanh-nhưng-có-thể-sai-tạm-thời\",\"children\":\"Eventual Consistency: Nhanh Nhưng Có Thể Sai Tạm Thời\"}]\n3c:[\"$\",\"h3\",null,{\"id\":\"định-nghĩa-1\",\"children\":\"Định Nghĩa\"}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Eventual consistency = Nếu không có writes mới, eventually tất cả replicas sẽ converge về cùng value\"}]}]\n3e:[\"$\",\"$L2b\",null,{\"chart\":\"sequenceDiagram\\n    participant UserA\\n    participant DB1\\n    participant DB2\\n    participant UserB\\n    \\n    UserA"])</script><script>self.__next_f.push([1,"-\u003e\u003eDB1: Write X = 10\\n    DB1--\u003e\u003eUserA: Write confirmed immediately\\n    Note over DB1: Don't wait for replication\\n    DB1--)DB2: Replicate async\\n    UserB-\u003e\u003eDB2: Read X\\n    DB2--\u003e\u003eUserB: Returns X = 5 (old value)\\n    Note over DB2: Eventually receives X = 10\\n    UserB-\u003e\u003eDB2: Read X again\\n    DB2--\u003e\u003eUserB: Returns X = 10 (new value)\\n    \\n    Note over UserA,UserB: User B có thể thấy stale data tạm thời\"}]\n3f:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Eventual consistency: Write confirm ngay, replicate async\"}]}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Behavior:\"}]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Timeline:\\n10:00:00.000 - User A writes X = 10 to DB1\\n10:00:00.001 - Write confirmed immediately (1ms)\\n10:00:00.010 - User B reads from DB2 → Sees X = 5 (stale!)\\n10:00:00.050 - DB1 replicates to DB2\\n10:00:00.100 - User B reads again → Sees X = 10\\n\\nUser B thấy stale data trong 50ms\\nSau đó eventually consistent\\n\"}]}]\n42:[\"$\",\"h3\",null,{\"id\":\"real-world-analogy\",\"children\":\"Real-World Analogy\"}]\n43:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Facebook likes:\\n- Bạn like post\\n- Your like appears immediately (optimistic update)\\n- Backend replicate async\\n- Friend có thể thấy count khác nhau\\n- After vài giây, everyone sees same count\\n\\nAcceptable vì:\\n- Like count không critical\\n- User experience tốt hơn (fast)\\n- Eventual correctness là enough\\n\"}]}]\n44:[\"$\",\"h3\",null,{\"id\":\"implementation\",\"children\":\"Implementation\"}]\n45:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def write_with_eventual_consistency(key, value):\\n    # 1. Write to primary\\n    primary.write(key, value)\\n    \\n    # 2. Return success IMMEDIATELY\\n    return \\\"success\\\"\\n    \\n    # 3. Replicate async in background\\n    background_task.replicate_to_replicas(key, value)\\n\\n# Fast! Không wait replication\\n# User không phải đợi\\n\\ndef read_from_replica(key):\\n    # Có thể đọc stale data\\n    return replica.read(key)\\n\"}]}]\n46:[\"$\",\"h3\",null,{\"id\":\"conflict-resolution\",\"children\":\"Conflict Resolution\"}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem với eventual consistency:\"}]}]\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario:\\n10:00:00 - User A writes X = 10 to DB1\\n10:00:00 - User B writes X = 20 to DB2 (concurrent!)\\n\\nConflict! Cả hai writes success, nhưng giá trị nào đúng?\\n\\nDB1 thinks X = 10\\nDB2 thinks X = 20\\n\\nWhen replicate → Conflict!\\n\"}]}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Resolution strategies:\"}]}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy 1: Last Write Wins (LWW)\"}]}]\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def resolve_conflict(value1, value2):\\n    # Use timestamp\\n    if value1.timestamp \u003e value2.timestamp:\\n        return value1\\n    else:\\n        return value2\\n\\n# Simple nhưng có thể mất data\\n# Nếu clocks không sync → Wrong decision\\n\"}]}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy 2: Application-Level Merge\"}]}]\n4d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def resolve_conflict(value1, value2):\\n    # Application decides\\n    if feature_flag_enabled:\\n        return merge_values(value1, value2)\\n    else:\\n        return value1  # Primary wins\\n\\n# Flexible nhưng complex logic\\n\"}]}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy 3: Keep Both (CRDTs)\"}]}]\n4f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Conflict-free Replicated Data Types\\n# Example: Counter\\n\\n# DB1: increment counter\\ncounter_db1 = {node1: 5, node2: 3}  # total = 8\\n\\n# DB2: increment counter  \\ncounter_db2 = {node1: 5, node2: 4}  # total = 9\\n\\n# Merge: Take max per node\\ncounter_merged = {node1: 5, node2: 4}  # total = 9\\n\\n# No conflict! Deterministic merge\\n\"}]}]\n50:[\"$\",\"h3\",null,{"])</script><script>self.__next_f.push([1,"\"id\":\"trade-offs-1\",\"children\":\"Trade-offs\"}]\n51:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Eventual Consistency:\\n\\nAdvantages:\\n- Fast writes (no wait)\\n- High availability (replicas independent)\\n- Good for geo-distributed\\n- Scales well\\n\\nDisadvantages:\\n- Stale reads possible\\n- Application phải handle inconsistency\\n- Conflict resolution complexity\\n- Harder to reason about\\n\"}]}]\n52:[\"$\",\"h3\",null,{\"id\":\"khi-nào-dùng-eventual-consistency\",\"children\":\"Khi Nào Dùng Eventual Consistency?\"}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Eventual consistency OK khi:\"}]}]\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Social features\\n  - Likes, views counts\\n  - Follower counts\\n  - Activity feeds\\n\\n✓ Analytics\\n  - Dashboards\\n  - Metrics\\n  - Reports\\n\\n✓ Recommendations\\n  - Product suggestions\\n  - Content feeds\\n  - Search results\\n\\n✓ Non-critical updates\\n  - Profile changes\\n  - Preferences\\n  - UI settings\\n\"}]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ví dụ thực tế:\"}]}]\n56:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Social media like KHÔNG CẦN strong consistency\\ndef like_post(user_id, post_id):\\n    # Write immediately\\n    likes_db.increment(post_id)\\n    \\n    # User sees like immediately\\n    return {\\\"likes\\\": get_count_optimistic(post_id)}\\n    \\n    # Background: Replicate to analytics DB\\n    # Eventual consistency acceptable\\n    # Không ai care nếu count sai 1-2 trong vài giây\\n\"}]}]\n57:[\"$\",\"h2\",null,{\"id\":\"readwrite-trade-offs\",\"children\":\"Read/Write Trade-offs\"}]\n58:[\"$\",\"h3\",null,{\"id\":\"the-fundamental-trade-off\",\"children\":\"The Fundamental Trade-off\"}]\n59:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Consistency vs Performance vs Availability\\n\\nPick 2:\\n- Strong consistency + High availability → Slow\\n- Strong consistency + Fast → Lower availability\\n- Fast + High availability → Eventual consistency\\n\"}]}]\n5a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Visual comparison:\"}]}]\n5b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Strong Consistency:\\nWrite: ████████████ 60ms\\nRead:  ███ 10ms\\nAvailability: 99.9%\\n\\nEventual Consistency:\\nWrite: █ 5ms\\nRead:  █ 5ms  \\nAvailability: 99.99%\\n\"}]}]\n5c:[\"$\",\"h3\",null,{\"id\":\"tunable-consistency\",\"children\":\"Tunable Consistency\"}]\n5d:[\"$\",\"p\",null,{\"children\":\"Một số systems cho phép tune consistency per operation:\"}]\n5e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Cassandra example\\ndef read_with_consistency_level(key, level):\\n    if level == \\\"ALL\\\":\\n        # Read từ TẤT CẢ replicas, đợi all responses\\n        # Strong consistency, slow\\n        return db.read(key, consistency=\\\"ALL\\\")\\n        \\n    elif level == \\\"QUORUM\\\":\\n        # Read từ majority replicas\\n        # Good balance\\n        return db.read(key, consistency=\\\"QUORUM\\\")\\n        \\n    elif level == \\\"ONE\\\":\\n        # Read từ 1 replica bất kỳ\\n        # Eventual consistency, fast\\n        return db.read(key, consistency=\\\"ONE\\\")\\n\\n# Ví dụ usage:\\n# Critical read → QUORUM\\nbalance = read(\\\"account_balance\\\", level=\\\"QUORUM\\\")\\n\\n# Non-critical read → ONE\\nrecommendations = read(\\\"suggestions\\\", level=\\\"ONE\\\")\\n\"}]}]\n5f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off matrix:\"}]}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Consistency Level | Latency | Availability | Correctness\\n------------------|---------|--------------|------------\\nALL               | High    | Low          | Perfect\\nQUORUM            | Medium  | Medium       | Very Good\\nONE               | Low     | High         | Eventually\\n\"}]}]\n61:[\"$\",\"h2\",null,{\"id\":\"real-world-decision-making\",\"children\":\"Real-World Decision Making\"}]\n62:[\"$\",\"h3\",null,{\"id\":\"framework-4-questions\",\"children\":\"Framework: 4 Questions\"}]\n63:[\"$\",\"p\",null,{\"children\":\"Khi design feature, tự hỏi 4 câu hỏi "])</script><script>self.__next_f.push([1,"này:\"}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Question 1: User có bị harm nếu thấy stale data không?\"}]}]\n65:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Example:\\n- Bank balance stale → YES harm (user overdraft)\\n- Like count stale → NO harm (just display)\\n\\nIf YES → Strong consistency\\nIf NO → Eventual consistency OK\\n\"}]}]\n66:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Question 2: Business loss nếu data inconsistent?\"}]}]\n67:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Example:\\n- Inventory oversold → YES loss (refund, reputation)\\n- Feed order wrong → NO loss (just UX)\\n\\nIf YES → Strong consistency  \\nIf NO → Eventual consistency OK\\n\"}]}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Question 3: Có thể fix sau không?\"}]}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Example:\\n- Money transfer wrong → CANNOT fix (legal issue)\\n- Duplicate notification → CAN fix (just annoying)\\n\\nIf CANNOT fix → Strong consistency\\nIf CAN fix → Eventual consistency OK\\n\"}]}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Question 4: User có expect real-time không?\"}]}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Example:\\n- Chat message → YES expect immediate\\n- Email read status → NO expect (delay OK)\\n\\nIf YES → Strong consistency (or appear so)\\nIf NO → Eventual consistency OK\\n\"}]}]\n6c:[\"$\",\"h3\",null,{\"id\":\"decision-matrix\",\"children\":\"Decision Matrix\"}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Feature Type              | Consistency  | Reasoning\\n--------------------------|--------------|------------------\\nPayment processing        | Strong       | Cannot be wrong\\nInventory (last item)     | Strong       | Oversell bad\\nUser authentication       | Strong       | Security critical\\nPassword change           | Strong       | Security critical\\nOrder status              | Strong       | User expectation\\n--------------------------|--------------|------------------\\nLike/view counts          | Eventual     | Approximate OK\\nActivity feed             | Eventual     | Delay acceptable\\nRecommendations           | Eventual     | Personalized anyway\\nAnalytics dashboard       | Eventual     | Batch updates fine\\nProfile updates           | Eventual     | Not time-critical\\nSearch results            | Eventual     | Ranking varies\\nNotification count        | Eventual     | Off by 1-2 OK\\n\"}]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"hybrid-approach\",\"children\":\"Hybrid Approach\"}]\n6f:[\"$\",\"p\",null,{\"children\":[\"Trong thực tế, \",[\"$\",\"strong\",null,{\"children\":\"most systems dùng cả hai\"}],\":\"]}]\n70:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class EcommerceSystem:\\n    def checkout(self, cart_items):\\n        # STRONG consistency cho critical path\\n        with strong_consistency():\\n            inventory = check_inventory(cart_items)  # Must be accurate\\n            payment = process_payment(amount)         # Must be exact\\n            order = create_order(cart_items)          # Must be atomic\\n        \\n        # EVENTUAL consistency cho non-critical\\n        with eventual_consistency():\\n            send_email_confirmation(order)            # Delay OK\\n            update_analytics(order)                   # Approximate OK\\n            generate_recommendations(user)            # Eventual OK\\n            update_activity_feed(user, order)         # Delay fine\\n\\n# Critical = Strong\\n# Non-critical = Eventual\\n\"}]}]\n71:[\"$\",\"h2\",null,{\"id\":\"feature-based-consistency-decisions\",\"children\":\"Feature-Based Consistency Decisions\"}]\n72:[\"$\",\"h3\",null,{\"id\":\"case-study-1-e-commerce-checkout\",\"children\":\"Case Study 1: E-commerce Checkout\"}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Feature: Add to cart\"}]}]\n74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Decision: Eventual consistency\\n\\nWhy?\\n- Cart là temporary state\\n- User có thể sửa before checkout\\n- Delay vài giây acceptab"])</script><script>self.__next_f.push([1,"le\\n- High availability quan trọng hơn\\n\\nImplementation:\\n- Write to local cache immediately\\n- Async replicate to database\\n- User sees cart update instant\\n\"}]}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Feature: Place order\"}]}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Decision: Strong consistency\\n\\nWhy?\\n- Payment processing critical\\n- Inventory check must be accurate\\n- No oversell allowed\\n- User expect confirmation immediately\\n\\nImplementation:\\n- Transaction across inventory + payment + order\\n- Wait for all confirms\\n- User đợi vài giây OK (expected)\\n\"}]}]\n77:[\"$\",\"h3\",null,{\"id\":\"case-study-2-social-media\",\"children\":\"Case Study 2: Social Media\"}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Feature: Post content\"}]}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Decision: Hybrid\\n\\nWhy?\\n- User expect to see own post immediately (strong)\\n- Followers có thể thấy sau (eventual)\\n\\nImplementation:\\n- Write với strong consistency\\n- User thấy post ngay\\n- Replicate to followers async\\n- Followers thấy trong vài giây\\n\"}]}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Feature: Like count\"}]}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Decision: Eventual consistency\\n\\nWhy?\\n- Approximate count acceptable\\n- High volume (thousands likes/second)\\n- User không care nếu off by 10-20\\n- Fast response critical\\n\\nImplementation:\\n- Increment counter async\\n- Update UI optimistically\\n- Background sync to database\\n- Eventually consistent count\\n\"}]}]\n7c:[\"$\",\"h3\",null,{\"id\":\"case-study-3-messaging-app\",\"children\":\"Case Study 3: Messaging App\"}]\n7d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Feature: Send message\"}]}]\n7e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Decision: Strong consistency\\n\\nWhy?\\n- Message order critical\\n- User expect recipient sees immediately\\n- Cannot lose messages\\n- Delivery confirmation important\\n\\nImplementation:\\n- Write to sender's DB với strong consistency\\n- Replicate to recipient's DB synchronously\\n- Confirm delivery after both writes\\n- User waits vài ms (acceptable)\\n\"}]}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Feature: \\\"Last seen\\\" status\"}]}]\n80:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Decision: Eventual consistency\\n\\nWhy?\\n- Approximate time OK\\n- High frequency updates\\n- Not critical data\\n- Slight delay acceptable\\n\\nImplementation:\\n- Update async every 30 seconds\\n- Users might see \\\"online\\\" với small delay\\n- Eventually converges\\n- Performance \u003e Accuracy\\n\"}]}]\n81:[\"$\",\"h2\",null,{\"id\":\"mental-model-consistency--business-decision\",\"children\":\"Mental Model: Consistency = Business Decision\"}]\n82:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Key insight:\"}],\" Consistency không phải technical preference.\"]}]\n83:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Wrong thinking:\\n\\\"Eventual consistency tốt hơn vì fast\\\"\\n\\\"Strong consistency tốt hơn vì correct\\\"\\n\\nRight thinking:\\n\\\"Feature này cần strong consistency vì business requirement X\\\"\\n\\\"Feature này OK với eventual consistency vì business tolerates Y\\\"\\n\"}]}]\n84:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Framework:\"}]}]\n85:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"For each feature:\\n\\n1. Identify business requirement\\n   → What matters most?\\n\\n2. Assess risk\\n   → What's worst case với stale data?\\n\\n3. Check user expectation\\n   → User expect instant hoặc delay OK?\\n\\n4. Choose consistency model\\n   → Strong nếu critical\\n   → Eventual nếu acceptable\\n\\n5. Implement accordingly\\n   → Don't second-guess business needs\\n\"}]}]\n86:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n87:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Consistency models summary:\"}]}]\n88:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Strong Consistency:\\n- Always correct\\n- Slower, lower availability\\n- Use cho: pa"])</script><script>self.__next_f.push([1,"yments, inventory, auth\\n- Trade: Performance cho correctness\\n\\nEventual Consistency:\\n- Fast, high availability\\n- Temporarily incorrect\\n- Use cho: likes, feeds, analytics\\n- Trade: Correctness cho performance\\n\"}]}]\n89:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\n8a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Choose Strong Consistency nếu:\\n✓ Data critical to business\\n✓ Cannot tolerate errors\\n✓ User harm nếu wrong\\n✓ Legal/compliance requirements\\n\\nChoose Eventual Consistency nếu:\\n✓ Approximate data OK\\n✓ Can fix errors later\\n✓ User không care về delays\\n✓ Performance critical\\n\"}]}]\n8b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Hybrid approach best:\"}]}]\n8c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Most real systems:\\n- Strong consistency cho critical paths\\n- Eventual consistency cho everything else\\n\\nExamples:\\n- E-commerce: Strong cho checkout, Eventual cho browse\\n- Social: Strong cho posts, Eventual cho likes\\n- Banking: Strong cho transactions, Eventual cho statements\\n\"}]}]\n8d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Golden rule:\"}]}]\n8e:[\"$\",\"blockquote\",null,{\"children\":[\"\\n\",[\"$\",\"p\",null,{\"children\":\"Consistency là business decision, không phải technical preference. Always start bằng business requirements, then choose consistency model accordingly.\"}],\"\\n\"]}]\n8f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Self-check questions:\"}]}]\n90:[\"$\",\"p\",null,{\"children\":\"Trước khi implement feature, tự hỏi:\"}]\n91:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"User có bị harm nếu data stale vài giây không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Business có loss nếu data inconsistent không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"User có expect real-time updates không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Có thể compensate/fix errors sau không?\"}]}],\"\\n\"]}]\n92:[\"$\",\"p\",null,{\"children\":\"Answers sẽ guide consistency decision.\"}]\n93:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember:\"}]}]\n94:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Perfect consistency everywhere = Slow system\\nNo consistency anywhere = Wrong system\\n\\nSmart architect:\\n- Strong consistency where needed\\n- Eventual consistency where acceptable\\n- Clear reasoning cho mỗi decision\\n\"}]}]\n95:[\"$\",\"p\",null,{\"children\":[\"Consistency models không phải về choosing \\\"better\\\" option. Nó về choosing \",[\"$\",\"strong\",null,{\"children\":\"right\"}],\" option cho \",[\"$\",\"strong\",null,{\"children\":\"context\"}],\" cụ thể.\"]}]\n96:[\"$\",\"p\",null,{\"children\":\"Business first. Technology second. Always.\"}]\n"])</script><script>self.__next_f.push([1,"22:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"97:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n16:null\n"])</script><script>self.__next_f.push([1,"24:[[\"$\",\"title\",\"0\",{\"children\":\"Consistency Models - Strong vs Eventual Consistency | Phase 3 — Distributed Systems Fundamentals | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade offs và cách đưa ra quyế\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Consistency Models - Strong vs Eventual Consistency | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade offs và cách đưa ra quyế\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Consistency Models - Strong vs Eventual Consistency | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Hiểu sâu về consistency models trong distributed systems: Strong consistency vs Eventual consistency, linearizability, read/write trade offs và cách đưa ra quyế\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L97\",\"14\",{}]]\n"])</script></body></html>

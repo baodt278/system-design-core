@@ -1,0 +1,899 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Monitoring, Observability &amp; Performance Debugging - Measure To Scale | Phase 4 — Scalability &amp; Performance | System Design Core</title><meta name="description" content="Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách "/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging"/><meta property="og:title" content="Monitoring, Observability &amp; Performance Debugging - Measure To Scale | Phase 4 — Scalability &amp; Performance"/><meta property="og:description" content="Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách "/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Monitoring, Observability &amp; Performance Debugging - Measure To Scale | Phase 4 — Scalability &amp; Performance"/><meta name="twitter:description" content="Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách "/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 4 — Scalability &amp; Performance</p><p class="mt-3 text-xl font-semibold text-ink">Monitoring, Observability &amp; Performance Debugging - Measure To Scale</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách measure, debug, và optimize distributed systems hiệu quả.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-1-performance-bottleneck-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Performance &amp; Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-2-caching-strategy-trade-consistency-de-lay-speed"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Caching Strategy - Trade Consistency Để Lấy Speed</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">CDN &amp; Edge Computing - Distributed Cache Gần User</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-4-database-scaling-optimization"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Rate Limiting &amp; Load Control - Protect System Khỏi Overload</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging"><p class="text-xs text-ink-dim">Bài <!-- -->7</p><p class="mt-1 text-sm font-medium text-ink">Monitoring, Observability &amp; Performance Debugging - Measure To Scale</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-4">Phase 4 — Scalability &amp; Performance</a></li><li>/</li><li aria-current="page" class="text-ink">Monitoring, Observability &amp; Performance Debugging - Measure To Scale</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Monitoring, Observability &amp; Performance Debugging - Measure To Scale</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách measure, debug, và optimize distributed systems hiệu quả.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Monitoring, Observability &amp; Performance Debugging - Measure To Scale"><article class="prose-ui"><h1 id="monitoring-observability--performance-debugging---measure-to-scale">Monitoring, Observability &amp; Performance Debugging - Measure To Scale</h1>
+<p>Bạn deploy hệ thống production. Mọi thứ chạy tốt... hoặc ít nhất bạn nghĩ vậy.</p>
+<p>Rồi user complain: &quot;Site chậm&quot;. Bạn check:</p>
+<ul>
+<li>Server CPU: 30% ✅</li>
+<li>Memory: 50%</li>
+<li>Disk: 40% ✅</li>
+</ul>
+<p>Metrics nhìn OK. Vậy tại sao user nói chậm?</p>
+<p><strong>Vấn đề:</strong> Bạn đang measure wrong things.</p>
+<p>CPU 30% không nói lên gì về user experience. Có thể:</p>
+<ul>
+<li>API response time 5 seconds (user đợi lâu)</li>
+<li>Database queries timeout</li>
+<li>3rd party API calls fail 50% requests</li>
+</ul>
+<p><strong>Không measure đúng = không biết system thực sự hoạt động như thế nào.</strong></p>
+<p><strong>Mental model quan trọng nhất:</strong> <strong>If you cannot measure, you cannot scale.</strong></p>
+<p>Lesson này dạy bạn:</p>
+<ul>
+<li>Metrics nào thực sự quan trọng</li>
+<li>Percentiles (p50, p95, p99) và tại sao</li>
+<li>Alert strategy (không spam, không miss critical)</li>
+<li>Distributed tracing cho microservices</li>
+<li>Logging best practices</li>
+<li>SLO/SLA/Error budgets</li>
+</ul>
+<h2 id="tại-sao-monitoring-là-critical">Tại Sao Monitoring Là Critical?</h2>
+<h3 id="1-detect-problems-before-users">1. Detect Problems Before Users</h3>
+<p><strong>Proactive &gt; Reactive.</strong></p>
+<pre><code>Without monitoring:
+  User complains → investigate → find issue → fix
+  Mean time to detect (MTTD): Hours to days
+
+With monitoring:
+  Alert fires → investigate → fix → user không notice
+  MTTD: Seconds to minutes
+</code></pre>
+<p><strong>Good monitoring = user không biết có issues.</strong></p>
+<h3 id="2-understand-system-behavior">2. Understand System Behavior</h3>
+<p><strong>Capacity planning:</strong></p>
+<pre><code>Current: 1000 req/s, CPU 40%
+Question: Can handle 5000 req/s?
+Answer: Need data to extrapolate
+</code></pre>
+<p>Without metrics, guessing. With metrics, informed decisions.</p>
+<h3 id="3-debug-performance-issues">3. Debug Performance Issues</h3>
+<p><strong>User:</strong> &quot;Site slow at 3 PM daily.&quot;</p>
+<p><strong>Without monitoring:</strong> No idea why.</p>
+<p><strong>With monitoring:</strong></p>
+<pre><code>Check metrics at 3 PM:
+- Database query time spike 10x
+- Slow query log: daily report generation
+→ Move report to off-peak hours
+</code></pre>
+<h3 id="4-validate-optimizations">4. Validate Optimizations</h3>
+<p><strong>You:</strong> &quot;Added caching, should be faster.&quot;</p>
+<p><strong>Reality check:</strong></p>
+<pre><code>Before: p95 latency 800ms
+After:  p95 latency 150ms
+→ 5x improvement confirmed ✅
+</code></pre>
+<p><strong>Measure to prove impact.</strong></p>
+<h3 id="5-meet-slas">5. Meet SLAs</h3>
+<p><strong>Contract:</strong> &quot;99.9% uptime, p99 latency &lt; 500ms&quot;</p>
+<p><strong>How to know if meeting?</strong> Monitor 24/7.</p>
+<h2 id="the-three-pillars-of-observability">The Three Pillars Of Observability</h2>
+<p><strong>Observability = ability to understand system internal state từ external outputs.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    System[Distributed System]
+    
+    subgraph Pillars[&quot;Three Pillars&quot;]
+        Metrics[Metrics&lt;br/&gt;What&#x27;s happening?]
+        Logs[Logs&lt;br/&gt;Why it happened?]
+        Traces[Traces&lt;br/&gt;Where in the flow?]
+    end
+    
+    System --&gt; Metrics
+    System --&gt; Logs
+    System --&gt; Traces
+    
+    Metrics --&gt; Understand[Understand System]
+    Logs --&gt; Understand
+    Traces --&gt; Understand</code></pre>
+<p><strong>Metrics:</strong> Aggregated numbers (CPU, latency, error rate)<br/>
+<strong>Logs:</strong> Discrete events (errors, warnings, debug info)<br/>
+<strong>Traces:</strong> Request flow across services</p>
+<p><strong>Cần cả ba để full visibility.</strong></p>
+<h2 id="metrics---what-to-measure">Metrics - What To Measure</h2>
+<h3 id="golden-signals-google-sre">Golden Signals (Google SRE)</h3>
+<p><strong>4 metrics quan trọng nhất:</strong></p>
+<h4 id="1-latency">1. Latency</h4>
+<p><strong>Time to serve a request.</strong></p>
+<pre><code class="language-python">import time
+
+def track_latency(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        duration = time.time() - start
+        
+        metrics.histogram(&#x27;api.latency&#x27;, duration, tags=[&#x27;endpoint:users&#x27;])
+        return result
+    return wrapper
+
+@track_latency
+def get_users():
+    return db.query(&quot;SELECT * FROM users&quot;)
+</code></pre>
+<p><strong>Track:</strong></p>
+<ul>
+<li>Overall API latency</li>
+<li>Per-endpoint latency</li>
+<li>Database query time</li>
+<li>External API call time</li>
+</ul>
+<p><strong>Why:</strong> Direct impact on user experience.</p>
+<h4 id="2-traffic">2. Traffic</h4>
+<p><strong>Requests per second (throughput).</strong></p>
+<pre><code class="language-python">@app.before_request
+def track_request():
+    metrics.increment(&#x27;api.requests&#x27;, tags=[
+        f&#x27;endpoint:{request.endpoint}&#x27;,
+        f&#x27;method:{request.method}&#x27;
+    ])
+</code></pre>
+<p><strong>Track:</strong></p>
+<ul>
+<li>Total requests/second</li>
+<li>Requests per endpoint</li>
+<li>Read vs write ratio</li>
+</ul>
+<p><strong>Why:</strong> Understand load patterns, capacity planning.</p>
+<h4 id="3-errors">3. Errors</h4>
+<p><strong>Failed requests rate.</strong></p>
+<pre><code class="language-python">@app.after_request
+def track_response(response):
+    if response.status_code &gt;= 500:
+        metrics.increment(&#x27;api.errors.5xx&#x27;)
+    elif response.status_code &gt;= 400:
+        metrics.increment(&#x27;api.errors.4xx&#x27;)
+    
+    return response
+</code></pre>
+<p><strong>Track:</strong></p>
+<ul>
+<li>4xx errors (client errors)</li>
+<li>5xx errors (server errors)</li>
+<li>Error rate (%)</li>
+</ul>
+<p><strong>Why:</strong> Reliability indicator, alert trigger.</p>
+<h4 id="4-saturation">4. Saturation</h4>
+<p><strong>How &quot;full&quot; your service is.</strong></p>
+<pre><code class="language-python"># System metrics
+metrics.gauge(&#x27;system.cpu_percent&#x27;, psutil.cpu_percent())
+metrics.gauge(&#x27;system.memory_percent&#x27;, psutil.virtual_memory().percent)
+metrics.gauge(&#x27;system.disk_percent&#x27;, psutil.disk_usage(&#x27;/&#x27;).percent)
+
+# Application metrics
+metrics.gauge(&#x27;db.connection_pool.used&#x27;, db.pool.size())
+metrics.gauge(&#x27;queue.depth&#x27;, redis.llen(&#x27;task_queue&#x27;))
+</code></pre>
+<p><strong>Track:</strong></p>
+<ul>
+<li>CPU usage</li>
+<li>Memory usage</li>
+<li>Disk usage</li>
+<li>Connection pool utilization</li>
+<li>Queue depth</li>
+</ul>
+<p><strong>Why:</strong> Predict when system will hit limits.</p>
+<h3 id="red-method-for-services">RED Method (For Services)</h3>
+<p><strong>Rate, Errors, Duration.</strong></p>
+<pre><code class="language-python">class ServiceMetrics:
+    def record_request(self, duration, success):
+        # Rate
+        self.metrics.increment(&#x27;service.requests&#x27;)
+        
+        # Errors
+        if not success:
+            self.metrics.increment(&#x27;service.errors&#x27;)
+        
+        # Duration
+        self.metrics.histogram(&#x27;service.duration&#x27;, duration)
+</code></pre>
+<p><strong>Simple, covers essentials.</strong></p>
+<h3 id="use-method-for-resources">USE Method (For Resources)</h3>
+<p><strong>Utilization, Saturation, Errors.</strong></p>
+<pre><code class="language-python"># Utilization: % time resource busy
+cpu_utilization = psutil.cpu_percent()
+
+# Saturation: work queued
+load_average = os.getloadavg()[0]  # 1-minute load
+
+# Errors: error count
+disk_errors = read_disk_error_count()
+</code></pre>
+<p><strong>For infrastructure monitoring.</strong></p>
+<h2 id="percentiles---why-they-matter-more-than-averages">Percentiles - Why They Matter More Than Averages</h2>
+<h3 id="the-problem-with-averages">The Problem With Averages</h3>
+<p><strong>Scenario:</strong></p>
+<pre><code>API latencies:
+  99 requests: 100ms
+  1 request:   10,000ms (10 seconds!)
+
+Average: (99 * 100 + 10,000) / 100 = 199ms
+</code></pre>
+<p><strong>Average says 199ms - looks OK!</strong></p>
+<p><strong>Reality: 1% users wait 10 seconds - terrible experience.</strong></p>
+<p><strong>Averages hide outliers.</strong></p>
+<h3 id="percentiles-reveal-true-story">Percentiles Reveal True Story</h3>
+<p><strong>p50 (median):</strong> 50% requests faster, 50% slower<br/>
+<strong>p95:</strong> 95% requests faster than this<br/>
+<strong>p99:</strong> 99% requests faster than this<br/>
+<strong>p99.9:</strong> 99.9% requests faster than this</p>
+<pre><code>Example distribution:
+  p50:  100ms  (typical experience)
+  p95:  200ms  (most users)
+  p99:  500ms  (edge cases)
+  p99.9: 2000ms (rare outliers)
+</code></pre>
+<p><strong>p95, p99 show worst-case user experience.</strong></p>
+<h3 id="why-p99-matters">Why p99 Matters</h3>
+<p><strong>Amazon study:</strong> p99 latency directly correlates với revenue.</p>
+<pre><code>p99 latency = 1 second
+→ Slow for 1% users
+→ At 1M requests/day = 10,000 bad experiences
+→ Bad reviews, lost sales
+</code></pre>
+<p><strong>Optimize for p99, not average.</strong></p>
+<h3 id="tracking-percentiles">Tracking Percentiles</h3>
+<pre><code class="language-python">from prometheus_client import Histogram
+
+# Histogram automatically calculates percentiles
+latency_histogram = Histogram(
+    &#x27;api_latency_seconds&#x27;,
+    &#x27;API request latency&#x27;,
+    buckets=[0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
+)
+
+@app.route(&#x27;/api/data&#x27;)
+def get_data():
+    with latency_histogram.time():
+        return process_request()
+</code></pre>
+<p><strong>Prometheus query:</strong></p>
+<pre><code class="language-promql"># p95 latency over 5 minutes
+histogram_quantile(0.95, 
+  rate(api_latency_seconds_bucket[5m])
+)
+</code></pre>
+<h3 id="service-level-indicators-sli">Service Level Indicators (SLI)</h3>
+<p><strong>Measured percentiles become SLIs.</strong></p>
+<pre><code>SLI: p99 latency &lt; 500ms
+SLI: p95 availability &gt; 99.9%
+SLI: p99 error rate &lt; 0.1%
+</code></pre>
+<p><strong>Objective, measurable targets.</strong></p>
+<h2 id="alert-strategy---signal-vs-noise">Alert Strategy - Signal vs Noise</h2>
+<h3 id="the-alert-fatigue-problem">The Alert Fatigue Problem</h3>
+<p><strong>Bad alerting:</strong></p>
+<pre><code>03:00 - Alert: CPU &gt; 80%
+03:05 - Alert: CPU &gt; 80%
+03:10 - Alert: CPU &gt; 80%
+...
+→ 100 alerts/night
+→ Engineers ignore alerts
+→ Real issue missed
+</code></pre>
+<p><strong>Alert fatigue kills reliability.</strong></p>
+<h3 id="good-alert-principles">Good Alert Principles</h3>
+<p><strong>1. Alert on symptoms, not causes</strong></p>
+<p><strong>Bad:</strong></p>
+<pre><code>Alert: Database CPU &gt; 80%
+</code></pre>
+<p><strong>Good:</strong></p>
+<pre><code>Alert: API p99 latency &gt; 1 second
+</code></pre>
+<p><strong>Why:</strong> CPU high có thể OK nếu latency fine. Latency high = user impacted = real problem.</p>
+<p><strong>2. Alert on user impact</strong></p>
+<p><strong>Bad:</strong></p>
+<pre><code>Alert: 1 server down (out of 10)
+</code></pre>
+<p><strong>Good:</strong></p>
+<pre><code>Alert: Error rate &gt; 5%
+(Only if user experience affected)
+</code></pre>
+<p><strong>3. Actionable alerts only</strong></p>
+<p><strong>Every alert phải có clear action.</strong></p>
+<pre><code>Alert: Database slow queries detected
+
+Action:
+1. Check slow query log
+2. Check database load
+3. Kill long-running queries if needed
+4. Page DB team if persists &gt; 15 min
+</code></pre>
+<p><strong>Không có action = không nên alert.</strong></p>
+<p><strong>4. Use thresholds wisely</strong></p>
+<p><strong>Static threshold:</strong></p>
+<pre><code class="language-yaml">alert: CPU &gt; 90%
+</code></pre>
+<p>Problem: Normal load varies. 90% at 2 AM = problem. 90% at peak = normal.</p>
+<p><strong>Dynamic threshold:</strong></p>
+<pre><code class="language-yaml">alert: CPU &gt; (baseline + 2 * stddev)
+</code></pre>
+<p>Adapts to normal patterns.</p>
+<p><strong>5. Alert priority levels</strong></p>
+<p><strong>P0 (Critical):</strong> System down, revenue impact<br/>
+<!-- -->→ Page on-call immediately</p>
+<p><strong>P1 (High):</strong> Degraded performance, affecting users<br/>
+<!-- -->→ Alert on-call, expect response within 30 min</p>
+<p><strong>P2 (Medium):</strong> Non-critical issues<br/>
+<!-- -->→ Ticket, handle during business hours</p>
+<p><strong>P3 (Low):</strong> Informational<br/>
+<!-- -->→ Log only, no alert</p>
+<h3 id="alert-runbooks">Alert Runbooks</h3>
+<p><strong>Mỗi alert cần runbook.</strong></p>
+<pre><code class="language-markdown">## Alert: High API Error Rate
+
+### Symptom
+API error rate &gt; 5% for 5 minutes
+
+### Impact
+Users experiencing failures, potential revenue loss
+
+### Investigation Steps
+1. Check error dashboard: ${dashboard_link}
+2. Check error logs: `kubectl logs -l app=api --tail=100`
+3. Check dependent services status
+4. Check recent deployments
+
+### Remediation
+1. If bad deployment: rollback immediately
+2. If database issue: check DB health, consider read replica
+3. If 3rd party issue: enable circuit breaker, use fallback
+
+### Escalation
+If unresolved after 15 minutes: page @backend-lead
+</code></pre>
+<p><strong>Reduces MTTR (Mean Time To Resolve).</strong></p>
+<h2 id="distributed-tracing---debug-across-services">Distributed Tracing - Debug Across Services</h2>
+<h3 id="the-microservices-problem">The Microservices Problem</h3>
+<p><strong>Monolith:</strong></p>
+<pre><code>User request → Single codebase → Easy to debug
+</code></pre>
+<p><strong>Microservices:</strong></p>
+<pre><code>User request → Service A → Service B → Service C
+                      ↓
+                  Service D
+</code></pre>
+<p><strong>Where is bottleneck? Hard to tell.</strong></p>
+<h3 id="distributed-tracing-solution">Distributed Tracing Solution</h3>
+<p><strong>Trace = full request journey across services.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant API
+    participant Auth
+    participant DB
+    participant Cache
+    
+    User-&gt;&gt;API: GET /profile (TraceID: abc123)
+    Note over API: Span: api-handler (50ms)
+    
+    API-&gt;&gt;Auth: Verify token
+    Note over Auth: Span: auth-verify (20ms)
+    Auth--&gt;&gt;API: OK
+    
+    API-&gt;&gt;Cache: Get user
+    Note over Cache: Span: cache-lookup (5ms)
+    Cache--&gt;&gt;API: Cache miss
+    
+    API-&gt;&gt;DB: Query user
+    Note over DB: Span: db-query (200ms)
+    DB--&gt;&gt;API: User data
+    
+    API-&gt;&gt;Cache: Store user
+    API--&gt;&gt;User: Response
+    
+    Note over User,Cache: Total: 275ms&lt;br/&gt;Bottleneck: DB query (200ms)</code></pre>
+<p><strong>Mỗi operation = span. Collection of spans = trace.</strong></p>
+<h3 id="implementing-tracing">Implementing Tracing</h3>
+<p><strong>OpenTelemetry (standard):</strong></p>
+<pre><code class="language-python">from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+
+# Initialize tracer
+tracer = trace.get_tracer(__name__)
+
+# Instrument Flask automatically
+FlaskInstrumentor().instrument_app(app)
+
+# Manual spans for custom operations
+@app.route(&#x27;/api/user/&lt;user_id&gt;&#x27;)
+def get_user(user_id):
+    with tracer.start_as_current_span(&quot;get_user&quot;) as span:
+        span.set_attribute(&quot;user.id&quot;, user_id)
+        
+        # Database query
+        with tracer.start_as_current_span(&quot;db.query.user&quot;):
+            user = db.query_user(user_id)
+        
+        # Cache operation
+        with tracer.start_as_current_span(&quot;cache.set&quot;):
+            cache.set(f&quot;user:{user_id}&quot;, user)
+        
+        return jsonify(user)
+</code></pre>
+<p><strong>Propagate trace context across services:</strong></p>
+<pre><code class="language-python">import requests
+from opentelemetry.propagate import inject
+
+def call_downstream_service(url):
+    headers = {}
+    # Inject trace context into headers
+    inject(headers)
+    
+    response = requests.get(url, headers=headers)
+    return response.json()
+</code></pre>
+<p><strong>Downstream service continues trace:</strong></p>
+<pre><code class="language-python">from opentelemetry.propagate import extract
+
+@app.before_request
+def extract_trace_context():
+    # Extract trace context from headers
+    ctx = extract(request.headers)
+    # Automatic - OpenTelemetry uses context
+</code></pre>
+<h3 id="tracing-tools">Tracing Tools</h3>
+<p><strong>Jaeger:</strong></p>
+<ul>
+<li>Open source</li>
+<li>Uber-developed</li>
+<li>Simple to deploy</li>
+<li>Good for small-medium systems</li>
+</ul>
+<p><strong>Zipkin:</strong></p>
+<ul>
+<li>Open source</li>
+<li>Twitter-developed</li>
+<li>Similar to Jaeger</li>
+<li>Large community</li>
+</ul>
+<p><strong>Datadog APM:</strong></p>
+<ul>
+<li>Commercial</li>
+<li>Full-featured</li>
+<li>Automatic instrumentation</li>
+<li>Integrated with metrics/logs</li>
+</ul>
+<p><strong>AWS X-Ray:</strong></p>
+<ul>
+<li>AWS-native</li>
+<li>Easy AWS integration</li>
+<li>Pay-per-use</li>
+</ul>
+<h3 id="what-tracing-reveals">What Tracing Reveals</h3>
+<p><strong>1. Slow dependencies</strong></p>
+<pre><code>Service A: 10ms
+Service B: 500ms ← Bottleneck!
+Service C: 5ms
+
+Total: 515ms
+</code></pre>
+<p><strong>2. N+1 queries</strong></p>
+<pre><code>get_users: 10ms
+  ↳ get_orders (user 1): 50ms
+  ↳ get_orders (user 2): 50ms
+  ↳ get_orders (user 3): 50ms
+  ...
+</code></pre>
+<p><strong>3. Unnecessary calls</strong></p>
+<pre><code>get_profile:
+  ↳ get_user
+  ↳ get_preferences (not used!)
+  ↳ get_settings (not used!)
+</code></pre>
+<p><strong>4. Cascade failures</strong></p>
+<pre><code>Service A timeout (30s)
+  ↳ Service B timeout (30s)
+    ↳ Service C timeout (30s)
+
+Total: 90s failure!
+</code></pre>
+<h2 id="logging-strategy---debug-the-details">Logging Strategy - Debug The Details</h2>
+<h3 id="log-levels">Log Levels</h3>
+<p><strong>FATAL:</strong> System unusable<br/>
+<strong>ERROR:</strong> Error events, need attention<br/>
+<strong>WARN:</strong> Potentially harmful situations<br/>
+<strong>INFO:</strong> Informational messages<br/>
+<strong>DEBUG:</strong> Detailed diagnostic info<br/>
+<strong>TRACE:</strong> Very detailed (too much for production)</p>
+<pre><code class="language-python">import logging
+
+logging.fatal(&quot;Database connection lost!&quot;)
+logging.error(&quot;Payment processing failed&quot;, extra={
+    &#x27;user_id&#x27;: user.id,
+    &#x27;amount&#x27;: payment.amount
+})
+logging.warning(&quot;Cache miss rate high: 40%&quot;)
+logging.info(&quot;User logged in&quot;, extra={&#x27;user_id&#x27;: user.id})
+logging.debug(&quot;Query executed&quot;, extra={&#x27;query&#x27;: sql, &#x27;duration&#x27;: 0.5})
+</code></pre>
+<p><strong>Production: INFO and above.</strong><br/>
+<strong>Staging: DEBUG.</strong><br/>
+<strong>Development: TRACE.</strong></p>
+<h3 id="structured-logging">Structured Logging</h3>
+<p><strong>Bad (unstructured):</strong></p>
+<pre><code class="language-python">logging.info(f&quot;User {user_id} purchased {item_name} for ${price}&quot;)
+</code></pre>
+<p><strong>Hard to parse, query, aggregate.</strong></p>
+<p><strong>Good (structured):</strong></p>
+<pre><code class="language-python">logging.info(&quot;purchase_completed&quot;, extra={
+    &#x27;event&#x27;: &#x27;purchase&#x27;,
+    &#x27;user_id&#x27;: user_id,
+    &#x27;item_name&#x27;: item_name,
+    &#x27;price&#x27;: price,
+    &#x27;currency&#x27;: &#x27;USD&#x27;
+})
+</code></pre>
+<p><strong>JSON output:</strong></p>
+<pre><code class="language-json">{
+  &quot;timestamp&quot;: &quot;2025-02-15T10:00:00Z&quot;,
+  &quot;level&quot;: &quot;INFO&quot;,
+  &quot;message&quot;: &quot;purchase_completed&quot;,
+  &quot;user_id&quot;: 12345,
+  &quot;item_name&quot;: &quot;iPhone&quot;,
+  &quot;price&quot;: 999,
+  &quot;currency&quot;: &quot;USD&quot;
+}
+</code></pre>
+<p><strong>Easy to query:</strong></p>
+<pre><code>SELECT COUNT(*) FROM logs 
+WHERE event = &#x27;purchase&#x27; 
+  AND price &gt; 500
+  AND timestamp &gt; now() - interval &#x27;1 hour&#x27;
+</code></pre>
+<h3 id="what-to-log">What To Log</h3>
+<p><strong>Log:</strong></p>
+<ul>
+<li>Errors and exceptions</li>
+<li>Important state changes</li>
+<li>Security events (login, permission changes)</li>
+<li>External API calls (request/response)</li>
+<li>Business events (purchase, signup)</li>
+</ul>
+<p><strong>Don&#x27;t log:</strong></p>
+<ul>
+<li>Passwords, tokens, PII</li>
+<li>High-frequency debug (every query)</li>
+<li>Large payloads (entire responses)</li>
+</ul>
+<h3 id="correlation-ids">Correlation IDs</h3>
+<p><strong>Track request across services.</strong></p>
+<pre><code class="language-python">import uuid
+
+@app.before_request
+def inject_request_id():
+    request_id = request.headers.get(&#x27;X-Request-ID&#x27;) or str(uuid.uuid4())
+    g.request_id = request_id
+
+@app.after_request
+def add_request_id(response):
+    response.headers[&#x27;X-Request-ID&#x27;] = g.request_id
+    return response
+
+# Log with request ID
+logging.info(&quot;Processing request&quot;, extra={
+    &#x27;request_id&#x27;: g.request_id,
+    &#x27;endpoint&#x27;: request.endpoint
+})
+</code></pre>
+<p><strong>Search logs by request_id = full request flow.</strong></p>
+<h3 id="log-aggregation">Log Aggregation</h3>
+<p><strong>Centralized logging system.</strong></p>
+<p><strong>ELK Stack:</strong></p>
+<ul>
+<li>Elasticsearch (storage + search)</li>
+<li>Logstash (collection + processing)</li>
+<li>Kibana (visualization)</li>
+</ul>
+<p><strong>Grafana Loki:</strong></p>
+<ul>
+<li>Lightweight</li>
+<li>Integrates with Prometheus</li>
+<li>Good for cloud-native</li>
+</ul>
+<p><strong>Datadog Logs:</strong></p>
+<ul>
+<li>Commercial</li>
+<li>Integrated platform</li>
+<li>Auto-parsing</li>
+</ul>
+<p><strong>CloudWatch Logs:</strong></p>
+<ul>
+<li>AWS-native</li>
+<li>Serverless-friendly</li>
+<li>Pay-per-GB</li>
+</ul>
+<p><strong>Ship logs:</strong></p>
+<pre><code class="language-python"># Filebeat config
+filebeat.inputs:
+  - type: log
+    paths:
+      - /var/log/app/*.log
+    fields:
+      app: myapp
+      env: production
+
+output.elasticsearch:
+  hosts: [&quot;elasticsearch:9200&quot;]
+</code></pre>
+<h2 id="slo-sla-error-budgets---reliability-framework">SLO, SLA, Error Budgets - Reliability Framework</h2>
+<h3 id="definitions">Definitions</h3>
+<p><strong>SLI (Service Level Indicator):</strong>
+Measured metric.</p>
+<pre><code>Example: API p99 latency = 450ms
+</code></pre>
+<p><strong>SLO (Service Level Objective):</strong>
+Target for SLI.</p>
+<pre><code>Example: API p99 latency &lt; 500ms
+</code></pre>
+<p><strong>SLA (Service Level Agreement):</strong>
+Contract with customers, consequences nếu miss.</p>
+<pre><code>Example: 99.9% uptime, or refund 10% monthly fee
+</code></pre>
+<p><strong>Error Budget:</strong>
+Allowed downtime để meet SLO.</p>
+<pre><code>SLO: 99.9% uptime
+Error budget: 0.1% downtime = 43 minutes/month
+</code></pre>
+<h3 id="setting-good-slos">Setting Good SLOs</h3>
+<p><strong>SMART criteria:</strong></p>
+<p><strong>Specific:</strong> &quot;p99 latency &lt; 500ms&quot;<br/>
+<!-- -->(not &quot;fast response time&quot;)</p>
+<p><strong>Measurable:</strong> Can track với metrics</p>
+<p><strong>Achievable:</strong> Not &quot;100% uptime&quot; (impossible)</p>
+<p><strong>Relevant:</strong> Impacts user experience</p>
+<p><strong>Time-bound:</strong> &quot;Over 30-day window&quot;</p>
+<p><strong>Example SLOs:</strong></p>
+<pre><code class="language-yaml"># Availability SLO
+availability:
+  sli: successful_requests / total_requests
+  target: 99.9%
+  window: 30 days
+
+# Latency SLO
+latency:
+  sli: p99_latency
+  target: 500ms
+  window: 5 minutes
+
+# Throughput SLO
+throughput:
+  sli: requests_per_second
+  target: &quot;&gt; 1000 req/s&quot;
+  window: 1 minute
+</code></pre>
+<h3 id="error-budgets-in-practice">Error Budgets In Practice</h3>
+<p><strong>Error budget = allowed failures.</strong></p>
+<pre><code>SLO: 99.9% success rate
+Total requests/month: 10M
+Error budget: 0.1% * 10M = 10,000 failed requests
+</code></pre>
+<p><strong>Spend error budget on:</strong></p>
+<ul>
+<li>Deployments (controlled risk)</li>
+<li>Experiments (new features)</li>
+<li>Incidents (unavoidable)</li>
+</ul>
+<p><strong>Track burn rate:</strong></p>
+<pre><code class="language-python">def calculate_error_budget():
+    total_requests = get_total_requests(window=&#x27;30d&#x27;)
+    failed_requests = get_failed_requests(window=&#x27;30d&#x27;)
+    
+    error_rate = failed_requests / total_requests
+    error_budget = 0.001  # 99.9% SLO
+    
+    budget_remaining = error_budget - error_rate
+    budget_consumed_percent = (error_rate / error_budget) * 100
+    
+    return {
+        &#x27;remaining&#x27;: budget_remaining,
+        &#x27;consumed_percent&#x27;: budget_consumed_percent
+    }
+</code></pre>
+<p><strong>Alert on budget burn rate:</strong></p>
+<pre><code class="language-yaml">alert: ErrorBudgetBurnRateHigh
+expr: |
+  error_rate &gt; (error_budget * 0.1)  # Burning 10% of budget/hour
+for: 1h
+annotations:
+  summary: Burning error budget too fast
+  action: Stop deployments, investigate issues
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code>Error budget remaining: 80% ✅
+→ Safe to deploy new feature
+
+Error budget remaining: 20% ⚠️
+→ Pause risky changes, focus on stability
+
+Error budget exhausted: 0% ❌
+→ Freeze all deployments
+→ Fix reliability issues only
+</code></pre>
+<h3 id="benefits">Benefits</h3>
+<p><strong>1. Quantify reliability</strong></p>
+<p>Objective measure, not subjective &quot;feels stable&quot;.</p>
+<p><strong>2. Balance innovation vs stability</strong></p>
+<p>Error budget allows controlled risk-taking.</p>
+<p><strong>3. Prioritize work</strong></p>
+<p>Budget low? Focus on reliability.<br/>
+<!-- -->Budget high? Focus on features.</p>
+<p><strong>4. Align teams</strong></p>
+<p>SRE + Dev agree on reliability targets.</p>
+<h2 id="monitoring-stack-example">Monitoring Stack Example</h2>
+<p><strong>Complete observability setup:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    subgraph Apps[&quot;Applications&quot;]
+        App1[Service A]
+        App2[Service B]
+        App3[Service C]
+    end
+    
+    subgraph Collection[&quot;Collection Layer&quot;]
+        Prom[Prometheus&lt;br/&gt;Metrics]
+        Jaeger[Jaeger&lt;br/&gt;Traces]
+        Loki[Loki&lt;br/&gt;Logs]
+    end
+    
+    subgraph Viz[&quot;Visualization&quot;]
+        Grafana[Grafana&lt;br/&gt;Dashboards + Alerts]
+    end
+    
+    App1 --&gt;|Metrics| Prom
+    App1 --&gt;|Traces| Jaeger
+    App1 --&gt;|Logs| Loki
+    
+    App2 --&gt;|Metrics| Prom
+    App2 --&gt;|Traces| Jaeger
+    App2 --&gt;|Logs| Loki
+    
+    App3 --&gt;|Metrics| Prom
+    App3 --&gt;|Traces| Jaeger
+    App3 --&gt;|Logs| Loki
+    
+    Prom --&gt; Grafana
+    Jaeger --&gt; Grafana
+    Loki --&gt; Grafana</code></pre>
+<p><strong>Unified view trong Grafana:</strong></p>
+<ul>
+<li>Metrics charts</li>
+<li>Log explorer</li>
+<li>Trace viewer</li>
+<li>Alert manager</li>
+</ul>
+<h2 id="practical-recommendations">Practical Recommendations</h2>
+<h3 id="1-start-with-golden-signals">1. Start With Golden Signals</h3>
+<p><strong>Don&#x27;t try to monitor everything.</strong></p>
+<pre><code class="language-python"># Minimum viable monitoring
+from prometheus_client import Counter, Histogram
+
+requests_total = Counter(&#x27;api_requests_total&#x27;, &#x27;Total requests&#x27;)
+request_duration = Histogram(&#x27;api_request_duration_seconds&#x27;, &#x27;Request duration&#x27;)
+errors_total = Counter(&#x27;api_errors_total&#x27;, &#x27;Total errors&#x27;)
+
+@app.route(&#x27;/api/endpoint&#x27;)
+def endpoint():
+    requests_total.inc()
+    
+    with request_duration.time():
+        try:
+            result = process()
+            return result
+        except Exception as e:
+            errors_total.inc()
+            raise
+</code></pre>
+<p><strong>4 metrics cover most problems.</strong></p>
+<h3 id="2-build-dashboards">2. Build Dashboards</h3>
+<p><strong>One dashboard per service:</strong></p>
+<pre><code>Service Dashboard
+├── Golden Signals (top row)
+│   ├── Request rate
+│   ├── Error rate
+│   ├── p99 latency
+│   └── Saturation
+├── Detailed Metrics (middle)
+│   ├── Per-endpoint latency
+│   ├── Database query time
+│   ├── Cache hit rate
+│   └── Queue depth
+└── System Resources (bottom)
+    ├── CPU usage
+    ├── Memory usage
+    └── Disk I/O
+</code></pre>
+<p><strong>Standardize across services - easier comparison.</strong></p>
+<h3 id="3-instrument-libraries">3. Instrument Libraries</h3>
+<p><strong>Don&#x27;t reinvent wheel.</strong></p>
+<pre><code class="language-python"># Auto-instrument Flask
+from prometheus_flask_exporter import PrometheusMetrics
+metrics = PrometheusMetrics(app)
+
+# Auto-instrument SQLAlchemy
+from prometheus_sqlalchemy import PrometheusMetrics
+PrometheusMetrics(engine)
+
+# Auto-instrument Redis
+from prometheus_redis import RedisMetrics
+RedisMetrics(redis_client)
+</code></pre>
+<p><strong>Less code, more coverage.</strong></p>
+<h3 id="4-set-up-synthetic-monitoring">4. Set Up Synthetic Monitoring</h3>
+<p><strong>Proactive checks.</strong></p>
+<pre><code class="language-python"># Cron job - check critical paths
+def health_check():
+    checks = [
+        (&#x27;api&#x27;, check_api_health),
+        (&#x27;database&#x27;, check_db_connection),
+        (&#x27;cache&#x27;, check_redis_connection),
+        (&#x27;payments&#x27;, check_payment_gateway),
+    ]
+    
+    for name, check_func in checks:
+        try:
+            check_func()
+            metrics.gauge(f&#x27;health.{name}&#x27;, 1)
+        except Exception:
+            metrics.gauge(f&#x27;health.{name}&#x27;, 0)
+            alert(f&#x27;{name} health check failed&#x27;)
+</code></pre>
+<p><strong>Detect issues before users do.</strong></p>
+<h3 id="5-practice-debugging">5. Practice Debugging</h3>
+<p><strong>Incident simulation:</strong></p>
+<pre><code class="language-python"># Deliberately inject latency
+@app.route(&#x27;/api/slow&#x27;)
+def slow_endpoint():
+    if random.random() &lt; 0.05:  # 5% requests
+        time.sleep(5)  # 5 second delay
+    return process_request()
+</code></pre>
+<p><strong>Practice:</strong></p>
+<ol>
+<li>Detect latency spike in dashboard</li>
+<li>Check traces - find slow endpoint</li>
+<li>Check logs - understand why</li>
+<li>Fix issue</li>
+<li>Verify improvement</li>
+</ol>
+<p><strong>Muscle memory for real incidents.</strong></p>
+<h2 id="mental-model-if-you-cannot-measure-you-cannot-scale">Mental Model: If You Cannot Measure, You Cannot Scale</h2>
+<p><strong>Core insight:</strong></p>
+<p><strong>Scaling decisions require data. Without measurement, you&#x27;re flying blind.</strong></p>
+<pre><code>Without metrics:
+  &quot;System slow&quot; → Guess solution → May not help
+  
+With metrics:
+  &quot;p99 latency 2s&quot; → Check traces → DB bottleneck
+  → Add read replica → p99 latency 200ms ✅
+</code></pre>
+<p><strong>Measure → Understand → Optimize → Measure again.</strong></p>
+<p><strong>Architect decisions backed by data:</strong></p>
+<pre><code>Should we add caching?
+→ Check: Cache hit rate would be X%
+→ Impact: Reduce DB load by Y%
+→ Decision: Yes/No based on numbers
+
+Should we shard database?
+→ Check: Current load Z req/s
+→ Capacity: Single DB handles W req/s
+→ Decision: Shard when Z &gt; 0.8W
+</code></pre>
+<p><strong>Good architects measure first, optimize second.</strong></p>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>1. Monitor Golden Signals: Latency, Traffic, Errors, Saturation</strong></p>
+<p>4 metrics cover most production issues.</p>
+<p><strong>2. Percentiles &gt; Averages</strong></p>
+<p>p95, p99 reveal worst-case user experience. Optimize for tail latency.</p>
+<p><strong>3. Alert on symptoms, not causes</strong></p>
+<p>Alert on user impact, not resource utilization.</p>
+<p><strong>4. Distributed tracing critical for microservices</strong></p>
+<p>Understand request flow, find bottlenecks across services.</p>
+<p><strong>5. Structured logging enables analysis</strong></p>
+<p>JSON logs = queryable data, not just text.</p>
+<p><strong>6. Set SLOs based on user expectations</strong></p>
+<p>Define reliability targets, track error budgets.</p>
+<p><strong>7. Correlation IDs track requests</strong></p>
+<p>Debug full request flow across services.</p>
+<p><strong>8. Error budgets balance reliability vs innovation</strong></p>
+<p>Controlled risk-taking based on data.</p>
+<p><strong>9. Start simple, add complexity as needed</strong></p>
+<p>Golden Signals first, advanced monitoring later.</p>
+<p><strong>10. Practice debugging before incidents</strong></p>
+<p>Simulate failures, build muscle memory.</p>
+<p><strong>Remember: You cannot improve what you cannot measure. Good monitoring is not optional - it&#x27;s the foundation of reliable, scalable systems. Invest in observability early, not after production incidents.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency</a></div><a class="inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-between bg-gradient-to-r from-brand to-[#5f7dff] px-6 shadow-[0_16px_34px_rgba(47,107,255,0.35)] hover:from-[#2659d6] hover:to-[#4f69dc]" href="/phase/phase-5"><span class="inline-flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-5 w-5"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Đi tới <!-- -->Phase 5 — Real-World Architecture Patterns</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-5 w-5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n11:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-4\",\"lesson\",\"lesson-7-monitoring-observability-performance-debugging\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-4\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-7-monitoring-observability-performance-debugging\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],\"$L6\",\"$L7\"]}]]}]}],\"$L8\"]}]}]]}],{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{\"children\":[\"$Ld\",{},null,false,false]},[\"$Le\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Lf\",[],[]],false,false],\"$L10\",false]],\"m\":\"$undefined\",\"G\":[\"$11\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"12:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n14:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n15:\"$Sreact.suspense\"\n21:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n23:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}]\n7:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n8:[\"$\",\"$L12\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nd:[\"$\",\"$1\",\"c\",{\"children\":[\"$L13\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L14\",null,{\"children\":[\"$\",\"$15\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@16\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L17\",\"$L18\",\"$L19\",\"$L1a\"]}],\"$L1b\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1c\",\"$L1d\",\"$L1e\",\"$L1f\"]}],\"$L20\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"10:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L21\",null,{\"children\":\"$L22\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L23\",null,{\"children\":[\"$\",\"$15\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L24\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1b:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n20:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"13:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách measure, debug, và optimize distributed systems hiệu quả.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-performance-bottleneck-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-1-performance-bottleneck-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Performance \u0026 Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn\"}]]}]}],[\"$\",\"li\",\"lesson-2-caching-strategy-trade-consistency-de-lay-speed\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-2-caching-strategy-trade-consistency-de-lay-speed\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Caching Strategy - Trade Consistency Để Lấy Speed\"}]]}]}],[\"$\",\"li\",\"lesson-3-cdn-and-edge-computing-distributed-cache-gan-user\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"CDN \u0026 Edge Computing - Distributed Cache Gần User\"}]]}]}],[\"$\",\"li\",\"lesson-4-database-scaling-optimization\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-4-database-scaling-optimization\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\"}]]}]}],[\"$\",\"li\",\"lesson-5-rate-limiting-and-load-control\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\"}]]}]}],[\"$\",\"li\",\"lesson-6-asynchronous-processin-queues\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L25\",\"$L26\"]}]}],\"$L27\"]}]]}],\"$L28\"]}],\"$L29\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"2a:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n25:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n26:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\"}]\n27:[\"$\",\"li\",\"lesson-7-monitoring-observability-performance-debugging\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",7]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\"}]]}]}]\n28:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4\",\"className\":\"hover:text-ink\",\"children\":\"Phase 4 — Scalability \u0026 Performance\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách measure, debug, và optimize distributed systems hiệu quả.\"}]]}],[\"$\",\"$L2a\",null,{\"path\":\"/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging\",\"title\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\",\"description\":\"Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách measure, debug, và optimize distributed systems hiệu quả.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\",\"children\":\"$L2b\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\"]}],null]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-5\",\"className\":\"inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-between bg-gradient-to-r from-brand to-[#5f7dff] px-6 shadow-[0_16px_34px_rgba(47,107,255,0.35)] hover:from-[#2659d6] hover:to-[#4f69dc]\",\"children\":[[\"$\",\"span\",null,{\"className\":\"inline-flex items-center gap-2\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-sparkles h-5 w-5\",\"children\":[[\"$\",\"path\",\"4pj2yx\",{\"d\":\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"}],\"$L2c\",\"$L2d\",\"$L2e\",\"$L2f\",\"$undefined\"]}],\"Đi tới \",\"Phase 5 — Real-World Architecture Patterns\"]}],\"$L30\"]}],null]}]]}]\n"])</script><script>self.__next_f.push([1,"2c:[\"$\",\"path\",\"1olli1\",{\"d\":\"M20 3v4\"}]\n2d:[\"$\",\"path\",\"1gvqau\",{\"d\":\"M22 5h-4\"}]\n2e:[\"$\",\"path\",\"vumght\",{\"d\":\"M4 17v2\"}]\n2f:[\"$\",\"path\",\"zchphs\",{\"d\":\"M5 18H3\"}]\n30:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-5 w-5\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"monitoring-observability--performance-debugging---measure-to-scale\",\"children\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Bạn deploy hệ thống production. Mọi thứ chạy tốt... hoặc ít nhất bạn nghĩ vậy.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Rồi user complain: \\\"Site chậm\\\". Bạn check:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Server CPU: 30% ✅\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Memory: 50%\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Disk: 40% ✅\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Metrics nhìn OK. Vậy tại sao user nói chậm?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Vấn đề:\"}],\" Bạn đang measure wrong things.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"CPU 30% không nói lên gì về user experience. Có thể:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"API response time 5 seconds (user đợi lâu)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database queries timeout\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"3rd party API calls fail 50% requests\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không measure đúng = không biết system thực sự hoạt động như thế nào.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Mental model quan trọng nhất:\"}],\" \",[\"$\",\"strong\",null,{\"children\":\"If you cannot measure, you cannot scale.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Lesson này dạy bạn:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Metrics nào thực sự quan trọng\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Percentiles (p50, p95, p99) và tại sao\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Alert strategy (không spam, không miss critical)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Distributed tracing cho microservices\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Logging best practices\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"SLO/SLA/Error budgets\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-monitoring-là-critical\",\"children\":\"Tại Sao Monitoring Là Critical?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"1-detect-problems-before-users\",\"children\":\"1. Detect Problems Before Users\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Proactive \u003e Reactive.\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Without monitoring:\\n  User complains → investigate → find issue → fix\\n  Mean time to detect (MTTD): Hours to days\\n\\nWith monitoring:\\n  Alert fires → investigate → fix → user không notice\\n  MTTD: Seconds to minutes\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good monitoring = user không biết có issues.\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"2-understand-system-behavior\",\"children\":\"2. Understand System Behavior\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Capacity planning:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Current: 1000 req/s, CPU 40%\\nQuestion: Can handle 5000 req/s?\\nAnswer: Need data to extrapolate\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Without metrics, guessing. With metrics, informed decisions.\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"3-debug-performance-issues\",\"children\":\"3. Debug Performance Issues\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"User:\"}],\" \\\"Site slow at 3 PM daily.\\\"\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Without monitoring:\"}],\" No idea why.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"With monitoring:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Check metrics at 3 PM:\\n- Database query time spike 10x\\n- Slow query log: daily report generation\\n→ Move report to off-peak hours\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"4-validate-optimizations\",\"children\":\"4. Validate Optimizations\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"You:\"}],\" \\\"Added caching, should be faster.\\\"\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Reality check:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Before: p95 latency 800ms\\nAfter:  p95 latency 150ms\\n→ 5x improvement confirmed ✅\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Measure to prove impact.\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"5-meet-slas\",\"children\":\"5. Meet SLAs\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Contract:\"}],\" \\\"99.9% uptime, p99 latency \u003c 500ms\\\"\"]}],\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\",\"\\n\",\"$Lc9\",\"\\n\",\"$Lca\",\"\\n\",\"$Lcb\",\"\\n\",\"$Lcc\",\"\\n\",\"$Lcd\",\"\\n\",\"$Lce\",\"\\n\",\"$Lcf\",\"\\n\",\"$Ld0\",\"\\n\",\"$Ld1\",\"\\n\",\"$Ld2\",\"\\n\",\"$Ld3\",\"\\n\",\"$Ld4\",\"\\n\",\"$Ld5\",\"\\n\",\"$Ld6\",\"\\n\",\"$Ld7\",\"\\n\",\"$Ld8\",\"\\n\",\"$Ld9\",\"\\n\",\"$Lda\",\"\\n\",\"$Ldb\",\"\\n\",\"$Ldc\",\"\\n\",\"$Ldd\",\"\\n\",\"$Lde\",\"\\n\",\"$Ldf\",\"\\n\",\"$Le0\",\"\\n\",\"$Le1\",\"\\n\",\"$Le2\",\"\\n\",\"$Le3\",\"\\n\",\"$Le4\",\"\\n\",\"$Le5\",\"\\n\",\"$Le6\",\"\\n\",\"$Le7\",\"\\n\",\"$Le8\",\"\\n\",\"$Le9\",\"\\n\",\"$Lea\",\"\\n\",\"$Leb\",\"\\n\",\"$Lec\",\"\\n\",\"$Led\",\"\\n\",\"$Lee\",\"\\n\",\"$Lef\",\"\\n\",\"$Lf0\",\"\\n\",\"$Lf1\",\"\\n\",\"$Lf2\",\"\\n\",\"$Lf3\",\"\\n\",\"$Lf4\",\"\\n\",\"$Lf5\",\"\\n\",\"$Lf6\",\"\\n\",\"$Lf7\",\"\\n\",\"$Lf8\",\"\\n\",\"$Lf9\",\"\\n\",\"$Lfa\",\"\\n\",\"$Lfb\",\"\\n\",\"$Lfc\",\"\\n\",\"$Lfd\",\"\\n\",\"$Lfe\",\"\\n\",\"$Lff\",\"\\n\",\"$L100\",\"\\n\",\"$L101\",\"\\n\",\"$L102\",\"\\n\",\"$L103\",\"\\n\",\"$L104\",\"\\n\",\"$L105\",\"\\n\",\"$L106\",\"\\n\",\"$L107\",\"\\n\",\"$L108\",\"\\n\",\"$L109\",\"\\n\",\"$L10a\",\"\\n\",\"$L10b\",\"\\n\",\"$L10c\",\"\\n\",\"$L10d\",\"\\n\",\"$L10e\",\"\\n\",\"$L10f\",\"\\n\",\"$L110\",\"\\n\",\"$L111\",\"\\n\",\"$L112\",\"\\n\",\"$L113\",\"\\n\",\"$L114\",\"\\n\",\"$L115\",\"\\n\",\"$L116\",\"\\n\",\"$L117\",\"\\n\",\"$L118\",\"\\n\",\"$L119\",\"\\n\",\"$L11a\",\"\\n\",\"$L11b\",\"\\n\",\"$L11c\",\"\\n\",\"$L11d\",\"\\n\",\"$L11e\",\"\\n\",\"$L11f\",\"\\n\",\"$L120\",\"\\n\",\"$L121\",\"\\n\",\"$L122\",\"\\n\",\"$L123\",\"\\n\",\"$L124\",\"\\n\",\"$L125\",\"\\n\",\"$L126\",\"\\n\",\"$L127\",\"\\n\",\"$L128\",\"\\n\",\"$L129\",\"\\n\",\"$L12a\",\"\\n\",\"$L12b\",\"\\n\",\"$L12c\",\"\\n\",\"$L12d\",\"\\n\",\"$L12e\",\"\\n\",\"$L12f\",\"\\n\",\"$L130\",\"\\n\",\"$L131\",\"\\n\",\"$L132\",\"\\n\",\"$L133\",\"\\n\",\"$L134\",\"\\n\",\"$L135\",\"\\n\",\"$L136\",\"\\n\",\"$L137\",\"\\n\",\"$L138\",\"\\n\",\"$L139\",\"\\n\",\"$L13a\",\"\\n\",\"$L13b\",\"\\n\",\"$L13c\",\"\\n\",\"$L13d\",\"\\n\",\"$L13e\"]}]\n"])</script><script>self.__next_f.push([1,"13f:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n31:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"How to know if meeting?\"}],\" Monitor 24/7.\"]}]\n32:[\"$\",\"h2\",null,{\"id\":\"the-three-pillars-of-observability\",\"children\":\"The Three Pillars Of Observability\"}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Observability = ability to understand system internal state từ external outputs.\"}]}]\n34:[\"$\",\"$L13f\",null,{\"chart\":\"flowchart TB\\n    System[Distributed System]\\n    \\n    subgraph Pillars[\\\"Three Pillars\\\"]\\n        Metrics[Metrics\u003cbr/\u003eWhat's happening?]\\n        Logs[Logs\u003cbr/\u003eWhy it happened?]\\n        Traces[Traces\u003cbr/\u003eWhere in the flow?]\\n    end\\n    \\n    System --\u003e Metrics\\n    System --\u003e Logs\\n    System --\u003e Traces\\n    \\n    Metrics --\u003e Understand[Understand System]\\n    Logs --\u003e Understand\\n    Traces --\u003e Understand\"}]\n35:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Metrics:\"}],\" Aggregated numbers (CPU, latency, error rate)\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Logs:\"}],\" Discrete events (errors, warnings, debug info)\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Traces:\"}],\" Request flow across services\"]}]\n36:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cần cả ba để full visibility.\"}]}]\n37:[\"$\",\"h2\",null,{\"id\":\"metrics---what-to-measure\",\"children\":\"Metrics - What To Measure\"}]\n38:[\"$\",\"h3\",null,{\"id\":\"golden-signals-google-sre\",\"children\":\"Golden Signals (Google SRE)\"}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4 metrics quan trọng nhất:\"}]}]\n3a:[\"$\",\"h4\",null,{\"id\":\"1-latency\",\"children\":\"1. Latency\"}]\n3b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Time to serve a request.\"}]}]\n3c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import time\\n\\ndef track_latency(func):\\n    def wrapper(*args, **kwargs):\\n        start = time.time()\\n        result = func(*args, **kwargs)\\n        duration = time.time() - start\\n        \\n        metrics.histogram('api.latency', duration, tags=['endpoint:users'])\\n        return result\\n    return wrapper\\n\\n@track_latency\\ndef get_users():\\n    return db.query(\\\"SELECT * FROM users\\\")\\n\"}]}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track:\"}]}]\n3e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Overall API latency\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Per-endpoint latency\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database query time\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"External API call time\"}],\"\\n\"]}]\n3f:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Why:\"}],\" Direct impact on user experience.\"]}]\n40:[\"$\",\"h4\",null,{\"id\":\"2-traffic\",\"children\":\"2. Traffic\"}]\n41:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Requests per second (throughput).\"}]}]\n42:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.before_request\\ndef track_request():\\n    metrics.increment('api.requests', tags=[\\n        f'endpoint:{request.endpoint}',\\n        f'method:{request.method}'\\n    ])\\n\"}]}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track:\"}]}]\n44:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Total requests/second\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Requests per endpoint\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read vs write ratio\"}],\"\\n\"]}]\n45:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Why:\"}],\" Understand load patterns, capacity planning.\"]}]\n46:[\"$\",\"h4\",null,{\"id\":\"3-errors\",\"children\":\"3. Errors\"}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{"])</script><script>self.__next_f.push([1,"\"children\":\"Failed requests rate.\"}]}]\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.after_request\\ndef track_response(response):\\n    if response.status_code \u003e= 500:\\n        metrics.increment('api.errors.5xx')\\n    elif response.status_code \u003e= 400:\\n        metrics.increment('api.errors.4xx')\\n    \\n    return response\\n\"}]}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track:\"}]}]\n4a:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"4xx errors (client errors)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"5xx errors (server errors)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Error rate (%)\"}],\"\\n\"]}]\n4b:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Why:\"}],\" Reliability indicator, alert trigger.\"]}]\n4c:[\"$\",\"h4\",null,{\"id\":\"4-saturation\",\"children\":\"4. Saturation\"}]\n4d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"How \\\"full\\\" your service is.\"}]}]\n4e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# System metrics\\nmetrics.gauge('system.cpu_percent', psutil.cpu_percent())\\nmetrics.gauge('system.memory_percent', psutil.virtual_memory().percent)\\nmetrics.gauge('system.disk_percent', psutil.disk_usage('/').percent)\\n\\n# Application metrics\\nmetrics.gauge('db.connection_pool.used', db.pool.size())\\nmetrics.gauge('queue.depth', redis.llen('task_queue'))\\n\"}]}]\n4f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track:\"}]}]\n50:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"CPU usage\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Memory usage\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Disk usage\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Connection pool utilization\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Queue depth\"}],\"\\n\"]}]\n51:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Why:\"}],\" Predict when system will hit limits.\"]}]\n52:[\"$\",\"h3\",null,{\"id\":\"red-method-for-services\",\"children\":\"RED Method (For Services)\"}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rate, Errors, Duration.\"}]}]\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class ServiceMetrics:\\n    def record_request(self, duration, success):\\n        # Rate\\n        self.metrics.increment('service.requests')\\n        \\n        # Errors\\n        if not success:\\n            self.metrics.increment('service.errors')\\n        \\n        # Duration\\n        self.metrics.histogram('service.duration', duration)\\n\"}]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Simple, covers essentials.\"}]}]\n56:[\"$\",\"h3\",null,{\"id\":\"use-method-for-resources\",\"children\":\"USE Method (For Resources)\"}]\n57:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Utilization, Saturation, Errors.\"}]}]\n58:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Utilization: % time resource busy\\ncpu_utilization = psutil.cpu_percent()\\n\\n# Saturation: work queued\\nload_average = os.getloadavg()[0]  # 1-minute load\\n\\n# Errors: error count\\ndisk_errors = read_disk_error_count()\\n\"}]}]\n59:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"For infrastructure monitoring.\"}]}]\n5a:[\"$\",\"h2\",null,{\"id\":\"percentiles---why-they-matter-more-than-averages\",\"children\":\"Percentiles - Why They Matter More Than Averages\"}]\n5b:[\"$\",\"h3\",null,{\"id\":\"the-problem-with-averages\",\"children\":\"The Problem With Averages\"}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario:\"}]}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"API latencies:\\n  99 requests: 100ms\\n  1 request:   10,000ms (10 seconds!)\\n\\nAverage: (99 * 100 + 10,000) / 100 = 199ms\\n\"}]}]\n5e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Average says 199ms - looks OK!\"}]}]\n5f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Reality: 1% users wait 10 seconds - terrible experience.\"}]}]\n60:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Averages hide outliers.\"}]}]\n61:[\"$\",\"h3\",null,{\"id\":\"percentiles-reveal-true-story\",\"children\":\"Percentiles Reveal "])</script><script>self.__next_f.push([1,"True Story\"}]\n62:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"p50 (median):\"}],\" 50% requests faster, 50% slower\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"p95:\"}],\" 95% requests faster than this\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"p99:\"}],\" 99% requests faster than this\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"p99.9:\"}],\" 99.9% requests faster than this\"]}]\n63:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Example distribution:\\n  p50:  100ms  (typical experience)\\n  p95:  200ms  (most users)\\n  p99:  500ms  (edge cases)\\n  p99.9: 2000ms (rare outliers)\\n\"}]}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"p95, p99 show worst-case user experience.\"}]}]\n65:[\"$\",\"h3\",null,{\"id\":\"why-p99-matters\",\"children\":\"Why p99 Matters\"}]\n66:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Amazon study:\"}],\" p99 latency directly correlates với revenue.\"]}]\n67:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"p99 latency = 1 second\\n→ Slow for 1% users\\n→ At 1M requests/day = 10,000 bad experiences\\n→ Bad reviews, lost sales\\n\"}]}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Optimize for p99, not average.\"}]}]\n69:[\"$\",\"h3\",null,{\"id\":\"tracking-percentiles\",\"children\":\"Tracking Percentiles\"}]\n6a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from prometheus_client import Histogram\\n\\n# Histogram automatically calculates percentiles\\nlatency_histogram = Histogram(\\n    'api_latency_seconds',\\n    'API request latency',\\n    buckets=[0.1, 0.25, 0.5, 1.0, 2.5, 5.0]\\n)\\n\\n@app.route('/api/data')\\ndef get_data():\\n    with latency_histogram.time():\\n        return process_request()\\n\"}]}]\n6b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Prometheus query:\"}]}]\n6c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-promql\",\"children\":\"# p95 latency over 5 minutes\\nhistogram_quantile(0.95, \\n  rate(api_latency_seconds_bucket[5m])\\n)\\n\"}]}]\n6d:[\"$\",\"h3\",null,{\"id\":\"service-level-indicators-sli\",\"children\":\"Service Level Indicators (SLI)\"}]\n6e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Measured percentiles become SLIs.\"}]}]\n6f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"SLI: p99 latency \u003c 500ms\\nSLI: p95 availability \u003e 99.9%\\nSLI: p99 error rate \u003c 0.1%\\n\"}]}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Objective, measurable targets.\"}]}]\n71:[\"$\",\"h2\",null,{\"id\":\"alert-strategy---signal-vs-noise\",\"children\":\"Alert Strategy - Signal vs Noise\"}]\n72:[\"$\",\"h3\",null,{\"id\":\"the-alert-fatigue-problem\",\"children\":\"The Alert Fatigue Problem\"}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bad alerting:\"}]}]\n74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"03:00 - Alert: CPU \u003e 80%\\n03:05 - Alert: CPU \u003e 80%\\n03:10 - Alert: CPU \u003e 80%\\n...\\n→ 100 alerts/night\\n→ Engineers ignore alerts\\n→ Real issue missed\\n\"}]}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Alert fatigue kills reliability.\"}]}]\n76:[\"$\",\"h3\",null,{\"id\":\"good-alert-principles\",\"children\":\"Good Alert Principles\"}]\n77:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Alert on symptoms, not causes\"}]}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bad:\"}]}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Alert: Database CPU \u003e 80%\\n\"}]}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good:\"}]}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Alert: API p99 latency \u003e 1 second\\n\"}]}]\n7c:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Why:\"}],\" CPU high có thể OK nếu latency fine. Latency high = user impacted = real problem.\"]}]\n7d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Alert on user impact\"}]}]\n7e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bad:\"}]}]\n7f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Alert: 1 server down (out of 10)\\n\"}]}]\n80:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",nu"])</script><script>self.__next_f.push([1,"ll,{\"children\":\"Good:\"}]}]\n81:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Alert: Error rate \u003e 5%\\n(Only if user experience affected)\\n\"}]}]\n82:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Actionable alerts only\"}]}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Every alert phải có clear action.\"}]}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Alert: Database slow queries detected\\n\\nAction:\\n1. Check slow query log\\n2. Check database load\\n3. Kill long-running queries if needed\\n4. Page DB team if persists \u003e 15 min\\n\"}]}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Không có action = không nên alert.\"}]}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Use thresholds wisely\"}]}]\n87:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Static threshold:\"}]}]\n88:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-yaml\",\"children\":\"alert: CPU \u003e 90%\\n\"}]}]\n89:[\"$\",\"p\",null,{\"children\":\"Problem: Normal load varies. 90% at 2 AM = problem. 90% at peak = normal.\"}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Dynamic threshold:\"}]}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-yaml\",\"children\":\"alert: CPU \u003e (baseline + 2 * stddev)\\n\"}]}]\n8c:[\"$\",\"p\",null,{\"children\":\"Adapts to normal patterns.\"}]\n8d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Alert priority levels\"}]}]\n8e:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"P0 (Critical):\"}],\" System down, revenue impact\",[\"$\",\"br\",null,{}],\"\\n\",\"→ Page on-call immediately\"]}]\n8f:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"P1 (High):\"}],\" Degraded performance, affecting users\",[\"$\",\"br\",null,{}],\"\\n\",\"→ Alert on-call, expect response within 30 min\"]}]\n90:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"P2 (Medium):\"}],\" Non-critical issues\",[\"$\",\"br\",null,{}],\"\\n\",\"→ Ticket, handle during business hours\"]}]\n91:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"P3 (Low):\"}],\" Informational\",[\"$\",\"br\",null,{}],\"\\n\",\"→ Log only, no alert\"]}]\n92:[\"$\",\"h3\",null,{\"id\":\"alert-runbooks\",\"children\":\"Alert Runbooks\"}]\n93:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mỗi alert cần runbook.\"}]}]\n94:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"## Alert: High API Error Rate\\n\\n### Symptom\\nAPI error rate \u003e 5% for 5 minutes\\n\\n### Impact\\nUsers experiencing failures, potential revenue loss\\n\\n### Investigation Steps\\n1. Check error dashboard: ${dashboard_link}\\n2. Check error logs: `kubectl logs -l app=api --tail=100`\\n3. Check dependent services status\\n4. Check recent deployments\\n\\n### Remediation\\n1. If bad deployment: rollback immediately\\n2. If database issue: check DB health, consider read replica\\n3. If 3rd party issue: enable circuit breaker, use fallback\\n\\n### Escalation\\nIf unresolved after 15 minutes: page @backend-lead\\n\"}]}]\n95:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Reduces MTTR (Mean Time To Resolve).\"}]}]\n96:[\"$\",\"h2\",null,{\"id\":\"distributed-tracing---debug-across-services\",\"children\":\"Distributed Tracing - Debug Across Services\"}]\n97:[\"$\",\"h3\",null,{\"id\":\"the-microservices-problem\",\"children\":\"The Microservices Problem\"}]\n98:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Monolith:\"}]}]\n99:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User request → Single codebase → Easy to debug\\n\"}]}]\n9a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Microservices:\"}]}]\n9b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User request → Service A → Service B → Service C\\n                      ↓\\n                  Service D\\n\"}]}]\n9c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Where is bottleneck? Hard to tell.\"}]}]\n9d:[\"$\",\"h3\",null,{\"id\":\"distributed-tracing-solution\",\"children\":\"Distributed Tracing Solution\"}]\n9e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trace = full request journey across services.\"}]}]\n"])</script><script>self.__next_f.push([1,"9f:[\"$\",\"$L13f\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant API\\n    participant Auth\\n    participant DB\\n    participant Cache\\n    \\n    User-\u003e\u003eAPI: GET /profile (TraceID: abc123)\\n    Note over API: Span: api-handler (50ms)\\n    \\n    API-\u003e\u003eAuth: Verify token\\n    Note over Auth: Span: auth-verify (20ms)\\n    Auth--\u003e\u003eAPI: OK\\n    \\n    API-\u003e\u003eCache: Get user\\n    Note over Cache: Span: cache-lookup (5ms)\\n    Cache--\u003e\u003eAPI: Cache miss\\n    \\n    API-\u003e\u003eDB: Query user\\n    Note over DB: Span: db-query (200ms)\\n    DB--\u003e\u003eAPI: User data\\n    \\n    API-\u003e\u003eCache: Store user\\n    API--\u003e\u003eUser: Response\\n    \\n    Note over User,Cache: Total: 275ms\u003cbr/\u003eBottleneck: DB query (200ms)\"}]\na0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mỗi operation = span. Collection of spans = trace.\"}]}]\na1:[\"$\",\"h3\",null,{\"id\":\"implementing-tracing\",\"children\":\"Implementing Tracing\"}]\na2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"OpenTelemetry (standard):\"}]}]\na3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from opentelemetry import trace\\nfrom opentelemetry.instrumentation.flask import FlaskInstrumentor\\n\\n# Initialize tracer\\ntracer = trace.get_tracer(__name__)\\n\\n# Instrument Flask automatically\\nFlaskInstrumentor().instrument_app(app)\\n\\n# Manual spans for custom operations\\n@app.route('/api/user/\u003cuser_id\u003e')\\ndef get_user(user_id):\\n    with tracer.start_as_current_span(\\\"get_user\\\") as span:\\n        span.set_attribute(\\\"user.id\\\", user_id)\\n        \\n        # Database query\\n        with tracer.start_as_current_span(\\\"db.query.user\\\"):\\n            user = db.query_user(user_id)\\n        \\n        # Cache operation\\n        with tracer.start_as_current_span(\\\"cache.set\\\"):\\n            cache.set(f\\\"user:{user_id}\\\", user)\\n        \\n        return jsonify(user)\\n\"}]}]\na4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Propagate trace context across services:\"}]}]\na5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import requests\\nfrom opentelemetry.propagate import inject\\n\\ndef call_downstream_service(url):\\n    headers = {}\\n    # Inject trace context into headers\\n    inject(headers)\\n    \\n    response = requests.get(url, headers=headers)\\n    return response.json()\\n\"}]}]\na6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Downstream service continues trace:\"}]}]\na7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from opentelemetry.propagate import extract\\n\\n@app.before_request\\ndef extract_trace_context():\\n    # Extract trace context from headers\\n    ctx = extract(request.headers)\\n    # Automatic - OpenTelemetry uses context\\n\"}]}]\na8:[\"$\",\"h3\",null,{\"id\":\"tracing-tools\",\"children\":\"Tracing Tools\"}]\na9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Jaeger:\"}]}]\naa:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Open source\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Uber-developed\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple to deploy\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Good for small-medium systems\"}],\"\\n\"]}]\nab:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Zipkin:\"}]}]\nac:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Open source\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Twitter-developed\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Similar to Jaeger\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Large community\"}],\"\\n\"]}]\nad:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Datadog APM:\"}]}]\nae:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Commercial\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Full-featured\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Automatic instrumentation\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Integrated with metrics/logs\"}],\"\\n\"]}]\naf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"AWS X-Ray:\"}]}]\nb0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"AWS-native\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Easy AWS integration\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Pay-per-use\"}],\"\\n\"]}]"])</script><script>self.__next_f.push([1,"\nb1:[\"$\",\"h3\",null,{\"id\":\"what-tracing-reveals\",\"children\":\"What Tracing Reveals\"}]\nb2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Slow dependencies\"}]}]\nb3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Service A: 10ms\\nService B: 500ms ← Bottleneck!\\nService C: 5ms\\n\\nTotal: 515ms\\n\"}]}]\nb4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. N+1 queries\"}]}]\nb5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"get_users: 10ms\\n  ↳ get_orders (user 1): 50ms\\n  ↳ get_orders (user 2): 50ms\\n  ↳ get_orders (user 3): 50ms\\n  ...\\n\"}]}]\nb6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Unnecessary calls\"}]}]\nb7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"get_profile:\\n  ↳ get_user\\n  ↳ get_preferences (not used!)\\n  ↳ get_settings (not used!)\\n\"}]}]\nb8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Cascade failures\"}]}]\nb9:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Service A timeout (30s)\\n  ↳ Service B timeout (30s)\\n    ↳ Service C timeout (30s)\\n\\nTotal: 90s failure!\\n\"}]}]\nba:[\"$\",\"h2\",null,{\"id\":\"logging-strategy---debug-the-details\",\"children\":\"Logging Strategy - Debug The Details\"}]\nbb:[\"$\",\"h3\",null,{\"id\":\"log-levels\",\"children\":\"Log Levels\"}]\nbc:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"FATAL:\"}],\" System unusable\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"ERROR:\"}],\" Error events, need attention\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"WARN:\"}],\" Potentially harmful situations\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"INFO:\"}],\" Informational messages\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"DEBUG:\"}],\" Detailed diagnostic info\",[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"TRACE:\"}],\" Very detailed (too much for production)\"]}]\nbd:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import logging\\n\\nlogging.fatal(\\\"Database connection lost!\\\")\\nlogging.error(\\\"Payment processing failed\\\", extra={\\n    'user_id': user.id,\\n    'amount': payment.amount\\n})\\nlogging.warning(\\\"Cache miss rate high: 40%\\\")\\nlogging.info(\\\"User logged in\\\", extra={'user_id': user.id})\\nlogging.debug(\\\"Query executed\\\", extra={'query': sql, 'duration': 0.5})\\n\"}]}]\nbe:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Production: INFO and above.\"}],[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Staging: DEBUG.\"}],[\"$\",\"br\",null,{}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Development: TRACE.\"}]]}]\nbf:[\"$\",\"h3\",null,{\"id\":\"structured-logging\",\"children\":\"Structured Logging\"}]\nc0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bad (unstructured):\"}]}]\nc1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"logging.info(f\\\"User {user_id} purchased {item_name} for ${price}\\\")\\n\"}]}]\nc2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Hard to parse, query, aggregate.\"}]}]\nc3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good (structured):\"}]}]\nc4:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"logging.info(\\\"purchase_completed\\\", extra={\\n    'event': 'purchase',\\n    'user_id': user_id,\\n    'item_name': item_name,\\n    'price': price,\\n    'currency': 'USD'\\n})\\n\"}]}]\nc5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"JSON output:\"}]}]\nc6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-json\",\"children\":\"{\\n  \\\"timestamp\\\": \\\"2025-02-15T10:00:00Z\\\",\\n  \\\"level\\\": \\\"INFO\\\",\\n  \\\"message\\\": \\\"purchase_completed\\\",\\n  \\\"user_id\\\": 12345,\\n  \\\"item_name\\\": \\\"iPhone\\\",\\n  \\\"price\\\": 999,\\n  \\\"currency\\\": \\\"USD\\\"\\n}\\n\"}]}]\nc7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Easy to query:\"}]}]\nc8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"SELECT COUNT(*) FROM logs \\nWHERE event = 'purchase' \\n  AND price \u003e 500\\n  AND timestamp \u003e now() - interval '1 hour'\\n\"}]}]\nc9:[\"$\",\"h3\",null,{\"id\":\"what-to-log\",\"children\":\"What To Log\"}]\nca:[\"$\",\"p\",n"])</script><script>self.__next_f.push([1,"ull,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Log:\"}]}]\ncb:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Errors and exceptions\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Important state changes\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Security events (login, permission changes)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"External API calls (request/response)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Business events (purchase, signup)\"}],\"\\n\"]}]\ncc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't log:\"}]}]\ncd:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Passwords, tokens, PII\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"High-frequency debug (every query)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Large payloads (entire responses)\"}],\"\\n\"]}]\nce:[\"$\",\"h3\",null,{\"id\":\"correlation-ids\",\"children\":\"Correlation IDs\"}]\ncf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track request across services.\"}]}]\nd0:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import uuid\\n\\n@app.before_request\\ndef inject_request_id():\\n    request_id = request.headers.get('X-Request-ID') or str(uuid.uuid4())\\n    g.request_id = request_id\\n\\n@app.after_request\\ndef add_request_id(response):\\n    response.headers['X-Request-ID'] = g.request_id\\n    return response\\n\\n# Log with request ID\\nlogging.info(\\\"Processing request\\\", extra={\\n    'request_id': g.request_id,\\n    'endpoint': request.endpoint\\n})\\n\"}]}]\nd1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Search logs by request_id = full request flow.\"}]}]\nd2:[\"$\",\"h3\",null,{\"id\":\"log-aggregation\",\"children\":\"Log Aggregation\"}]\nd3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Centralized logging system.\"}]}]\nd4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"ELK Stack:\"}]}]\nd5:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Elasticsearch (storage + search)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Logstash (collection + processing)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Kibana (visualization)\"}],\"\\n\"]}]\nd6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Grafana Loki:\"}]}]\nd7:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Lightweight\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Integrates with Prometheus\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Good for cloud-native\"}],\"\\n\"]}]\nd8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Datadog Logs:\"}]}]\nd9:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Commercial\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Integrated platform\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Auto-parsing\"}],\"\\n\"]}]\nda:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"CloudWatch Logs:\"}]}]\ndb:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"AWS-native\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Serverless-friendly\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Pay-per-GB\"}],\"\\n\"]}]\ndc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ship logs:\"}]}]\ndd:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Filebeat config\\nfilebeat.inputs:\\n  - type: log\\n    paths:\\n      - /var/log/app/*.log\\n    fields:\\n      app: myapp\\n      env: production\\n\\noutput.elasticsearch:\\n  hosts: [\\\"elasticsearch:9200\\\"]\\n\"}]}]\nde:[\"$\",\"h2\",null,{\"id\":\"slo-sla-error-budgets---reliability-framework\",\"children\":\"SLO, SLA, Error Budgets - Reliability Framework\"}]\ndf:[\"$\",\"h3\",null,{\"id\":\"definitions\",\"children\":\"Definitions\"}]\ne0:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"SLI (Service Level Indicator):\"}],\"\\nMeasured metric.\"]}]\ne1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Example: API p99 latency = 450ms\\n\"}]}]\ne2:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"SLO (Service Level Objective):\"}],\"\\nTarget for SLI.\"]}]\ne3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Example: API p99 latency \u003c 500ms\\n\"}]}]\ne4:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"SLA (Service Level Agreement):\"}],\"\\nContract with customers, consequences nếu miss.\"]}]\ne5:[\"$\",\"pre\",null,{\"children\":[\"$\","])</script><script>self.__next_f.push([1,"\"code\",null,{\"children\":\"Example: 99.9% uptime, or refund 10% monthly fee\\n\"}]}]\ne6:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Error Budget:\"}],\"\\nAllowed downtime để meet SLO.\"]}]\ne7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"SLO: 99.9% uptime\\nError budget: 0.1% downtime = 43 minutes/month\\n\"}]}]\ne8:[\"$\",\"h3\",null,{\"id\":\"setting-good-slos\",\"children\":\"Setting Good SLOs\"}]\ne9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"SMART criteria:\"}]}]\nea:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Specific:\"}],\" \\\"p99 latency \u003c 500ms\\\"\",[\"$\",\"br\",null,{}],\"\\n\",\"(not \\\"fast response time\\\")\"]}]\neb:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Measurable:\"}],\" Can track với metrics\"]}]\nec:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Achievable:\"}],\" Not \\\"100% uptime\\\" (impossible)\"]}]\ned:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Relevant:\"}],\" Impacts user experience\"]}]\nee:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Time-bound:\"}],\" \\\"Over 30-day window\\\"\"]}]\nef:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example SLOs:\"}]}]\nf0:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-yaml\",\"children\":\"# Availability SLO\\navailability:\\n  sli: successful_requests / total_requests\\n  target: 99.9%\\n  window: 30 days\\n\\n# Latency SLO\\nlatency:\\n  sli: p99_latency\\n  target: 500ms\\n  window: 5 minutes\\n\\n# Throughput SLO\\nthroughput:\\n  sli: requests_per_second\\n  target: \\\"\u003e 1000 req/s\\\"\\n  window: 1 minute\\n\"}]}]\nf1:[\"$\",\"h3\",null,{\"id\":\"error-budgets-in-practice\",\"children\":\"Error Budgets In Practice\"}]\nf2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Error budget = allowed failures.\"}]}]\nf3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"SLO: 99.9% success rate\\nTotal requests/month: 10M\\nError budget: 0.1% * 10M = 10,000 failed requests\\n\"}]}]\nf4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Spend error budget on:\"}]}]\nf5:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Deployments (controlled risk)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Experiments (new features)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Incidents (unavoidable)\"}],\"\\n\"]}]\nf6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track burn rate:\"}]}]\nf7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def calculate_error_budget():\\n    total_requests = get_total_requests(window='30d')\\n    failed_requests = get_failed_requests(window='30d')\\n    \\n    error_rate = failed_requests / total_requests\\n    error_budget = 0.001  # 99.9% SLO\\n    \\n    budget_remaining = error_budget - error_rate\\n    budget_consumed_percent = (error_rate / error_budget) * 100\\n    \\n    return {\\n        'remaining': budget_remaining,\\n        'consumed_percent': budget_consumed_percent\\n    }\\n\"}]}]\nf8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Alert on budget burn rate:\"}]}]\nf9:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-yaml\",\"children\":\"alert: ErrorBudgetBurnRateHigh\\nexpr: |\\n  error_rate \u003e (error_budget * 0.1)  # Burning 10% of budget/hour\\nfor: 1h\\nannotations:\\n  summary: Burning error budget too fast\\n  action: Stop deployments, investigate issues\\n\"}]}]\nfa:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\nfb:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Error budget remaining: 80% ✅\\n→ Safe to deploy new feature\\n\\nError budget remaining: 20% ⚠️\\n→ Pause risky changes, focus on stability\\n\\nError budget exhausted: 0% ❌\\n→ Freeze all deployments\\n→ Fix reliability issues only\\n\"}]}]\nfc:[\"$\",\"h3\",null,{\"id\":\"benefits\",\"children\":\"Benefits\"}]\nfd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Quantify reliability\"}]}]\nfe:[\"$\",\"p\",null,{\"children\":\"Objective measure, not subjective \\\"feels stable\\\".\"}]\nff:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Balance innovation vs stability\"}]}]\n100:[\"$\",\"p\",null,{\"children\":\"Error budget a"])</script><script>self.__next_f.push([1,"llows controlled risk-taking.\"}]\n101:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Prioritize work\"}]}]\n102:[\"$\",\"p\",null,{\"children\":[\"Budget low? Focus on reliability.\",[\"$\",\"br\",null,{}],\"\\n\",\"Budget high? Focus on features.\"]}]\n103:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Align teams\"}]}]\n104:[\"$\",\"p\",null,{\"children\":\"SRE + Dev agree on reliability targets.\"}]\n105:[\"$\",\"h2\",null,{\"id\":\"monitoring-stack-example\",\"children\":\"Monitoring Stack Example\"}]\n106:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Complete observability setup:\"}]}]\n107:[\"$\",\"$L13f\",null,{\"chart\":\"flowchart TB\\n    subgraph Apps[\\\"Applications\\\"]\\n        App1[Service A]\\n        App2[Service B]\\n        App3[Service C]\\n    end\\n    \\n    subgraph Collection[\\\"Collection Layer\\\"]\\n        Prom[Prometheus\u003cbr/\u003eMetrics]\\n        Jaeger[Jaeger\u003cbr/\u003eTraces]\\n        Loki[Loki\u003cbr/\u003eLogs]\\n    end\\n    \\n    subgraph Viz[\\\"Visualization\\\"]\\n        Grafana[Grafana\u003cbr/\u003eDashboards + Alerts]\\n    end\\n    \\n    App1 --\u003e|Metrics| Prom\\n    App1 --\u003e|Traces| Jaeger\\n    App1 --\u003e|Logs| Loki\\n    \\n    App2 --\u003e|Metrics| Prom\\n    App2 --\u003e|Traces| Jaeger\\n    App2 --\u003e|Logs| Loki\\n    \\n    App3 --\u003e|Metrics| Prom\\n    App3 --\u003e|Traces| Jaeger\\n    App3 --\u003e|Logs| Loki\\n    \\n    Prom --\u003e Grafana\\n    Jaeger --\u003e Grafana\\n    Loki --\u003e Grafana\"}]\n108:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Unified view trong Grafana:\"}]}]\n109:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Metrics charts\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Log explorer\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Trace viewer\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Alert manager\"}],\"\\n\"]}]\n10a:[\"$\",\"h2\",null,{\"id\":\"practical-recommendations\",\"children\":\"Practical Recommendations\"}]\n10b:[\"$\",\"h3\",null,{\"id\":\"1-start-with-golden-signals\",\"children\":\"1. Start With Golden Signals\"}]\n10c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't try to monitor everything.\"}]}]\n10d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Minimum viable monitoring\\nfrom prometheus_client import Counter, Histogram\\n\\nrequests_total = Counter('api_requests_total', 'Total requests')\\nrequest_duration = Histogram('api_request_duration_seconds', 'Request duration')\\nerrors_total = Counter('api_errors_total', 'Total errors')\\n\\n@app.route('/api/endpoint')\\ndef endpoint():\\n    requests_total.inc()\\n    \\n    with request_duration.time():\\n        try:\\n            result = process()\\n            return result\\n        except Exception as e:\\n            errors_total.inc()\\n            raise\\n\"}]}]\n10e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4 metrics cover most problems.\"}]}]\n10f:[\"$\",\"h3\",null,{\"id\":\"2-build-dashboards\",\"children\":\"2. Build Dashboards\"}]\n110:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"One dashboard per service:\"}]}]\n111:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Service Dashboard\\n├── Golden Signals (top row)\\n│   ├── Request rate\\n│   ├── Error rate\\n│   ├── p99 latency\\n│   └── Saturation\\n├── Detailed Metrics (middle)\\n│   ├── Per-endpoint latency\\n│   ├── Database query time\\n│   ├── Cache hit rate\\n│   └── Queue depth\\n└── System Resources (bottom)\\n    ├── CPU usage\\n    ├── Memory usage\\n    └── Disk I/O\\n\"}]}]\n112:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Standardize across services - easier comparison.\"}]}]\n113:[\"$\",\"h3\",null,{\"id\":\"3-instrument-libraries\",\"children\":\"3. Instrument Libraries\"}]\n114:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't reinvent wheel.\"}]}]\n115:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Auto-instrument Flask\\nfrom prometheus_flask_exporter import PrometheusMetrics\\nmetrics = PrometheusMetrics(app)\\n\\n# Auto-instrument SQLAlchemy\\nfrom prometheus_sqlalchemy import PrometheusMetrics\\nPrometheusMetrics(engine)\\n\\n# Auto-instrument Redis\\nfrom pr"])</script><script>self.__next_f.push([1,"ometheus_redis import RedisMetrics\\nRedisMetrics(redis_client)\\n\"}]}]\n116:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Less code, more coverage.\"}]}]\n117:[\"$\",\"h3\",null,{\"id\":\"4-set-up-synthetic-monitoring\",\"children\":\"4. Set Up Synthetic Monitoring\"}]\n118:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Proactive checks.\"}]}]\n119:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Cron job - check critical paths\\ndef health_check():\\n    checks = [\\n        ('api', check_api_health),\\n        ('database', check_db_connection),\\n        ('cache', check_redis_connection),\\n        ('payments', check_payment_gateway),\\n    ]\\n    \\n    for name, check_func in checks:\\n        try:\\n            check_func()\\n            metrics.gauge(f'health.{name}', 1)\\n        except Exception:\\n            metrics.gauge(f'health.{name}', 0)\\n            alert(f'{name} health check failed')\\n\"}]}]\n11a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Detect issues before users do.\"}]}]\n11b:[\"$\",\"h3\",null,{\"id\":\"5-practice-debugging\",\"children\":\"5. Practice Debugging\"}]\n11c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Incident simulation:\"}]}]\n11d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Deliberately inject latency\\n@app.route('/api/slow')\\ndef slow_endpoint():\\n    if random.random() \u003c 0.05:  # 5% requests\\n        time.sleep(5)  # 5 second delay\\n    return process_request()\\n\"}]}]\n11e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Practice:\"}]}]\n11f:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Detect latency spike in dashboard\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Check traces - find slow endpoint\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Check logs - understand why\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fix issue\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Verify improvement\"}],\"\\n\"]}]\n120:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Muscle memory for real incidents.\"}]}]\n121:[\"$\",\"h2\",null,{\"id\":\"mental-model-if-you-cannot-measure-you-cannot-scale\",\"children\":\"Mental Model: If You Cannot Measure, You Cannot Scale\"}]\n122:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core insight:\"}]}]\n123:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scaling decisions require data. Without measurement, you're flying blind.\"}]}]\n124:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Without metrics:\\n  \\\"System slow\\\" → Guess solution → May not help\\n  \\nWith metrics:\\n  \\\"p99 latency 2s\\\" → Check traces → DB bottleneck\\n  → Add read replica → p99 latency 200ms ✅\\n\"}]}]\n125:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Measure → Understand → Optimize → Measure again.\"}]}]\n126:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architect decisions backed by data:\"}]}]\n127:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Should we add caching?\\n→ Check: Cache hit rate would be X%\\n→ Impact: Reduce DB load by Y%\\n→ Decision: Yes/No based on numbers\\n\\nShould we shard database?\\n→ Check: Current load Z req/s\\n→ Capacity: Single DB handles W req/s\\n→ Decision: Shard when Z \u003e 0.8W\\n\"}]}]\n128:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Good architects measure first, optimize second.\"}]}]\n129:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n12a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Monitor Golden Signals: Latency, Traffic, Errors, Saturation\"}]}]\n12b:[\"$\",\"p\",null,{\"children\":\"4 metrics cover most production issues.\"}]\n12c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Percentiles \u003e Averages\"}]}]\n12d:[\"$\",\"p\",null,{\"children\":\"p95, p99 reveal worst-case user experience. Optimize for tail latency.\"}]\n12e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Alert on symptoms, not causes\"}]}]\n12f:[\"$\",\"p\",null,{\"children\":\"Alert on user impact, not resource utilization.\"}]\n130:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Distributed tra"])</script><script>self.__next_f.push([1,"cing critical for microservices\"}]}]\n131:[\"$\",\"p\",null,{\"children\":\"Understand request flow, find bottlenecks across services.\"}]\n132:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Structured logging enables analysis\"}]}]\n133:[\"$\",\"p\",null,{\"children\":\"JSON logs = queryable data, not just text.\"}]\n134:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"6. Set SLOs based on user expectations\"}]}]\n135:[\"$\",\"p\",null,{\"children\":\"Define reliability targets, track error budgets.\"}]\n136:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"7. Correlation IDs track requests\"}]}]\n137:[\"$\",\"p\",null,{\"children\":\"Debug full request flow across services.\"}]\n138:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"8. Error budgets balance reliability vs innovation\"}]}]\n139:[\"$\",\"p\",null,{\"children\":\"Controlled risk-taking based on data.\"}]\n13a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"9. Start simple, add complexity as needed\"}]}]\n13b:[\"$\",\"p\",null,{\"children\":\"Golden Signals first, advanced monitoring later.\"}]\n13c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"10. Practice debugging before incidents\"}]}]\n13d:[\"$\",\"p\",null,{\"children\":\"Simulate failures, build muscle memory.\"}]\n13e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember: You cannot improve what you cannot measure. Good monitoring is not optional - it's the foundation of reliable, scalable systems. Invest in observability early, not after production incidents.\"}]}]\n"])</script><script>self.__next_f.push([1,"22:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"140:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n16:null\n"])</script><script>self.__next_f.push([1,"24:[[\"$\",\"title\",\"0\",{\"children\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale | Phase 4 — Scalability \u0026 Performance | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách \"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale | Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách \"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale | Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học monitoring và observability: metrics collection, percentiles, alert strategy, distributed tracing, logging best practices, SLO/SLA/error budgets. Hiểu cách \"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L140\",\"14\",{}]]\n"])</script></body></html>

@@ -1,0 +1,734 @@
+@0 h1
+Khái Niệm Quan Trọng Trong System Design
+@1 p
+Sau khi học về components, communication patterns, và data flow, giờ là lúc consolidate kiến thức với các concepts quan trọng nhất trong system design.
+@2 p
+Tôi còn nhớ lần đầu tiên PM hỏi: *"Hệ thống của chúng ta có 99.9% uptime không?"*
+@3 p
+Tôi trả lời: *"Có chứ, server hiếm khi down mà."*
+@4 p
+Anh ấy cười: *"Em biết 99.9% nghĩa là gì không? Và cost để đạt 99.99% là bao nhiêu?"*
+@5 p
+Tôi im lặng. Đó là lúc tôi nhận ra: **Không hiểu rõ concepts = Không thể đưa ra decisions đúng.**
+@6 p
+Lesson này sẽ đi sâu vào 4 concepts mà mọi architect phải nắm vững.
+@7 h2
+Tại Sao Các Concepts Này Quan Trọng?
+@8 p
+Trong system design interviews, bạn sẽ nghe:
+@9 p
+*"Design một hệ thống với low latency và high throughput."*
+@10 p
+Nếu bạn không hiểu rõ latency và throughput, bạn sẽ design sai. Hoặc worse, design đúng nhưng không explain được.
+@11 p
+Trong real-world:
+@12 li
+**Latency** quyết định user experience
+@13 li
+**Throughput** quyết định system capacity
+@14 li
+**Availability** quyết định SLA với customers
+@15 li
+**CAP Theorem** quyết định database choices
+@16 p
+**Hiểu concepts = Đưa ra informed decisions.**
+@17 h2
+Latency vs Throughput: Hai Metrics Khác Nhau
+@18 h3
+Định Nghĩa
+@19 p
+**Latency (độ trễ):**
+@20 li
+Thời gian để xử lý **1 request**
+@21 li
+Đơn vị: milliseconds (ms)
+@22 li
+User perspective: "Bao lâu tôi phải đợi?"
+@23 p
+**Throughput (thông lượng):**
+@24 li
+Số requests xử lý được **trong 1 giây**
+@25 li
+Đơn vị: requests/second (req/s) hoặc transactions/second (TPS)
+@26 li
+System perspective: "Hệ thống xử lý được bao nhiêu requests cùng lúc?"
+@27 h3
+Tại Sao Phải Phân Biệt?
+@28 p
+Nhiều người nghĩ: *"Latency thấp = Throughput cao."*
+@29 p
+**Sai rồi.** Chúng là hai thứ độc lập.
+@30 h3
+Real-World Analogy
+@31 p
+**Xe bus:**
+@32 pre
+Latency: CAO (đợi bus, bus dừng nhiều điểm)
+- Từ nhà đến công ty: 60 phút
+
+Throughput: CAO (chở nhiều người cùng lúc)
+- 1 bus chở 50 người
+- 1 giờ có 10 chuyến = 500 người/giờ
+
+@33 p
+**Taxi:**
+@34 pre
+Latency: THẤP (đi ngay, direct route)
+- Từ nhà đến công ty: 20 phút
+
+Throughput: THẤP (chỉ chở 4 người)
+- 1 taxi chở 4 người
+- 1 giờ có 3 chuyến = 12 người/giờ
+
+@35 h3
+System Design Example
+@36 p
+**Scenario 1: Batch Processing System**
+@37 p
+**Scenario 2: Parallel Processing**
+@38 p
+**Lesson:** Tăng throughput bằng parallelization, nhưng latency per item không thay đổi.
+@39 h3
+Diagram: Latency vs Throughput
+@40 pre
+graph TB
+    subgraph "Low Latency, Low Throughput"
+        A1[Request] --> B1[Process 10ms]
+        B1 --> C1[Response]
+        D1[Only 1 request at a time]
+        D1 --> E1[Throughput: 100 req/s]
+    end
+    
+    subgraph "Low Latency, High Throughput"
+        A2[Request 1] --> B2[Process 10ms]
+        A3[Request 2] --> B3[Process 10ms]
+        A4[Request 3] --> B4[Process 10ms]
+        F2[100 parallel workers]
+        F2 --> G2[Throughput: 10,000 req/s]
+    end
+@41 p
+*Latency = thời gian xử lý 1 request. Throughput = số lượng requests xử lý được đồng thời.*
+@42 h3
+Trade-offs
+@43 p
+**Optimize cho latency:**
+@44 pre
+Techniques:
+- Caching (reduce DB calls)
+- Database indexes
+- CDN (reduce network latency)
+- Code optimization
+
+Cost:
+- Complexity
+- Infrastructure cost
+
+@45 p
+**Optimize cho throughput:**
+@46 pre
+Techniques:
+- Horizontal scaling (more servers)
+- Async processing (queues)
+- Connection pooling
+- Load balancing
+
+Cost:
+- More servers = higher cost
+- Distributed system complexity
+
+@47 h3
+Khi Nào Ưu Tiên Cái Nào?
+@48 p
+**Prioritize Latency khi:**
+@49 li
+User-facing features (API response, page load)
+@50 li
+Real-time applications (gaming, video calls)
+@51 li
+User experience critical
+@52 p
+**Prioritize Throughput khi:**
+@53 li
+Batch processing (data pipelines)
+@54 li
+Background jobs
+@55 li
+High-volume systems (millions of requests)
+@56 p
+**Ideal:** Low latency AND high throughput. Nhưng thường phải trade-off.
+@57 h3
+Personal Insight
+@58 p
+Tôi từng optimize một API từ 500ms xuống 50ms (10x latency improvement).
+@59 p
+Users happy? Yes.
+@60 p
+Nhưng throughput vẫn chỉ 1000 req/s. Khi traffic spike đến 5000 req/s → System overwhelmed.
+@61 p
+**Lesson learned:** Optimize cả hai. Nhưng biết đâu là bottleneck thực sự.
+@62 h2
+Availability: Bao Nhiêu "Nines" Bạn Cần?
+@63 h3
+Định Nghĩa
+@64 p
+**Availability (tính khả dụng):** Phần trăm thời gian hệ thống hoạt động bình thường.
+@65 pre
+Availability = Uptime / (Uptime + Downtime)
+
+@66 h3
+Availability Levels
+@67 th
+Level
+@68 th
+Availability
+@69 th
+Downtime/năm
+@70 th
+Downtime/tháng
+@71 th
+Use Case
+@72 td
+90%
+@73 td
+90%
+@74 td
+36.5 ngày
+@75 td
+3 ngày
+@76 td
+Development/Testing
+@77 td
+99%
+@78 td
+"Two nines"
+@79 td
+3.65 ngày
+@80 td
+7.2 giờ
+@81 td
+Internal tools
+@82 td
+99.9%
+@83 td
+"Three nines"
+@84 td
+8.76 giờ
+@85 td
+43 phút
+@86 td
+E-commerce
+@87 td
+99.99%
+@88 td
+"Four nines"
+@89 td
+52 phút
+@90 td
+4.3 phút
+@91 td
+Banking, Payments
+@92 td
+99.999%
+@93 td
+"Five nines"
+@94 td
+5.26 phút
+@95 td
+26 giây
+@96 td
+Mission-critical
+@97 h3
+Tại Sao Mỗi "9" Lại Quan Trọng?
+@98 p
+**99% vs 99.9%:**
+@99 pre
+99%: 7.2 giờ downtime/tháng
+→ Có thể down entire working day
+→ Acceptable cho internal admin tool
+
+99.9%: 43 phút downtime/tháng
+→ Down < 1 giờ/tháng
+→ Minimum cho customer-facing apps
+
+@100 p
+**99.9% vs 99.99%:**
+@101 pre
+99.9%: 43 phút downtime/tháng
+→ Weekly maintenance window OK
+
+99.99%: 4.3 phút downtime/tháng
+→ Không thể schedule maintenance
+→ Need zero-downtime deployments
+
+@102 h3
+Cost of Each "9"
+@103 p
+**Critical truth:** Mỗi "9" thêm vào, cost tăng gấp đôi (hoặc hơn).
+@104 pre
+99%: 
+- 1 server
+- No redundancy
+- Cost: $100/month
+
+99.9%:
+- Multiple servers
+- Load balancer
+- Monitoring
+- Cost: $500/month
+
+99.99%:
+- Multi-region deployment
+- Auto-failover
+- 24/7 on-call team
+- Cost: $5,000/month
+
+99.999%:
+- Global infrastructure
+- Chaos engineering
+- Dedicated SRE team
+- Cost: $50,000+/month
+
+@105 h3
+Câu Hỏi Tư Duy Quan Trọng
+@106 p
+**"Bạn THỰC SỰ cần bao nhiêu nines?"**
+@107 pre
+Wrong thinking:
+"Chúng ta cần 99.999% vì muốn best"
+
+Right thinking:
+"Chúng ta cần 99.9% vì:
+- E-commerce site
+- Downtime 43 phút/tháng acceptable
+- Customers không bị impact lớn
+- Cost 99.99% tăng 10x nhưng benefit chỉ thêm 40 phút/tháng"
+
+@108 h3
+Real-World Examples
+@109 p
+**Stripe (Payments):**
+@110 li
+Target: 99.99%+ (4 nines)
+@111 li
+Why? Financial transactions, customers rely on it
+@112 li
+Cost: Worth it vì downtime = lost revenue cho merchants
+@113 p
+**Personal Blog:**
+@114 li
+Target: 99% is fine
+@115 li
+Why? Không critical, readers có thể quay lại
+@116 li
+Cost: Save money cho infrastructure
+@117 p
+**Netflix:**
+@118 li
+Target: 99.9%+
+@119 li
+Why? Customer-facing entertainment
+@120 li
+Strategy: Graceful degradation (một số features fail, app vẫn work)
+@121 h3
+How to Achieve High Availability
+@122 p
+**Building blocks:**
+@123 li
+**Redundancy**
+@124 pre
+Single server: 1 fails = 100% down
+Multiple servers: 1 fails = others take over
+
+@125 li
+**Load Balancing**
+@126 pre
+Distribute traffic → No single point of failure
+
+@127 li
+**Health Checks**
+@128 pre
+Detect failures fast → Route traffic away
+
+@129 li
+**Auto-scaling**
+@130 pre
+Handle traffic spikes → Don't overload
+
+@131 li
+**Multi-region Deployment**
+@132 pre
+1 region down → Failover to another region
+
+@133 li
+**Monitoring & Alerting**
+@134 pre
+Detect issues before users notice
+
+@135 h3
+Diagram: Availability Architecture
+@136 pre
+graph TB
+    subgraph "99% Availability"
+        U1[Users] --> S1[Single Server]
+        S1 --> D1[Single Database]
+        Note1[1 server fails = 100% down]
+    end
+    
+    subgraph "99.9% Availability"
+        U2[Users] --> LB[Load Balancer]
+        LB --> S2[Server 1]
+        LB --> S3[Server 2]
+        S2 --> DB2[Database]
+        S3 --> DB2
+        Note2[1 server fails = others work]
+    end
+    
+    subgraph "99.99% Availability"
+        U3[Users] --> DNS[Multi-Region DNS]
+        DNS --> R1[Region 1]
+        DNS --> R2[Region 2]
+        R1 --> LB1[LB + Servers]
+        R2 --> LB2[LB + Servers]
+        Note3[1 region down = failover]
+    end
+@137 p
+*Càng nhiều "9", càng cần redundancy và complexity.*
+@138 h3
+My Strong Opinion
+@139 p
+**Don't over-engineer.**
+@140 p
+Start với 99.9%. Đủ cho hầu hết businesses.
+@141 p
+Chỉ aim 99.99%+ khi:
+@142 li
+Proven need (customers complain about downtime)
+@143 li
+Financial impact rõ ràng
+@144 li
+Budget supports it
+@145 p
+Remember: **Perfect availability is impossible.** Even AWS, Google có outages.
+@146 h2
+CAP Theorem: Chọn 2 Trong 3
+@147 h3
+Định Nghĩa
+@148 p
+CAP Theorem nói rằng trong một distributed system, bạn chỉ có thể guarantee 2/3:
+@149 li
+**C (Consistency):** Mọi read nhận được write gần nhất (hoặc error)
+@150 li
+**A (Availability):** Mọi request nhận được response (không error)
+@151 li
+**P (Partition Tolerance):** Hệ thống hoạt động khi có network partition
+@152 h3
+Tại Sao Chỉ Chọn Được 2?
+@153 p
+**Critical insight:** Network partitions LUÔN xảy ra trong distributed systems.
+@154 pre
+Server A <--X--> Server B
+(Network partition: không communicate được)
+
+Khi partition xảy ra, bạn PHẢI chọn:
+- Consistency: Reject requests until partition healed
+- Availability: Accept requests nhưng data có thể inconsistent
+
+@155 p
+**Vì P (Partition Tolerance) là MUST → Thực tế bạn chỉ chọn giữa C hoặc A.**
+@156 h3
+CP Systems: Consistency + Partition Tolerance
+@157 p
+**Behavior:**
+@158 pre
+Network partition xảy ra
+→ System reject writes to maintain consistency
+→ Users see errors
+→ When partition healed, data consistent
+
+@159 p
+**Examples:**
+@160 li
+Banking systems
+@161 li
+Payment processing
+@162 li
+Inventory management (prevent overselling)
+@163 li
+HBase, MongoDB (trong một số config)
+@164 p
+**Trade-off:**
+@165 pre
+Data always correct
+Lower availability (errors during partition)
+
+@166 p
+**Use case:**
+@167 pre
+Bank account balance
+User A: Withdraw $100
+User B: Check balance
+
+CP ensures:
+→ Balance always correct
+→ No phantom money
+→ May show error temporarily
+
+@168 h3
+AP Systems: Availability + Partition Tolerance
+@169 p
+**Behavior:**
+@170 pre
+Network partition xảy ra
+→ System accepts reads/writes on both sides
+→ Users never see errors
+→ When partition healed, data may conflict
+
+@171 p
+**Examples:**
+@172 li
+Social media feeds (Facebook, Twitter)
+@173 li
+DNS
+@174 li
+Cassandra, DynamoDB
+@175 li
+Shopping carts
+@176 p
+**Trade-off:**
+@177 pre
+Always available
+Eventual consistency (temporary inconsistency)
+
+@178 p
+**Use case:**
+@179 pre
+Facebook like count
+User A sees: 100 likes
+User B sees: 99 likes (different datacenter)
+
+AP allows:
+→ Both users see data
+→ Counts eventually sync
+→ Temporary inconsistency acceptable
+
+@180 h3
+Diagram: CAP Trade-offs
+@181 pre
+graph TB
+    subgraph "CA - Impossible in Distributed Systems"
+        CA[Consistency + Availability]
+        CA --> IMP[Requires no partitions<br/>Not realistic]
+    end
+    
+    subgraph "CP - Choose Consistency"
+        CP[Consistency + Partition]
+        CP --> Bank[Banking System]
+        CP --> Inv[Inventory]
+        CP --> Pay[Payments]
+        Note1[May return errors<br/>Data always correct]
+    end
+    
+    subgraph "AP - Choose Availability"
+        AP[Availability + Partition]
+        AP --> Social[Social Media]
+        AP --> DNS[DNS]
+        AP --> Cart[Shopping Cart]
+        Note2[Always responds<br/>May be temporarily inconsistent]
+    end
+@182 p
+*Trong distributed systems, network partition luôn xảy ra → chọn C hoặc A.*
+@183 h3
+How to Choose?
+@184 p
+**Framework:**
+@185 p
+**Questions to ask:**
+@186 p
+**Nếu data sai, user bị impact như thế nào?**
+@187 li
+Critical (money, inventory) → CP
+@188 li
+Minor (like counts, views) → AP
+@189 p
+**Nếu system down, user bị impact như thế nào?**
+@190 li
+Cannot function → AP
+@191 li
+Can wait → CP
+@192 p
+**User nhận biết được inconsistency không?**
+@193 li
+Yes và care → CP
+@194 li
+No hoặc don't care → AP
+@195 h3
+Real-World Examples
+@196 p
+**E-commerce Product Page:**
+@197 pre
+Product info: AP
+- Product description, images
+- Eventual consistency OK
+- User experience: always loads
+
+Inventory count: CP
+- Must be accurate to prevent overselling
+- Better show "out of stock" than sell what you don't have
+
+Shopping cart: AP
+- User adds items, see immediately
+- Cart can be eventually consistent across devices
+
+@198 p
+**Banking App:**
+@199 pre
+Account balance: CP
+- Must be accurate always
+- OK to show error during maintenance
+- Never show incorrect balance
+
+Transaction history: CP
+- Must be correct and ordered
+- Financial audit trail
+
+ATM locations: AP
+- Can be eventually consistent
+- Stale data not critical
+
+@200 h3
+My Personal Framework
+@201 p
+**90% of features can be AP.** Users prefer working (even if slightly stale) over errors.
+@202 p
+Only go CP when:
+@203 li
+Money involved
+@204 li
+Inventory/resource booking
+@205 li
+Legal/audit requirements
+@206 p
+**Common mistake:** Over-applying CP. Developers think *"must be consistent"* cho mọi feature.
+@207 p
+**Reality:** Facebook feed không cần CP. Instagram likes không cần CP. Email read count không cần CP.
+@208 p
+**Ask yourself:** *"Điều gì xấu nhất xảy ra nếu data sai 5 giây?"*
+@209 p
+Nếu answer là *"không có gì nghiêm trọng"* → AP is fine.
+@210 h2
+Kết Hợp Các Concepts
+@211 p
+Các concepts này không độc lập. Chúng interact với nhau.
+@212 h3
+Example: Design High-Traffic API
+@213 p
+**Requirements:**
+@214 li
+Handle 100,000 req/s (throughput)
+@215 li
+Response time < 100ms (latency)
+@216 li
+99.9% uptime (availability)
+@217 li
+Financial transactions (need consistency)
+@218 p
+**Design decisions:**
+@219 pre
+Throughput requirement (100K req/s):
+→ Need horizontal scaling
+→ Multiple app servers
+→ Load balancing
+
+Latency requirement (< 100ms):
+→ Need caching layer
+→ Database indexes
+→ Optimized queries
+
+Availability requirement (99.9%):
+→ Multi-server deployment
+→ Health checks
+→ Auto-failover
+
+Consistency requirement (CP):
+→ Strong consistency database
+→ ACID transactions
+→ May sacrifice some availability during partitions
+
+@220 p
+**Trade-offs:**
+@221 pre
+High throughput + Low latency:
+→ Need caching (complexity)
+→ More infrastructure (cost)
+
+High availability + Strong consistency:
+→ Conflict in CAP theorem
+→ Choose consistency (CP)
+→ Accept occasional unavailability
+
+@222 h3
+Diagram: Integrated System Design
+@223 pre
+graph LR
+    C[Clients<br/>100K req/s] --> LB[Load Balancer<br/>High Availability]
+    LB --> S1[Server 1]
+    LB --> S2[Server 2]
+    LB --> S3[Server 3]
+    
+    S1 --> Cache[Redis Cache<br/>Low Latency]
+    S2 --> Cache
+    S3 --> Cache
+    
+    Cache --> DB[(PostgreSQL<br/>CP - Consistency)]
+    
+    Mon[Monitoring<br/>99.9% SLA] -.-> LB
+    Mon -.-> Cache
+    Mon -.-> DB
+@224 p
+*Mỗi component address một yếu tố khác nhau: throughput, latency, availability, consistency.*
+@225 h2
+Key Takeaways
+@226 p
+**Latency vs Throughput:**
+@227 li
+**Latency:** Thời gian xử lý 1 request
+@228 li
+**Throughput:** Số requests xử lý/giây
+@229 li
+Hai metrics độc lập, optimize riêng
+@230 li
+Thường phải trade-off giữa hai
+@231 p
+**Availability:**
+@232 li
+**99%:** 7.2h down/tháng - internal tools
+@233 li
+**99.9%:** 43 phút down/tháng - e-commerce
+@234 li
+**99.99%:** 4.3 phút down/tháng - banking
+@235 li
+Mỗi "9" cost tăng gấp đôi
+@236 li
+Don't over-engineer: chọn level phù hợp với business
+@237 p
+**CAP Theorem:**
+@238 li
+**CP (Consistency + Partition):** Banking, payments
+@239 li
+**AP (Availability + Partition):** Social media, caching
+@240 li
+Network partitions luôn xảy ra → chọn C hoặc A
+@241 li
+Default AP cho hầu hết features
+@242 p
+**Decision Framework:**
+@243 li
+Đo requirements cụ thể (numbers, not feelings)
+@244 li
+Hiểu trade-offs của mỗi choice
+@245 li
+Choose based on business priorities
+@246 li
+Monitor và adjust
+@247 p
+**Quan trọng nhất:** Không có perfect solution. Hiểu concepts → Make informed trade-offs.

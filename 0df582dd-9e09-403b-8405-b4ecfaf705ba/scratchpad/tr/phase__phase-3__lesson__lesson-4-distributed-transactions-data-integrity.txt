@@ -1,0 +1,575 @@
+@0
+⟦Giao Dịch Phân Tán|Distributed Transactions⟧ & ⟦Toàn Vẹn Dữ Liệu|Data Integrity⟧
+@1
+Tôi còn nhớ ngày hệ thống ⟦thanh toán|payment⟧ đầu tiên tôi thiết kế gặp ⟦lỗi|bug⟧ nghiêm trọng.
+@2
+Người dùng bị trừ tiền thẻ thành công. Nhưng ⟦đơn hàng|order⟧ không được tạo. Mất tiền mà không có ⟦đơn hàng|order⟧.
+@3
+Người dùng khiếu nại. ⟦Nhóm|team⟧ tài chính hoảng loạn. CEO gọi họp khẩn cấp.
+@4
+Lúc đó tôi nghĩ: *"Sao ⟦giao dịch|transaction⟧ không hoạt động? Tôi đã dùng BEGIN TRANSACTION rồi mà!"*
+@5
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ nhìn vào mã, lắc đầu: *"Em đang làm ⟦hệ thống phân tán|distributed system⟧. ⟦Giao dịch|transactions⟧ ACID không còn tác dụng nữa đâu."*
+@6
+Đó là ngày tôi học được bài học đắt giá nhất về ⟦giao dịch phân tán|distributed transactions⟧.
+@7
+Tại Sao ACID Bị Phá Vỡ Trong ⟦Hệ Thống Phân Tán|Distributed Systems⟧?
+@8
+ACID Trong Một ⟦Cơ Sở Dữ Liệu|Database⟧ Duy Nhất
+@9
+Trong một ứng dụng ⟦nguyên khối|monolithic⟧ với một ⟦cơ sở dữ liệu|database⟧ duy nhất, ⟦giao dịch|transactions⟧ ACID hoạt động hoàn hảo:
+@10
+**Những đảm bảo của ACID:**
+@11
+Atomicity (Tính nguyên tử):   Tất cả hoặc không gì cả (cả 2 cập nhật hoặc không cập nhật gì)
+Consistency (Tính nhất quán): Dữ liệu hợp lệ (số dư không thể âm)
+Isolation (Tính cô lập):      Các giao dịch không thấy những thay đổi dở dang
+Durability (Độ bền):          Dữ liệu đã commit được lưu bền vững
+
+@12
+ACID Bị Phá Vỡ Trong ⟦Hệ Thống Phân Tán|Distributed Systems⟧
+@13
+Giờ chuyển sang ⟦vi dịch vụ|microservices⟧:
+@14
+sequenceDiagram
+    participant Client
+    participant OrderService
+    participant PaymentService
+    participant InventoryService
+
+    Client->>OrderService: Tạo đơn hàng
+    OrderService->>PaymentService: Trừ tiền thẻ
+    PaymentService-->>OrderService: Thành công
+    OrderService->>InventoryService: Giữ hàng
+    InventoryService-->>OrderService: Hết hàng!
+    Note over OrderService: Vấn đề: Đã trừ tiền<br/>nhưng tạo đơn thất bại
+@15
+*⟦Luồng|Flow⟧ tạo ⟦đơn hàng|order⟧ đi qua nhiều ⟦dịch vụ|services⟧ - không thể dùng ⟦giao dịch|transaction⟧ của ⟦cơ sở dữ liệu|database⟧*
+@16
+**Vấn đề:**
+@17
+1. Dịch vụ Thanh toán trừ tiền thẻ → Thành công
+2. Dịch vụ Kho kiểm tra hàng tồn → Hết hàng!
+3. Dịch vụ Đơn hàng thất bại
+
+Kết quả:
+Đã trừ tiền (tiền đã bị lấy)
+Đơn hàng không được tạo
+Hàng trong kho không được giữ
+
+Khách hàng: "Tại sao tiền bị trừ mà không có đơn hàng?"
+
+@18
+**Tại sao không thể ⟦hoàn tác|rollback⟧?**
+@19
+Không thể dùng giao dịch cơ sở dữ liệu:
+   - 3 dịch vụ = 3 cơ sở dữ liệu khác nhau
+   - Không thể hoàn tác xuyên qua nhiều cơ sở dữ liệu
+   - Dịch vụ Thanh toán đã commit rồi
+
+Không thể huỷ thanh toán:
+   - Đã gửi sang cổng thanh toán
+   - Hệ thống bên ngoài, không kiểm soát được
+   - Không thể gọi "db.rollback()"
+
+@20
+**Nguyên nhân gốc rễ:**
+@21
+Các giả định của ACID bị phá vỡ khi:
+- Có nhiều cơ sở dữ liệu tham gia
+- Có nhiều dịch vụ tham gia
+- Có hệ thống bên ngoài tham gia
+- Có các lời gọi qua mạng
+
+Mạng không đáng tin cậy → Không thể đảm bảo ACID
+
+@22
+2-Phase Commit (2PC - Cam Kết Hai Pha): Giải Pháp Truyền Thống
+@23
+2PC Hoạt Động Như Thế Nào
+@24
+**2-Phase Commit = ⟦Giao thức|Protocol⟧ để ⟦điều phối|coordinate⟧ các ⟦giao dịch|transactions⟧ trên nhiều ⟦cơ sở dữ liệu|databases⟧**
+@25
+sequenceDiagram
+    participant Coord as Coordinator
+    participant DB1 as Database 1
+    participant DB2 as Database 2
+    participant DB3 as Database 3
+
+    Note over Coord: Pha 1: Chuẩn bị
+    Coord->>DB1: PREPARE - chuẩn bị commit
+    Coord->>DB2: PREPARE - chuẩn bị commit
+    Coord->>DB3: PREPARE - chuẩn bị commit
+
+    DB1-->>Coord: VOTE: YES
+    DB2-->>Coord: VOTE: YES
+    DB3-->>Coord: VOTE: YES
+
+    Note over Coord: Tất cả đều bỏ phiếu YES
+    Note over Coord: Pha 2: Commit
+
+    Coord->>DB1: COMMIT
+    Coord->>DB2: COMMIT
+    Coord->>DB3: COMMIT
+
+    DB1-->>Coord: COMMITTED
+    DB2-->>Coord: COMMITTED
+    DB3-->>Coord: COMMITTED
+@26
+*2PC: Pha 1 ⟦chuẩn bị|prepare⟧, Pha 2 ⟦cam kết|commit⟧ nếu tất cả đều đồng ý*
+@27
+**Pha 1: ⟦Chuẩn bị|Prepare⟧**
+@28
+Bộ điều phối → Tất cả bên tham gia: "Chuẩn bị commit"
+
+Mỗi bên tham gia:
+1. Khoá tài nguyên
+2. Ghi vào log giao dịch
+3. Sẵn sàng commit NHƯNG chưa commit
+4. Bỏ phiếu YES hoặc NO
+
+Nếu bất kỳ bên nào bỏ phiếu NO → Huỷ bỏ (abort)
+Nếu tất cả bỏ phiếu YES → Chuyển sang Pha 2
+
+@29
+**Pha 2: ⟦Cam kết|Commit⟧**
+@30
+Nếu tất cả YES:
+   Bộ điều phối → Tất cả: "COMMIT"
+   Các bên tham gia commit thay đổi
+   Giải phóng khoá
+
+Nếu có bất kỳ NO nào:
+   Bộ điều phối → Tất cả: "ABORT"
+   Các bên tham gia hoàn tác (rollback)
+   Giải phóng khoá
+
+@31
+Ví Dụ Triển Khai 2PC
+@32
+Điểm Yếu Chí Mạng: ⟦Chặn|Blocking⟧
+@33
+**Vấn đề: ⟦Bộ điều phối|Coordinator⟧ sập sau Pha 1**
+@34
+Diễn biến:
+1. Bộ điều phối gửi PREPARE tới tất cả bên tham gia
+2. Tất cả bên tham gia bỏ phiếu YES, khoá tài nguyên, chờ...
+3. Bộ điều phối SẬP (trước khi gửi COMMIT)
+4. Các bên tham gia mắc kẹt chờ mãi mãi
+5. Tài nguyên bị KHOÁ vô thời hạn
+
+Kết quả:
+Các cơ sở dữ liệu bị khoá
+Không thể tiếp tục
+Không thể dùng hết thời gian chờ (không biết bộ điều phối có hồi phục không)
+Hệ thống bị CHẶN
+
+@35
+sequenceDiagram
+    participant Coord as Coordinator
+    participant DB1 as Database 1
+    participant DB2 as Database 2
+
+    Coord->>DB1: PREPARE
+    Coord->>DB2: PREPARE
+    DB1-->>Coord: YES (đã khoá)
+    DB2-->>Coord: YES (đã khoá)
+
+    Note over Coord: SẬP! 💥
+
+    Note over DB1,DB2: Chờ mãi mãi...<br/>Tài nguyên bị KHOÁ
+@36
+*⟦Bộ điều phối|Coordinator⟧ sập sau ⟦pha chuẩn bị|prepare phase⟧ → Các ⟦cơ sở dữ liệu|databases⟧ bị ⟦khoá|lock⟧ vô thời hạn*
+@37
+**Tại sao không thể dùng ⟦hết thời gian chờ|timeout⟧?**
+@38
+Thế khó của bên tham gia:
+- Không biết bộ điều phối đã gửi COMMIT chưa
+- Không biết các bên tham gia khác đã commit chưa
+- Không thể tự quyết định commit hay abort
+- Hết thời gian chờ → Rủi ro mất nhất quán
+
+→ Phải chờ bộ điều phối hồi phục
+→ Giao thức CHẶN
+
+@39
+Các ⟦Đánh Đổi|Trade-offs⟧ Của 2PC
+@40
+2-Phase Commit:
+Nhất quán mạnh (giữ được ACID)
+Đảm bảo tất cả hoặc không gì cả
+Giao thức đã được kiểm chứng
+
+Chặn (bộ điều phối gặp sự cố = thảm hoạ)
+Chi phí phụ về hiệu năng (2 lượt khứ hồi)
+Độ trễ cao (phải chờ bên tham gia chậm nhất)
+Giảm tính sẵn sàng
+Triển khai phức tạp
+
+@41
+Khi Nào Dùng 2PC?
+@42
+Sử dụng 2PC khi:
+✓ Bắt buộc tuyệt đối phải có nhất quán mạnh
+✓ Giao dịch tài chính (ngân hàng)
+✓ Tất cả bên tham gia đều nằm trong tầm kiểm soát của bạn
+✓ Chịu được việc bị chặn
+✓ Độ trễ thấp không phải yếu tố then chốt
+
+Tránh 2PC khi:
+✗ Cần tính sẵn sàng cao
+✗ Kiến trúc vi dịch vụ (có dịch vụ bên ngoài)
+✗ Yêu cầu thông lượng cao
+✗ Không chịu được việc bị chặn
+
+@43
+**Ý kiến cá nhân:**
+@44
+Tôi tránh 2PC trong ⟦vi dịch vụ|microservices⟧. Rủi ro ⟦chặn|blocking⟧ quá cao. ⟦Độ phức tạp|Complexity⟧ không đáng.
+@45
+99% trường hợp có giải pháp tốt hơn: ⟦mẫu|pattern⟧ Saga.
+@46
+⟦Mẫu|Pattern⟧ Saga: Giải Pháp Thực Tế
+@47
+Khái Niệm Saga
+@48
+**Saga = Chuỗi các ⟦giao dịch cục bộ|local transactions⟧ + ⟦bù trừ|compensation⟧**
+@49
+Thay vì 1 ⟦giao dịch phân tán|distributed transaction⟧:
+@50
+Cách cũ (2PC):
+BEGIN_DISTRIBUTED_TRANSACTION
+  Dịch vụ Thanh toán: trừ tiền
+  Dịch vụ Kho: giữ hàng
+  Dịch vụ Đơn hàng: tạo đơn
+COMMIT_DISTRIBUTED_TRANSACTION
+
+@51
+Dùng chuỗi các ⟦giao dịch cục bộ|local transactions⟧:
+@52
+Cách Saga:
+Giao dịch 1: Dịch vụ Thanh toán trừ tiền (commit cục bộ)
+Giao dịch 2: Dịch vụ Kho giữ hàng (commit cục bộ)
+Giao dịch 3: Dịch vụ Đơn hàng tạo đơn (commit cục bộ)
+
+Nếu bất kỳ bước nào thất bại → Chạy các giao dịch bù trừ theo chiều ngược lại
+
+@53
+graph TB
+    T1[Giao dịch 1<br/>Thanh toán: Trừ tiền]
+    T2[Giao dịch 2<br/>Kho: Giữ hàng]
+    T3[Giao dịch 3<br/>Đơn hàng: Tạo đơn]
+
+    C1[Bù trừ 1<br/>Thanh toán: Hoàn tiền]
+    C2[Bù trừ 2<br/>Kho: Nhả hàng]
+
+    T1-->|Thành công|T2
+    T2-->|Thành công|T3
+    T3-->|Thành công|Done[Hoàn tất]
+
+    T2-->|Thất bại|C1
+    T3-->|Thất bại|C2
+    C2-->C1
+
+    style Done fill:#51cf66
+    style C1 fill:#ff6b6b
+    style C2 fill:#ff6b6b
+@54
+*Saga: Các ⟦giao dịch|transactions⟧ chạy xuôi + các bước ⟦bù trừ|compensations⟧ chạy ngược nếu thất bại*
+@55
+Triển Khai Saga: ⟦Điều Phối Tập Trung|Orchestration⟧
+@56
+**⟦Điều phối tập trung|Orchestration⟧ = Một ⟦bộ điều phối|coordinator⟧ trung tâm điều khiển saga**
+@57
+**Kết quả khi thành công:**
+@58
+Bước 1: Đang trừ tiền thanh toán...
+✓ Đã trừ tiền: payment_789
+
+Bước 2: Đang giữ hàng trong kho...
+✓ Đã giữ hàng: reservation_321
+
+Bước 3: Đang tạo đơn hàng...
+✓ Đã tạo đơn hàng: order_654
+
+Kết quả: Thành công
+
+@59
+**Kết quả khi thất bại:**
+@60
+Bước 1: Đang trừ tiền thanh toán...
+✓ Đã trừ tiền: payment_789
+
+Bước 2: Đang giữ hàng trong kho...
+Hết hàng!
+
+Saga thất bại: Hết hàng
+
+Bắt đầu bù trừ...
+Đang bù trừ: Hoàn tiền thanh toán
+✓ Đã hoàn tiền
+
+Kết quả: Thất bại - Hết hàng
+
+@61
+Triển Khai Saga: ⟦Phối Hợp Phân Tán|Choreography⟧
+@62
+**⟦Phối hợp phân tán|Choreography⟧ = Các ⟦dịch vụ|services⟧ tự phối hợp với nhau thông qua ⟦sự kiện|events⟧**
+@63
+sequenceDiagram
+    participant PS as Payment Service
+    participant IS as Inventory Service
+    participant OS as Order Service
+    participant EB as Event Bus
+
+    PS->>EB: payment.charged
+    EB->>IS: (sự kiện)
+    IS->>IS: Giữ hàng trong kho
+    IS->>EB: inventory.reserved
+    EB->>OS: (sự kiện)
+    OS->>OS: Tạo đơn hàng
+
+    alt Thành công
+        OS->>EB: order.created
+    else Thất bại
+        OS->>EB: order.failed
+        EB->>IS: (bù trừ)
+        IS->>EB: inventory.released
+        EB->>PS: (bù trừ)
+        PS->>EB: payment.refunded
+    end
+@64
+*⟦Phối hợp phân tán|Choreography⟧: Các ⟦dịch vụ|services⟧ phản ứng với ⟦sự kiện|events⟧, tự động ⟦bù trừ|compensation⟧*
+@65
+⟦Điều Phối Tập Trung|Orchestration⟧ So Với ⟦Phối Hợp Phân Tán|Choreography⟧
+@66
+Orchestration (Bộ điều phối trung tâm):
+Luồng rõ ràng, dễ gỡ lỗi
+Logic tập trung
+Thứ tự bù trừ tường minh
+Điểm lỗi duy nhất
+Liên kết chặt với bộ điều phối
+
+Choreography (Hướng sự kiện):
+Liên kết lỏng
+Không có điểm lỗi duy nhất
+Mở rộng được
+Khó hiểu được luồng
+Khó gỡ lỗi
+Xử lý lỗi phức tạp
+
+@67
+**Khuyến nghị của tôi:**
+@68
+Bắt đầu với Orchestration:
+- Dễ hiểu hơn
+- Dễ gỡ lỗi hơn
+- Trách nhiệm rõ ràng
+
+Chuyển sang Choreography khi:
+- Cần tách rời ở mức tối đa
+- Đã có hạ tầng hướng sự kiện
+- Nhóm có kinh nghiệm với các mẫu bất đồng bộ
+
+@69
+Tư Duy ⟦Bù Trừ|Compensation⟧: ⟦Tư Duy|Mindset⟧ Cốt Lõi
+@70
+⟦Bù Trừ|Compensation⟧ ≠ ⟦Hoàn Tác|Rollback⟧
+@71
+**⟦Hoàn tác|Rollback⟧ trong ⟦cơ sở dữ liệu|database⟧:**
+@72
+**⟦Bù trừ|Compensation⟧ trong Saga:**
+@73
+**Khác biệt then chốt:**
+@74
+Hoàn tác (rollback):  Huỷ bỏ → như chưa có gì xảy ra
+Bù trừ (compensation): Đảo ngược tác động → có nhật ký kiểm toán đầy đủ
+
+@75
+Thiết Kế Các ⟦Giao Dịch Bù Trừ|Compensating Transactions⟧
+@76
+**Quy tắc 1: ⟦Bù trừ|Compensation⟧ phải ⟦lũy đẳng|idempotent⟧**
+@77
+**Quy tắc 2: ⟦Bù trừ|Compensation⟧ cũng có thể thất bại**
+@78
+**Quy tắc 3: Một số hành động không thể ⟦bù trừ|compensated⟧**
+@79
+Thứ Tự ⟦Bù Trừ|Compensation⟧ Rất Quan Trọng
+@80
+Thứ tự xuôi:
+1. Trừ tiền thanh toán
+2. Giữ hàng trong kho
+3. Gửi email xác nhận ← Không thể bù trừ
+
+Thứ tự bù trừ (NGƯỢC LẠI):
+3. (Không thể thu hồi email - chấp nhận điều đó)
+2. Nhả hàng trong kho
+1. Hoàn tiền thanh toán
+
+Tại sao lại ngược? Thay đổi mới nhất được huỷ trước.
+
+@81
+⟦Tính Lũy Đẳng|Idempotency⟧: Tấm Lưới An Toàn
+@82
+Định Nghĩa ⟦Tính Lũy Đẳng|Idempotency⟧
+@83
+**⟦Thao tác lũy đẳng|Idempotent operation⟧ = Gọi nhiều lần = gọi 1 lần**
+@84
+f(x) = y
+f(f(x)) = y  ← Cùng kết quả
+f(f(f(x))) = y  ← Vẫn cùng kết quả
+
+Ví dụ:
+- Đặt nhiệt độ thành 20°C → Lũy đẳng
+- Tăng nhiệt độ thêm 1°C → KHÔNG lũy đẳng
+
+@85
+Tại Sao Cần ⟦Tính Lũy Đẳng|Idempotency⟧?
+@86
+**Vấn đề: Mạng không đáng tin cậy**
+@87
+Diễn biến:
+1. Máy khách gọi API: "Trừ $100"
+2. Máy chủ xử lý, trừ $100
+3. Máy chủ gửi phản hồi
+4. Mạng lỗi trước khi máy khách nhận được phản hồi
+5. Máy khách không biết đã thành công hay chưa
+6. Máy khách thử lại: "Trừ $100" lần nữa
+7. Máy chủ trừ THÊM $100 nữa
+
+Kết quả: Khách hàng bị trừ $200 thay vì $100!
+
+@88
+sequenceDiagram
+    participant Client
+    participant API
+    participant Payment
+
+    Client->>API: Trừ $100
+    API->>Payment: Xử lý
+    Payment-->>API: Thành công
+    API--xClient: (phản hồi bị mất)
+
+    Note over Client: Hết thời gian chờ! Thử lại?
+
+    Client->>API: Trừ $100 (thử lại)
+    API->>Payment: Xử lý LẦN NỮA
+    Payment-->>API: Thành công
+    API-->>Client: OK
+
+    Note over Client: Bị trừ $200! 💸
+@89
+*Mạng gặp ⟦sự cố|failure⟧ → ⟦Thử lại|Retry⟧ → Trừ tiền hai lần*
+@90
+Triển Khai ⟦Tính Lũy Đẳng|Idempotency⟧
+@91
+**Giải pháp 1: ⟦Khoá Lũy Đẳng|Idempotency Key⟧**
+@92
+**Chi tiết triển khai:**
+@93
+**Giải pháp 2: ⟦Lũy Đẳng Tự Nhiên|Natural Idempotency⟧**
+@94
+**Giải pháp 3: ⟦Ràng Buộc|Constraints⟧ Của ⟦Cơ Sở Dữ Liệu|Database⟧**
+@95
+⟦Thực Hành Tốt Nhất|Best Practices⟧ Về ⟦Tính Lũy Đẳng|Idempotency⟧
+@96
+**1. Sinh ⟦khoá lũy đẳng|idempotency keys⟧ ở phía ⟦máy khách|client⟧**
+@97
+**2. Lưu kết quả ⟦lũy đẳng|idempotency⟧ kèm TTL**
+@98
+Đừng lưu mãi mãi → Lãng phí dung lượng lưu trữ
+TTL 24-48 giờ thường là đủ
+Sau TTL, yêu cầu mới = thao tác mới (chấp nhận được)
+
+@99
+**3. Trả về cùng một mã trạng thái cho các ⟦yêu cầu|requests⟧ ⟦lũy đẳng|idempotent⟧**
+@100
+**4. ⟦Tính lũy đẳng|Idempotency⟧ cho cả ⟦bù trừ|compensation⟧**
+@101
+Ví Dụ Thực Tế: Thanh Toán Đơn Hàng Thương Mại Điện Tử
+@102
+Hãy xem một ví dụ hoàn chỉnh áp dụng tất cả các khái niệm:
+@103
+Những Điểm Cốt Lõi
+@104
+**ACID bị phá vỡ trong ⟦hệ thống phân tán|distributed systems⟧:**
+@105
+Một cơ sở dữ liệu: ACID hoạt động
+Nhiều cơ sở dữ liệu/dịch vụ: ACID là bất khả thi
+Mạng không đáng tin cậy → Không thể đảm bảo tính nguyên tử
+
+@106
+**2-Phase Commit (cam kết hai pha):**
+@107
+Nhất quán mạnh
+Giữ được ACID
+Chặn (điểm yếu chí mạng)
+Bộ điều phối gặp sự cố = thảm hoạ
+Tránh dùng trong vi dịch vụ
+
+@108
+**⟦Mẫu|Pattern⟧ Saga:**
+@109
+Không chặn
+Tính sẵn sàng cao
+Thực tế cho vi dịch vụ
+Nhất quán cuối cùng
+Độ phức tạp của việc bù trừ
+
+@110
+**⟦Điều phối tập trung|Orchestration⟧ so với ⟦phối hợp phân tán|Choreography⟧:**
+@111
+Orchestration: Bộ điều phối trung tâm (đơn giản hơn, dễ gỡ lỗi hơn)
+Choreography: Hướng sự kiện (tách rời, phức tạp)
+
+Bắt đầu với Orchestration
+
+@112
+**Tư duy ⟦bù trừ|compensation⟧:**
+@113
+- Bù trừ ≠ Hoàn tác
+- Đảo ngược tác động, không phải huỷ bỏ
+- Phải lũy đẳng
+- Một số hành động không thể bù trừ (đặt chúng cuối cùng)
+- Thứ tự rất quan trọng (thứ tự ngược)
+
+@114
+**⟦Tính lũy đẳng|Idempotency⟧:**
+@115
+- Thiết yếu cho hệ thống phân tán
+- Ngăn chặn thao tác trùng lặp
+- Dùng khoá lũy đẳng
+- Áp dụng cho MỌI thao tác (kể cả bù trừ)
+- Lưu kết quả kèm TTL
+
+@116
+**⟦Khung ra quyết định|Decision framework⟧:**
+@117
+Cần ACID + Chịu được việc bị chặn:
+→ 2-Phase Commit (hiếm)
+
+Cần tính sẵn sàng cao + Chấp nhận nhất quán cuối cùng:
+→ Mẫu Saga (phổ biến)
+
+Triển khai Saga:
+- Bắt đầu đơn giản: Orchestration
+- Mọi thao tác: Lũy đẳng
+- Hành động không thể bù trừ: Đặt cuối cùng
+- Giám sát các lần bù trừ thất bại
+
+@119
+Khi thiết kế ⟦giao dịch phân tán|distributed transaction⟧:
+@120
+*Có thực sự cần ⟦nhất quán mạnh|strong consistency⟧ không?*
+@121
+*Có thể chấp nhận ⟦nhất quán cuối cùng|eventual consistency⟧ không?*
+@122
+*Thao tác nào ⟦bù trừ|compensable⟧ được, thao tác nào không?*
+@123
+*Đã triển khai ⟦tính lũy đẳng|idempotency⟧ chưa?*
+@124
+*Thứ tự ⟦bù trừ|compensation⟧ đã đúng chưa (ngược lại)?*
+@125
+⟦Giao dịch phân tán|Distributed transactions⟧ rất khó. Nhưng với Saga + ⟦tính lũy đẳng|idempotency⟧, bạn có đủ công cụ để xử lý chúng một cách đúng đắn.
+@126
+**Hãy nhớ:** Không thể đạt được ⟦tính nhất quán|consistency⟧ hoàn hảo trong ⟦hệ thống phân tán|distributed systems⟧. Mục tiêu là đảm bảo ⟦nhất quán cuối cùng|eventual consistency⟧ với các lộ trình ⟦bù trừ|compensation⟧ rõ ràng.

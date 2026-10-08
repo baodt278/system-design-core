@@ -1,0 +1,653 @@
+@0 h1
+Rate Limiting & Load Control - Protect System Khỏi Overload
+@1 p
+Bạn build một API hoàn hảo. Code clean, database optimized, infrastructure solid.
+@2 p
+Rồi một ngày, traffic spike 10x bất ngờ. Có thể là:
+@3 li
+Viral post trên social media
+@4 li
+Bot attack
+@5 li
+Bug ở client (infinite retry loop)
+@6 li
+Flash sale trong e-commerce
+@7 p
+**Hệ thống collapse. Database overwhelm. Servers crash. Toàn bộ service down.**
+@8 p
+Không phải vì architecture tồi. Là vì **không có protection mechanisms.**
+@9 p
+**Mental model quan trọng:** System phải biết protect itself. Không thể tin rằng traffic sẽ luôn reasonable.
+@10 p
+Lesson này dạy bạn:
+@11 li
+Rate limiting algorithms (token bucket, leaky bucket)
+@12 li
+Distributed rate limiting
+@13 li
+Backpressure & load shedding
+@14 li
+Circuit breaker pattern
+@15 li
+Khi nào dùng technique nào
+@16 h2
+Tại Sao Cần Rate Limiting?
+@17 h3
+Problem 1: Resource Exhaustion
+@18 p
+**Mọi system có giới hạn.**
+@19 pre
+Database: 1000 connections
+API server: 10,000 concurrent requests
+Network: 1 Gbps bandwidth
+
+@20 p
+**Vượt quá giới hạn → system crash.**
+@21 p
+Without rate limiting, một client có thể consume toàn bộ resources.
+@22 h3
+Problem 2: Cost Control
+@23 p
+**Cloud services charge theo usage.**
+@24 pre
+API Gateway: $3.50 per million requests
+Lambda: $0.20 per million invocations
+Database: $0.10 per GB transfer
+
+@25 p
+**Uncontrolled traffic = unlimited cost.**
+@26 p
+Bot attack có thể generate hàng triệu requests → bill $10,000 trong 1 ngày.
+@27 h3
+Problem 3: Abuse & Security
+@28 p
+**Attackers exploit systems:**
+@29 li
+Brute force login (thử hàng nghìn passwords)
+@30 li
+Scraping data (crawl toàn bộ database)
+@31 li
+DDoS (overwhelm với junk traffic)
+@32 p
+**Rate limiting = first line of defense.**
+@33 h3
+Problem 4: Fair Usage
+@34 p
+**Một user không nên monopolize resources.**
+@35 p
+Trong multi-tenant system, 1 customer spam requests → impact tất cả customers.
+@36 p
+**Rate limiting đảm bảo fairness.**
+@37 h3
+Use Cases
+@38 p
+**API quotas:**
+@39 li
+Free tier: 1000 requests/day
+@40 li
+Pro tier: 100,000 requests/day
+@41 p
+**Login attempts:**
+@42 li
+5 failed attempts → lock account 15 minutes
+@43 p
+**Search queries:**
+@44 li
+10 searches/minute per user
+@45 p
+**File uploads:**
+@46 li
+100 MB/hour per user
+@47 h2
+Rate Limiting Algorithms
+@48 p
+Có nhiều algorithms, mỗi cái phù hợp với use case khác nhau.
+@49 h3
+1. Fixed Window Counter
+@50 p
+**Simplest algorithm.**
+@51 p
+**Example:**
+@52 pre
+Window: 1 minute
+Limit: 100 requests
+
+00:00-00:59: 100 requests ✅
+01:00-01:59: Reset counter, 100 requests ✅
+
+@53 p
+**Problem: Window boundary issue**
+@54 pre
+00:59: 100 requests (max out)
+01:00: Reset
+01:01: 100 requests
+
+Total 200 requests trong 2 seconds! ⚠️
+
+@55 p
+**Burst traffic ở window boundary bypass limit.**
+@56 h3
+2. Sliding Window Log
+@57 p
+**Track timestamp của mỗi request.**
+@58 p
+**Example:**
+@59 pre
+Window: 60 seconds
+Limit: 100 requests
+
+Request at 10:00:30
+→ Count requests từ 09:59:30 đến 10:00:30
+→ If < 100, allow
+
+@60 p
+**Pros:**
+@61 li
+Accurate (no window boundary issue)
+@62 li
+Smooth rate limiting
+@63 p
+**Cons:**
+@64 li
+Memory intensive (store all timestamps)
+@65 li
+O(N) lookup time
+@66 h3
+3. Sliding Window Counter (Hybrid)
+@67 p
+**Combine fixed window + sliding calculation.**
+@68 p
+**Smooths out fixed window spikes với O(1) memory.**
+@69 h3
+4. Token Bucket (MOST POPULAR)
+@70 p
+**Bucket chứa tokens. Mỗi request consume 1 token.**
+@71 p
+**Example:**
+@72 pre
+Capacity: 100 tokens
+Refill rate: 10 tokens/second
+
+Start: 100 tokens
+Request 1: 99 tokens (allow)
+Request 2: 98 tokens (allow)
+... (100 requests)
+Request 101: 0 tokens (reject) ❌
+
+Wait 1 second: +10 tokens
+Request 102: 9 tokens (allow) ✅
+
+@73 p
+**Pros:**
+@74 li
+Allow bursts (lợi dụng accumulated tokens)
+@75 li
+Smooth long-term rate
+@76 li
+Simple implementation
+@77 p
+**Cons:**
+@78 li
+Bursts có thể overwhelm downstream
+@79 p
+**Used by:** AWS API Gateway, Kong, Nginx.
+@80 h3
+5. Leaky Bucket
+@81 p
+**Bucket leak tokens at constant rate.**
+@82 p
+**Difference từ Token Bucket:**
+@83 p
+**Token Bucket:** Bursty output (có thể send nhiều requests cùng lúc nếu có tokens)\n
+**Leaky Bucket:** Smooth output (constant rate, không có bursts)
+@84 pre
+flowchart LR
+    subgraph TokenBucket["Token Bucket"]
+        TB_Input[Requests] -->|Variable rate| TB_Bucket[Bucket]
+        TB_Bucket -->|Can burst| TB_Output[Output]
+    end
+    
+    subgraph LeakyBucket["Leaky Bucket"]
+        LB_Input[Requests] -->|Variable rate| LB_Queue[Queue]
+        LB_Queue -->|Constant rate| LB_Output[Output]
+    end
+@85 p
+**Token Bucket = rate limit input.**\n
+**Leaky Bucket = rate limit output.**
+@86 h3
+Algorithm Comparison
+@87 th
+Algorithm
+@88 th
+Memory
+@89 th
+Accuracy
+@90 th
+Bursts
+@91 th
+Use Case
+@92 td
+Fixed Window
+@93 td
+O(1)
+@94 td
+Low
+@95 td
+Yes
+@96 td
+Simple quotas
+@97 td
+Sliding Log
+@98 td
+O(N)
+@99 td
+High
+@100 td
+No
+@101 td
+Precise limiting
+@102 td
+Sliding Counter
+@103 td
+O(1)
+@104 td
+Medium
+@105 td
+No
+@106 td
+Good balance
+@107 td
+Token Bucket
+@108 td
+O(1)
+@109 td
+Good
+@110 td
+Yes
+@111 td
+Most APIs
+@112 td
+Leaky Bucket
+@113 td
+O(N)
+@114 td
+Good
+@115 td
+No
+@116 td
+Traffic shaping
+@117 p
+**Token Bucket = most popular vì balance simplicity + effectiveness.**
+@118 h2
+Distributed Rate Limiting
+@119 p
+**Problem:** Multiple API servers, làm sao sync rate limits?
+@120 pre
+flowchart TB
+    User[User]
+    LB[Load Balancer]
+    
+    subgraph Servers
+        S1[Server 1<br/>Local counter: 50]
+        S2[Server 2<br/>Local counter: 50]
+        S3[Server 3<br/>Local counter: 50]
+    end
+    
+    User --> LB
+    LB --> S1
+    LB --> S2
+    LB --> S3
+@121 p
+**Limit: 100 req/min per user.**
+@122 p
+Nếu mỗi server track riêng → user có thể send 50 requests đến mỗi server = 150 total! ⚠️
+@123 h3
+Solution 1: Centralized State (Redis)
+@124 p
+**Store counters trong shared Redis.**
+@125 p
+**Token bucket in Redis:**
+@126 p
+**Pros:**
+@127 li
+Accurate cross-server
+@128 li
+Centralized logic
+@129 p
+**Cons:**
+@130 li
+Redis single point of failure
+@131 li
+Network latency per request
+@132 li
+Redis can be bottleneck
+@133 h3
+Solution 2: Eventually Consistent (Gossip)
+@134 p
+**Mỗi server maintain local state, sync periodically.**
+@135 p
+**Pros:**
+@136 li
+No single point of failure
+@137 li
+Low latency (local check)
+@138 p
+**Cons:**
+@139 li
+Not accurate (eventual consistency)
+@140 li
+Complex implementation
+@141 h3
+Hybrid Approach (Practical)
+@142 p
+**Local cache + Redis.**
+@143 p
+**Balance accuracy + performance.**
+@144 h2
+Rate Limiting Response Headers
+@145 p
+**Clients cần biết rate limit status.**
+@146 p
+**Standard headers:**
+@147 p
+**Clients có thể:**
+@148 li
+Display quota to users
+@149 li
+Implement exponential backoff
+@150 li
+Schedule requests efficiently
+@151 h2
+Backpressure - Push Back On Upstream
+@152 p
+**Rate limiting protect system từ external traffic. Backpressure protect từ internal overload.**
+@153 h3
+The Problem
+@154 pre
+sequenceDiagram
+    participant API
+    participant Queue
+    participant Worker
+    participant DB
+    
+    API->>Queue: Fast (1000 msg/s)
+    Queue->>Worker: Medium (100 msg/s)
+    Worker->>DB: Slow (10 query/s)
+    
+    Note over Queue: Queue grows infinitely!
+@155 p
+**Producer nhanh hơn consumer → queue explode.**
+@156 h3
+Solution: Backpressure
+@157 p
+**Slow down producer khi consumer overwhelmed.**
+@158 p
+**API checks queue size:**
+@159 p
+**503 Service Unavailable = backpressure signal.**
+@160 h3
+Reactive Streams Backpressure
+@161 p
+**Modern approach: request-based pull.**
+@162 p
+**Consumer pulls data at its pace, not pushed.**
+@163 h2
+Load Shedding - Drop Traffic To Survive
+@164 p
+**Khi hệ thống quá tải, reject requests để protect core functionality.**
+@165 h3
+Priority-Based Shedding
+@166 p
+**Not all requests equal importance.**
+@167 p
+**Example priorities:**
+@168 p
+**Shed low-priority traffic first.**
+@169 h3
+Adaptive Shedding
+@170 p
+**Shed based on system health metrics.**
+@171 p
+**Gradual degradation thay vì hard cutoff.**
+@172 h2
+Circuit Breaker - Stop Calling Failing Services
+@173 p
+**Pattern để prevent cascading failures.**
+@174 h3
+The Problem
+@175 pre
+sequenceDiagram
+    participant API
+    participant ServiceA
+    participant ServiceB
+    
+    API->>ServiceB: Request
+    ServiceB-->>API: Timeout (30s)
+    
+    API->>ServiceB: Retry
+    ServiceB-->>API: Timeout (30s)
+    
+    Note over API: All threads blocked!<br/>API becomes unresponsive
+@176 p
+**Service B down → API keep trying → API down too.**
+@177 h3
+Circuit Breaker States
+@178 pre
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open: Failures exceed threshold
+    Open --> HalfOpen: Timeout expires
+    HalfOpen --> Closed: Success
+    HalfOpen --> Open: Failure
+@179 p
+**States:**
+@180 p
+**Closed (Normal):**
+@181 li
+Requests pass through
+@182 li
+Track failures
+@183 p
+**Open (Failed):**
+@184 li
+Reject requests immediately (fail fast)
+@185 li
+Don't call failing service
+@186 li
+Return cached data or error
+@187 p
+**Half-Open (Testing):**
+@188 li
+Allow limited requests
+@189 li
+Test if service recovered
+@190 li
+Close if success, open if fail
+@191 h3
+Implementation
+@192 p
+**Usage:**
+@193 h3
+Benefits
+@194 p
+**1. Fail fast**
+@195 li
+Không waste time retry failing service
+@196 li
+Free up threads/resources
+@197 p
+**2. Give service time to recover**
+@198 li
+Stop hammering failed service
+@199 li
+Allow graceful recovery
+@200 p
+**3. Prevent cascading failures**
+@201 li
+One service down ≠ entire system down
+@202 p
+**4. Provide fallbacks**
+@203 h2
+Bulkhead Pattern - Isolate Failures
+@204 p
+**Don't let one component consume all resources.**
+@205 h3
+Thread Pool Bulkheads
+@206 p
+**Service B slow/hang → chỉ consume 10 threads của B pool.**
+@207 p
+Service A và C vẫn hoạt động bình thường.
+@208 h3
+Connection Pool Bulkheads
+@209 h2
+Putting It All Together
+@210 p
+**Comprehensive protection strategy:**
+@211 pre
+flowchart TD
+    Request[Incoming Request]
+    
+    RL{Rate Limiting}
+    LB{Load Balancer}
+    CB{Circuit Breaker}
+    Service[Service]
+    DB[(Database)]
+    
+    Request --> RL
+    RL -->|Allow| LB
+    RL -->|Reject| Deny[429 Too Many Requests]
+    
+    LB --> CB
+    CB -->|Closed/Half-Open| Service
+    CB -->|Open| Fallback[Fallback Response]
+    
+    Service --> DB
+    DB -->|Slow| Shed[Load Shedding]
+    Shed -->|Drop| Drop[503 Service Unavailable]
+@212 p
+**Layers of protection:**
+@213 li
+**Rate limiting:** Prevent abuse
+@214 li
+**Circuit breaker:** Fail fast on downstream failures
+@215 li
+**Backpressure:** Slow down when queues full
+@216 li
+**Load shedding:** Drop traffic when overloaded
+@217 li
+**Bulkhead:** Isolate failures
+@218 p
+**Defense in depth.**
+@219 h2
+Practical Recommendations
+@220 h3
+1. Start With Rate Limiting
+@221 p
+**Mọi public API cần rate limiting.**
+@222 p
+**Even internal APIs benefit từ rate limiting.**
+@223 h3
+2. Implement Circuit Breakers For External Dependencies
+@224 h3
+3. Monitor & Alert
+@225 p
+**Track metrics:**
+@226 pre
+- Rate limit hits (per endpoint, per user)
+- Circuit breaker state changes
+- Queue depths
+- Request latency (p50, p95, p99)
+- Error rates
+
+@227 p
+**Alert when:**
+@228 li
+Rate limits hit frequently (may need increase)
+@229 li
+Circuit breaker open (dependency issue)
+@230 li
+Queue growing (backpressure needed)
+@231 h3
+4. Design For Degradation
+@232 p
+**Graceful degradation > hard failures.**
+@233 h3
+5. Test Under Load
+@234 p
+**Load testing should trigger protection mechanisms.**
+@235 p
+**Verify:**
+@236 li
+Rate limiting kicks in
+@237 li
+Circuit breaker opens on failures
+@238 li
+System remains stable under overload
+@239 h2
+Mental Model: System Phải Protect Itself
+@240 p
+**Core insight:**
+@241 p
+**Good systems không assume perfect conditions. They expect và handle abuse, failures, và overload.**
+@242 pre
+Bad system:
+  Assume: Traffic reasonable, dependencies reliable
+  Reality: Spike traffic → crash
+
+Good system:
+  Assume: Anything can happen
+  Design: Protection mechanisms at every layer
+  Reality: Spike traffic → graceful degradation
+
+@243 p
+**Architect mindset:**
+@244 li
+**External traffic:** Rate limiting
+@245 li
+**Dependency failures:** Circuit breaker
+@246 li
+**Internal overload:** Backpressure, load shedding
+@247 li
+**Resource isolation:** Bulkhead pattern
+@248 p
+**System self-protection = reliability.**
+@249 h2
+Key Takeaways
+@250 p
+**1. Rate limiting prevent abuse và resource exhaustion**
+@251 p
+Token bucket algorithm most popular. Distributed rate limiting needs Redis hoặc gossip.
+@252 p
+**2. Circuit breaker prevent cascading failures**
+@253 p
+Fail fast, give services time to recover, provide fallbacks.
+@254 p
+**3. Backpressure pushes back on upstream producers**
+@255 p
+Prevents queue explosion, maintains system stability.
+@256 p
+**4. Load shedding drops traffic to survive**
+@257 p
+Priority-based hoặc adaptive. Better degrade gracefully than crash completely.
+@258 p
+**5. Bulkhead pattern isolates failures**
+@259 p
+Separate thread pools/connection pools per dependency.
+@260 p
+**6. Defense in depth**
+@261 p
+Multiple protection layers. Rate limiting + circuit breaker + load shedding.
+@262 p
+**7. Monitor và alert on protection triggers**
+@263 p
+Protection mechanisms kicking in = early warning signals.
+@264 p
+**8. Design for degradation**
+@265 p
+Fallback strategies better than hard failures.
+@266 p
+**9. Test under overload**
+@267 p
+Load testing should exercise protection mechanisms.
+@268 p
+**Remember: The best system is one that survives abuse, handles failures gracefully, and protects itself automatically. Don't wait for production incidents to add these protections - build them in from the start.**

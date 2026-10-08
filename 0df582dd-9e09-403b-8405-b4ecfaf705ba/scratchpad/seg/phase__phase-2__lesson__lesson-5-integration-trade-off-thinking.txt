@@ -1,0 +1,939 @@
+@0 h1
+Integration & Trade-off Thinking: Kết Hợp Components Thành Hệ Thống
+@1 p
+Đây là lesson mà 90% courses bỏ qua. Và đó là lý do tại sao nhiều engineers biết từng component nhưng không biết design hệ thống.
+@2 p
+Tôi còn nhớ lần đầu tiên phải thiết kế một hệ thống hoàn chỉnh. Tôi biết cache, biết database, biết message queue. Nhưng khi ngồi trước whiteboard, tôi hoàn toàn blank.
+@3 p
+*"Tôi dùng cái nào trước? Cache hay database? Queue đặt ở đâu? Load balancer connect với gì?"*
+@4 p
+Senior architect ngồi bên cạnh nói: *"Em biết từng viên gạch, nhưng chưa biết xây nhà."*
+@5 p
+Đó là lesson này. Không phải học thêm component mới. Mà học cách **kết hợp chúng thành hệ thống hoàn chỉnh**.
+@6 h2
+Tại Sao Integration Thinking Quan Trọng Hơn Component Knowledge?
+@7 p
+**Reality check:**
+@8 pre
+Biết cache:           ✅
+Biết database:        ✅
+Biết message queue:   ✅
+Biết load balancer:   ✅
+
+Design được hệ thống: ❌
+
+Why?
+
+@9 p
+Vì **system design không phải về components. Nó về interactions giữa components.**
+@10 h3
+The Integration Gap
+@11 p
+**Gap 1: Component interactions**
+@12 pre
+Question: Cache nằm ở đâu trong flow?
+
+Wrong thinking:
+"Tôi cần cache → Thêm Redis"
+
+Right thinking:
+"Cache nằm giữa app server và database
+→ App check cache first
+→ Cache miss → Query database
+→ Store in cache
+→ Next request hit cache"
+
+@13 p
+**Gap 2: Trade-off combinations**
+@14 pre
+Mỗi component có trade-offs riêng:
+- Cache: Fast nhưng stale data risk
+- Queue: Async nhưng eventual processing
+- DB replica: Scale reads nhưng replication lag
+
+Question: Khi combine chúng, trade-offs tương tác thế nào?
+
+@15 p
+**Gap 3: Real constraints**
+@16 pre
+Textbook: "Dùng cache cho performance"
+
+Reality:
+- Budget: $500/month
+- Team: 2 developers
+- Maintenance: Ai monitor Redis?
+- Complexity: Team có experience không?
+
+→ Decision phức tạp hơn nhiều
+
+@17 p
+**Key insight:** Components là tools. Integration là craft.
+@18 h2
+Thinking Framework: From Problem to Architecture
+@19 p
+Đây là framework tôi dùng cho mọi system design.
+@20 h3
+Step 1: Define Requirements (Problem-First)
+@21 p
+**Functional requirements:**
+@22 pre
+WHAT system phải làm:
+- User upload ảnh
+- System resize ảnh
+- User xem ảnh đã resize
+
+@23 p
+**Non-functional requirements:**
+@24 pre
+HOW WELL system phải làm:
+- Upload: < 5 seconds response
+- View: < 500ms latency
+- Scale: 100K uploads/day
+- Availability: 99.9% uptime
+
+@25 p
+**Constraints:**
+@26 pre
+- Budget: $1,000/month
+- Team: 3 developers
+- Timeline: Ship trong 2 tháng
+- Expertise: Team biết Node.js, PostgreSQL
+
+@27 h3
+Step 2: Identify Core Components Needed
+@28 p
+**Must-have components:**
+@29 pre
+Storage: Cần lưu ảnh → Object storage (S3)
+Database: Cần metadata → SQL hoặc NoSQL
+Compute: Cần resize ảnh → App servers
+
+@30 p
+**Optional components (evaluate):**
+@31 pre
+Cache: Cần không? → Depends on read pattern
+Queue: Cần không? → Depends on processing time
+Load balancer: Cần không? → Depends on traffic
+CDN: Cần không? → Depends on global users
+
+@32 p
+**Critical thinking:**
+@33 pre
+Đừng thêm component "just in case"
+Mỗi component = More complexity
+Only add khi có clear reason
+
+@34 h3
+Step 3: Map Data Flow
+@35 p
+**Trace request từ client đến response:**
+@36 pre
+User upload ảnh:
+1. Client → API server
+2. API → Validate file
+3. API → Upload to S3
+4. API → Add job to queue
+5. API → Return "processing" response
+6. Worker → Process resize job
+7. Worker → Upload resized to S3
+8. Worker → Update database
+9. User poll API → Get status
+
+Identify:
+- Sync vs async boundaries
+- Where to add cache
+- Where failures happen
+
+@37 h3
+Step 4: Apply Trade-off Thinking
+@38 p
+**For each component, ask:**
+@39 pre
+1. What problem does it solve?
+2. What's the cost? (complexity, money, maintenance)
+3. What are alternatives?
+4. Can we start simpler?
+
+@40 p
+**Example decision tree:**
+@41 pre
+Need to process images:
+
+Option A: Synchronous
+- User waits for resize
+- Simple code
+- Bad UX if slow
+
+Option B: Queue + Workers
+- User gets immediate response
+- Complex infrastructure
+- Good UX
+
+Given constraints:
+- Resize takes 5 seconds
+- User can wait 5 seconds? NO
+→ Choose Option B
+
+@42 h3
+Step 5: Start Simple, Evolve
+@43 p
+**Version 1 (MVP):**
+@44 pre
+Single server
+PostgreSQL
+No cache
+No queue (if processing fast enough)
+
+Ship in 2 weeks
+Learn from real usage
+
+@45 p
+**Version 2 (After data):**
+@46 pre
+If slow:
+→ Add queue + workers
+
+If reads slow:
+→ Add cache
+
+If server overload:
+→ Add load balancer
+
+@47 p
+**Principle: Build what you need NOW, not what you might need LATER.**
+@48 h2
+Real Architecture Example 1: Simple Blog Platform
+@49 p
+Let's design từ zero.
+@50 h3
+Requirements
+@51 pre
+Functional:
+- Users đọc blog posts
+- Admin viết/edit posts
+- Users comment
+
+Non-functional:
+- 10K daily active users
+- 1K posts total
+- 10K comments/day
+- Latency: < 1 second
+
+Constraints:
+- Budget: $200/month
+- Team: 2 developers
+- Stack: Python/Django, PostgreSQL
+
+@52 h3
+Architecture V1: Monolith Simple
+@53 pre
+flowchart TB
+    USER[Users] --> LB[Load Balancer<br/>Optional]
+    LB --> APP[Django App<br/>Gunicorn]
+    APP --> DB[(PostgreSQL<br/>Posts, Comments, Users)]
+    APP --> S3[S3<br/>Images]
+    
+    style APP fill:#51cf66
+    style DB fill:#339af0
+    style S3 fill:#ff6b6b
+@54 p
+*Architecture V1: Simple monolith, không có cache hay queue*
+@55 p
+**Decision rationale:**
+@56 pre
+No cache:
+✓ 10K users = Low traffic
+✓ 1K posts = DB handles easily
+✓ PostgreSQL fast enough with indexes
+✓ Save $50/month Redis cost
+✓ Less complexity
+
+No queue:
+✓ No heavy processing
+✓ Comments insert fast (< 100ms)
+✓ Save infrastructure cost
+
+No CDN:
+✓ Regional users only
+✓ S3 already fast
+✓ Save $30/month CDN cost
+
+Load balancer: Optional
+✓ Nice to have cho zero-downtime deploy
+✓ 1 server handles 10K users fine
+✓ Add later if needed
+
+@57 p
+**Total cost: $100/month (EC2 + RDS + S3)**
+@58 h3
+When to Evolve: Data-Driven Decisions
+@59 p
+**Trigger 1: Slow database queries**
+@60 pre
+Symptom:
+- Page load 3 seconds
+- PostgreSQL CPU 80%
+- Slow query logs showing repeated queries
+
+Solution:
+→ Add Redis cache
+
+@61 p
+**Architecture V2: Add Cache Layer**
+@62 pre
+flowchart TB
+    USER[Users] --> APP[Django App]
+    APP --> CACHE[Redis Cache<br/>Posts & Comments]
+    CACHE -.->|Cache Miss| DB[(PostgreSQL)]
+    APP --> S3[S3]
+    
+    style CACHE fill:#ffd43b
+    style APP fill:#51cf66
+    style DB fill:#339af0
+@63 p
+*Architecture V2: Thêm Redis cache khi database queries chậm*
+@64 p
+**Implementation:**
+@65 p
+**New cost: $150/month (+$50 Redis)**
+@66 p
+**Trigger 2: High traffic**
+@67 pre
+Symptom:
+- 100K daily users (10x growth)
+- Single server CPU 90%
+- Response time degrading
+
+Solution:
+→ Add load balancer + Scale horizontally
+
+@68 p
+**Architecture V3: Horizontal Scaling**
+@69 pre
+flowchart TB
+    USER[Users] --> LB[Load Balancer]
+    LB --> APP1[App Server 1]
+    LB --> APP2[App Server 2]
+    LB --> APP3[App Server 3]
+    
+    APP1 --> CACHE[Redis Cache]
+    APP2 --> CACHE
+    APP3 --> CACHE
+    
+    CACHE -.->|Cache Miss| DB[(PostgreSQL)]
+    
+    APP1 --> S3[S3]
+    APP2 --> S3
+    APP3 --> S3
+    
+    style LB fill:#ff6b6b
+    style APP1 fill:#51cf66
+    style APP2 fill:#51cf66
+    style APP3 fill:#51cf66
+    style CACHE fill:#ffd43b
+@70 p
+*Architecture V3: Load balancer + Multiple servers khi traffic cao*
+@71 p
+**New cost: $400/month (3 servers + LB + Redis + DB)**
+@72 h3
+Key Lessons
+@73 pre
+1. Started simple (V1)
+   - No premature optimization
+   - Shipped in 2 weeks
+   - Learned from real data
+
+2. Evolved based on actual problems (V2, V3)
+   - Not predictions
+   - Not "best practices"
+   - Real metrics driving decisions
+
+3. Cost conscious
+   - V1: $100/month (10K users)
+   - V2: $150/month (50K users)
+   - V3: $400/month (100K users)
+   - Cost scales với value
+
+4. Complexity managed
+   - Added components one at a time
+   - Team learned incrementally
+   - Production stability maintained
+
+@74 h2
+Real Architecture Example 2: Image Processing Service
+@75 p
+Một case phức tạp hơn với async processing.
+@76 h3
+Requirements
+@77 pre
+Functional:
+- Users upload images
+- System resize to 3 sizes (thumbnail, medium, large)
+- Users view processed images
+
+Non-functional:
+- 50K uploads/day
+- Processing: 5-10 seconds/image
+- Upload response: < 2 seconds
+- View latency: < 500ms
+- 99% availability
+
+Constraints:
+- Budget: $2,000/month
+- Team: 4 developers
+- Need audit trail
+
+@78 h3
+Architecture: Full Stack
+@79 pre
+flowchart TB
+    USER[Users] --> CDN[CloudFront CDN]
+    CDN --> LB[Load Balancer]
+    
+    LB --> API1[API Server 1]
+    LB --> API2[API Server 2]
+    
+    API1 --> CACHE[Redis Cache<br/>Status & Metadata]
+    API2 --> CACHE
+    
+    API1 --> QUEUE[SQS Queue<br/>Resize Jobs]
+    API2 --> QUEUE
+    
+    QUEUE --> W1[Worker 1]
+    QUEUE --> W2[Worker 2]
+    QUEUE --> W3[Worker 3]
+    
+    W1 --> S3[S3<br/>Image Storage]
+    W2 --> S3
+    W3 --> S3
+    
+    API1 --> DB[(PostgreSQL<br/>Metadata & Audit)]
+    API2 --> DB
+    W1 --> DB
+    W2 --> DB
+    W3 --> DB
+    
+    style CDN fill:#fa5252
+    style LB fill:#ff6b6b
+    style API1 fill:#51cf66
+    style API2 fill:#51cf66
+    style CACHE fill:#ffd43b
+    style QUEUE fill:#ff922b
+    style W1 fill:#748ffc
+    style W2 fill:#748ffc
+    style W3 fill:#748ffc
+    style S3 fill:#e64980
+    style DB fill:#339af0
+@80 p
+*Architecture hoàn chỉnh với tất cả components: CDN, Load Balancer, Cache, Queue, Workers, Database*
+@81 h3
+Component Interactions & Trade-offs
+@82 p
+**1. Upload Flow (Sync → Async Boundary)**
+@83 p
+**Trade-off:**
+@84 pre
+Fast user response (< 2s)
+Handle traffic spikes (queue buffers)
+Workers scale independently
+Eventual processing (not immediate)
+More complex (queue infrastructure)
+Need polling mechanism for status
+
+@85 p
+**2. Worker Processing (Async)**
+@86 p
+**Trade-off:**
+@87 pre
+Fault tolerant (retry logic)
+Scalable (add more workers)
+Audit trail (database logs)
+Complex error handling
+Must handle idempotency
+Monitoring overhead
+
+@88 p
+**3. Status Polling (Read Path)**
+@89 p
+**Trade-off:**
+@90 pre
+Fast reads (cache)
+Reduce database load
+Cache invalidation complexity
+Possible stale status (max 5 min)
+
+@91 p
+**4. View Images (CDN Layer)**
+@92 p
+**Trade-off:**
+@93 pre
+Extremely fast (edge locations)
+Reduce S3 costs (fewer requests)
+Global low latency
+CDN cost ($100-200/month)
+Cache invalidation hard (if image changed)
+
+@94 h3
+Total Architecture Trade-offs
+@95 pre
+Components:
+- CDN: $150/month
+- Load Balancer: $50/month
+- 2 API servers: $200/month
+- Redis: $100/month
+- SQS Queue: $20/month
+- 3 Workers: $300/month
+- PostgreSQL RDS: $200/month
+- S3: $100/month
+-----------------------
+Total: $1,120/month
+
+Handles:
+- 50K uploads/day
+- 150K processed images/day
+- 1M views/day
+- 99.9% availability
+
+Trade-offs accepted:
+Complexity → Gain scalability
+Cost → Gain reliability
+Eventual processing → Gain user experience
+
+@96 h3
+What If Budget Was $500/month?
+@97 p
+**Alternative architecture:**
+@98 pre
+Simplify:
+- No CDN → S3 direct (save $150)
+- 1 API server → Handle 50K uploads (save $100)
+- No dedicated workers → Lambda functions (save $250)
+- Smaller Redis → ElastiCache t3.micro (save $50)
+
+Total: $470/month
+
+Trade-offs:
+Slower global latency (no CDN)
+Less resilient (single API server)
+Still scalable (Lambda auto-scales)
+Still works
+
+@99 p
+**Key lesson: Architecture adapts to constraints.**
+@100 h2
+Component Interaction Patterns
+@101 h3
+Pattern 1: Cache-Aside
+@102 pre
+sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+    
+    App->>Cache: GET key
+    alt Cache Hit
+        Cache-->>App: Return data
+    else Cache Miss
+        Cache-->>App: null
+        App->>DB: Query data
+        DB-->>App: Return data
+        App->>Cache: SET key (TTL)
+    end
+@103 p
+*Cache-aside pattern: Application quản lý cache logic*
+@104 p
+**When to use:**
+@105 pre
+✓ Read-heavy workload
+✓ Data không thay đổi thường xuyên
+✓ Application có thể handle cache logic
+
+@106 h3
+Pattern 2: Write-Through Cache
+@107 pre
+sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+    
+    App->>Cache: Write data
+    Cache->>DB: Write data
+    DB-->>Cache: Acknowledge
+    Cache-->>App: Success
+@108 p
+*Write-through: Mọi write đi qua cache, cache update DB*
+@109 p
+**When to use:**
+@110 pre
+✓ Data freshness critical
+✓ Read >> Write
+✓ Can accept slower writes
+
+@111 h3
+Pattern 3: Queue-Worker Pattern
+@112 pre
+flowchart LR
+    API[API Server] -->|Enqueue Job| Q[Message Queue]
+    Q -->|Dequeue| W1[Worker 1]
+    Q -->|Dequeue| W2[Worker 2]
+    Q -->|Dequeue| W3[Worker 3]
+    
+    W1 --> DB[(Database)]
+    W2 --> DB
+    W3 --> DB
+    
+    style Q fill:#ff922b
+    style W1 fill:#748ffc
+    style W2 fill:#748ffc
+    style W3 fill:#748ffc
+@113 p
+*Queue-worker: Async processing với retry và scaling*
+@114 p
+**When to use:**
+@115 pre
+✓ Processing takes > 5 seconds
+✓ User doesn't need immediate result
+✓ Need retry logic
+✓ Traffic spiky
+
+@116 h3
+Pattern 4: Read Replica Pattern
+@117 pre
+flowchart TB
+    APP[Application]
+    APP -->|Writes| MASTER[(Master DB)]
+    MASTER -.->|Replicate| SLAVE1[(Slave 1)]
+    MASTER -.->|Replicate| SLAVE2[(Slave 2)]
+    
+    APP -->|Reads| SLAVE1
+    APP -->|Reads| SLAVE2
+    
+    style MASTER fill:#ff6b6b
+    style SLAVE1 fill:#51cf66
+    style SLAVE2 fill:#51cf66
+@118 p
+*Read replicas: Writes đi master, reads từ slaves*
+@119 p
+**When to use:**
+@120 pre
+✓ Read >> Write (70%+ reads)
+✓ Replication lag acceptable (< 1s)
+✓ Single master can handle writes
+
+@121 h2
+Decision Framework: Component Selection
+@122 h3
+Framework Matrix
+@123 pre
+For each component, evaluate:
+
+1. Problem it solves:
+   - Specific bottleneck
+   - Measurable impact
+   - Not "nice to have"
+
+2. Cost (total):
+   - Infrastructure ($)
+   - Development time
+   - Maintenance burden
+   - Operational complexity
+
+3. Alternatives:
+   - Simpler solutions?
+   - Can optimize existing?
+   - Must add now?
+
+4. Risk:
+   - New technology?
+   - Team expertise?
+   - Failure modes?
+
+Decision: Add chỉ khi Problem > Cost + Risk
+
+@124 h3
+Example Decisions
+@125 p
+**Decision 1: Add cache hay không?**
+@126 pre
+Problem:
+- Database queries slow (500ms)
+- Read-heavy (90% reads)
+- 1000 req/s
+
+Solution evaluation:
+
+Option A: Add Redis cache
+Reduce query time 500ms → 10ms
+Reduce DB load 90%
+Cost $100/month
+Cache invalidation complexity
+One more thing to monitor
+
+Option B: Optimize queries + indexes
+Free
+No new infrastructure
+Permanent improvement
+Time investment (1 week)
+Might not be enough
+
+Decision: Try Option B first
+- If queries still > 100ms after optimization
+→ Then add cache
+
+@127 p
+**Decision 2: Queue hay Lambda?**
+@128 pre
+Problem:
+- Image processing takes 10 seconds
+- 1000 uploads/day
+- User can't wait
+
+Solution evaluation:
+
+Option A: SQS + EC2 workers
+Full control
+Predictable cost
+Must manage servers
+$150/month base cost
+
+Option B: Lambda functions
+Auto-scale
+Pay per use (~$20/month for 1000 uploads)
+No server management
+15 minute timeout limit
+Cold start latency
+
+Given: 1000 uploads/day, 10 second processing
+
+Decision: Lambda
+- Cost 7.5x cheaper
+- Auto-scaling included
+- 10 seconds well under 15 min limit
+- Team doesn't manage servers
+
+@129 p
+**Decision 3: CDN hay không?**
+@130 pre
+Problem:
+- Images load slow for international users
+- 10K daily users
+- 50% US, 50% Asia
+
+Solution evaluation:
+
+Option A: Add CloudFront CDN
+Low latency globally
+Reduce S3 costs
+$100/month
+Setup complexity
+
+Option B: S3 Transfer Acceleration
+Faster than normal S3
+Only $5/month
+Not as fast as CDN
+Still origin latency
+
+Option C: Do nothing
+Free
+Poor UX for Asia users
+
+Metrics needed:
+- Measure actual latency: US vs Asia
+- If Asia > 2 seconds → Add CDN
+- If Asia 500ms-1s → Transfer Acceleration
+- If Asia < 500ms → Do nothing
+
+Decision: Data-driven, not assumption-driven
+
+@131 h2
+Common Integration Mistakes
+@132 h3
+Mistake 1: Adding Components "Just In Case"
+@133 pre
+Bad:
+"Let's add Redis cache from day 1"
+"We might need it later"
+
+Good:
+"Database queries average 50ms"
+"For 1000 users, this is fast enough"
+"Add cache when queries > 200ms or traffic > 10K users"
+
+Principle: YAGNI (You Aren't Gonna Need It)
+
+@134 h3
+Mistake 2: Copy-Pasting Netflix Architecture
+@135 pre
+Bad:
+Startup with 100 users:
+- 50 microservices
+- Kubernetes cluster
+- Service mesh
+- Event sourcing
+- CQRS
+"Netflix does it!"
+
+Good:
+Startup with 100 users:
+- Monolith
+- PostgreSQL
+- 1 server
+- Ship fast
+
+Context matters. Netflix có 200M users, 500 teams.
+Bạn không phải Netflix.
+
+@136 h3
+Mistake 3: Premature Optimization
+@137 pre
+Bad:
+"Let's shard database from day 1"
+"We'll eventually need to scale"
+
+Good:
+"We have 1000 users"
+"Single PostgreSQL handles 100K users"
+"We'll shard when we actually hit limits"
+
+Principle: Optimize for NOW, not hypothetical future
+
+@138 h3
+Mistake 4: Ignoring Operational Burden
+@139 pre
+Bad thinking:
+"This architecture is technically perfect!"
+
+Reality check:
+- 10 components to monitor
+- 5 different technologies
+- 3 person team
+- No one has experience với half the stack
+→ Production nightmares
+
+Good thinking:
+"This architecture is simple enough cho team maintain"
+"We understand every component"
+"On-call won't be hell"
+
+@140 h3
+Mistake 5: Not Measuring
+@141 pre
+Bad:
+Add cache → "It feels faster"
+Add queue → "Should help với spikes"
+
+Good:
+Before cache:
+- Avg query time: 500ms
+- P95: 2 seconds
+- Database CPU: 80%
+
+After cache:
+- Avg query time: 50ms (10x faster)
+- P95: 150ms (13x faster)
+- Database CPU: 20% (4x reduction)
+- Cache hit rate: 85%
+
+Measure → Prove impact
+
+@142 h2
+Key Takeaways
+@143 p
+**Integration thinking > Component knowledge:**
+@144 pre
+Biết từng component: Necessary
+Biết combine components: Sufficient
+Biết trade-offs: Mastery
+
+@145 p
+**Architecture là evolutionary:**
+@146 pre
+V1: Simple monolith
+    ↓ (when slow)
+V2: Add cache
+    ↓ (when traffic high)
+V3: Add load balancer
+    ↓ (when writes overload)
+V4: Add read replicas
+    ↓ (when need async)
+V5: Add queue + workers
+
+Each step là response to real problem
+Not predictions
+
+@147 p
+**Component selection framework:**
+@148 pre
+1. What problem? (specific, measurable)
+2. What's the cost? (money, complexity, maintenance)
+3. What's alternative? (simpler solutions?)
+4. Can we wait? (add later when needed?)
+
+Add component chỉ khi: Problem > Cost + Risk
+
+@149 p
+**Real trade-offs matter:**
+@150 pre
+Technical trade-offs: Performance, consistency, availability
+Business trade-offs: Cost, time to market
+Team trade-offs: Expertise, maintenance burden
+User trade-offs: UX, reliability
+
+Good architect balances ALL
+Not just technical
+
+@151 p
+**Start simple, evolve based on data:**
+@152 pre
+Don't: Design for 1M users when you have 100
+Do: Design for current scale + 2-3x growth
+Do: Measure actual bottlenecks
+Do: Evolve architecture incrementally
+
+"Premature optimization is the root of all evil"
+- Donald Knuth
+
+@153 p
+**Context is everything:**
+@154 pre
+Netflix architecture ≠ Your architecture
+Google's scale ≠ Your scale
+Best practices ≠ Best for YOU
+
+Understand context:
+- Current scale
+- Growth rate
+- Team size
+- Budget
+- Timeline
+- Expertise
+
+Then design accordingly
+
+@155 p
+**Checklist trước khi add component:**
+@156 pre
+☐ Có problem cụ thể với metrics không?
+☐ Đã thử optimize existing components chưa?
+☐ Component này solve problem đó không?
+☐ Cost (time + money + complexity) worth it không?
+☐ Team có expertise maintain không?
+☐ Có thể add sau được không?
+
+Nếu không pass checklist → Đừng add
+
+@157 p
+**Final wisdom:**
+@158 p
+System design không phải về dùng technology mới nhất hay phức tạp nhất.
+@159 p
+Nó về **solve real problems với appropriate solutions**.
+@160 p
+Simple solutions cho simple problems.
+Complex solutions chỉ khi thực sự cần.
+@161 p
+**"Make it work, make it right, make it fast - in that order."**
+@162 p
+Master integration thinking, và bạn sẽ design được systems scale millions users.
+@163 p
+**Bài tiếp theo:** Phase 3 - Distributed Systems Fundamentals: Consistency, Consensus, và Distributed Transactions.

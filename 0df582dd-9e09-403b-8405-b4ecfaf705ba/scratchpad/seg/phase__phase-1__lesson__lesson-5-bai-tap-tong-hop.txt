@@ -1,0 +1,998 @@
+@0 h1
+Bài Tập Tổng Hợp: Từ Theory Đến Practice
+@1 p
+Chúc mừng bạn đã hoàn thành tất cả lessons trong Phase 1!
+@2 p
+Bạn đã học về components, communication patterns, data flow, và các khái niệm quan trọng như latency, throughput, CAP theorem.
+@3 p
+Nhưng có một sự thật mà tôi phải nói thẳng: **Đọc hiểu ≠ Làm được.**
+@4 p
+Tôi từng có một mentee đọc xong tất cả tài liệu, nói "Em hiểu hết rồi!" Nhưng khi tôi cho một bài tập đơn giản: "Thiết kế URL shortener", anh ta ngồi im 20 phút không biết bắt đầu từ đâu.
+@5 p
+**Why?** Vì thiếu practice. Thiếu apply concepts vào real scenarios.
+@6 p
+Lesson này sẽ fix điều đó. Ba bài tập được thiết kế để:
+@7 li
+**Force bạn think như architect** (không còn copy-paste solutions)
+@8 li
+**Apply tất cả concepts đã học** (components, data flow, trade-offs)
+@9 li
+**Build confidence** (sau khi làm xong, bạn sẽ thấy "Mình làm được đấy!")
+@10 p
+Đừng skip. Đây là phần quan trọng nhất của Phase 1.
+@11 h2
+Cách Làm Bài Tập Hiệu Quả
+@12 p
+**Rules:**
+@13 li
+**Không Google ngay** - Thử think 15 phút trước
+@14 li
+**Vẽ ra giấy/whiteboard** - Drawing forces clarity
+@15 li
+**Explain cho người khác** - Hoặc rubber duck
+@16 li
+**Compare với solution** - Sau khi làm xong
+@17 li
+**Iterate** - Làm lại với approach khác
+@18 p
+**Mindset:**
+@19 p
+Không có "đúng/sai" absolute. Chỉ có "fit/không fit" với context.
+@20 p
+Nếu bạn có reasoning tốt cho decisions, đó là good design.
+@21 h2
+Bài 1: Phân Tích Hệ Thống Thực Tế
+@22 h3
+Mục Tiêu
+@23 p
+Develop system-level thinking bằng cách reverse engineer một app bạn dùng hàng ngày.
+@24 h3
+Đề Bài
+@25 p
+Chọn **1 app** bạn hay dùng:
+@26 li
+Facebook
+@27 li
+Instagram
+@28 li
+Shopee
+@29 li
+Grab
+@30 li
+TikTok
+@31 p
+**Nhiệm vụ:**
+@32 h4
+Part A: Vẽ Sơ Đồ Components
+@33 p
+Identify và vẽ:
+@34 pre
+1. Client (web/mobile app)
+2. Load balancer(s)
+3. Application servers
+4. Cache layer(s)
+5. Database(s)
+6. CDN (nếu có)
+7. Message queues (nếu có)
+
+@35 p
+**Example structure:**
+@36 pre
+flowchart TD
+    Client[Mobile App]
+    CDN[CDN Static Assets]
+    LB[Load Balancer]
+    API1[API Server 1]
+    API2[API Server 2]
+    Cache[Redis Cache]
+    DB[(Database)]
+    Queue[Message Queue]
+    Worker[Background Workers]
+    
+    Client --> CDN
+    Client --> LB
+    LB --> API1
+    LB --> API2
+    API1 --> Cache
+    API2 --> Cache
+    Cache --> DB
+    API1 --> Queue
+    Queue --> Worker
+    Worker --> DB
+@37 p
+**Tips:**
+@38 p
+Hãy suy luận dựa trên:
+@39 li
+**Scale** - Bao nhiêu users? → Cần cache, LB, multiple servers
+@40 li
+**Features** - Real-time chat? → WebSocket servers, message queue
+@41 li
+**Performance** - Load nhanh? → CDN, aggressive caching
+@42 h4
+Part B: Trace Data Flow
+@43 p
+Pick **1 user action** và trace từ đầu đến cuối.
+@44 p
+**Examples:**
+@45 li
+**Instagram:** User posts a photo
+@46 li
+**Shopee:** User places an order
+@47 li
+**Grab:** User books a ride
+@48 p
+**Format:**
+@49 pre
+1. User action: [Describe]
+
+2. Request flow:
+   Client → Component A → Component B → Component C
+
+3. Data transformations:
+   - At Component A: [What happens]
+   - At Component B: [What happens]
+   - At Component C: [What happens]
+
+4. Response flow:
+   Component C → Component B → Component A → Client
+
+5. Async processes (if any):
+   - Background job X
+   - Notification Y
+
+@50 p
+**Example: Instagram Post Photo**
+@51 pre
+sequenceDiagram
+    participant U as User
+    participant CDN as CDN
+    participant LB as Load Balancer
+    participant API as API Server
+    participant Q as Message Queue
+    participant W as Workers
+    participant DB as Database
+    participant Cache as Redis
+    
+    U->>CDN: Upload image
+    CDN-->>U: Return image URL
+    U->>LB: POST /api/posts {image_url, caption}
+    LB->>API: Forward request
+    API->>DB: Save post metadata
+    API->>Q: Add job: generate_thumbnail
+    API->>Q: Add job: fanout_to_followers
+    API-->>U: Success (200ms)
+    
+    Q->>W: Worker picks job
+    W->>CDN: Download image
+    W->>W: Generate thumbnail
+    W->>CDN: Upload thumbnail
+    W->>DB: Update post with thumbnail
+    
+    Q->>W: Fanout worker
+    W->>DB: Get follower IDs
+    W->>Cache: Write to each follower's feed cache
+@52 p
+**Analysis:**
+@53 pre
+Sync part (200ms):
+- Upload image to CDN
+- Save post metadata
+- Add jobs to queue
+- Return success
+
+Async part (1-2 minutes):
+- Generate thumbnails
+- Distribute to followers' feeds
+- Send notifications
+
+Why async? 
+- User doesn't need to wait for thumbnail
+- Followers don't need instant update
+- Can handle millions of followers
+
+@54 h4
+Part C: Dự Đoán Bottlenecks
+@55 p
+Based on sơ đồ của bạn, identify:
+@56 p
+**1. Current bottleneck (at normal load):**
+@57 pre
+Component: [?]
+Reason: [Why is this slow?]
+Evidence: [How do you know?]
+
+@58 p
+**2. Future bottleneck (at 10x scale):**
+@59 pre
+Component: [?]
+Reason: [What will break first?]
+Impact: [What happens when it breaks?]
+
+@60 p
+**3. Solutions:**
+@61 pre
+Short-term: [Quick fix]
+Long-term: [Proper solution]
+Trade-offs: [What do we sacrifice?]
+
+@62 h3
+Giải Mẫu Tham Khảo
+@63 p
+**Example: Shopee - User Places Order**
+@64 p
+**Components:**
+@65 pre
+Client: Mobile app
+CDN: Product images, static assets
+Load Balancer: Distribute traffic
+API Servers: Order processing (10+ servers)
+Cache: Redis (product info, inventory)
+Databases:
+  - Product DB (read replicas)
+  - Order DB (master-slave)
+  - User DB (master-slave)
+Message Queue: RabbitMQ
+Workers: Payment processing, notification
+
+@66 p
+**Data Flow:**
+@67 pre
+1. User clicks "Place Order"
+
+2. Request:
+   App → LB → API Server
+
+3. API Server:
+   - Validate cart items (from cache)
+   - Check inventory (Redis)
+   - Create order (Order DB)
+   - Reserve inventory (decrease count)
+   - Add to payment queue
+   - Return order_id
+
+4. Response:
+   API → LB → App (show "Processing...")
+
+5. Async:
+   - Payment worker charges card
+   - If success: Update order status
+   - If fail: Release inventory, notify user
+   - Notification worker sends email/SMS
+
+@68 p
+**Bottlenecks:**
+@69 pre
+Current:
+- Inventory check (Redis)
+- Many concurrent users checking same products
+- Solution: Optimistic locking
+
+At 10x scale:
+- Order DB writes (master bottleneck)
+- Solution: Shard by user_id or order_id
+- Trade-off: Cross-shard queries harder
+
+@70 h3
+Self-Check
+@71 p
+Bạn pass bài này khi:
+@72 li
+Diagram có ít nhất 5 components rõ ràng
+@73 li
+Data flow logical và complete
+@74 li
+Bottleneck predictions có reasoning
+@75 li
+Solutions có trade-off analysis
+@76 h2
+Bài 2: Design URL Shortener (bit.ly)
+@77 h3
+Mục Tiêu
+@78 p
+Thiết kế một hệ thống hoàn chỉnh từ requirements đến implementation details.
+@79 h3
+Requirements
+@80 p
+**Functional:**
+@81 li
+User submits long URL → System returns short URL
+@82 li
+User clicks short URL → Redirect to original URL
+@83 li
+Custom short URLs (optional)
+@84 p
+**Non-functional:**
+@85 li
+**Write:** 1 million URLs shortened/day
+@86 li
+**Read:** 100 million redirects/day
+@87 li
+**Latency:** < 10ms for redirects
+@88 li
+**Availability:** 99.9%
+@89 h3
+Part A: Capacity Estimation
+@90 p
+Calculate để understand scale.
+@91 p
+**Write (Shorten):**
+@92 pre
+1M URLs/day
+= 1M / (24 * 3600) 
+≈ 12 URLs/second
+
+Peak (3x average): 36 URLs/second
+
+Conclusion: Write is light, easy to handle
+
+@93 p
+**Read (Redirect):**
+@94 pre
+100M redirects/day
+= 100M / (24 * 3600)
+≈ 1,157 requests/second
+
+Peak (3x): ~3,500 requests/second
+
+Conclusion: Read-heavy (100:1 ratio) → Cache-friendly
+
+@95 p
+**Storage:**
+@96 pre
+1 URL mapping ≈ 500 bytes
+1M URLs/day * 365 days * 5 years = 1.825B URLs
+1.825B * 500 bytes ≈ 912 GB ≈ 1 TB
+
+Conclusion: Storage không phải vấn đề
+
+@97 h3
+Part B: API Design
+@98 p
+Define clear interfaces.
+@99 pre
+POST /api/shorten
+Request:
+{
+  "long_url": "https://example.com/very/long/url",
+  "custom_alias": "mylink" (optional)
+}
+
+Response:
+{
+  "short_url": "https://short.ly/abc123",
+  "long_url": "https://example.com/very/long/url",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+
+---
+
+GET /{short_code}
+Response: 302 Redirect to long_url
+
+@100 h3
+Part C: Core Problem - Generate Short Code
+@101 p
+**Challenge:** Convert long URL → short unique code
+@102 p
+**Option 1: Hash-based**
+@103 p
+**Analysis:**
+@104 pre
+Deterministic (same URL → same code)
+Collision possible
+Need to check DB for duplicates
+Predictable (security issue)
+
+@105 p
+**Option 2: Auto-increment + Base62 Encode**
+@106 p
+**Length calculation:**
+@107 pre
+62^6 = 56 billion combinations
+62^7 = 3.5 trillion combinations
+
+With 6 characters: 56B URLs (enough!)
+
+@108 p
+**Analysis:**
+@109 pre
+No collision (unique ID)
+Short codes (6-7 chars)
+Predictable order (can be feature or bug)
+Sequential (might reveal volume)
+
+@110 p
+**Recommendation:** Use Option 2 (Base62) cho simplicity và reliability.
+@111 h3
+Part D: Database Schema
+@112 p
+**Why this design:**
+@113 li
+**urls:** Core data, need fast lookup by short_code
+@114 li
+**clicks:** Analytics data, can be separate (won't slow down redirects)
+@115 li
+**Indexes:** Critical for performance
+@116 li
+**click_count:** Denormalized for quick display
+@117 h3
+Part E: Architecture Design
+@118 pre
+flowchart TD
+    User[Users]
+    DNS[DNS/CDN]
+    LB[Load Balancer]
+    API1[API Server 1]
+    API2[API Server 2]
+    API3[API Server 3]
+    Cache[(Redis Cache)]
+    DB[(PostgreSQL)]
+    Analytics[Analytics Queue]
+    Worker[Analytics Workers]
+    
+    User --> DNS
+    DNS --> LB
+    LB --> API1
+    LB --> API2
+    LB --> API3
+    
+    API1 --> Cache
+    API2 --> Cache
+    API3 --> Cache
+    
+    Cache -.->|Cache miss| DB
+    
+    API1 --> Analytics
+    Analytics --> Worker
+    Worker --> DB
+@119 p
+**Flow: Shorten URL**
+@120 pre
+1. User → POST /api/shorten
+2. API Server:
+   - Generate ID (auto-increment)
+   - Encode to Base62
+   - Save to DB
+   - Return short URL
+3. Time: ~50ms
+
+@121 p
+**Flow: Redirect**
+@122 pre
+1. User → GET /abc123
+2. API Server:
+   - Check Redis cache
+   - If hit: Return long_url (5ms)
+   - If miss: Query DB → Cache result → Return (50ms)
+3. Log click event (async, don't wait)
+4. 302 Redirect
+
+@123 p
+**Caching Strategy:**
+@124 h3
+Part F: Scale to 100M Clicks/Day
+@125 p
+**Problem:**
+@126 pre
+100M clicks/day = 1,157 req/s (avg)
+Peak: 3,500 req/s
+
+Challenges:
+1. Database read load
+2. Cache capacity
+3. Analytics writes
+
+@127 p
+**Solutions:**
+@128 p
+**1. Database Reads:**
+@129 pre
+Problem: 3,500 req/s * 50ms = 175 concurrent queries
+
+Solution A: Add read replicas (3 slaves)
+- Distribute reads across replicas
+- Each handles ~1,200 req/s → Easy
+
+Solution B: Aggressive caching (99% hit rate)
+- Only 1% goes to DB = 35 req/s
+- Very manageable
+
+@130 p
+**2. Cache Strategy:**
+@131 pre
+Cache hot URLs:
+- 80/20 rule: 20% URLs get 80% traffic
+- Cache top 1M URLs
+- Memory: 1M * 500 bytes = 500 MB
+- Cheap, fast
+
+LRU eviction:
+- Auto-remove least recently used
+- Always keep hot data
+
+@132 p
+**3. Analytics:**
+@133 pre
+Problem: 3,500 writes/second to clicks table
+
+Solution: Async queue + batch writes
+- Buffer clicks in queue
+- Worker batch insert every 10 seconds
+- Reduces DB writes by 10x
+
+Trade-off: Analytics delayed by ~10s (acceptable)
+
+@134 p
+**Final Architecture:**
+@135 pre
+flowchart TD
+    Users[Users Worldwide]
+    GeoDNS[GeoDNS]
+    CDN1[CDN - US Region]
+    CDN2[CDN - Asia Region]
+    
+    LB1[Load Balancer US]
+    LB2[Load Balancer Asia]
+    
+    API1[API Servers US]
+    API2[API Servers Asia]
+    
+    Cache1[(Redis US)]
+    Cache2[(Redis Asia)]
+    
+    DB_Master[(DB Master)]
+    DB_Slave1[(DB Slave 1)]
+    DB_Slave2[(DB Slave 2)]
+    
+    Queue[Analytics Queue]
+    Workers[Batch Workers]
+    
+    Users --> GeoDNS
+    GeoDNS -->|US traffic| CDN1
+    GeoDNS -->|Asia traffic| CDN2
+    
+    CDN1 --> LB1
+    CDN2 --> LB2
+    
+    LB1 --> API1
+    LB2 --> API2
+    
+    API1 --> Cache1
+    API2 --> Cache2
+    
+    Cache1 -.->|Miss| DB_Slave1
+    Cache2 -.->|Miss| DB_Slave2
+    
+    API1 --> Queue
+    API2 --> Queue
+    Queue --> Workers
+    Workers --> DB_Master
+    
+    DB_Master -.->|Replicate| DB_Slave1
+    DB_Master -.->|Replicate| DB_Slave2
+@136 p
+**Why this works:**
+@137 li
+**GeoDNS:** Route users to nearest region → Low latency
+@138 li
+**CDN:** Cache redirects at edge → Ultra fast
+@139 li
+**Multiple regions:** High availability
+@140 li
+**Redis cache:** 99% hit rate → Minimal DB load
+@141 li
+**Read replicas:** Scale reads easily
+@142 li
+**Async analytics:** Don't slow down redirects
+@143 h3
+Self-Check
+@144 p
+Bạn pass bài này khi:
+@145 li
+Capacity estimation có calculations rõ ràng
+@146 li
+API design clean và RESTful
+@147 li
+Database schema có indexes đúng chỗ
+@148 li
+Architecture handle được scale requirements
+@149 li
+Có explain trade-offs của decisions
+@150 h2
+Bài 3: Trade-off Analysis - User Upload Avatar
+@151 h3
+Mục Tiêu
+@152 p
+Practice so sánh approaches và make informed decisions.
+@153 h3
+Context
+@154 p
+Feature: User uploads avatar (profile picture)
+@155 p
+**Processing needed:**
+@156 li
+Validate image (format, size)
+@157 li
+Resize to multiple sizes (thumbnail, medium, large)
+@158 li
+Upload to S3
+@159 li
+Update user record
+@160 h3
+Approach A: Synchronous
+@161 pre
+sequenceDiagram
+    participant U as User
+    participant API as API Server
+    participant S3 as AWS S3
+    participant DB as Database
+    
+    U->>API: Upload image
+    API->>API: Validate (500ms)
+    API->>API: Resize 3 sizes (2s)
+    API->>S3: Upload originals (1s)
+    API->>S3: Upload resized (1s)
+    API->>DB: Update user record (100ms)
+    API-->>U: Success (4.6s total)
+@162 p
+**Implementation:**
+@163 h3
+Approach B: Asynchronous
+@164 pre
+sequenceDiagram
+    participant U as User
+    participant API as API Server
+    participant S3 as AWS S3
+    participant Q as Message Queue
+    participant W as Worker
+    participant DB as Database
+    
+    U->>API: Upload image
+    API->>API: Validate (500ms)
+    API->>S3: Upload original (1s)
+    API->>DB: Save temp URL (100ms)
+    API->>Q: Add resize job
+    API-->>U: Success (1.6s)
+    
+    Note over U: User sees upload success
+    
+    Q->>W: Worker picks job
+    W->>S3: Download original
+    W->>W: Resize 3 sizes (2s)
+    W->>S3: Upload resized (1s)
+    W->>DB: Update final URLs (100ms)
+    
+    Note over U: Avatar appears after ~5s
+@165 p
+**Implementation:**
+@166 h3
+Part A: Comparative Analysis
+@167 p
+**Latency:**
+@168 pre
+Synchronous:
+- User waits: 4.6 seconds
+- Perceived speed: Slow
+- Timeout risk: High (if > 30s)
+
+Asynchronous:
+- User waits: 1.6 seconds (65% faster)
+- Perceived speed: Fast
+- Timeout risk: Low
+
+@169 p
+**User Experience:**
+@170 pre
+Synchronous:
+Immediate result
+Simple UX (upload → done)
+Long wait time
+Progress bar needed
+User can't do anything else
+
+Asynchronous:
+Fast feedback
+Can continue using app
+Delayed result
+Need to show "processing" state
+Need to handle refresh (state persistence)
+
+@171 p
+**Complexity:**
+@172 pre
+Synchronous:
+Simple code
+Easy to debug
+No infrastructure needed
+Hard to scale (blocks server thread)
+
+Asynchronous:
+Scalable (handle traffic spikes)
+Server threads freed up
+More complex code
+Need message queue infrastructure
+Error handling harder (retry logic)
+Need monitoring
+
+@173 p
+**Error Handling:**
+@174 pre
+Synchronous:
+- Error → Return to user immediately
+- User can retry
+- Simple rollback
+
+Asynchronous:
+- Error → User already got success response
+- Need notification system
+- Complex retry logic
+- Partial state handling
+
+@175 h3
+Part B: Decision Framework
+@176 p
+**Choose Synchronous when:**
+@177 pre
+Processing is fast (< 2 seconds)
+User needs immediate confirmation
+Simple use case
+Low traffic
+Team small (can't maintain complex infrastructure)
+
+Examples:
+- Form submission
+- Simple CRUD operations
+- User login
+
+@178 p
+**Choose Asynchronous when:**
+@179 pre
+Processing is slow (> 3 seconds)
+User can wait for result
+High traffic (need to handle spikes)
+Multiple expensive operations
+Can tolerate eventual consistency
+
+Examples:
+- File uploads with processing
+- Report generation
+- Email sending
+- Video transcoding
+- Data import/export
+
+@180 h3
+Part C: Hybrid Approach (Best of Both Worlds)
+@181 p
+**Strategy: Quick sync + Deep async**
+@182 p
+**Why this is often best:**
+@183 pre
+Fast user feedback (2s)
+Something to show immediately
+Better quality eventually
+Handles traffic spikes
+More complex implementation
+
+@184 h3
+Part D: Real-World Example
+@185 p
+**What does Facebook/Instagram do?**
+@186 p
+**Instagram approach:**
+@187 pre
+1. User uploads photo
+2. Instant upload to CDN (original)
+3. Show original immediately (may be large)
+4. Background: Process filters, generate sizes
+5. Swap to processed version when ready
+6. User sees progress: "Processing..." → Done
+
+Why?
+- 1B+ users → Must be async
+- User engagement > Perfect quality
+- Can't make user wait 10 seconds
+
+@188 p
+**Key insight:** User experience > Technical perfection.
+@189 h3
+Self-Check
+@190 p
+Bạn pass bài này khi:
+@191 li
+So sánh được latency của 2 approaches
+@192 li
+Explain UX differences clearly
+@193 li
+Understand complexity trade-offs
+@194 li
+Có decision framework rõ ràng
+@195 li
+Can propose hybrid approach
+@196 h2
+Checklist Tổng Hợp Phase 1
+@197 p
+Sau khi hoàn thành 3 bài tập, đánh giá bản thân:
+@198 h3
+Core Understanding
+@199 p
+**Tôi có thể vẽ architecture diagram** của bất kỳ app nào tôi dùng
+@200 li
+Test: Chọn 1 app random, vẽ trong 10 phút
+@201 p
+**Tôi hiểu bottleneck và cách tìm**
+@202 li
+Test: Given diagram, identify bottleneck và explain why
+@203 p
+**Tôi có thể trace data flow** từ client đến database
+@204 li
+Test: Explain flow của 1 user action bất kỳ
+@205 p
+**Tôi hiểu sync vs async trade-offs**
+@206 li
+Test: Given feature, choose approach và defend decision
+@207 h3
+Practical Skills
+@208 p
+**Tôi có thể estimate capacity**
+@209 li
+Test: Calculate QPS, storage cho requirements
+@210 p
+**Tôi có thể design API**
+@211 li
+Test: Define endpoints cho 1 feature
+@212 p
+**Tôi có thể design database schema**
+@213 li
+Test: Create tables với proper indexes
+@214 p
+**Tôi biết khi nào cần cache**
+@215 li
+Test: Identify cacheable data và TTL strategy
+@216 h3
+Concept Mastery
+@217 p
+**Tôi hiểu Latency vs Throughput**
+@218 li
+Test: Explain difference với real example
+@219 p
+**Tôi hiểu Availability tính toán**
+@220 li
+Test: Calculate downtime cho 99.9% vs 99.99%
+@221 p
+**Tôi hiểu CAP theorem** ở mức basic
+@222 li
+Test: Given system, identify CA, CP, or AP
+@223 p
+**Tôi có thể analyze trade-offs**
+@224 li
+Test: Compare 2 approaches với pros/cons
+@225 h3
+Scoring
+@226 pre
+10-12 checked: Excellent - Ready for Phase 2 ✅
+7-9 checked: Good - Review weak areas, then move on
+4-6 checked: Need more practice - Redo exercises
+0-3 checked: Review Phase 1 content again
+
+@227 p
+**Honest self-assessment is critical.** Don't rush.
+@228 h2
+Common Mistakes & How to Fix
+@229 h3
+Mistake 1: Over-Engineering
+@230 p
+**Symptom:**
+@231 pre
+Bài URL shortener:
+- Kubernetes cluster
+- Microservices (5 services)
+- Event sourcing
+- CQRS
+- Service mesh
+
+For 1M URLs/day → Overkill!
+
+@232 p
+**Fix:** Start simple. Prove need before adding complexity.
+@233 h3
+Mistake 2: Under-Specifying
+@234 p
+**Symptom:**
+@235 pre
+"Dùng database"
+- SQL hay NoSQL?
+- Schema như thế nào?
+- Indexes ở đâu?
+
+@236 p
+**Fix:** Be specific. Justify choices.
+@237 h3
+Mistake 3: Ignoring Numbers
+@238 p
+**Symptom:**
+@239 pre
+"Cần cache vì performance"
+- Không tính QPS
+- Không estimate hit rate
+- Không tính memory needed
+
+@240 p
+**Fix:** Always calculate. Numbers inform decisions.
+@241 h3
+Mistake 4: No Trade-off Analysis
+@242 p
+**Symptom:**
+@243 pre
+"Dùng approach A"
+- Không mention downsides
+- Không compare với alternatives
+
+@244 p
+**Fix:** Every decision có trade-offs. State them.
+@245 h2
+Next Steps
+@246 p
+**Nếu pass checklist:**
+@247 p
+🎉 Congratulations! Bạn đã complete Phase 1.
+@248 p
+**Phase 2: Core Building Blocks** đang đợi bạn:
+@249 li
+Deep dive vào Cache strategies
+@250 li
+Database scaling patterns
+@251 li
+Message queues
+@252 li
+And more...
+@253 p
+**Nếu chưa pass:**
+@254 p
+Đừng rush. System design không phải race.
+@255 p
+**Recommendations:**
+@256 li
+Review Phase 1 lessons
+@257 li
+Redo exercises với approach khác
+@258 li
+Explain concepts cho người khác
+@259 li
+Practice with more real apps
+@260 li
+Revisit checklist sau 1 tuần
+@261 h2
+Key Takeaways
+@262 p
+**Practice > Theory**
+@263 p
+Bạn có thể đọc 100 cuốn sách về system design, nhưng không practice thì vẫn không design được.
+@264 p
+**Think, Don't Memorize**
+@265 p
+Không có template cố định. Mỗi system khác nhau. Học cách think, không phải remember solutions.
+@266 p
+**Trade-offs Everywhere**
+@267 p
+Mọi decision có trade-offs. Good architect là người:
+@268 li
+Hiểu trade-offs
+@269 li
+Choose based on context
+@270 li
+Can defend decisions
+@271 p
+**Start Simple, Iterate**
+@272 p
+Best designs thường evolve từ simple designs. Don't over-engineer từ đầu.
+@273 p
+**Numbers Matter**
+@274 p
+Capacity estimation, QPS calculation, storage sizing - Không phải decoration. Chúng inform critical decisions.
+@275 p
+Hãy dành thời gian với 3 bài tập này. Làm kỹ. Hiểu sâu.
+@276 p
+Foundation vững = Everything sau dễ hơn.
+@277 p
+Good luck! 🚀

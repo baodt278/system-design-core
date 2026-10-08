@@ -1,0 +1,719 @@
+@0
+CDN & ⟦Điện Toán Biên|Edge Computing⟧ - ⟦Bộ Nhớ Đệm Phân Tán|Distributed Cache⟧ Gần Người Dùng
+@1
+Bạn có một ⟦máy chủ|server⟧ API ở Singapore. Người dùng ở Brazil truy cập website → ⟦độ trễ|latency⟧ 300ms chỉ riêng cho ⟦một vòng khứ hồi mạng|network round trip⟧.
+@2
+Mã của bạn tối ưu đến đâu cũng không quan trọng. **Không thể ăn gian các định luật vật lý.**
+@3
+Ánh sáng đi qua cáp quang có tốc độ giới hạn. Khoảng cách từ Singapore → Brazil = ~18.000km. ⟦Một vòng khứ hồi|Round trip⟧ tối thiểu mất ~240ms, thực tế là 300-400ms do ⟦định tuyến|routing⟧.
+@4
+**Giải pháp duy nhất: Đưa nội dung đến gần người dùng hơn.**
+@5
+Đây chính là lý do CDN (⟦Mạng phân phối nội dung|Content Delivery Network⟧) tồn tại.
+@6
+Bài này dạy bạn:
+@7
+Kiến trúc CDN trong thực tế
+@8
+Cách tối ưu ⟦nội dung tĩnh|static content⟧ và ⟦nội dung động|dynamic content⟧
+@9
+⟦Vô hiệu hoá bộ nhớ đệm|Cache invalidation⟧ ở ⟦điểm biên|edge⟧
+@10
+⟦Điện toán biên|Edge computing⟧ - chạy logic gần người dùng
+@11
+Khi nào CDN thực sự cần thiết
+@12
+CDN Là Gì? (Không Chỉ Là ⟦Bộ Nhớ Đệm|Cache⟧)
+@13
+**CDN = Hệ thống ⟦bộ nhớ đệm phân tán|distributed cache⟧ được triển khai trên toàn cầu tại các ⟦vị trí biên|edge locations⟧.**
+@14
+Nhưng CDN không chỉ là ⟦bộ nhớ đệm|cache⟧ đơn thuần. CDN là:
+@15
+**1. Phân bố theo địa lý**
+@16
+Có ⟦máy chủ|servers⟧ ở nhiều địa điểm trên thế giới
+@17
+Người dùng được tự động ⟦định tuyến|route⟧ đến ⟦máy chủ|server⟧ gần nhất
+@18
+**2. ⟦Lưu đệm|Caching⟧ chuyên biệt**
+@19
+Tối ưu cho ⟦nội dung tĩnh|static content⟧ (hình ảnh, video, CSS, JS)
+@20
+Xử lý lượng ⟦yêu cầu|requests⟧ đồng thời khổng lồ
+@21
+Kiến trúc ⟦bộ nhớ đệm phân tầng|tiered cache⟧
+@22
+**3. Tối ưu mạng**
+@23
+⟦Định tuyến|Routing⟧ tốt hơn internet công cộng
+@24
+Tối ưu kết nối TCP
+@25
+Hỗ trợ HTTP/2, HTTP/3
+@26
+**4. Lớp bảo mật**
+@27
+Chống DDoS
+@28
+WAF (⟦Tường lửa ứng dụng web|Web Application Firewall⟧)
+@29
+⟦Kết thúc|termination⟧ SSL/TLS
+@30
+**⟦Mô hình tư duy|Mental model⟧:** CDN = ⟦tầng bộ nhớ đệm|cache layer⟧ + tầng mạng + tầng bảo mật ở ⟦điểm biên|edge⟧.
+@31
+Kiến Trúc CDN - Từ ⟦Máy Chủ Gốc|Origin⟧ Đến ⟦Điểm Biên|Edge⟧
+@32
+flowchart TB
+    subgraph Users["Người dùng toàn cầu"]
+        U1[Người dùng Việt Nam]
+        U2[Người dùng Brazil]
+        U3[Người dùng châu Âu]
+    end
+
+    subgraph Edge["Các vị trí biên"]
+        E1[Biên Singapore]
+        E2[Biên São Paulo]
+        E3[Biên Frankfurt]
+    end
+
+    subgraph Regional["Các POP khu vực"]
+        R1[Khu vực châu Á]
+        R2[Khu vực châu Mỹ]
+        R3[Khu vực EU]
+    end
+
+    Origin[Máy chủ gốc]
+
+    U1 --> E1
+    U2 --> E2
+    U3 --> E3
+
+    E1 -->|Trượt bộ nhớ đệm| R1
+    E2 -->|Trượt bộ nhớ đệm| R2
+    E3 -->|Trượt bộ nhớ đệm| R3
+
+    R1 -->|Trượt bộ nhớ đệm| Origin
+    R2 -->|Trượt bộ nhớ đệm| Origin
+    R3 -->|Trượt bộ nhớ đệm| Origin
+@33
+**Kiến trúc CDN ⟦phân tầng|tiered⟧ (ví dụ Cloudflare, Akamai):**
+@34
+Tầng 1: ⟦Vị Trí Biên|Edge Locations⟧ (200+ địa điểm)
+@35
+**Ở gần người dùng nhất.**
+@36
+⟦Yêu cầu|Request⟧ của người dùng đến ⟦điểm biên|edge⟧ gần nhất (⟦độ trễ|latency⟧ thấp nhất)
+@37
+Lưu đệm ⟦nội dung tĩnh|static content⟧
+@38
+Xử lý phần lớn ⟦yêu cầu|requests⟧
+@39
+Tầng 2: Các POP Khu Vực (⟦Điểm Hiện Diện|Point of Presence⟧)
+@40
+**Tầng tổng hợp.**
+@41
+⟦Điểm biên|Edge⟧ trượt → kiểm tra tầng khu vực
+@42
+Giảm ⟦tải|load⟧ cho ⟦máy chủ gốc|origin⟧
+@43
+Che chắn ⟦máy chủ gốc|origin⟧ khỏi ⟦lưu lượng|traffic⟧ ⟦tăng đột biến|spike⟧
+@44
+Tầng 3: ⟦Máy Chủ Gốc|Origin Server⟧
+@45
+**⟦Máy chủ|Server⟧ thực sự của bạn.**
+@46
+Chỉ phục vụ khi cả ⟦điểm biên|edge⟧ lẫn tầng khu vực đều trượt
+@47
+Được bảo vệ khỏi ⟦lưu lượng|traffic⟧ truy cập trực tiếp
+@48
+Xử lý việc tạo ⟦nội dung động|dynamic content⟧
+@49
+**Luồng thực tế:**
+@50
+Người dùng (Việt Nam)
+  → Biên (Singapore) [TRÚNG - 10ms] ✅
+
+Người dùng (Thái Lan)
+  → Biên (Bangkok) [TRƯỢT]
+  → Khu vực (châu Á) [TRÚNG - 50ms] ✅
+
+Người dùng (Myanmar - địa điểm mới)
+  → Biên (Myanmar) [TRƯỢT]
+  → Khu vực (châu Á) [TRƯỢT]
+  → Máy chủ gốc (Singapore) [200ms] ⚠️
+
+@51
+**Hơn 90% ⟦yêu cầu|requests⟧ được phục vụ từ ⟦điểm biên|edge⟧/khu vực. ⟦Máy chủ gốc|Origin⟧ chỉ xử lý <10%.**
+@52
+⟦Tiêu Đề Bộ Nhớ Đệm|Cache Headers⟧ - Điều Khiển Hành Vi CDN
+@53
+Hành vi ⟦lưu đệm|caching⟧ của CDN được điều khiển bởi các ⟦tiêu đề|headers⟧ HTTP.
+@54
+⟦Tiêu Đề|Header⟧ Cache-Control
+@55
+**Quan trọng nhất để điều khiển việc ⟦lưu đệm|caching⟧.**
+@56
+**Các ⟦chỉ thị|Directives⟧:**
+@58
+Nội dung có thể được lưu đệm bởi bất kỳ ai (CDN, trình duyệt, proxy)
+@59
+Dùng cho nội dung công khai
+@61
+Chỉ trình duyệt lưu đệm, CDN không lưu đệm
+@62
+Dùng cho nội dung riêng của từng người dùng
+@63
+**max-age=<số giây>**
+@64
+⟦Bộ nhớ đệm|Cache⟧ còn hiệu lực trong bao lâu
+@65
+`max-age=3600` = lưu đệm 1 giờ
+@66
+**s-maxage=<số giây>**
+@67
+Ghi đè max-age cho ⟦bộ nhớ đệm dùng chung|shared cache⟧ (CDN)
+@68
+Trình duyệt dùng max-age, CDN dùng s-maxage
+@70
+Nội dung sẽ không bao giờ thay đổi
+@71
+CDN không cần ⟦xác thực lại|revalidate⟧
+@73
+Phải ⟦xác thực lại|revalidate⟧ với ⟦máy chủ gốc|origin⟧ ở mỗi ⟦yêu cầu|request⟧
+@74
+⟦Bộ nhớ đệm|Cache⟧ có thể lưu trữ nhưng bắt buộc phải kiểm tra
+@76
+Không lưu đệm gì cả
+@77
+Dữ liệu nhạy cảm
+@78
+Ví Dụ Thực Tế
+@79
+**⟦Tài nguyên tĩnh|Static assets⟧ (CSS/JS có ⟦đánh phiên bản|versioning⟧):**
+@80
+Lưu đệm 1 năm
+@81
+Không bao giờ thay đổi (vì có phiên bản trong URL)
+@82
+`style.abc123.css` → thay đổi mã → `style.def456.css`
+@83
+**Hình ảnh:**
+@84
+Lưu đệm 1 ngày
+@85
+⟦Xác thực lại|Revalidate⟧ sau đó
+@86
+**⟦Phản hồi|Responses⟧ API (có thể lưu đệm):**
+@87
+Trình duyệt lưu đệm 5 phút
+@88
+CDN lưu đệm 10 phút
+@89
+⟦Nhất quán cuối cùng|Eventual consistency⟧ là chấp nhận được
+@90
+**Dữ liệu riêng của người dùng:**
+@91
+Chỉ trình duyệt lưu đệm
+@92
+Bắt buộc xác minh ở mỗi ⟦yêu cầu|request⟧
+@93
+**Dữ liệu nhạy cảm:**
+@94
+Không lưu đệm ở bất kỳ đâu
+@95
+ETag & ⟦Yêu Cầu Có Điều Kiện|Conditional Requests⟧
+@96
+**ETag = dấu vân tay của nội dung.**
+@97
+**Luồng ⟦xác thực lại|revalidation⟧:**
+@98
+sequenceDiagram
+    participant Browser
+    participant CDN
+    participant Origin
+
+    Note over Browser,Origin: Yêu cầu ban đầu
+    Browser->>CDN: GET /image.jpg
+    CDN->>Origin: GET /image.jpg
+    Origin-->>CDN: 200 OK, ETag: "abc123"
+    CDN-->>Browser: 200 OK, ETag: "abc123"
+
+    Note over Browser,Origin: Xác thực lại (sau max-age)
+    Browser->>CDN: GET /image.jpg<br/>If-None-Match: "abc123"
+    CDN->>Origin: If-None-Match: "abc123"
+    Origin-->>CDN: 304 Not Modified
+    CDN-->>Browser: 304 Not Modified
+@99
+**304 Not Modified = nội dung chưa thay đổi, dùng lại ⟦bộ nhớ đệm|cache⟧.**
+@100
+Tiết kiệm ⟦băng thông|Bandwidth⟧: Không phải truyền lại toàn bộ nội dung.
+@101
+⟦Nội Dung Tĩnh|Static Content⟧ và ⟦Nội Dung Động|Dynamic Content⟧ - ⟦Chiến Lược Lưu Đệm|Caching Strategy⟧
+@102
+⟦Nội Dung Tĩnh|Static Content⟧
+@103
+**Nội dung không thay đổi hoặc ít thay đổi.**
+@104
+**Ví dụ:**
+@105
+Hình ảnh, video
+@106
+Tệp CSS, JavaScript
+@107
+Phông chữ
+@108
+PDF, tài liệu
+@109
+**Chiến lược CDN:**
+@110
+**Tỷ lệ ⟦trúng bộ nhớ đệm|cache hit⟧: 95%+**
+@111
+**⟦Thực hành tốt nhất|Best practices⟧:**
+@112
+**URL có phiên bản:** `app.v123.js` thay vì `app.js`
+@113
+**Băm nội dung:** `bundle.abc123.js`
+@114
+**Tên miền riêng:** `static.example.com` (không có cookie)
+@115
+⟦Nội Dung Động|Dynamic Content⟧
+@116
+**Nội dung được ⟦cá nhân hoá|personalized⟧ hoặc thay đổi thường xuyên.**
+@117
+**Ví dụ:**
+@118
+⟦Bảng điều khiển|Dashboard⟧ của người dùng
+@119
+⟦Phản hồi|Responses⟧ API
+@120
+Gợi ý được ⟦cá nhân hoá|personalized⟧
+@121
+Dữ liệu ⟦thời gian thực|real-time⟧
+@122
+**Thách thức:** Mỗi người dùng một khác, lưu đệm không hiệu quả?
+@123
+**Giải pháp: Các ⟦chiến lược lưu đệm|caching strategies⟧ thông minh.**
+@124
+Chiến Lược 1: Lưu Đệm Phần Dùng Chung
+@125
+Lưu đệm ⟦khuôn mẫu|template⟧, dữ liệu người dùng được lấy riêng.
+@126
+Chiến Lược 2: ⟦Tiêu Đề|Header⟧ Vary
+@127
+CDN lưu đệm các bản sao riêng biệt dựa trên ⟦tiêu đề|header⟧ Vary.
+@129
+Máy tính và di động: HTML khác nhau
+@130
+Đã đăng nhập và chưa đăng nhập: nội dung khác nhau
+@131
+Chiến Lược 3: Edge Side Includes (ESI - ghép trang ở điểm biên)
+@132
+CDN ghép trang từ nhiều phần:
+@133
+Phần tĩnh: lưu đệm lâu
+@134
+Phần động: lưu đệm ngắn hoặc bỏ qua bộ nhớ đệm
+@135
+⟦Vô Hiệu Hoá Bộ Nhớ Đệm|Cache Invalidation⟧ Ở CDN - Bài Toán Khó
+@136
+**Vấn đề:** Nội dung đã thay đổi ở ⟦máy chủ gốc|origin⟧, nhưng CDN vẫn phục vụ ⟦dữ liệu cũ|stale data⟧.
+@137
+Giải Pháp 1: ⟦API Xoá Bộ Nhớ Đệm|Purge API⟧
+@138
+**Ra lệnh rõ ràng cho CDN xoá ⟦bộ nhớ đệm|cache⟧.**
+@140
+Cập nhật nội dung quan trọng
+@141
+Người dùng tải lên ảnh đại diện mới
+@142
+Giá sản phẩm thay đổi
+@144
+Không tức thì (có ⟦độ trễ lan truyền|propagation delay⟧)
+@145
+⟦Giới hạn tần suất|Rate limits⟧ của API
+@146
+⟦Độ phức tạp|Complexity⟧ trong ứng dụng
+@147
+Giải Pháp 2: ⟦Phá Bộ Nhớ Đệm|Cache Busting⟧ (URL Có Phiên Bản)
+@148
+**Thay đổi URL khi nội dung thay đổi.**
+@149
+**Tốt hơn: ⟦Mã băm nội dung|Content hash⟧**
+@151
+Không cần ⟦API xoá bộ nhớ đệm|purge API⟧
+@152
+Cập nhật tức thì
+@153
+Phiên bản cũ vẫn truy cập được (để ⟦hoàn tác|rollback⟧)
+@154
+**Đây là ⟦thực hành tốt nhất|best practice⟧ cho ⟦tài nguyên tĩnh|static assets⟧.**
+@155
+Giải Pháp 3: TTL Ngắn + Stale-While-Revalidate
+@156
+**Hành vi:**
+@157
+Còn mới trong 60 giây
+@158
+Cũ từ 60 giây đến 1 ngày: phục vụ bản cũ, ⟦xác thực lại|revalidate⟧ ⟦bất đồng bộ|async⟧
+@159
+Sau 1 ngày: bắt buộc phải ⟦xác thực lại|revalidate⟧
+@160
+**⟦Đánh đổi|Trade-off⟧:** Chấp nhận ⟦nhất quán cuối cùng|eventual consistency⟧ để có ⟦hiệu năng|performance⟧.
+@161
+Giải Pháp 4: ⟦Khoá Thay Thế|Surrogate Keys⟧ (Nâng Cao)
+@162
+**Gắn thẻ các nội dung liên quan bằng các khoá.**
+@163
+**Xoá theo thẻ:**
+@164
+Xoá nhiều URL cùng lúc mà không cần biết chính xác từng URL.
+@165
+⟦Điện Toán Biên|Edge Computing⟧ - Chạy Logic Gần Người Dùng
+@166
+**Sự tiến hoá của CDN: Từ ⟦lưu đệm|cache⟧ → tính toán.**
+@167
+⟦Điện toán biên|Edge computing⟧ = chạy mã tại các ⟦vị trí biên|edge locations⟧, không chỉ lưu đệm.
+@168
+⟦Tình Huống Sử Dụng|Use Cases⟧
+@169
+1. ⟦Kiểm Thử A/B|A/B Testing⟧ Ở ⟦Điểm Biên|Edge⟧
+@170
+**Lợi ích:** Không cần ⟦phía máy chủ|backend⟧ xử lý logic A/B.
+@171
+2. ⟦Xác Thực|Authentication⟧/⟦Phân Quyền|Authorization⟧ Ở ⟦Điểm Biên|Edge⟧
+@172
+**Lợi ích:** Chặn các ⟦yêu cầu|requests⟧ trái phép ngay ở ⟦điểm biên|edge⟧, bảo vệ ⟦máy chủ gốc|origin⟧.
+@173
+3. ⟦Định Tuyến|Routing⟧ & Biến Đổi ⟦Yêu Cầu|Request⟧
+@174
+**⟦Triển khai blue-green|Blue-green deployment⟧, ⟦phát hành canary|canary release⟧ ngay ở ⟦điểm biên|edge⟧.**
+@175
+4. Biến Đổi ⟦Phản Hồi|Response⟧ API
+@176
+**Lợi ích:** ⟦Máy chủ gốc|Origin⟧ trả dữ liệu thô, ⟦điểm biên|edge⟧ tuỳ biến cho từng khu vực.
+@177
+5. Nội Dung Dựa Trên ⟦Vị Trí Địa Lý|Geolocation⟧
+@178
+**Phục vụ nội dung bản địa hoá mà không cần gọi tới ⟦máy chủ gốc|origin⟧.**
+@179
+Các Nền Tảng ⟦Điện Toán Biên|Edge Computing⟧
+@181
+V8 isolates (⟦khởi động nguội|cold start⟧ nhanh)
+@182
+Mạng lưới toàn cầu
+@183
+Gói miễn phí: 100 nghìn ⟦yêu cầu|requests⟧/ngày
+@185
+Chạy cùng CloudFront
+@186
+Đầy đủ khả năng của Lambda
+@187
+Đắt hơn
+@190
+⟦Độ trễ|Latency⟧ thấp
+@192
+Tích hợp sẵn với Next.js
+@193
+⟦Triển khai|Deployment⟧ đơn giản
+@194
+Hạn Chế Của ⟦Điện Toán Biên|Edge Computing⟧
+@195
+**1. Thời gian tính toán hạn chế**
+@196
+Workers: 50ms thời gian CPU (miễn phí), 50-200ms (trả phí)
+@197
+Không thể chạy các tác vụ kéo dài
+@198
+**2. Bộ nhớ hạn chế**
+@199
+Workers: giới hạn bộ nhớ 128MB
+@200
+Không thể nạp các tập dữ liệu lớn
+@201
+**3. Không có ⟦lưu trữ|storage⟧ bền vững**
+@202
+Các hàm ⟦phi trạng thái|stateless⟧
+@203
+Không thể lưu dữ liệu cục bộ
+@204
+**4. ⟦Khởi động nguội|Cold start⟧ (tuỳ nền tảng)**
+@205
+Lambda@Edge có ⟦khởi động nguội|cold start⟧
+@206
+Workers thì không (V8 isolates)
+@207
+**⟦Điện toán biên|Edge computing⟧ phù hợp cho các phép biến đổi nhẹ, không phải xử lý nặng.**
+@208
+⟦Định Tuyến Theo Địa Lý|Geo Routing⟧ - Phân Phối ⟦Lưu Lượng|Traffic⟧ Thông Minh
+@209
+**⟦Định tuyến theo địa lý|Geo routing⟧ = ⟦định tuyến|route⟧ người dùng đến ⟦máy chủ|server⟧ gần nhất dựa trên vị trí.**
+@210
+⟦Định Tuyến Theo Địa Lý|Geo Routing⟧ Dựa Trên DNS
+@212
+Người dùng Việt Nam → truy vấn DNS
+→ Trả về IP máy chủ Singapore (35.240.x.x)
+
+Người dùng Mỹ → truy vấn DNS
+→ Trả về IP máy chủ Mỹ (34.120.x.x)
+
+@213
+**⟦Định tuyến theo độ trễ|Latency-based routing⟧:**
+@214
+Đo ⟦độ trễ|latency⟧ từ vị trí người dùng đến các ⟦máy chủ|servers⟧
+@215
+Trả về ⟦máy chủ|server⟧ nhanh nhất
+@216
+**⟦Định tuyến theo vị trí địa lý|Geolocation-based routing⟧:**
+@217
+Dựa trên vị trí IP của người dùng
+@218
+Trả về ⟦máy chủ|server⟧ gần nhất về mặt địa lý
+@219
+⟦Định Tuyến|Routing⟧ Anycast
+@220
+**Một địa chỉ IP, nhiều địa điểm.**
+@221
+IP của CDN: 104.16.0.0
+
+Người dùng Việt Nam → tới POP Singapore
+Người dùng Brazil → tới POP São Paulo
+
+@222
+**Mạng tự động ⟦định tuyến|routes⟧ ⟦lưu lượng|traffic⟧ đến POP gần nhất.**
+@223
+**Lợi ích:**
+@224
+Đơn giản (1 IP cho mọi địa điểm)
+@225
+Tự động ⟦chuyển đổi dự phòng|failover⟧
+@226
+Giảm thiểu DDoS
+@227
+⟦Đa Vùng Chủ Động – Chủ Động|Active-Active Multi-Region⟧
+@228
+**Triển khai ứng dụng ở nhiều vùng, ⟦định tuyến|route⟧ một cách thông minh.**
+@229
+flowchart TB
+    subgraph Users
+        U1[Người dùng châu Á]
+        U2[Người dùng châu Mỹ]
+        U3[Người dùng châu Âu]
+    end
+
+    subgraph Regions
+        R1[Vùng Singapore]
+        R2[Vùng Mỹ]
+        R3[Vùng EU]
+    end
+
+    DB1[(Bản sao CSDL)]
+    DB2[(Bản sao CSDL)]
+    DB3[(Bản sao CSDL)]
+
+    U1 --> R1
+    U2 --> R2
+    U3 --> R3
+
+    R1 --> DB1
+    R2 --> DB2
+    R3 --> DB3
+
+    DB1 -.->|Nhân bản| DB2
+    DB2 -.->|Nhân bản| DB3
+    DB3 -.->|Nhân bản| DB1
+@230
+**Lợi ích:**
+@231
+⟦Độ trễ|Latency⟧ thấp trên toàn thế giới
+@232
+⟦Tính sẵn sàng cao|High availability⟧ (⟦chuyển đổi dự phòng|failover⟧ sang vùng khác)
+@233
+**Thách thức:**
+@234
+⟦Tính nhất quán dữ liệu|Data consistency⟧ (⟦độ trễ nhân bản|replication lag⟧)
+@235
+⟦Chi phí|Cost⟧ (nhiều vùng)
+@236
+⟦Độ phức tạp|Complexity⟧
+@237
+Khi Nào Cần CDN? (⟦Khung Ra Quyết Định|Decision Framework⟧)
+@238
+CDN không phải lúc nào cũng cần thiết. Đây là ⟦khung ra quyết định|decision framework⟧:
+@240
+**1. Người dùng trải khắp toàn cầu**
+@241
+Người dùng ở nhiều quốc gia/châu lục
+@242
+⟦Độ trễ|Latency⟧ ảnh hưởng đến ⟦trải nghiệm người dùng|UX⟧
+@243
+**2. Chủ yếu là ⟦nội dung tĩnh|static content⟧**
+@244
+Hình ảnh, video chiếm phần lớn ⟦lưu lượng|traffic⟧
+@245
+Sử dụng nhiều ⟦băng thông|bandwidth⟧
+@246
+**3. ⟦Lưu lượng|Traffic⟧ ⟦tăng đột biến|spikes⟧**
+@247
+Flash sale, nội dung lan truyền mạnh
+@248
+Cần chống DDoS
+@249
+**4. ⟦Hiệu năng|Performance⟧ là yếu tố sống còn**
+@250
+Thương mại điện tử (⟦tỷ lệ chuyển đổi|conversion rate⟧ phụ thuộc vào tốc độ)
+@251
+Trang media (⟦phát video trực tuyến|video streaming⟧)
+@253
+**1. Người dùng chỉ ở trong nước**
+@254
+Tất cả người dùng ở 1 quốc gia
+@255
+Một vùng là đủ
+@256
+**2. Chỉ có ⟦nội dung động|dynamic content⟧**
+@257
+⟦Phía máy chủ|Backend⟧ chỉ cung cấp API
+@258
+Không có ⟦tài nguyên tĩnh|static assets⟧
+@259
+**3. ⟦Lưu lượng|Traffic⟧ thấp**
+@260
+<1.000 người dùng/ngày
+@261
+⟦Chi phí|Cost⟧ không xứng đáng
+@262
+**4. Công cụ nội bộ B2B**
+@263
+Số người dùng hạn chế
+@264
+⟦Hiệu năng|Performance⟧ không quá quan trọng
+@265
+Giải Pháp Trung Gian: CDN Một Phần
+@266
+**CDN chỉ dành cho ⟦tài nguyên tĩnh|static assets⟧, ⟦nội dung động|dynamic content⟧ đi thẳng tới ⟦máy chủ gốc|origin⟧.**
+@267
+Tĩnh (hình ảnh/CSS/JS) → CDN
+Yêu cầu API → Đi thẳng tới máy chủ gốc
+
+@268
+**Đơn giản, tiết kiệm chi phí, lợi ích đáng kể.**
+@269
+So Sánh Các Nhà Cung Cấp CDN
+@270
+Nhà cung cấp
+@271
+Số POP toàn cầu
+@272
+Thế mạnh
+@273
+Giá
+@276
+Chống DDoS, Workers
+@277
+Có gói miễn phí
+@280
+Tích hợp với AWS
+@281
+Trả theo mức sử dụng
+@284
+⟦Xoá bộ nhớ đệm|Purge⟧ theo ⟦thời gian thực|real-time⟧, VCL
+@285
+Giá cao cấp
+@288
+Doanh nghiệp lớn, nhiều POP nhất
+@289
+Đắt
+@292
+Giá phải chăng
+@294
+**Cloudflare = lựa chọn tốt nhất cho hầu hết ⟦công ty khởi nghiệp|startups⟧** (gói miễn phí hào phóng, Workers mạnh mẽ).
+@295
+**AWS CloudFront = tốt nhất nếu đã dùng AWS** (tích hợp chặt chẽ).
+@296
+**Fastly = tốt nhất cho doanh nghiệp lớn có nhu cầu ⟦thời gian thực|real-time⟧.**
+@297
+⟦Thực Hành Tốt Nhất|Best Practices⟧ - Triển Khai CDN
+@298
+**1. Đánh phiên bản cho ⟦tài nguyên tĩnh|static assets⟧**
+@299
+Lưu đệm bất biến, cập nhật tức thì.
+@300
+**2. Tên miền riêng cho ⟦nội dung tĩnh|static content⟧**
+@301
+www.example.com (động)
+static.example.com (CDN)
+
+@302
+Tên miền không có cookie, ⟦lưu đệm|caching⟧ tốt hơn.
+@303
+**3. Tối ưu hình ảnh**
+@304
+Định dạng WebP
+@305
+⟦Hình ảnh đáp ứng|Responsive images⟧
+@306
+⟦Tải lười|Lazy loading⟧
+@307
+**4. Dùng ⟦tiêu đề bộ nhớ đệm|cache headers⟧ đúng cách**
+@308
+**5. ⟦Giám sát|Monitor⟧ tỷ lệ ⟦trúng bộ nhớ đệm|cache hit⟧**
+@309
+Mục tiêu: 90%+ cho ⟦nội dung tĩnh|static content⟧
+@310
+<80% = cần xem lại cấu hình ⟦bộ nhớ đệm|cache⟧
+@311
+**6. Tự động hoá việc ⟦xoá bộ nhớ đệm|purge⟧**
+@312
+**7. Kiểm thử từ nhiều địa điểm**
+@313
+Dùng công cụ: Pingdom, GTmetrix
+@314
+Xác minh ⟦hiệu năng|performance⟧ tại ⟦điểm biên|edge⟧
+@315
+**8. Bật HTTP/2 hoặc HTTP/3**
+@316
+⟦Ghép kênh|Multiplexing⟧
+@317
+Nén ⟦tiêu đề|header⟧
+@318
+⟦Hiệu năng|Performance⟧ tốt hơn
+@319
+Những Điểm Cốt Lõi
+@320
+**1. CDN = ⟦bộ nhớ đệm phân tán|distributed cache⟧ + tối ưu mạng ở ⟦điểm biên|edge⟧**
+@321
+Không chỉ lưu đệm, còn có ⟦định tuyến|routing⟧, bảo mật, tính toán.
+@322
+**2. Kiến trúc phân tầng: ⟦Điểm biên|Edge⟧ → Khu vực → ⟦Máy chủ gốc|Origin⟧**
+@323
+Phần lớn ⟦yêu cầu|requests⟧ được phục vụ từ ⟦điểm biên|edge⟧, ⟦máy chủ gốc|origin⟧ được bảo vệ.
+@324
+**3. ⟦Tiêu đề bộ nhớ đệm|Cache headers⟧ điều khiển hành vi của CDN**
+@325
+`Cache-Control`, `ETag`, `Vary` - hãy hiểu và dùng cho đúng.
+@326
+**4. ⟦Nội dung tĩnh|Static content⟧: TTL dài + URL có phiên bản**
+@327
+⟦Thực hành tốt nhất|Best practice⟧ cho lưu đệm bất biến.
+@328
+**5. ⟦Nội dung động|Dynamic content⟧: các ⟦chiến lược lưu đệm|caching strategies⟧ thông minh**
+@329
+ESI, ⟦tiêu đề|header⟧ Vary, stale-while-revalidate.
+@330
+**6. ⟦Vô hiệu hoá bộ nhớ đệm|Cache invalidation⟧: ⟦API xoá bộ nhớ đệm|Purge API⟧ hoặc ⟦phá bộ nhớ đệm|cache busting⟧**
+@331
+URL có phiên bản > ⟦API xoá bộ nhớ đệm|purge API⟧ (đơn giản hơn, tức thì).
+@332
+**7. ⟦Điện toán biên|Edge computing⟧: logic nhẹ chạy gần người dùng**
+@333
+⟦Kiểm thử A/B|A/B testing⟧, ⟦xác thực|auth⟧, ⟦định tuyến|routing⟧ - không phải xử lý nặng.
+@334
+**8. ⟦Định tuyến theo địa lý|Geo routing⟧: dựa trên ⟦độ trễ|latency⟧ hoặc dựa trên ⟦vị trí địa lý|geolocation⟧**
+@335
+Người dùng được tự động ⟦định tuyến|route⟧ đến ⟦máy chủ|server⟧ gần nhất.
+@336
+**9. ⟦Khung ra quyết định|Decision framework⟧: Toàn cầu + ⟦nội dung tĩnh|static content⟧ = cần CDN**
+@337
+Trong nước + chỉ có ⟦nội dung động|dynamic content⟧ = có thể bỏ qua.
+@338
+**Hãy nhớ: CDN không phải viên đạn bạc. Nó là sự ⟦đánh đổi|trade-off⟧ giữa ⟦hiệu năng|performance⟧, ⟦tính nhất quán|consistency⟧ và ⟦chi phí|cost⟧. Những ⟦kiến trúc sư|architects⟧ giỏi biết khi nào cần, khi nào không.**

@@ -1,0 +1,989 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu | Phase 3 — Distributed Systems Fundamentals | System Design Core</title><meta name="description" content="Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactio"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity"/><meta property="og:title" content="Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu | Phase 3 — Distributed Systems Fundamentals"/><meta property="og:description" content="Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactio"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu | Phase 3 — Distributed Systems Fundamentals"/><meta name="twitter:description" content="Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactio"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 3 — Distributed Systems Fundamentals</p><p class="mt-3 text-xl font-semibold text-ink">Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactions across services.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Reality of Distributed Systems - Failure Models &amp; CAP Thinking</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Consistency Models - Strong vs Eventual Consistency</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-3-consensus-leader-election"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Consensus &amp; Leader Election - Distributed Agreement</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Time &amp; Event Ordering - Clock Problem Trong Distributed Systems</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-3">Phase 3 — Distributed Systems Fundamentals</a></li><li>/</li><li aria-current="page" class="text-ink">Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactions across services.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu"><article class="prose-ui"><h1 id="distributed-transactions--data-integrity">Distributed Transactions &amp; Data Integrity</h1>
+<p>Tôi còn nhớ ngày hệ thống payment đầu tiên tôi thiết kế bị bug nghiêm trọng.</p>
+<p>User charge thẻ thành công. Nhưng order không được tạo. Tiền mất, không có order.</p>
+<p>User complain. Finance team panic. CEO gọi họp khẩn cấp.</p>
+<p>Lúc đó tôi nghĩ: <em>&quot;Sao transaction không work? Tôi đã dùng BEGIN TRANSACTION mà!&quot;</em></p>
+<p>Senior architect nhìn code, lắc đầu: <em>&quot;Em đang làm distributed system. ACID transactions không work nữa.&quot;</em></p>
+<p>Đó là ngày tôi học bài học đắt giá nhất về distributed transactions.</p>
+<h2 id="tại-sao-acid-breaks-trong-distributed-systems">Tại Sao ACID Breaks Trong Distributed Systems?</h2>
+<h3 id="acid-trong-single-database">ACID Trong Single Database</h3>
+<p>Trong monolithic application với single database, ACID transactions work perfectly:</p>
+<pre><code class="language-python"># Single database - ACID guaranteed
+def transfer_money(from_account, to_account, amount):
+    db.begin_transaction()
+    try:
+        db.execute(&quot;UPDATE accounts SET balance = balance - ? WHERE id = ?&quot;, 
+                   amount, from_account)
+        db.execute(&quot;UPDATE accounts SET balance = balance + ? WHERE id = ?&quot;, 
+                   amount, to_account)
+        db.commit()
+    except:
+        db.rollback()  # All changes undone
+</code></pre>
+<p><strong>ACID guarantees:</strong></p>
+<pre><code>Atomicity:   All or nothing (cả 2 updates hoặc không update gì)
+Consistency: Data valid (không thể âm balance)
+Isolation:   Transactions không thấy partial changes
+Durability:  Committed data persistent
+</code></pre>
+<h3 id="acid-breaks-trong-distributed-systems">ACID Breaks Trong Distributed Systems</h3>
+<p>Giờ chuyển sang microservices:</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant Client
+    participant OrderService
+    participant PaymentService
+    participant InventoryService
+    
+    Client-&gt;&gt;OrderService: Create Order
+    OrderService-&gt;&gt;PaymentService: Charge Card
+    PaymentService--&gt;&gt;OrderService: Success
+    OrderService-&gt;&gt;InventoryService: Reserve Items
+    InventoryService--&gt;&gt;OrderService: Out of Stock!
+    Note over OrderService: Problem: Payment charged&lt;br/&gt;but order fails</code></pre>
+<p><em>Flow tạo order qua nhiều services - không thể dùng database transaction</em></p>
+<p><strong>Problem:</strong></p>
+<pre><code>1. Payment Service charges card → Success
+2. Inventory Service checks stock → Out of stock!
+3. Order Service fails
+
+Result:
+Payment charged (money taken)
+Order not created
+Inventory not reserved
+
+Customer: &quot;Tại sao tiền bị trừ mà không có order?&quot;
+</code></pre>
+<p><strong>Tại sao không thể rollback?</strong></p>
+<pre><code>Cannot use database transaction:
+   - 3 services = 3 different databases
+   - Cannot rollback across databases
+   - Payment Service already committed
+
+Cannot undo payment:
+   - Already sent to payment gateway
+   - External system, không control được
+   - Cannot call &quot;db.rollback()&quot;
+</code></pre>
+<p><strong>Root cause:</strong></p>
+<pre><code>ACID assumptions break khi:
+- Multiple databases involved
+- Multiple services involved  
+- External systems involved
+- Network calls involved
+
+Network is unreliable → ACID cannot be guaranteed
+</code></pre>
+<h2 id="2-phase-commit-2pc-the-traditional-solution">2-Phase Commit (2PC): The Traditional Solution</h2>
+<h3 id="how-2pc-works">How 2PC Works</h3>
+<p><strong>2-Phase Commit = Protocol để coordinate transactions across multiple databases</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant Coord as Coordinator
+    participant DB1 as Database 1
+    participant DB2 as Database 2
+    participant DB3 as Database 3
+    
+    Note over Coord: Phase 1: Prepare
+    Coord-&gt;&gt;DB1: PREPARE to commit
+    Coord-&gt;&gt;DB2: PREPARE to commit
+    Coord-&gt;&gt;DB3: PREPARE to commit
+    
+    DB1--&gt;&gt;Coord: VOTE: YES
+    DB2--&gt;&gt;Coord: VOTE: YES
+    DB3--&gt;&gt;Coord: VOTE: YES
+    
+    Note over Coord: All votes YES
+    Note over Coord: Phase 2: Commit
+    
+    Coord-&gt;&gt;DB1: COMMIT
+    Coord-&gt;&gt;DB2: COMMIT
+    Coord-&gt;&gt;DB3: COMMIT
+    
+    DB1--&gt;&gt;Coord: COMMITTED
+    DB2--&gt;&gt;Coord: COMMITTED
+    DB3--&gt;&gt;Coord: COMMITTED</code></pre>
+<p><em>2PC: Phase 1 prepare, Phase 2 commit nếu tất cả agree</em></p>
+<p><strong>Phase 1: Prepare</strong></p>
+<pre><code>Coordinator → All participants: &quot;Prepare to commit&quot;
+
+Each participant:
+1. Lock resources
+2. Write to transaction log
+3. Ready to commit BUT don&#x27;t commit yet
+4. Vote YES or NO
+
+If any participant votes NO → Abort
+If all vote YES → Proceed to Phase 2
+</code></pre>
+<p><strong>Phase 2: Commit</strong></p>
+<pre><code>If all YES:
+   Coordinator → All: &quot;COMMIT&quot;
+   Participants commit changes
+   Release locks
+
+If any NO:
+   Coordinator → All: &quot;ABORT&quot;
+   Participants rollback
+   Release locks
+</code></pre>
+<h3 id="2pc-implementation-example">2PC Implementation Example</h3>
+<pre><code class="language-python">class TwoPhaseCommitCoordinator:
+    def __init__(self, participants):
+        self.participants = participants
+        self.transaction_id = generate_id()
+    
+    def execute_transaction(self, operations):
+        # Phase 1: Prepare
+        print(&quot;Phase 1: Prepare&quot;)
+        votes = []
+        
+        for participant in self.participants:
+            try:
+                vote = participant.prepare(self.transaction_id, operations)
+                votes.append(vote)
+                print(f&quot;{participant.name}: {vote}&quot;)
+            except Exception as e:
+                votes.append(&quot;NO&quot;)
+                print(f&quot;{participant.name}: ERROR - {e}&quot;)
+        
+        # Decision
+        if all(vote == &quot;YES&quot; for vote in votes):
+            decision = &quot;COMMIT&quot;
+        else:
+            decision = &quot;ABORT&quot;
+        
+        print(f&quot;\nDecision: {decision}&quot;)
+        
+        # Phase 2: Commit or Abort
+        print(&quot;Phase 2: Execute decision&quot;)
+        results = []
+        
+        for participant in self.participants:
+            if decision == &quot;COMMIT&quot;:
+                result = participant.commit(self.transaction_id)
+            else:
+                result = participant.abort(self.transaction_id)
+            results.append(result)
+            print(f&quot;{participant.name}: {result}&quot;)
+        
+        return decision == &quot;COMMIT&quot;
+
+# Usage
+coordinator = TwoPhaseCommitCoordinator([
+    payment_service,
+    inventory_service,
+    order_service
+])
+
+success = coordinator.execute_transaction({
+    &#x27;payment&#x27;: {&#x27;amount&#x27;: 100},
+    &#x27;inventory&#x27;: {&#x27;product_id&#x27;: 123, &#x27;quantity&#x27;: 1},
+    &#x27;order&#x27;: {&#x27;user_id&#x27;: 456}
+})
+</code></pre>
+<h3 id="the-fatal-flaw-blocking">The Fatal Flaw: Blocking</h3>
+<p><strong>Problem: Coordinator crashes sau Phase 1</strong></p>
+<pre><code>Timeline:
+1. Coordinator sends PREPARE to all participants
+2. All participants vote YES, lock resources, wait...
+3. Coordinator CRASHES (before sending COMMIT)
+4. Participants stuck waiting forever
+5. Resources LOCKED indefinitely
+
+Result:
+Databases locked
+Cannot proceed
+Cannot timeout (don&#x27;t know if coordinator will recover)
+System BLOCKED
+</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant Coord as Coordinator
+    participant DB1 as Database 1
+    participant DB2 as Database 2
+    
+    Coord-&gt;&gt;DB1: PREPARE
+    Coord-&gt;&gt;DB2: PREPARE
+    DB1--&gt;&gt;Coord: YES (locked)
+    DB2--&gt;&gt;Coord: YES (locked)
+    
+    Note over Coord: CRASH! 💥
+    
+    Note over DB1,DB2: Waiting forever...&lt;br/&gt;Resources LOCKED</code></pre>
+<p><em>Coordinator crash sau prepare phase → Databases bị lock vô thời hạn</em></p>
+<p><strong>Why can&#x27;t timeout?</strong></p>
+<pre><code>Participant dilemma:
+- Không biết Coordinator đã send COMMIT chưa
+- Không biết participants khác committed chưa
+- Không thể tự quyết định commit hay abort
+- Timeout → Risk inconsistency
+
+→ Must wait for Coordinator recovery
+→ BLOCKING protocol
+</code></pre>
+<h3 id="2pc-trade-offs">2PC Trade-offs</h3>
+<pre><code>2-Phase Commit:
+Strong consistency (ACID maintained)
+All-or-nothing guarantee
+Proven protocol
+
+Blocking (coordinator failure = disaster)
+Performance overhead (2 round trips)
+High latency (wait for slowest participant)
+Reduced availability
+Complex implementation
+</code></pre>
+<h3 id="khi-nào-dùng-2pc">Khi Nào Dùng 2PC?</h3>
+<pre><code>Sử dụng 2PC khi:
+✓ Strong consistency absolutely required
+✓ Financial transactions (banking)
+✓ All participants under your control
+✓ Can tolerate blocking
+✓ Low-latency not critical
+
+Tránh 2PC khi:
+✗ Need high availability
+✗ Microservices architecture (external services)
+✗ High throughput required
+✗ Cannot tolerate blocking
+</code></pre>
+<p><strong>Personal opinion:</strong></p>
+<p>Tôi tránh 2PC trong microservices. Blocking risk quá cao. Complexity không đáng.</p>
+<p>99% cases có better solutions: Saga pattern.</p>
+<h2 id="saga-pattern-the-practical-solution">Saga Pattern: The Practical Solution</h2>
+<h3 id="saga-concept">Saga Concept</h3>
+<p><strong>Saga = Chuỗi local transactions + compensation</strong></p>
+<p>Thay vì 1 distributed transaction:</p>
+<pre><code>Old way (2PC):
+BEGIN_DISTRIBUTED_TRANSACTION
+  Payment Service: charge
+  Inventory Service: reserve
+  Order Service: create
+COMMIT_DISTRIBUTED_TRANSACTION
+</code></pre>
+<p>Dùng chuỗi local transactions:</p>
+<pre><code>Saga way:
+Transaction 1: Payment Service charge (local commit)
+Transaction 2: Inventory Service reserve (local commit)
+Transaction 3: Order Service create (local commit)
+
+If any fails → Run compensation transactions backward
+</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    T1[Transaction 1&lt;br/&gt;Payment: Charge]
+    T2[Transaction 2&lt;br/&gt;Inventory: Reserve]
+    T3[Transaction 3&lt;br/&gt;Order: Create]
+    
+    C1[Compensate 1&lt;br/&gt;Payment: Refund]
+    C2[Compensate 2&lt;br/&gt;Inventory: Release]
+    
+    T1--&gt;|Success|T2
+    T2--&gt;|Success|T3
+    T3--&gt;|Success|Done[Complete]
+    
+    T2--&gt;|Fail|C1
+    T3--&gt;|Fail|C2
+    C2--&gt;C1
+    
+    style Done fill:#51cf66
+    style C1 fill:#ff6b6b
+    style C2 fill:#ff6b6b</code></pre>
+<p><em>Saga: Forward transactions + backward compensations nếu fail</em></p>
+<h3 id="saga-implementation-orchestration">Saga Implementation: Orchestration</h3>
+<p><strong>Orchestration = Central coordinator điều phối saga</strong></p>
+<pre><code class="language-python">class OrderSagaOrchestrator:
+    def __init__(self):
+        self.payment_service = PaymentService()
+        self.inventory_service = InventoryService()
+        self.order_service = OrderService()
+    
+    def create_order(self, order_data):
+        saga_state = {
+            &#x27;payment_id&#x27;: None,
+            &#x27;reservation_id&#x27;: None,
+            &#x27;order_id&#x27;: None
+        }
+        
+        try:
+            # Step 1: Charge payment
+            print(&quot;Step 1: Charging payment...&quot;)
+            payment_id = self.payment_service.charge(
+                order_data[&#x27;amount&#x27;]
+            )
+            saga_state[&#x27;payment_id&#x27;] = payment_id
+            print(f&quot;✓ Payment charged: {payment_id}&quot;)
+            
+            # Step 2: Reserve inventory
+            print(&quot;Step 2: Reserving inventory...&quot;)
+            reservation_id = self.inventory_service.reserve(
+                order_data[&#x27;product_id&#x27;],
+                order_data[&#x27;quantity&#x27;]
+            )
+            saga_state[&#x27;reservation_id&#x27;] = reservation_id
+            print(f&quot;✓ Inventory reserved: {reservation_id}&quot;)
+            
+            # Step 3: Create order
+            print(&quot;Step 3: Creating order...&quot;)
+            order_id = self.order_service.create(order_data)
+            saga_state[&#x27;order_id&#x27;] = order_id
+            print(f&quot;✓ Order created: {order_id}&quot;)
+            
+            return {
+                &#x27;status&#x27;: &#x27;success&#x27;,
+                &#x27;order_id&#x27;: order_id
+            }
+            
+        except Exception as e:
+            print(f&quot;\nSaga failed: {e}&quot;)
+            print(&quot;Starting compensation...&quot;)
+            
+            # Compensate in reverse order
+            self._compensate(saga_state)
+            
+            return {
+                &#x27;status&#x27;: &#x27;failed&#x27;,
+                &#x27;error&#x27;: str(e)
+            }
+    
+    def _compensate(self, saga_state):
+        # Reverse order: Order → Inventory → Payment
+        
+        if saga_state[&#x27;order_id&#x27;]:
+            print(&quot;Compensating: Cancel order&quot;)
+            try:
+                self.order_service.cancel(saga_state[&#x27;order_id&#x27;])
+                print(&quot;✓ Order cancelled&quot;)
+            except Exception as e:
+                print(f&quot;⚠ Order compensation failed: {e}&quot;)
+        
+        if saga_state[&#x27;reservation_id&#x27;]:
+            print(&quot;Compensating: Release inventory&quot;)
+            try:
+                self.inventory_service.release(saga_state[&#x27;reservation_id&#x27;])
+                print(&quot;✓ Inventory released&quot;)
+            except Exception as e:
+                print(f&quot;⚠ Inventory compensation failed: {e}&quot;)
+        
+        if saga_state[&#x27;payment_id&#x27;]:
+            print(&quot;Compensating: Refund payment&quot;)
+            try:
+                self.payment_service.refund(saga_state[&#x27;payment_id&#x27;])
+                print(&quot;✓ Payment refunded&quot;)
+            except Exception as e:
+                print(f&quot;⚠ Payment compensation failed: {e}&quot;)
+
+# Usage
+orchestrator = OrderSagaOrchestrator()
+result = orchestrator.create_order({
+    &#x27;user_id&#x27;: 123,
+    &#x27;product_id&#x27;: 456,
+    &#x27;quantity&#x27;: 2,
+    &#x27;amount&#x27;: 50.00
+})
+</code></pre>
+<p><strong>Output khi success:</strong></p>
+<pre><code>Step 1: Charging payment...
+✓ Payment charged: payment_789
+
+Step 2: Reserving inventory...
+✓ Inventory reserved: reservation_321
+
+Step 3: Creating order...
+✓ Order created: order_654
+
+Result: Success
+</code></pre>
+<p><strong>Output khi fail:</strong></p>
+<pre><code>Step 1: Charging payment...
+✓ Payment charged: payment_789
+
+Step 2: Reserving inventory...
+Out of stock!
+
+Saga failed: Out of stock
+
+Starting compensation...
+Compensating: Refund payment
+✓ Payment refunded
+
+Result: Failed - Out of stock
+</code></pre>
+<h3 id="saga-implementation-choreography">Saga Implementation: Choreography</h3>
+<p><strong>Choreography = Services tự phối hợp qua events</strong></p>
+<pre><code class="language-python"># Payment Service
+class PaymentService:
+    def charge(self, amount):
+        # Process payment
+        payment_id = process_payment(amount)
+        
+        # Publish event
+        event_bus.publish(&#x27;payment.charged&#x27;, {
+            &#x27;payment_id&#x27;: payment_id,
+            &#x27;amount&#x27;: amount
+        })
+        
+        return payment_id
+    
+    @event_bus.subscribe(&#x27;order.failed&#x27;)
+    def on_order_failed(self, event):
+        # Compensate: Refund
+        payment_id = event[&#x27;payment_id&#x27;]
+        self.refund(payment_id)
+        
+        event_bus.publish(&#x27;payment.refunded&#x27;, {
+            &#x27;payment_id&#x27;: payment_id
+        })
+
+# Inventory Service  
+class InventoryService:
+    @event_bus.subscribe(&#x27;payment.charged&#x27;)
+    def on_payment_charged(self, event):
+        try:
+            # Reserve inventory
+            reservation_id = self.reserve(event[&#x27;product_id&#x27;])
+            
+            event_bus.publish(&#x27;inventory.reserved&#x27;, {
+                &#x27;reservation_id&#x27;: reservation_id,
+                &#x27;payment_id&#x27;: event[&#x27;payment_id&#x27;]
+            })
+        except OutOfStockError:
+            # Trigger compensation
+            event_bus.publish(&#x27;order.failed&#x27;, {
+                &#x27;reason&#x27;: &#x27;out_of_stock&#x27;,
+                &#x27;payment_id&#x27;: event[&#x27;payment_id&#x27;]
+            })
+    
+    @event_bus.subscribe(&#x27;order.failed&#x27;)
+    def on_order_failed(self, event):
+        # Compensate: Release inventory
+        if event.get(&#x27;reservation_id&#x27;):
+            self.release(event[&#x27;reservation_id&#x27;])
+            
+            event_bus.publish(&#x27;inventory.released&#x27;, {
+                &#x27;reservation_id&#x27;: event[&#x27;reservation_id&#x27;]
+            })
+
+# Order Service
+class OrderService:
+    @event_bus.subscribe(&#x27;inventory.reserved&#x27;)
+    def on_inventory_reserved(self, event):
+        try:
+            # Create order
+            order_id = self.create_order(event)
+            
+            event_bus.publish(&#x27;order.created&#x27;, {
+                &#x27;order_id&#x27;: order_id
+            })
+        except Exception as e:
+            # Trigger compensation
+            event_bus.publish(&#x27;order.failed&#x27;, {
+                &#x27;reason&#x27;: str(e),
+                &#x27;payment_id&#x27;: event[&#x27;payment_id&#x27;],
+                &#x27;reservation_id&#x27;: event[&#x27;reservation_id&#x27;]
+            })
+</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant PS as Payment Service
+    participant IS as Inventory Service
+    participant OS as Order Service
+    participant EB as Event Bus
+    
+    PS-&gt;&gt;EB: payment.charged
+    EB-&gt;&gt;IS: (event)
+    IS-&gt;&gt;IS: Reserve inventory
+    IS-&gt;&gt;EB: inventory.reserved
+    EB-&gt;&gt;OS: (event)
+    OS-&gt;&gt;OS: Create order
+    
+    alt Success
+        OS-&gt;&gt;EB: order.created
+    else Failure
+        OS-&gt;&gt;EB: order.failed
+        EB-&gt;&gt;IS: (compensate)
+        IS-&gt;&gt;EB: inventory.released
+        EB-&gt;&gt;PS: (compensate)
+        PS-&gt;&gt;EB: payment.refunded
+    end</code></pre>
+<p><em>Choreography: Services react to events, tự động compensation</em></p>
+<h3 id="orchestration-vs-choreography">Orchestration vs Choreography</h3>
+<pre><code>Orchestration (Central coordinator):
+Clear flow, dễ debug
+Centralized logic
+Explicit compensation order
+Single point of failure
+Tight coupling to orchestrator
+
+Choreography (Event-driven):
+Loosely coupled
+No single point of failure
+Scalable
+Hard to understand flow
+Hard to debug
+Complex error handling
+</code></pre>
+<p><strong>My recommendation:</strong></p>
+<pre><code>Start với Orchestration:
+- Simpler to understand
+- Easier to debug
+- Clear ownership
+
+Move to Choreography khi:
+- Need extreme decoupling
+- Have event-driven infrastructure
+- Team experienced với async patterns
+</code></pre>
+<h2 id="compensation-thinking-the-core-mindset">Compensation Thinking: The Core Mindset</h2>
+<h3 id="compensation--rollback">Compensation ≠ Rollback</h3>
+<p><strong>Database rollback:</strong></p>
+<pre><code class="language-python"># Database rollback: Undo changes
+db.begin_transaction()
+db.execute(&quot;INSERT INTO orders ...&quot;)
+db.rollback()  # Changes disappear completely
+# As if nothing happened
+</code></pre>
+<p><strong>Saga compensation:</strong></p>
+<pre><code class="language-python"># Saga compensation: Reverse effect
+payment_id = payment_service.charge(100)  # Money charged
+# Later...
+payment_service.refund(payment_id)  # Money returned
+
+# NOT same as rollback:
+- Payment happened (visible in logs)
+- Refund is separate transaction
+- Both visible in audit trail
+</code></pre>
+<p><strong>Key difference:</strong></p>
+<pre><code>Rollback:     Undo → như không có gì xảy ra
+Compensation: Reverse effect → có audit trail đầy đủ
+</code></pre>
+<h3 id="designing-compensating-transactions">Designing Compensating Transactions</h3>
+<p><strong>Rule 1: Compensation phải idempotent</strong></p>
+<pre><code class="language-python"># BAD: Not idempotent
+def refund_payment(payment_id):
+    payment = get_payment(payment_id)
+    payment.amount = 0  # If called twice → problem
+    save(payment)
+
+# GOOD: Idempotent
+def refund_payment(payment_id):
+    payment = get_payment(payment_id)
+    
+    if payment.status == &#x27;refunded&#x27;:
+        return  # Already refunded, skip
+    
+    payment.status = &#x27;refunded&#x27;
+    payment.refunded_at = now()
+    save(payment)
+</code></pre>
+<p><strong>Rule 2: Compensation có thể fail</strong></p>
+<pre><code class="language-python">def _compensate(self, saga_state):
+    compensation_errors = []
+    
+    # Try each compensation
+    for step in reversed(saga_state[&#x27;completed_steps&#x27;]):
+        try:
+            step.compensate()
+        except Exception as e:
+            # Log but continue
+            compensation_errors.append({
+                &#x27;step&#x27;: step.name,
+                &#x27;error&#x27;: str(e)
+            })
+            logger.error(f&quot;Compensation failed: {step.name} - {e}&quot;)
+    
+    # If any compensation failed → Manual intervention needed
+    if compensation_errors:
+        alert_ops_team({
+            &#x27;saga_id&#x27;: saga_state[&#x27;id&#x27;],
+            &#x27;failures&#x27;: compensation_errors,
+            &#x27;action_needed&#x27;: &#x27;manual_compensation&#x27;
+        })
+</code></pre>
+<p><strong>Rule 3: Some actions cannot be compensated</strong></p>
+<pre><code class="language-python"># Cannot compensate:
+Email sent (cannot &quot;unsend&quot;)
+SMS sent
+External API called (no control)
+Physical shipment initiated
+
+# Solutions:
+Put compensable actions first
+Non-compensable actions last (after all risks)
+Make them idempotent (safe to retry)
+</code></pre>
+<h3 id="compensation-order-matters">Compensation Order Matters</h3>
+<pre><code>Forward order:
+1. Charge payment
+2. Reserve inventory  
+3. Send confirmation email ← Non-compensable
+
+Compensation order (REVERSE):
+3. (Cannot undo email - accept it)
+2. Release inventory
+1. Refund payment
+
+Why reverse? Latest changes undo first.
+</code></pre>
+<h2 id="idempotency-the-safety-net">Idempotency: The Safety Net</h2>
+<h3 id="định-nghĩa-idempotency">Định Nghĩa Idempotency</h3>
+<p><strong>Idempotent operation = Gọi nhiều lần = gọi 1 lần</strong></p>
+<pre><code>f(x) = y
+f(f(x)) = y  ← Same result
+f(f(f(x))) = y  ← Still same
+
+Example:
+- Set temperature to 20°C → Idempotent
+- Increase temperature by 1°C → NOT idempotent
+</code></pre>
+<h3 id="tại-sao-cần-idempotency">Tại Sao Cần Idempotency?</h3>
+<p><strong>Problem: Network unreliability</strong></p>
+<pre><code>Timeline:
+1. Client calls API: &quot;Charge $100&quot;
+2. Server processes, charges $100
+3. Server sends response
+4. Network fails before client receives response
+5. Client doesn&#x27;t know if succeeded
+6. Client retries: &quot;Charge $100&quot; again
+7. Server charges ANOTHER $100
+
+Result: Customer charged $200 instead of $100!
+</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant Client
+    participant API
+    participant Payment
+    
+    Client-&gt;&gt;API: Charge $100
+    API-&gt;&gt;Payment: Process
+    Payment--&gt;&gt;API: Success
+    API--xClient: (response lost)
+    
+    Note over Client: Timeout! Retry?
+    
+    Client-&gt;&gt;API: Charge $100 (retry)
+    API-&gt;&gt;Payment: Process AGAIN
+    Payment--&gt;&gt;API: Success
+    API--&gt;&gt;Client: OK
+    
+    Note over Client: Charged $200! 💸</code></pre>
+<p><em>Network failure → Retry → Duplicate charge</em></p>
+<h3 id="implementing-idempotency">Implementing Idempotency</h3>
+<p><strong>Solution 1: Idempotency Key</strong></p>
+<pre><code class="language-python">class PaymentService:
+    def __init__(self):
+        self.processed_requests = {}  # In practice: Redis/DB
+    
+    def charge(self, amount, idempotency_key):
+        # Check if already processed
+        if idempotency_key in self.processed_requests:
+            # Return cached result
+            print(f&quot;Duplicate request detected: {idempotency_key}&quot;)
+            return self.processed_requests[idempotency_key]
+        
+        # First time seeing this request
+        print(f&quot;Processing new request: {idempotency_key}&quot;)
+        
+        # Process payment
+        payment_id = self._process_payment(amount)
+        
+        # Cache result
+        self.processed_requests[idempotency_key] = {
+            &#x27;payment_id&#x27;: payment_id,
+            &#x27;amount&#x27;: amount,
+            &#x27;status&#x27;: &#x27;success&#x27;
+        }
+        
+        return self.processed_requests[idempotency_key]
+
+# Client usage
+payment_service = PaymentService()
+
+# Client generates unique key
+idempotency_key = &quot;order_123_payment_attempt_1&quot;
+
+# First call
+result1 = payment_service.charge(100, idempotency_key)
+# Processing new request: order_123_payment_attempt_1
+# Result: payment_id=pay_789
+
+# Retry (network failed, client retries)
+result2 = payment_service.charge(100, idempotency_key)
+# Duplicate request detected: order_123_payment_attempt_1
+# Result: payment_id=pay_789 (SAME!)
+
+# Charged only once ✓
+</code></pre>
+<p><strong>Implementation details:</strong></p>
+<pre><code class="language-python"># Production-grade implementation
+class IdempotentPaymentService:
+    def charge(self, amount, idempotency_key):
+        # Check cache (Redis với TTL 24h)
+        cached = redis.get(f&quot;idempotency:{idempotency_key}&quot;)
+        if cached:
+            return json.loads(cached)
+        
+        # Acquire lock để prevent concurrent duplicates
+        lock_key = f&quot;lock:idempotency:{idempotency_key}&quot;
+        with redis.lock(lock_key, timeout=30):
+            # Double-check sau khi có lock
+            cached = redis.get(f&quot;idempotency:{idempotency_key}&quot;)
+            if cached:
+                return json.loads(cached)
+            
+            # Process payment
+            result = self._process_payment(amount)
+            
+            # Cache result với TTL 24h
+            redis.setex(
+                f&quot;idempotency:{idempotency_key}&quot;,
+                86400,  # 24 hours
+                json.dumps(result)
+            )
+            
+            return result
+</code></pre>
+<p><strong>Solution 2: Natural Idempotency</strong></p>
+<pre><code class="language-python"># NOT idempotent
+def add_item_to_cart(user_id, product_id):
+    cart = get_cart(user_id)
+    cart.items.append(product_id)  # Duplicate if called twice
+    save(cart)
+
+# Idempotent
+def add_item_to_cart(user_id, product_id):
+    cart = get_cart(user_id)
+    if product_id not in cart.items:  # Check first
+        cart.items.append(product_id)
+    save(cart)
+
+# Even better: Use Set
+def add_item_to_cart(user_id, product_id):
+    cart = get_cart(user_id)
+    cart.items.add(product_id)  # Set naturally idempotent
+    save(cart)
+</code></pre>
+<p><strong>Solution 3: Database Constraints</strong></p>
+<pre><code class="language-sql">-- Allows duplicates
+CREATE TABLE payments (
+    id SERIAL PRIMARY KEY,
+    order_id INT,
+    amount DECIMAL
+);
+
+-- Can insert same order_id multiple times!
+
+-- Prevent duplicates
+CREATE TABLE payments (
+    id SERIAL PRIMARY KEY,
+    order_id INT UNIQUE,  -- Unique constraint
+    amount DECIMAL
+);
+
+-- Second insert with same order_id → Error
+-- Application catches error → Return cached result
+</code></pre>
+<h3 id="idempotency-best-practices">Idempotency Best Practices</h3>
+<p><strong>1. Generate idempotency keys client-side</strong></p>
+<pre><code class="language-javascript">// Client generates key
+const idempotencyKey = `${userId}_${orderId}_${Date.now()}_${uuidv4()}`;
+
+fetch(&#x27;/api/payment/charge&#x27;, {
+    method: &#x27;POST&#x27;,
+    headers: {
+        &#x27;Idempotency-Key&#x27;: idempotencyKey
+    },
+    body: JSON.stringify({ amount: 100 })
+});
+</code></pre>
+<p><strong>2. Store idempotency results với TTL</strong></p>
+<pre><code>Don&#x27;t store forever → Waste storage
+TTL 24-48 hours usually enough
+After TTL, new request = new operation (acceptable)
+</code></pre>
+<p><strong>3. Return same status code cho idempotent requests</strong></p>
+<pre><code class="language-python"># BAD
+if duplicate_request:
+    return 200, cached_result
+
+# GOOD
+if duplicate_request:
+    return 200, cached_result  # Same as original
+else:
+    result = process()
+    return 200, result  # Same status code
+</code></pre>
+<p><strong>4. Idempotency for compensation too</strong></p>
+<pre><code class="language-python"># Compensation cũng phải idempotent
+def compensate_payment(payment_id, idempotency_key):
+    # Check if already compensated
+    if already_refunded(payment_id):
+        return cached_result
+    
+    # Refund
+    refund_payment(payment_id)
+    
+    # Cache compensation result
+    cache_result(idempotency_key, result)
+</code></pre>
+<h2 id="real-world-example-e-commerce-checkout">Real-World Example: E-commerce Checkout</h2>
+<p>Hãy xem complete example với tất cả concepts:</p>
+<pre><code class="language-python">class CheckoutSaga:
+    def __init__(self):
+        self.payment_service = PaymentService()
+        self.inventory_service = InventoryService()
+        self.order_service = OrderService()
+        self.shipping_service = ShippingService()
+    
+    def execute(self, checkout_data, idempotency_key):
+        # Check idempotency
+        cached = self._check_cache(idempotency_key)
+        if cached:
+            return cached
+        
+        saga_state = {
+            &#x27;steps_completed&#x27;: [],
+            &#x27;checkout_id&#x27;: checkout_data[&#x27;checkout_id&#x27;]
+        }
+        
+        try:
+            # Step 1: Reserve inventory (compensable)
+            reservation = self.inventory_service.reserve(
+                checkout_data[&#x27;items&#x27;],
+                idempotency_key=f&quot;{idempotency_key}_inventory&quot;
+            )
+            saga_state[&#x27;steps_completed&#x27;].append({
+                &#x27;name&#x27;: &#x27;inventory&#x27;,
+                &#x27;data&#x27;: reservation,
+                &#x27;compensate&#x27;: lambda: self.inventory_service.release(reservation[&#x27;id&#x27;])
+            })
+            
+            # Step 2: Charge payment (compensable)
+            payment = self.payment_service.charge(
+                checkout_data[&#x27;amount&#x27;],
+                idempotency_key=f&quot;{idempotency_key}_payment&quot;
+            )
+            saga_state[&#x27;steps_completed&#x27;].append({
+                &#x27;name&#x27;: &#x27;payment&#x27;,
+                &#x27;data&#x27;: payment,
+                &#x27;compensate&#x27;: lambda: self.payment_service.refund(payment[&#x27;id&#x27;])
+            })
+            
+            # Step 3: Create order (compensable)
+            order = self.order_service.create(
+                checkout_data,
+                idempotency_key=f&quot;{idempotency_key}_order&quot;
+            )
+            saga_state[&#x27;steps_completed&#x27;].append({
+                &#x27;name&#x27;: &#x27;order&#x27;,
+                &#x27;data&#x27;: order,
+                &#x27;compensate&#x27;: lambda: self.order_service.cancel(order[&#x27;id&#x27;])
+            })
+            
+            # Step 4: Create shipment (NOT compensable - put last)
+            shipment = self.shipping_service.create(
+                order[&#x27;id&#x27;],
+                idempotency_key=f&quot;{idempotency_key}_shipment&quot;
+            )
+            # No compensation - cannot undo physical shipment
+            
+            result = {
+                &#x27;status&#x27;: &#x27;success&#x27;,
+                &#x27;order_id&#x27;: order[&#x27;id&#x27;],
+                &#x27;shipment_id&#x27;: shipment[&#x27;id&#x27;]
+            }
+            
+            # Cache result
+            self._cache_result(idempotency_key, result)
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f&quot;Saga failed: {e}&quot;)
+            
+            # Compensate in reverse order
+            self._compensate(saga_state)
+            
+            return {
+                &#x27;status&#x27;: &#x27;failed&#x27;,
+                &#x27;error&#x27;: str(e)
+            }
+    
+    def _compensate(self, saga_state):
+        # Reverse order
+        for step in reversed(saga_state[&#x27;steps_completed&#x27;]):
+            try:
+                logger.info(f&quot;Compensating: {step[&#x27;name&#x27;]}&quot;)
+                step[&#x27;compensate&#x27;]()
+                logger.info(f&quot;✓ Compensated: {step[&#x27;name&#x27;]}&quot;)
+            except Exception as e:
+                logger.error(f&quot;Compensation failed: {step[&#x27;name&#x27;]} - {e}&quot;)
+                # Alert ops team
+                alert_ops_team({
+                    &#x27;saga_id&#x27;: saga_state[&#x27;checkout_id&#x27;],
+                    &#x27;step&#x27;: step[&#x27;name&#x27;],
+                    &#x27;error&#x27;: str(e)
+                })
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>ACID breaks trong distributed systems:</strong></p>
+<pre><code>Single database: ACID works
+Multiple databases/services: ACID impossible
+Network unreliability → Cannot guarantee atomicity
+</code></pre>
+<p><strong>2-Phase Commit:</strong></p>
+<pre><code>Strong consistency
+ACID maintained
+Blocking (fatal flaw)
+Coordinator failure = disaster
+Avoid trong microservices
+</code></pre>
+<p><strong>Saga Pattern:</strong></p>
+<pre><code>Non-blocking
+High availability
+Practical cho microservices
+Eventual consistency
+Compensation complexity
+</code></pre>
+<p><strong>Orchestration vs Choreography:</strong></p>
+<pre><code>Orchestration: Central coordinator (simpler, easier debug)
+Choreography: Event-driven (decoupled, complex)
+
+Start với Orchestration
+</code></pre>
+<p><strong>Compensation thinking:</strong></p>
+<pre><code>- Compensation ≠ Rollback
+- Reverse effect, not undo
+- Must be idempotent
+- Some actions cannot compensate (put last)
+- Order matters (reverse order)
+</code></pre>
+<p><strong>Idempotency:</strong></p>
+<pre><code>- Essential for distributed systems
+- Prevents duplicate operations
+- Use idempotency keys
+- Apply to ALL operations (including compensation)
+- Store results với TTL
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code>Need ACID + Can tolerate blocking:
+→ 2-Phase Commit (rare)
+
+Need high availability + Can accept eventual consistency:
+→ Saga Pattern (common)
+
+Implementing Saga:
+- Start simple: Orchestration
+- All operations: Idempotent
+- Non-compensable actions: Last
+- Monitor compensation failures
+</code></pre>
+<p><strong>Câu hỏi tự kiểm tra:</strong></p>
+<p>Khi design distributed transaction:</p>
+<ol>
+<li><em>Có thực sự cần strong consistency không?</em></li>
+<li><em>Có thể tolerate eventual consistency không?</em></li>
+<li><em>Operations nào compensable, không compensable?</em></li>
+<li><em>Đã implement idempotency chưa?</em></li>
+<li><em>Compensation order đúng chưa (reverse)?</em></li>
+</ol>
+<p>Distributed transactions là hard. Nhưng với Saga + Idempotency, bạn có tools để handle chúng correctly.</p>
+<p><strong>Remember:</strong> Perfect consistency không achievable trong distributed systems. Goal là đảm bảo eventual consistency với clear compensation paths.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-3/lesson/lesson-3-consensus-leader-election"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Consensus &amp; Leader Election - Distributed Agreement</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering">Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-3\",\"lesson\",\"lesson-4-distributed-transactions-data-integrity\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-3\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-4-distributed-transactions-data-integrity\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactions across services.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-reality-of-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\"}]]}]}],[\"$\",\"li\",\"lesson-2-consistency-models-strong-and-eventual-consistency\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consistency Models - Strong vs Eventual Consistency\"}]]}]}],[\"$\",\"li\",\"lesson-3-consensus-leader-election\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-3-consensus-leader-election\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consensus \u0026 Leader Election - Distributed Agreement\"}]]}]}],[\"$\",\"li\",\"lesson-4-distributed-transactions-data-integrity\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\"}]]}]}],[\"$\",\"li\",\"lesson-5-distributed-id-and-ordering\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\"}]]}]}],[\"$\",\"li\",\"lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}]]}]]}],\"$L26\"]}],\"$L27\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Time \u0026 Event Ordering - Clock Problem Trong Distributed Systems\"}]\n26:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"hover:text-ink\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactions across services.\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\",\"title\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\",\"description\":\"Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactions across services.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\",\"children\":\"$L29\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-3-consensus-leader-election\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Consensus \u0026 Leader Election - Distributed Agreement\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2a:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"distributed-transactions--data-integrity\",\"children\":\"Distributed Transactions \u0026 Data Integrity\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ ngày hệ thống payment đầu tiên tôi thiết kế bị bug nghiêm trọng.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"User charge thẻ thành công. Nhưng order không được tạo. Tiền mất, không có order.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"User complain. Finance team panic. CEO gọi họp khẩn cấp.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Lúc đó tôi nghĩ: \",[\"$\",\"em\",null,{\"children\":\"\\\"Sao transaction không work? Tôi đã dùng BEGIN TRANSACTION mà!\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior architect nhìn code, lắc đầu: \",[\"$\",\"em\",null,{\"children\":\"\\\"Em đang làm distributed system. ACID transactions không work nữa.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Đó là ngày tôi học bài học đắt giá nhất về distributed transactions.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-acid-breaks-trong-distributed-systems\",\"children\":\"Tại Sao ACID Breaks Trong Distributed Systems?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"acid-trong-single-database\",\"children\":\"ACID Trong Single Database\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Trong monolithic application với single database, ACID transactions work perfectly:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Single database - ACID guaranteed\\ndef transfer_money(from_account, to_account, amount):\\n    db.begin_transaction()\\n    try:\\n        db.execute(\\\"UPDATE accounts SET balance = balance - ? WHERE id = ?\\\", \\n                   amount, from_account)\\n        db.execute(\\\"UPDATE accounts SET balance = balance + ? WHERE id = ?\\\", \\n                   amount, to_account)\\n        db.commit()\\n    except:\\n        db.rollback()  # All changes undone\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"ACID guarantees:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Atomicity:   All or nothing (cả 2 updates hoặc không update gì)\\nConsistency: Data valid (không thể âm balance)\\nIsolation:   Transactions không thấy partial changes\\nDurability:  Committed data persistent\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"acid-breaks-trong-distributed-systems\",\"children\":\"ACID Breaks Trong Distributed Systems\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Giờ chuyển sang microservices:\"}],\"\\n\",[\"$\",\"$L2a\",null,{\"chart\":\"sequenceDiagram\\n    participant Client\\n    participant OrderService\\n    participant PaymentService\\n    participant InventoryService\\n    \\n    Client-\u003e\u003eOrderService: Create Order\\n    OrderService-\u003e\u003ePaymentService: Charge Card\\n    PaymentService--\u003e\u003eOrderService: Success\\n    OrderService-\u003e\u003eInventoryService: Reserve Items\\n    InventoryService--\u003e\u003eOrderService: Out of Stock!\\n    Note over OrderService: Problem: Payment charged\u003cbr/\u003ebut order fails\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Flow tạo order qua nhiều services - không thể dùng database transaction\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Payment Service charges card → Success\\n2. Inventory Service checks stock → Out of stock!\\n3. Order Service fails\\n\\nResult:\\nPayment charged (money taken)\\nOrder not created\\nInventory not reserved\\n\\nCustomer: \\\"Tại sao tiền bị trừ mà không có order?\\\"\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tại sao không thể rollback?\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Cannot use database transaction:\\n   - 3 services = 3 different databases\\n   - Cannot rollback across databases\\n   - Payment Service already committed\\n\\nCannot undo payment:\\n   - Already sent to payment gateway\\n   - External system, không control được\\n   - Cannot call \\\"db.rollback()\\\"\\n\"}]}],\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\"]}]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Root cause:\"}]}]\n2c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"ACID assumptions break khi:\\n- Multiple databases involved\\n- Multiple services involved  \\n- External systems involved\\n- Network calls involved\\n\\nNetwork is unreliable → ACID cannot be guaranteed\\n\"}]}]\n2d:[\"$\",\"h2\",null,{\"id\":\"2-phase-commit-2pc-the-traditional-solution\",\"children\":\"2-Phase Commit (2PC): The Traditional Solution\"}]\n2e:[\"$\",\"h3\",null,{\"id\":\"how-2pc-works\",\"children\":\"How 2PC Works\"}]\n2f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2-Phase Commit = Protocol để coordinate transactions across multiple databases\"}]}]\n30:[\"$\",\"$L2a\",null,{\"chart\":\"sequenceDiagram\\n    participant Coord as Coordinator\\n    participant DB1 as Database 1\\n    participant DB2 as Database 2\\n    participant DB3 as Database 3\\n    \\n    Note over Coord: Phase 1: Prepare\\n    Coord-\u003e\u003eDB1: PREPARE to commit\\n    Coord-\u003e\u003eDB2: PREPARE to commit\\n    Coord-\u003e\u003eDB3: PREPARE to commit\\n    \\n    DB1--\u003e\u003eCoord: VOTE: YES\\n    DB2--\u003e\u003eCoord: VOTE: YES\\n    DB3--\u003e\u003eCoord: VOTE: YES\\n    \\n    Note over Coord: All votes YES\\n    Note over Coord: Phase 2: Commit\\n    \\n    Coord-\u003e\u003eDB1: COMMIT\\n    Coord-\u003e\u003eDB2: COMMIT\\n    Coord-\u003e\u003eDB3: COMMIT\\n    \\n    DB1--\u003e\u003eCoord: COMMITTED\\n    DB2--\u003e\u003eCoord: COMMITTED\\n    DB3--\u003e\u003eCoord: COMMITTED\"}]\n31:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"2PC: Phase 1 prepare, Phase 2 commit nếu tất cả agree\"}]}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Phase 1: Prepare\"}]}]\n33:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Coordinator → All participants: \\\"Prepare to commit\\\"\\n\\nEach participant:\\n1. Lock resources\\n2. Write to transaction log\\n3. Ready to commit BUT don't commit yet\\n4. Vote YES or NO\\n\\nIf any participant votes NO → Abort\\nIf all vote YES → Proceed to Phase 2\\n\"}]}]\n34:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Phase 2: Commit\"}]}]\n35:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"If all YES:\\n   Coordinator → All: \\\"COMMIT\\\"\\n   Participants commit changes\\n   Release locks\\n\\nIf any NO:\\n   Coordinator → All: \\\"ABORT\\\"\\n   Participants rollback\\n   Release locks\\n\"}]}]\n36:[\"$\",\"h3\",null,{\"id\":\"2pc-implementation-example\",\"children\":\"2PC Implementation Example\"}]\na2:T64d,"])</script><script>self.__next_f.push([1,"class TwoPhaseCommitCoordinator:\n    def __init__(self, participants):\n        self.participants = participants\n        self.transaction_id = generate_id()\n    \n    def execute_transaction(self, operations):\n        # Phase 1: Prepare\n        print(\"Phase 1: Prepare\")\n        votes = []\n        \n        for participant in self.participants:\n            try:\n                vote = participant.prepare(self.transaction_id, operations)\n                votes.append(vote)\n                print(f\"{participant.name}: {vote}\")\n            except Exception as e:\n                votes.append(\"NO\")\n                print(f\"{participant.name}: ERROR - {e}\")\n        \n        # Decision\n        if all(vote == \"YES\" for vote in votes):\n            decision = \"COMMIT\"\n        else:\n            decision = \"ABORT\"\n        \n        print(f\"\\nDecision: {decision}\")\n        \n        # Phase 2: Commit or Abort\n        print(\"Phase 2: Execute decision\")\n        results = []\n        \n        for participant in self.participants:\n            if decision == \"COMMIT\":\n                result = participant.commit(self.transaction_id)\n            else:\n                result = participant.abort(self.transaction_id)\n            results.append(result)\n            print(f\"{participant.name}: {result}\")\n        \n        return decision == \"COMMIT\"\n\n# Usage\ncoordinator = TwoPhaseCommitCoordinator([\n    payment_service,\n    inventory_service,\n    order_service\n])\n\nsuccess = coordinator.execute_transaction({\n    'payment': {'amount': 100},\n    'inventory': {'product_id': 123, 'quantity': 1},\n    'order': {'user_id': 456}\n})\n"])</script><script>self.__next_f.push([1,"37:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a2\"}]}]\n38:[\"$\",\"h3\",null,{\"id\":\"the-fatal-flaw-blocking\",\"children\":\"The Fatal Flaw: Blocking\"}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem: Coordinator crashes sau Phase 1\"}]}]\n3a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Timeline:\\n1. Coordinator sends PREPARE to all participants\\n2. All participants vote YES, lock resources, wait...\\n3. Coordinator CRASHES (before sending COMMIT)\\n4. Participants stuck waiting forever\\n5. Resources LOCKED indefinitely\\n\\nResult:\\nDatabases locked\\nCannot proceed\\nCannot timeout (don't know if coordinator will recover)\\nSystem BLOCKED\\n\"}]}]\n3b:[\"$\",\"$L2a\",null,{\"chart\":\"sequenceDiagram\\n    participant Coord as Coordinator\\n    participant DB1 as Database 1\\n    participant DB2 as Database 2\\n    \\n    Coord-\u003e\u003eDB1: PREPARE\\n    Coord-\u003e\u003eDB2: PREPARE\\n    DB1--\u003e\u003eCoord: YES (locked)\\n    DB2--\u003e\u003eCoord: YES (locked)\\n    \\n    Note over Coord: CRASH! 💥\\n    \\n    Note over DB1,DB2: Waiting forever...\u003cbr/\u003eResources LOCKED\"}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Coordinator crash sau prepare phase → Databases bị lock vô thời hạn\"}]}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why can't timeout?\"}]}]\n3e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Participant dilemma:\\n- Không biết Coordinator đã send COMMIT chưa\\n- Không biết participants khác committed chưa\\n- Không thể tự quyết định commit hay abort\\n- Timeout → Risk inconsistency\\n\\n→ Must wait for Coordinator recovery\\n→ BLOCKING protocol\\n\"}]}]\n3f:[\"$\",\"h3\",null,{\"id\":\"2pc-trade-offs\",\"children\":\"2PC Trade-offs\"}]\n40:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"2-Phase Commit:\\nStrong consistency (ACID maintained)\\nAll-or-nothing guarantee\\nProven protocol\\n\\nBlocking (coordinator failure = disaster)\\nPerformance overhead (2 round trips)\\nHigh latency (wait for slowest participant)\\nReduced availability\\nComplex implementation\\n\"}]}]\n41:[\"$\",\"h3\",null,{\"id\":\"khi-nào-dùng-2pc\",\"children\":\"Khi Nào Dùng 2PC?\"}]\n42:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Sử dụng 2PC khi:\\n✓ Strong consistency absolutely required\\n✓ Financial transactions (banking)\\n✓ All participants under your control\\n✓ Can tolerate blocking\\n✓ Low-latency not critical\\n\\nTránh 2PC khi:\\n✗ Need high availability\\n✗ Microservices architecture (external services)\\n✗ High throughput required\\n✗ Cannot tolerate blocking\\n\"}]}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Personal opinion:\"}]}]\n44:[\"$\",\"p\",null,{\"children\":\"Tôi tránh 2PC trong microservices. Blocking risk quá cao. Complexity không đáng.\"}]\n45:[\"$\",\"p\",null,{\"children\":\"99% cases có better solutions: Saga pattern.\"}]\n46:[\"$\",\"h2\",null,{\"id\":\"saga-pattern-the-practical-solution\",\"children\":\"Saga Pattern: The Practical Solution\"}]\n47:[\"$\",\"h3\",null,{\"id\":\"saga-concept\",\"children\":\"Saga Concept\"}]\n48:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Saga = Chuỗi local transactions + compensation\"}]}]\n49:[\"$\",\"p\",null,{\"children\":\"Thay vì 1 distributed transaction:\"}]\n4a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Old way (2PC):\\nBEGIN_DISTRIBUTED_TRANSACTION\\n  Payment Service: charge\\n  Inventory Service: reserve\\n  Order Service: create\\nCOMMIT_DISTRIBUTED_TRANSACTION\\n\"}]}]\n4b:[\"$\",\"p\",null,{\"children\":\"Dùng chuỗi local transactions:\"}]\n4c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Saga way:\\nTransaction 1: Payment Service charge (local commit)\\nTransaction 2: Inventory Service reserve (local commit)\\nTransaction 3: Order Service create (local commit)\\n\\nIf any fails → Run compensation transactions backward\\n\"}]}]\n4d:[\"$\",\"$L2a\",null,{\"chart\":\"graph TB\\n    T1[Transaction 1\u003cbr/\u003ePayment: Charge]\\n    T2[Transaction 2\u003cbr/\u003eInventory: Reserve]\\n    T3[Transaction 3\u003cbr/\u003eOrder: Create]\\n    \\n    C1[Compensate 1\u003cbr/\u003ePayment: Refund]\\n    C2[Compensate 2\u003cbr/\u003eInventory: Rele"])</script><script>self.__next_f.push([1,"ase]\\n    \\n    T1--\u003e|Success|T2\\n    T2--\u003e|Success|T3\\n    T3--\u003e|Success|Done[Complete]\\n    \\n    T2--\u003e|Fail|C1\\n    T3--\u003e|Fail|C2\\n    C2--\u003eC1\\n    \\n    style Done fill:#51cf66\\n    style C1 fill:#ff6b6b\\n    style C2 fill:#ff6b6b\"}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Saga: Forward transactions + backward compensations nếu fail\"}]}]\n4f:[\"$\",\"h3\",null,{\"id\":\"saga-implementation-orchestration\",\"children\":\"Saga Implementation: Orchestration\"}]\n50:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Orchestration = Central coordinator điều phối saga\"}]}]\na3:Tbeb,"])</script><script>self.__next_f.push([1,"class OrderSagaOrchestrator:\n    def __init__(self):\n        self.payment_service = PaymentService()\n        self.inventory_service = InventoryService()\n        self.order_service = OrderService()\n    \n    def create_order(self, order_data):\n        saga_state = {\n            'payment_id': None,\n            'reservation_id': None,\n            'order_id': None\n        }\n        \n        try:\n            # Step 1: Charge payment\n            print(\"Step 1: Charging payment...\")\n            payment_id = self.payment_service.charge(\n                order_data['amount']\n            )\n            saga_state['payment_id'] = payment_id\n            print(f\"✓ Payment charged: {payment_id}\")\n            \n            # Step 2: Reserve inventory\n            print(\"Step 2: Reserving inventory...\")\n            reservation_id = self.inventory_service.reserve(\n                order_data['product_id'],\n                order_data['quantity']\n            )\n            saga_state['reservation_id'] = reservation_id\n            print(f\"✓ Inventory reserved: {reservation_id}\")\n            \n            # Step 3: Create order\n            print(\"Step 3: Creating order...\")\n            order_id = self.order_service.create(order_data)\n            saga_state['order_id'] = order_id\n            print(f\"✓ Order created: {order_id}\")\n            \n            return {\n                'status': 'success',\n                'order_id': order_id\n            }\n            \n        except Exception as e:\n            print(f\"\\nSaga failed: {e}\")\n            print(\"Starting compensation...\")\n            \n            # Compensate in reverse order\n            self._compensate(saga_state)\n            \n            return {\n                'status': 'failed',\n                'error': str(e)\n            }\n    \n    def _compensate(self, saga_state):\n        # Reverse order: Order → Inventory → Payment\n        \n        if saga_state['order_id']:\n            print(\"Compensating: Cancel order\")\n            try:\n                self.order_service.cancel(saga_state['order_id'])\n                print(\"✓ Order cancelled\")\n            except Exception as e:\n                print(f\"⚠ Order compensation failed: {e}\")\n        \n        if saga_state['reservation_id']:\n            print(\"Compensating: Release inventory\")\n            try:\n                self.inventory_service.release(saga_state['reservation_id'])\n                print(\"✓ Inventory released\")\n            except Exception as e:\n                print(f\"⚠ Inventory compensation failed: {e}\")\n        \n        if saga_state['payment_id']:\n            print(\"Compensating: Refund payment\")\n            try:\n                self.payment_service.refund(saga_state['payment_id'])\n                print(\"✓ Payment refunded\")\n            except Exception as e:\n                print(f\"⚠ Payment compensation failed: {e}\")\n\n# Usage\norchestrator = OrderSagaOrchestrator()\nresult = orchestrator.create_order({\n    'user_id': 123,\n    'product_id': 456,\n    'quantity': 2,\n    'amount': 50.00\n})\n"])</script><script>self.__next_f.push([1,"51:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a3\"}]}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Output khi success:\"}]}]\n53:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Step 1: Charging payment...\\n✓ Payment charged: payment_789\\n\\nStep 2: Reserving inventory...\\n✓ Inventory reserved: reservation_321\\n\\nStep 3: Creating order...\\n✓ Order created: order_654\\n\\nResult: Success\\n\"}]}]\n54:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Output khi fail:\"}]}]\n55:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Step 1: Charging payment...\\n✓ Payment charged: payment_789\\n\\nStep 2: Reserving inventory...\\nOut of stock!\\n\\nSaga failed: Out of stock\\n\\nStarting compensation...\\nCompensating: Refund payment\\n✓ Payment refunded\\n\\nResult: Failed - Out of stock\\n\"}]}]\n56:[\"$\",\"h3\",null,{\"id\":\"saga-implementation-choreography\",\"children\":\"Saga Implementation: Choreography\"}]\n57:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Choreography = Services tự phối hợp qua events\"}]}]\na4:T8b1,"])</script><script>self.__next_f.push([1,"# Payment Service\nclass PaymentService:\n    def charge(self, amount):\n        # Process payment\n        payment_id = process_payment(amount)\n        \n        # Publish event\n        event_bus.publish('payment.charged', {\n            'payment_id': payment_id,\n            'amount': amount\n        })\n        \n        return payment_id\n    \n    @event_bus.subscribe('order.failed')\n    def on_order_failed(self, event):\n        # Compensate: Refund\n        payment_id = event['payment_id']\n        self.refund(payment_id)\n        \n        event_bus.publish('payment.refunded', {\n            'payment_id': payment_id\n        })\n\n# Inventory Service  \nclass InventoryService:\n    @event_bus.subscribe('payment.charged')\n    def on_payment_charged(self, event):\n        try:\n            # Reserve inventory\n            reservation_id = self.reserve(event['product_id'])\n            \n            event_bus.publish('inventory.reserved', {\n                'reservation_id': reservation_id,\n                'payment_id': event['payment_id']\n            })\n        except OutOfStockError:\n            # Trigger compensation\n            event_bus.publish('order.failed', {\n                'reason': 'out_of_stock',\n                'payment_id': event['payment_id']\n            })\n    \n    @event_bus.subscribe('order.failed')\n    def on_order_failed(self, event):\n        # Compensate: Release inventory\n        if event.get('reservation_id'):\n            self.release(event['reservation_id'])\n            \n            event_bus.publish('inventory.released', {\n                'reservation_id': event['reservation_id']\n            })\n\n# Order Service\nclass OrderService:\n    @event_bus.subscribe('inventory.reserved')\n    def on_inventory_reserved(self, event):\n        try:\n            # Create order\n            order_id = self.create_order(event)\n            \n            event_bus.publish('order.created', {\n                'order_id': order_id\n            })\n        except Exception as e:\n            # Trigger compensation\n            event_bus.publish('order.failed', {\n                'reason': str(e),\n                'payment_id': event['payment_id'],\n                'reservation_id': event['reservation_id']\n            })\n"])</script><script>self.__next_f.push([1,"58:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a4\"}]}]\n59:[\"$\",\"$L2a\",null,{\"chart\":\"sequenceDiagram\\n    participant PS as Payment Service\\n    participant IS as Inventory Service\\n    participant OS as Order Service\\n    participant EB as Event Bus\\n    \\n    PS-\u003e\u003eEB: payment.charged\\n    EB-\u003e\u003eIS: (event)\\n    IS-\u003e\u003eIS: Reserve inventory\\n    IS-\u003e\u003eEB: inventory.reserved\\n    EB-\u003e\u003eOS: (event)\\n    OS-\u003e\u003eOS: Create order\\n    \\n    alt Success\\n        OS-\u003e\u003eEB: order.created\\n    else Failure\\n        OS-\u003e\u003eEB: order.failed\\n        EB-\u003e\u003eIS: (compensate)\\n        IS-\u003e\u003eEB: inventory.released\\n        EB-\u003e\u003ePS: (compensate)\\n        PS-\u003e\u003eEB: payment.refunded\\n    end\"}]\n5a:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Choreography: Services react to events, tự động compensation\"}]}]\n5b:[\"$\",\"h3\",null,{\"id\":\"orchestration-vs-choreography\",\"children\":\"Orchestration vs Choreography\"}]\n5c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Orchestration (Central coordinator):\\nClear flow, dễ debug\\nCentralized logic\\nExplicit compensation order\\nSingle point of failure\\nTight coupling to orchestrator\\n\\nChoreography (Event-driven):\\nLoosely coupled\\nNo single point of failure\\nScalable\\nHard to understand flow\\nHard to debug\\nComplex error handling\\n\"}]}]\n5d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"My recommendation:\"}]}]\n5e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Start với Orchestration:\\n- Simpler to understand\\n- Easier to debug\\n- Clear ownership\\n\\nMove to Choreography khi:\\n- Need extreme decoupling\\n- Have event-driven infrastructure\\n- Team experienced với async patterns\\n\"}]}]\n5f:[\"$\",\"h2\",null,{\"id\":\"compensation-thinking-the-core-mindset\",\"children\":\"Compensation Thinking: The Core Mindset\"}]\n60:[\"$\",\"h3\",null,{\"id\":\"compensation--rollback\",\"children\":\"Compensation ≠ Rollback\"}]\n61:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Database rollback:\"}]}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Database rollback: Undo changes\\ndb.begin_transaction()\\ndb.execute(\\\"INSERT INTO orders ...\\\")\\ndb.rollback()  # Changes disappear completely\\n# As if nothing happened\\n\"}]}]\n63:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Saga compensation:\"}]}]\n64:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Saga compensation: Reverse effect\\npayment_id = payment_service.charge(100)  # Money charged\\n# Later...\\npayment_service.refund(payment_id)  # Money returned\\n\\n# NOT same as rollback:\\n- Payment happened (visible in logs)\\n- Refund is separate transaction\\n- Both visible in audit trail\\n\"}]}]\n65:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key difference:\"}]}]\n66:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Rollback:     Undo → như không có gì xảy ra\\nCompensation: Reverse effect → có audit trail đầy đủ\\n\"}]}]\n67:[\"$\",\"h3\",null,{\"id\":\"designing-compensating-transactions\",\"children\":\"Designing Compensating Transactions\"}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rule 1: Compensation phải idempotent\"}]}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# BAD: Not idempotent\\ndef refund_payment(payment_id):\\n    payment = get_payment(payment_id)\\n    payment.amount = 0  # If called twice → problem\\n    save(payment)\\n\\n# GOOD: Idempotent\\ndef refund_payment(payment_id):\\n    payment = get_payment(payment_id)\\n    \\n    if payment.status == 'refunded':\\n        return  # Already refunded, skip\\n    \\n    payment.status = 'refunded'\\n    payment.refunded_at = now()\\n    save(payment)\\n\"}]}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rule 2: Compensation có thể fail\"}]}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def _compensate(self, saga_state):\\n    compensation_errors = []\\n    \\n    # Try each compensation\\n    for step in reversed(saga_state["])</script><script>self.__next_f.push([1,"'completed_steps']):\\n        try:\\n            step.compensate()\\n        except Exception as e:\\n            # Log but continue\\n            compensation_errors.append({\\n                'step': step.name,\\n                'error': str(e)\\n            })\\n            logger.error(f\\\"Compensation failed: {step.name} - {e}\\\")\\n    \\n    # If any compensation failed → Manual intervention needed\\n    if compensation_errors:\\n        alert_ops_team({\\n            'saga_id': saga_state['id'],\\n            'failures': compensation_errors,\\n            'action_needed': 'manual_compensation'\\n        })\\n\"}]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rule 3: Some actions cannot be compensated\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Cannot compensate:\\nEmail sent (cannot \\\"unsend\\\")\\nSMS sent\\nExternal API called (no control)\\nPhysical shipment initiated\\n\\n# Solutions:\\nPut compensable actions first\\nNon-compensable actions last (after all risks)\\nMake them idempotent (safe to retry)\\n\"}]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"compensation-order-matters\",\"children\":\"Compensation Order Matters\"}]\n6f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Forward order:\\n1. Charge payment\\n2. Reserve inventory  \\n3. Send confirmation email ← Non-compensable\\n\\nCompensation order (REVERSE):\\n3. (Cannot undo email - accept it)\\n2. Release inventory\\n1. Refund payment\\n\\nWhy reverse? Latest changes undo first.\\n\"}]}]\n70:[\"$\",\"h2\",null,{\"id\":\"idempotency-the-safety-net\",\"children\":\"Idempotency: The Safety Net\"}]\n71:[\"$\",\"h3\",null,{\"id\":\"định-nghĩa-idempotency\",\"children\":\"Định Nghĩa Idempotency\"}]\n72:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Idempotent operation = Gọi nhiều lần = gọi 1 lần\"}]}]\n73:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"f(x) = y\\nf(f(x)) = y  ← Same result\\nf(f(f(x))) = y  ← Still same\\n\\nExample:\\n- Set temperature to 20°C → Idempotent\\n- Increase temperature by 1°C → NOT idempotent\\n\"}]}]\n74:[\"$\",\"h3\",null,{\"id\":\"tại-sao-cần-idempotency\",\"children\":\"Tại Sao Cần Idempotency?\"}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem: Network unreliability\"}]}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Timeline:\\n1. Client calls API: \\\"Charge $100\\\"\\n2. Server processes, charges $100\\n3. Server sends response\\n4. Network fails before client receives response\\n5. Client doesn't know if succeeded\\n6. Client retries: \\\"Charge $100\\\" again\\n7. Server charges ANOTHER $100\\n\\nResult: Customer charged $200 instead of $100!\\n\"}]}]\n77:[\"$\",\"$L2a\",null,{\"chart\":\"sequenceDiagram\\n    participant Client\\n    participant API\\n    participant Payment\\n    \\n    Client-\u003e\u003eAPI: Charge $100\\n    API-\u003e\u003ePayment: Process\\n    Payment--\u003e\u003eAPI: Success\\n    API--xClient: (response lost)\\n    \\n    Note over Client: Timeout! Retry?\\n    \\n    Client-\u003e\u003eAPI: Charge $100 (retry)\\n    API-\u003e\u003ePayment: Process AGAIN\\n    Payment--\u003e\u003eAPI: Success\\n    API--\u003e\u003eClient: OK\\n    \\n    Note over Client: Charged $200! 💸\"}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Network failure → Retry → Duplicate charge\"}]}]\n79:[\"$\",\"h3\",null,{\"id\":\"implementing-idempotency\",\"children\":\"Implementing Idempotency\"}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution 1: Idempotency Key\"}]}]\na5:T55a,"])</script><script>self.__next_f.push([1,"class PaymentService:\n    def __init__(self):\n        self.processed_requests = {}  # In practice: Redis/DB\n    \n    def charge(self, amount, idempotency_key):\n        # Check if already processed\n        if idempotency_key in self.processed_requests:\n            # Return cached result\n            print(f\"Duplicate request detected: {idempotency_key}\")\n            return self.processed_requests[idempotency_key]\n        \n        # First time seeing this request\n        print(f\"Processing new request: {idempotency_key}\")\n        \n        # Process payment\n        payment_id = self._process_payment(amount)\n        \n        # Cache result\n        self.processed_requests[idempotency_key] = {\n            'payment_id': payment_id,\n            'amount': amount,\n            'status': 'success'\n        }\n        \n        return self.processed_requests[idempotency_key]\n\n# Client usage\npayment_service = PaymentService()\n\n# Client generates unique key\nidempotency_key = \"order_123_payment_attempt_1\"\n\n# First call\nresult1 = payment_service.charge(100, idempotency_key)\n# Processing new request: order_123_payment_attempt_1\n# Result: payment_id=pay_789\n\n# Retry (network failed, client retries)\nresult2 = payment_service.charge(100, idempotency_key)\n# Duplicate request detected: order_123_payment_attempt_1\n# Result: payment_id=pay_789 (SAME!)\n\n# Charged only once ✓\n"])</script><script>self.__next_f.push([1,"7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a5\"}]}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation details:\"}]}]\n7d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Production-grade implementation\\nclass IdempotentPaymentService:\\n    def charge(self, amount, idempotency_key):\\n        # Check cache (Redis với TTL 24h)\\n        cached = redis.get(f\\\"idempotency:{idempotency_key}\\\")\\n        if cached:\\n            return json.loads(cached)\\n        \\n        # Acquire lock để prevent concurrent duplicates\\n        lock_key = f\\\"lock:idempotency:{idempotency_key}\\\"\\n        with redis.lock(lock_key, timeout=30):\\n            # Double-check sau khi có lock\\n            cached = redis.get(f\\\"idempotency:{idempotency_key}\\\")\\n            if cached:\\n                return json.loads(cached)\\n            \\n            # Process payment\\n            result = self._process_payment(amount)\\n            \\n            # Cache result với TTL 24h\\n            redis.setex(\\n                f\\\"idempotency:{idempotency_key}\\\",\\n                86400,  # 24 hours\\n                json.dumps(result)\\n            )\\n            \\n            return result\\n\"}]}]\n7e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution 2: Natural Idempotency\"}]}]\n7f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# NOT idempotent\\ndef add_item_to_cart(user_id, product_id):\\n    cart = get_cart(user_id)\\n    cart.items.append(product_id)  # Duplicate if called twice\\n    save(cart)\\n\\n# Idempotent\\ndef add_item_to_cart(user_id, product_id):\\n    cart = get_cart(user_id)\\n    if product_id not in cart.items:  # Check first\\n        cart.items.append(product_id)\\n    save(cart)\\n\\n# Even better: Use Set\\ndef add_item_to_cart(user_id, product_id):\\n    cart = get_cart(user_id)\\n    cart.items.add(product_id)  # Set naturally idempotent\\n    save(cart)\\n\"}]}]\n80:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution 3: Database Constraints\"}]}]\n81:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Allows duplicates\\nCREATE TABLE payments (\\n    id SERIAL PRIMARY KEY,\\n    order_id INT,\\n    amount DECIMAL\\n);\\n\\n-- Can insert same order_id multiple times!\\n\\n-- Prevent duplicates\\nCREATE TABLE payments (\\n    id SERIAL PRIMARY KEY,\\n    order_id INT UNIQUE,  -- Unique constraint\\n    amount DECIMAL\\n);\\n\\n-- Second insert with same order_id → Error\\n-- Application catches error → Return cached result\\n\"}]}]\n82:[\"$\",\"h3\",null,{\"id\":\"idempotency-best-practices\",\"children\":\"Idempotency Best Practices\"}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Generate idempotency keys client-side\"}]}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Client generates key\\nconst idempotencyKey = `${userId}_${orderId}_${Date.now()}_${uuidv4()}`;\\n\\nfetch('/api/payment/charge', {\\n    method: 'POST',\\n    headers: {\\n        'Idempotency-Key': idempotencyKey\\n    },\\n    body: JSON.stringify({ amount: 100 })\\n});\\n\"}]}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Store idempotency results với TTL\"}]}]\n86:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Don't store forever → Waste storage\\nTTL 24-48 hours usually enough\\nAfter TTL, new request = new operation (acceptable)\\n\"}]}]\n87:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Return same status code cho idempotent requests\"}]}]\n88:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# BAD\\nif duplicate_request:\\n    return 200, cached_result\\n\\n# GOOD\\nif duplicate_request:\\n    return 200, cached_result  # Same as original\\nelse:\\n    result = process()\\n    return 200, result  # Same status code\\n\"}]}]\n89:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Idempotency for compensation too\"}]}]\n8a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\""])</script><script>self.__next_f.push([1,"className\":\"language-python\",\"children\":\"# Compensation cũng phải idempotent\\ndef compensate_payment(payment_id, idempotency_key):\\n    # Check if already compensated\\n    if already_refunded(payment_id):\\n        return cached_result\\n    \\n    # Refund\\n    refund_payment(payment_id)\\n    \\n    # Cache compensation result\\n    cache_result(idempotency_key, result)\\n\"}]}]\n8b:[\"$\",\"h2\",null,{\"id\":\"real-world-example-e-commerce-checkout\",\"children\":\"Real-World Example: E-commerce Checkout\"}]\n8c:[\"$\",\"p\",null,{\"children\":\"Hãy xem complete example với tất cả concepts:\"}]\na6:Td7b,"])</script><script>self.__next_f.push([1,"class CheckoutSaga:\n    def __init__(self):\n        self.payment_service = PaymentService()\n        self.inventory_service = InventoryService()\n        self.order_service = OrderService()\n        self.shipping_service = ShippingService()\n    \n    def execute(self, checkout_data, idempotency_key):\n        # Check idempotency\n        cached = self._check_cache(idempotency_key)\n        if cached:\n            return cached\n        \n        saga_state = {\n            'steps_completed': [],\n            'checkout_id': checkout_data['checkout_id']\n        }\n        \n        try:\n            # Step 1: Reserve inventory (compensable)\n            reservation = self.inventory_service.reserve(\n                checkout_data['items'],\n                idempotency_key=f\"{idempotency_key}_inventory\"\n            )\n            saga_state['steps_completed'].append({\n                'name': 'inventory',\n                'data': reservation,\n                'compensate': lambda: self.inventory_service.release(reservation['id'])\n            })\n            \n            # Step 2: Charge payment (compensable)\n            payment = self.payment_service.charge(\n                checkout_data['amount'],\n                idempotency_key=f\"{idempotency_key}_payment\"\n            )\n            saga_state['steps_completed'].append({\n                'name': 'payment',\n                'data': payment,\n                'compensate': lambda: self.payment_service.refund(payment['id'])\n            })\n            \n            # Step 3: Create order (compensable)\n            order = self.order_service.create(\n                checkout_data,\n                idempotency_key=f\"{idempotency_key}_order\"\n            )\n            saga_state['steps_completed'].append({\n                'name': 'order',\n                'data': order,\n                'compensate': lambda: self.order_service.cancel(order['id'])\n            })\n            \n            # Step 4: Create shipment (NOT compensable - put last)\n            shipment = self.shipping_service.create(\n                order['id'],\n                idempotency_key=f\"{idempotency_key}_shipment\"\n            )\n            # No compensation - cannot undo physical shipment\n            \n            result = {\n                'status': 'success',\n                'order_id': order['id'],\n                'shipment_id': shipment['id']\n            }\n            \n            # Cache result\n            self._cache_result(idempotency_key, result)\n            \n            return result\n            \n        except Exception as e:\n            logger.error(f\"Saga failed: {e}\")\n            \n            # Compensate in reverse order\n            self._compensate(saga_state)\n            \n            return {\n                'status': 'failed',\n                'error': str(e)\n            }\n    \n    def _compensate(self, saga_state):\n        # Reverse order\n        for step in reversed(saga_state['steps_completed']):\n            try:\n                logger.info(f\"Compensating: {step['name']}\")\n                step['compensate']()\n                logger.info(f\"✓ Compensated: {step['name']}\")\n            except Exception as e:\n                logger.error(f\"Compensation failed: {step['name']} - {e}\")\n                # Alert ops team\n                alert_ops_team({\n                    'saga_id': saga_state['checkout_id'],\n                    'step': step['name'],\n                    'error': str(e)\n                })\n"])</script><script>self.__next_f.push([1,"8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a6\"}]}]\n8e:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n8f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"ACID breaks trong distributed systems:\"}]}]\n90:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Single database: ACID works\\nMultiple databases/services: ACID impossible\\nNetwork unreliability → Cannot guarantee atomicity\\n\"}]}]\n91:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2-Phase Commit:\"}]}]\n92:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Strong consistency\\nACID maintained\\nBlocking (fatal flaw)\\nCoordinator failure = disaster\\nAvoid trong microservices\\n\"}]}]\n93:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Saga Pattern:\"}]}]\n94:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Non-blocking\\nHigh availability\\nPractical cho microservices\\nEventual consistency\\nCompensation complexity\\n\"}]}]\n95:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Orchestration vs Choreography:\"}]}]\n96:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Orchestration: Central coordinator (simpler, easier debug)\\nChoreography: Event-driven (decoupled, complex)\\n\\nStart với Orchestration\\n\"}]}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Compensation thinking:\"}]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- Compensation ≠ Rollback\\n- Reverse effect, not undo\\n- Must be idempotent\\n- Some actions cannot compensate (put last)\\n- Order matters (reverse order)\\n\"}]}]\n99:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Idempotency:\"}]}]\n9a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- Essential for distributed systems\\n- Prevents duplicate operations\\n- Use idempotency keys\\n- Apply to ALL operations (including compensation)\\n- Store results với TTL\\n\"}]}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\n9c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Need ACID + Can tolerate blocking:\\n→ 2-Phase Commit (rare)\\n\\nNeed high availability + Can accept eventual consistency:\\n→ Saga Pattern (common)\\n\\nImplementing Saga:\\n- Start simple: Orchestration\\n- All operations: Idempotent\\n- Non-compensable actions: Last\\n- Monitor compensation failures\\n\"}]}]\n9d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Câu hỏi tự kiểm tra:\"}]}]\n9e:[\"$\",\"p\",null,{\"children\":\"Khi design distributed transaction:\"}]\n9f:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Có thực sự cần strong consistency không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Có thể tolerate eventual consistency không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Operations nào compensable, không compensable?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Đã implement idempotency chưa?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Compensation order đúng chưa (reverse)?\"}]}],\"\\n\"]}]\na0:[\"$\",\"p\",null,{\"children\":\"Distributed transactions là hard. Nhưng với Saga + Idempotency, bạn có tools để handle chúng correctly.\"}]\na1:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Remember:\"}],\" Perfect consistency không achievable trong distributed systems. Goal là đảm bảo eventual consistency với clear compensation paths.\"]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"a7:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu | Phase 3 — Distributed Systems Fundamentals | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactio\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactio\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học cách đảm bảo data integrity trong distributed systems: Tại sao ACID breaks, 2PC problems, Saga pattern, compensation logic và idempotency. Master transactio\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$La7\",\"14\",{}]]\n"])</script></body></html>

@@ -1,0 +1,225 @@
+<article class="prose-ui"><h1 id="system-thinking-framework-nhìn-hệ-thống-như-một-tổng-thể">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<pre><code>§§SEG7§§</code></pre>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<h2 id="tại-sao-phải-think-in-systems">§§SEG10§§</h2>
+<h3 id="the-problem-thinking-in-code">§§SEG11§§</h3>
+<p>§§SEG12§§</p>
+<pre><code class="language-python"># Code-level thinking
+def get_user(user_id):
+    user = cache.get(user_id)
+    if not user:
+        user = db.query("SELECT * FROM users WHERE id = ?", user_id)
+        cache.set(user_id, user)
+    return user
+</code></pre>
+<p>§§SEG13§§</p>
+<p>§§SEG14§§</p>
+<ul>
+<li>§§SEG15§§</li>
+<li>§§SEG16§§</li>
+<li>§§SEG17§§</li>
+<li>§§SEG18§§</li>
+<li>§§SEG19§§</li>
+</ul>
+<h3 id="the-solution-system-level-view">§§SEG20§§</h3>
+<p>§§SEG21§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG22§§</code></pre>
+<p>§§SEG23§§</p>
+<p>§§SEG24§§</p>
+<p>§§SEG25§§</p>
+<ul>
+<li>§§SEG26§§</li>
+<li>§§SEG27§§</li>
+<li>§§SEG28§§</li>
+<li>§§SEG29§§</li>
+<li>§§SEG30§§</li>
+</ul>
+<h2 id="the-universal-system-pattern">§§SEG31§§</h2>
+<p>§§SEG32§§</p>
+<pre><code>§§SEG33§§</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG34§§</code></pre>
+<p>§§SEG35§§</p>
+<h3 id="examples-of-this-pattern">§§SEG36§§</h3>
+<p>§§SEG37§§</p>
+<pre><code>§§SEG38§§</code></pre>
+<p>§§SEG39§§</p>
+<pre><code>§§SEG40§§</code></pre>
+<p>§§SEG41§§</p>
+<pre><code>§§SEG42§§</code></pre>
+<p>§§SEG43§§</p>
+<pre><code>§§SEG44§§</code></pre>
+<p>§§SEG45§§</p>
+<h2 id="core-system-components">§§SEG46§§</h2>
+<p>§§SEG47§§</p>
+<h3 id="component-1-client-input-layer">§§SEG48§§</h3>
+<p>§§SEG49§§</p>
+<pre><code>§§SEG50§§</code></pre>
+<p>§§SEG51§§</p>
+<pre><code>§§SEG52§§</code></pre>
+<h3 id="component-2-api-processing-layer">§§SEG53§§</h3>
+<p>§§SEG54§§</p>
+<pre><code>§§SEG55§§</code></pre>
+<p>§§SEG56§§</p>
+<pre><code class="language-python"># API Server handles request
+@app.post("/orders")
+def create_order(order_data):
+    # 1. Validate (client không tin cậy)
+    if not validate_order(order_data):
+        return 400, {"error": "Invalid order"}
+    
+    # 2. Business logic
+    total = calculate_total(order_data)
+    
+    # 3. Check inventory
+    if not check_inventory(order_data.items):
+        return 400, {"error": "Out of stock"}
+    
+    # 4. Save to database
+    order = db.create_order(order_data, total)
+    
+    # 5. Async processing (queue)
+    queue.publish("order.created", order.id)
+    
+    # 6. Return response
+    return 201, {"order_id": order.id}
+</code></pre>
+<h3 id="component-3-database-storage-layer">§§SEG57§§</h3>
+<p>§§SEG58§§</p>
+<pre><code>§§SEG59§§</code></pre>
+<p>§§SEG60§§</p>
+<pre><code>§§SEG61§§</code></pre>
+<h3 id="component-4-cache-performance-layer">§§SEG62§§</h3>
+<p>§§SEG63§§</p>
+<pre><code>§§SEG64§§</code></pre>
+<p>§§SEG65§§</p>
+<pre><code class="language-python"># Pattern 1: Cache-Aside (Lazy Loading)
+def get_user(user_id):
+    # Check cache first
+    user = cache.get(f"user:{user_id}")
+    if user:
+        return user  # Cache hit
+    
+    # Cache miss → Query database
+    user = db.query("SELECT * FROM users WHERE id = ?", user_id)
+    
+    # Store in cache for next time
+    cache.set(f"user:{user_id}", user, ttl=3600)
+    return user
+
+# Pattern 2: Write-Through
+def update_user(user_id, data):
+    # Update database
+    db.update("users", user_id, data)
+    
+    # Update cache immediately
+    cache.set(f"user:{user_id}", data)
+</code></pre>
+<h3 id="component-5-queue-async-layer">§§SEG66§§</h3>
+<p>§§SEG67§§</p>
+<pre><code>§§SEG68§§</code></pre>
+<p>§§SEG69§§</p>
+<pre><code class="language-python"># API: Quick response to user
+@app.post("/orders")
+def create_order(order_data):
+    order = db.create_order(order_data)
+    
+    # Don't send email synchronously (slow!)
+    # Put in queue instead
+    queue.publish("order.created", {
+        "order_id": order.id,
+        "user_email": order_data.email
+    })
+    
+    return 201, {"order_id": order.id}
+    # User gets response immediately!
+
+# Worker: Process async
+@worker.task("order.created")
+def on_order_created(message):
+    # This runs in background
+    send_confirmation_email(message.user_email)
+    update_inventory(message.order_id)
+    notify_warehouse(message.order_id)
+</code></pre>
+<h3 id="component-6-storage-file-layer">§§SEG70§§</h3>
+<p>§§SEG71§§</p>
+<pre><code>§§SEG72§§</code></pre>
+<p>§§SEG73§§</p>
+<pre><code class="language-python"># Upload flow
+@app.post("/upload")
+def upload_photo(file):
+    # 1. Generate unique filename
+    filename = f"{uuid.uuid4()}.jpg"
+    
+    # 2. Upload to S3
+    s3_url = s3.upload(filename, file)
+    
+    # 3. Save metadata to database
+    photo = db.create({
+        "filename": filename,
+        "s3_url": s3_url,
+        "size": file.size,
+        "uploaded_at": datetime.now()
+    })
+    
+    return {"photo_id": photo.id, "url": s3_url}
+
+# Retrieve flow
+@app.get("/photos/{id}")
+def get_photo(id):
+    # Get metadata from database
+    photo = db.get_photo(id)
+    
+    # Client downloads from S3 directly
+    return {"url": photo.s3_url}
+</code></pre>
+<h2 id="putting-it-all-together-system-architecture">§§SEG74§§</h2>
+<p>§§SEG75§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG76§§</code></pre>
+<p>§§SEG77§§</p>
+<h2 id="request-flow-example-user-updates-profile">§§SEG78§§</h2>
+<p>§§SEG79§§</p>
+<pre><code>§§SEG80§§</code></pre>
+<p>§§SEG81§§</p>
+<pre><code>§§SEG82§§</code></pre>
+<h2 id="the-mental-model-input--processing--storage--output">§§SEG83§§</h2>
+<p>§§SEG84§§</p>
+<h3 id="example-1-e-commerce-checkout">§§SEG85§§</h3>
+<pre><code>§§SEG86§§</code></pre>
+<h3 id="example-2-social-media-post">§§SEG87§§</h3>
+<pre><code>§§SEG88§§</code></pre>
+<h3 id="example-3-video-upload">§§SEG89§§</h3>
+<pre><code>§§SEG90§§</code></pre>
+<p>§§SEG91§§</p>
+<h2 id="common-system-patterns">§§SEG92§§</h2>
+<h3 id="pattern-1-read-heavy-system">§§SEG93§§</h3>
+<pre><code>§§SEG94§§</code></pre>
+<h3 id="pattern-2-write-heavy-system">§§SEG95§§</h3>
+<pre><code>§§SEG96§§</code></pre>
+<h3 id="pattern-3-real-time-system">§§SEG97§§</h3>
+<pre><code>§§SEG98§§</code></pre>
+<h2 id="debugging-with-system-thinking">§§SEG99§§</h2>
+<p>§§SEG100§§</p>
+<h3 id="before-system-thinking">§§SEG101§§</h3>
+<pre><code>§§SEG102§§</code></pre>
+<h3 id="after-system-thinking">§§SEG103§§</h3>
+<pre><code>§§SEG104§§</code></pre>
+<p>§§SEG105§§</p>
+<h2 id="key-takeaways">§§SEG106§§</h2>
+<p>§§SEG107§§</p>
+<pre><code>§§SEG108§§</code></pre>
+<p>§§SEG109§§</p>
+<pre><code>§§SEG110§§</code></pre>
+<p>§§SEG111§§</p>
+<pre><code>§§SEG112§§</code></pre>
+<p>§§SEG113§§</p>
+<pre><code>§§SEG114§§</code></pre>
+<p>§§SEG115§§</p>
+<pre><code>§§SEG116§§</code></pre></article>

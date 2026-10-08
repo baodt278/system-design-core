@@ -1,0 +1,292 @@
+@0
+⟦Trực Giác Về Quy Mô|Scale Intuition⟧: Xây Dựng Cảm Giác Về Các Con Số
+@1
+Tôi còn nhớ lần đầu tiên được hỏi trong một buổi ⟦phỏng vấn|interview⟧:
+@2
+*"Hệ thống của em cần xử lý bao nhiêu ⟦yêu cầu|requests⟧ mỗi giây?"*
+@3
+Tôi: *"Ừm... nhiều ạ?"*
+@4
+⟦Người phỏng vấn|Interviewer⟧: *"Nhiều là bao nhiêu? 10? 1.000? 1.000.000?"*
+@5
+Tôi: *"... Em không biết ạ."*
+@6
+**Tôi trượt câu hỏi đó.**
+@7
+Không phải vì không biết viết mã. Mà vì **không có ⟦trực giác về quy mô|scale intuition⟧**.
+@8
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ ngồi bên cạnh sau đó nói: *"Em biết không, khác biệt giữa 1 nghìn người dùng và 1 triệu người dùng không phải là 1000 lần. Nó là khác biệt giữa một chiếc xe đạp và một chiếc Boeing 747."*
+@9
+Đó là lúc tôi bắt đầu học về ⟦quy mô|scale⟧.
+@10
+Tại Sao ⟦Trực Giác Về Quy Mô|Scale Intuition⟧ Lại Quan Trọng?
+@11
+Vấn Đề: Các Con Số Quá Trừu Tượng
+@12
+Khi bạn nghe "1 triệu người dùng", bạn nghĩ gì?
+@13
+Hầu hết ⟦lập trình viên|developers⟧: *"Ồ, nhiều quá!"*
+@14
+Nhưng "nhiều" không giúp bạn ⟦thiết kế hệ thống|design system⟧.
+@15
+**Bạn cần biết:**
+@16
+1 triệu người dùng = bao nhiêu yêu cầu/giây?
+@17
+Cần bao nhiêu ⟦máy chủ|servers⟧?
+@18
+Cần bao nhiêu ⟦dung lượng cơ sở dữ liệu|database capacity⟧?
+@19
+Cần bao nhiêu ⟦lưu trữ|storage⟧?
+@20
+Tốn bao nhiêu ⟦chi phí|cost⟧?
+@21
+Giải Pháp: Rèn Luyện Trực Giác
+@22
+**⟦Trực giác về quy mô|Scale intuition⟧ = Khả năng ⟦ước lượng|estimate⟧ nhanh các yêu cầu của hệ thống**
+@23
+Kỹ năng: "Ước chừng 1 triệu người dùng cần 10 máy chủ ứng dụng, 2TB lưu trữ, chi phí ~$3K/tháng"
+
+Chứ không phải: "1 triệu người dùng... cần nhiều máy chủ... ừm..."
+
+Có trực giác → Thiết kế một cách tự tin
+Không có trực giác → Thiết kế bằng phỏng đoán
+
+@24
+**Bài này sẽ dạy bạn xây dựng trực giác đó.**
+@25
+Phổ Quy Mô: 1 Nghìn vs 1 Triệu vs 1 Tỷ Người Dùng
+@26
+Hình Dung Sự Khác Biệt
+@27
+graph LR
+    A[1K người dùng<br/>Xe đạp] --> B[10K người dùng<br/>Xe hơi]
+    B --> C[100K người dùng<br/>Xe buýt]
+    C --> D[1M người dùng<br/>Máy bay]
+    D --> E[10M người dùng<br/>Boeing 747]
+    E --> F[100M+ người dùng<br/>Hạm đội máy bay]
+
+    style A fill:#51cf66
+    style C fill:#ffd43b
+    style E fill:#ff6b6b
+@28
+*Mỗi bậc ⟦quy mô|scale⟧ là một thế giới hoàn toàn khác nhau*
+@29
+1.000 Người Dùng (MVP Của Công Ty Khởi Nghiệp)
+@30
+Người dùng hoạt động hằng ngày (DAU): ~500
+Người dùng đồng thời: ~50
+Số yêu cầu mỗi giây: ~5-10
+
+Hạ tầng:
+- 1 máy chủ ứng dụng ($50/tháng)
+- 1 máy chủ cơ sở dữ liệu ($50/tháng)
+- Không cần bộ cân bằng tải
+- Không cần bộ nhớ đệm
+Tổng chi phí: ~$100/tháng
+
+Điểm nghẽn: Có lẽ là không có
+Kiến trúc: Hệ thống nguyên khối đơn giản
+Nhóm: 1-2 lập trình viên là đủ
+
+@31
+**Ví dụ thực tế:**
+@32
+Ứng dụng cho một quán cà phê địa phương:
+- 500 khách hàng
+- Mỗi người xem thực đơn 2 lần/ngày
+- 1.000 yêu cầu/ngày
+- 1.000 / 86.400 giây ≈ 0,01 yêu cầu/giây
+
+Chạy được trên Raspberry Pi! 😄
+
+@33
+10.000 Người Dùng (Công Ty Khởi Nghiệp Đang Tăng Trưởng)
+@34
+Người dùng hoạt động hằng ngày: ~5.000
+Người dùng đồng thời: ~500
+Số yêu cầu mỗi giây: ~50-100
+
+Hạ tầng:
+- 2-3 máy chủ ứng dụng ($150/tháng)
+- 1 máy chủ cơ sở dữ liệu ($100/tháng)
+- Bộ cân bằng tải ($50/tháng)
+- Bộ nhớ đệm Redis (tuỳ chọn) ($50/tháng)
+Tổng chi phí: ~$350/tháng
+
+Điểm nghẽn: Truy vấn cơ sở dữ liệu (thêm chỉ mục)
+Kiến trúc: Hệ thống nguyên khối + bộ nhớ đệm
+Nhóm: 2-5 lập trình viên
+
+@35
+**Khác biệt chính so với mốc 1 nghìn:**
+@36
+Cần ⟦bộ cân bằng tải|load balancer⟧ (⟦tính sẵn sàng cao|high availability⟧)
+@37
+⟦Chỉ mục|Indexes⟧ ⟦cơ sở dữ liệu|database⟧ trở nên quan trọng
+@38
+⟦Giám sát|Monitoring⟧ bắt đầu trở nên quan trọng
+@39
+100.000 Người Dùng (Sản Phẩm Đã Có Chỗ Đứng)
+@40
+Người dùng hoạt động hằng ngày: ~50.000
+Người dùng đồng thời: ~5.000
+Số yêu cầu mỗi giây: ~500-1.000
+
+Hạ tầng:
+- 10 máy chủ ứng dụng ($500/tháng)
+- Cơ sở dữ liệu với bản sao chỉ đọc ($500/tháng)
+- Bộ cân bằng tải ($100/tháng)
+- Cụm Redis ($300/tháng)
+- CDN ($100/tháng)
+Tổng chi phí: ~$1.500/tháng
+
+Điểm nghẽn: Ghi vào cơ sở dữ liệu, vô hiệu hoá bộ nhớ đệm
+Kiến trúc: Hệ thống nguyên khối dạng mô-đun hoặc vi dịch vụ đơn giản
+Nhóm: 10-20 lập trình viên
+
+@41
+**Khác biệt chính so với mốc 10 nghìn:**
+@42
+Cần có ⟦bản sao chỉ đọc|read replicas⟧ cho ⟦cơ sở dữ liệu|database⟧
+@43
+⟦Lưu đệm|Caching⟧ trở nên sống còn
+@44
+CDN cho ⟦tài nguyên tĩnh|static assets⟧
+@45
+⟦Tự động mở rộng|Auto-scaling⟧ bắt đầu có ý nghĩa
+@46
+1.000.000 Người Dùng (Quy Mô Lớn)
+@47
+Người dùng hoạt động hằng ngày: ~500.000
+Người dùng đồng thời: ~50.000
+Số yêu cầu mỗi giây: ~5.000-10.000
+
+Hạ tầng:
+- 50+ máy chủ ứng dụng ($2.500/tháng)
+- Cụm cơ sở dữ liệu đã phân mảnh ($2.000/tháng)
+- Nhiều bộ cân bằng tải ($300/tháng)
+- Bộ nhớ đệm phân tán ($1.000/tháng)
+- CDN ($500/tháng)
+- Hàng đợi thông điệp ($200/tháng)
+Tổng chi phí: ~$6.500/tháng trở lên
+
+Điểm nghẽn: Mọi thứ! Cần cách tiếp cận phân tán
+Kiến trúc: Nhiều khả năng là vi dịch vụ
+Nhóm: 50+ lập trình viên, có nhóm vận hành chuyên trách
+
+@48
+**Khác biệt chính so với mốc 100 nghìn:**
+@49
+Cần ⟦phân mảnh dữ liệu|sharding⟧ cho ⟦cơ sở dữ liệu|database⟧
+@50
+Những thách thức của ⟦hệ thống phân tán|distributed systems⟧
+@51
+Có nhóm DevOps/SRE chuyên trách
+@52
+⟦Giám sát|Monitoring⟧ và ⟦cảnh báo|alerting⟧ phức tạp
+@53
+⟦Quy Luật|The Pattern⟧
+@54
+Mỗi khi quy mô tăng 10 lần:
+- Chi phí tăng ~3-5 lần (không tuyến tính!)
+- Độ phức tạp tăng đáng kể
+- Quy mô nhóm tăng
+- Kiến trúc thay đổi về căn bản
+
+1K → 10K: Thêm máy chủ, tối ưu cơ bản
+10K → 100K: Thêm bộ nhớ đệm, bản sao chỉ đọc
+100K → 1M: Phân mảnh dữ liệu, vi dịch vụ, hệ thống phân tán
+1M → 10M: Phân bố theo địa lý, điện toán biên
+
+@55
+⟦Ước Tính Nhanh|Back-of-Envelope Calculations⟧
+@56
+**Kỹ năng cốt lõi: ⟦Ước lượng|Estimate⟧ nhanh các yêu cầu của hệ thống**
+@57
+⟦Khung Tính Toán|Calculation Framework⟧
+@58
+1. Bắt đầu với số người dùng
+2. Ước lượng thói quen sử dụng
+3. Tính số yêu cầu
+4. Ước lượng dung lượng lưu trữ
+5. Tính băng thông
+
+@59
+Bài tập 1: Trang Web Thương Mại Điện Tử
+@60
+**Dữ kiện:**
+@61
+1 triệu người dùng đã đăng ký
+@62
+20% hoạt động hằng ngày (200 nghìn DAU)
+@63
+Mỗi người dùng xem 10 trang sản phẩm/ngày
+@64
+Mỗi người dùng mua hàng 1 lần/tháng
+@65
+**Hãy tính:**
+@66
+**Số yêu cầu mỗi giây:**
+@67
+Lượt xem trang:
+200K người dùng × 10 trang/ngày = 2M lượt xem trang/ngày
+2M / 86.400 giây/ngày ≈ 23 yêu cầu/giây
+
+Lưu lượng cao điểm (giả sử gấp 3 lần trung bình):
+23 × 3 = 69 yêu cầu/giây
+
+Lời gọi API (giả sử 5 lời gọi API cho mỗi lượt xem trang):
+23 × 5 = 115 yêu cầu/giây
+Cao điểm: 345 yêu cầu/giây
+
+→ Cần xử lý ~350 req/s vào giờ cao điểm
+
+@68
+**Lưu trữ:**
+@69
+Danh mục sản phẩm:
+100K sản phẩm × 10KB mỗi sản phẩm = 1GB
+
+Ảnh sản phẩm:
+100K sản phẩm × 5 ảnh × 500KB = 250GB
+
+Dữ liệu người dùng:
+1M người dùng × 1KB = 1GB
+
+Đơn hàng (1 năm):
+1M người dùng × 12 lần mua/năm × 5KB = 60GB
+
+Tổng: ~312GB
+→ Một cơ sở dữ liệu xử lý dễ dàng
+→ Ảnh cần CDN/S3
+
+@70
+**Băng thông:**
+@71
+Lượt xem trang: 2M/ngày
+Kích thước trang trung bình: 2MB (HTML + ảnh + JS)
+
+Tổng băng thông: 2M × 2MB = 4TB/ngày
+
+Với bộ nhớ đệm CDN (tỷ lệ trúng bộ nhớ đệm 90%):
+4TB × 0,1 = 400GB/ngày từ máy chủ gốc
+= 16GB/giờ từ các máy chủ
+= Kiểm soát được nhờ CDN
+
+@72
+**Ước lượng hạ tầng:**
+@73
+Máy chủ ứng dụng:
+- Cao điểm 350 req/s
+- Mỗi máy chủ: ~100 req/s
+- Cần: 4 máy chủ (có dư phòng)
+
+Cơ sở dữ liệu:
+- 312GB dữ liệu (một máy chủ là ổn)
+- Thiên về đọc (thêm 2 bản sao chỉ đọc)
+
+CDN: Thiết yếu (90% lưu lượng)
+
+Tổng chi phí: ~$800/tháng
+

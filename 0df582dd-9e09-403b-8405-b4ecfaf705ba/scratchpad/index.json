@@ -1,0 +1,314 @@
+[
+ {
+  "path": "/",
+  "title": "Lộ Trình System Design: Từ Zero Đến Hero",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/roadmap",
+  "title": "Roadmap | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/about",
+  "title": "About Steve | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/docs/getting-started",
+  "title": "Bắt đầu học | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/phase/phase-0",
+  "title": "Phase 0 — Mental Model Shift | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/phase/phase-1",
+  "title": "Phase 1 — Foundation: Thinking in Systems | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/phase/phase-2",
+  "title": "Phase 2 — Core Building Blocks | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/phase/phase-3",
+  "title": "Phase 3 — Distributed Systems Fundamentals | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/phase/phase-4",
+  "title": "Phase 4 — Scalability & Performance | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/phase/phase-5",
+  "title": "Phase 5 — Real-World Architecture Patterns | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/phase/phase-6",
+  "title": "Phase 6 — System Design Mastery | System Design Core",
+  "has_prose": false,
+  "len": 0
+ },
+ {
+  "path": "/phase/phase-0/lesson/lesson-1-code-first-to-problem-first",
+  "title": "Từ Code-First đến Problem-First - Thay Đổi Tư Duy Architect | Phase 0 — Mental Model Shift | System Design Core",
+  "has_prose": true,
+  "len": 10742
+ },
+ {
+  "path": "/phase/phase-0/lesson/lesson-2-perfect-solution-to-trade-off-thinking",
+  "title": "Từ Perfect Solution đến Trade-off Thinking - Nghệ Thuật Của Quyết Định Kiến Trúc | Phase 0 — Mental Model Shift | System Design Core",
+  "has_prose": true,
+  "len": 16993
+ },
+ {
+  "path": "/phase/phase-0/lesson/lesson-3-foundation-exercises",
+  "title": "Components và Communication - Giải Mã Kiến Trúc Hệ Thống Phân Tán | Phase 0 — Mental Model Shift | System Design Core",
+  "has_prose": true,
+  "len": 19396
+ },
+ {
+  "path": "/phase/phase-0/lesson/lesson-4-thinking-in-constraints",
+  "title": "Thinking in Constraints - Engineering Là Quản Lý Giới Hạn | Phase 0 — Mental Model Shift | System Design Core",
+  "has_prose": true,
+  "len": 18040
+ },
+ {
+  "path": "/phase/phase-0/lesson/lesson-5-scale-intuition",
+  "title": "Scale Intuition - Xây Dựng Cảm Giác Về Numbers | Phase 0 — Mental Model Shift | System Design Core",
+  "has_prose": true,
+  "len": 21127
+ },
+ {
+  "path": "/phase/phase-0/lesson/lesson-6-system-thinking-framework",
+  "title": "System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể | Phase 0 — Mental Model Shift | System Design Core",
+  "has_prose": true,
+  "len": 20105
+ },
+ {
+  "path": "/phase/phase-0/lesson/lesson-7-system-question-framework",
+  "title": "System Question Framework - Checklist Chuẩn Khi Design Hệ Thống | Phase 0 — Mental Model Shift | System Design Core",
+  "has_prose": true,
+  "len": 12802
+ },
+ {
+  "path": "/phase/phase-0/lesson/lesson-8-mental-model-recap",
+  "title": "Mental Model Recap - Củng Cố Tư Duy System Design | Phase 0 — Mental Model Shift | System Design Core",
+  "has_prose": true,
+  "len": 12589
+ },
+ {
+  "path": "/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web",
+  "title": "Components Trong Hệ Thống Web - Hiểu Từng Building Block | Phase 1 — Foundation: Thinking in Systems | System Design Core",
+  "has_prose": true,
+  "len": 17685
+ },
+ {
+  "path": "/phase/phase-1/lesson/lesson-2-communication-patterns",
+  "title": "Communication Patterns - Sync vs Async trong Distributed Systems | Phase 1 — Foundation: Thinking in Systems | System Design Core",
+  "has_prose": true,
+  "len": 24423
+ },
+ {
+  "path": "/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks",
+  "title": "Data Flow & Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống | Phase 1 — Foundation: Thinking in Systems | System Design Core",
+  "has_prose": true,
+  "len": 24134
+ },
+ {
+  "path": "/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong",
+  "title": "Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem | Phase 1 — Foundation: Thinking in Systems | System Design Core",
+  "has_prose": true,
+  "len": 20847
+ },
+ {
+  "path": "/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop",
+  "title": "Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế | Phase 1 — Foundation: Thinking in Systems | System Design Core",
+  "has_prose": true,
+  "len": 33644
+ },
+ {
+  "path": "/phase/phase-2/lesson/lesson-1-load-balancing",
+  "title": "Load Balancing: Traffic Distribution Trong Distributed Systems | Phase 2 — Core Building Blocks | System Design Core",
+  "has_prose": true,
+  "len": 36385
+ },
+ {
+  "path": "/phase/phase-2/lesson/lesson-2-caching",
+  "title": "Caching - Performance Layer Quan Trọng Nhất | Phase 2 — Core Building Blocks | System Design Core",
+  "has_prose": true,
+  "len": 24756
+ },
+ {
+  "path": "/phase/phase-2/lesson/lesson-3-database",
+  "title": "Database Scaling - Chiến Lược Scale Data Layer | Phase 2 — Core Building Blocks | System Design Core",
+  "has_prose": true,
+  "len": 23726
+ },
+ {
+  "path": "/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services",
+  "title": "Message Queues & Async Processing - Decoupling Services | Phase 2 — Core Building Blocks | System Design Core",
+  "has_prose": true,
+  "len": 29527
+ },
+ {
+  "path": "/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking",
+  "title": "Integration & Trade-off Thinking - Kết Hợp Components Thành Hệ Thống | Phase 2 — Core Building Blocks | System Design Core",
+  "has_prose": true,
+  "len": 28572
+ },
+ {
+  "path": "/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems",
+  "title": "Reality of Distributed Systems - Failure Models & CAP Thinking | Phase 3 — Distributed Systems Fundamentals | System Design Core",
+  "has_prose": true,
+  "len": 25864
+ },
+ {
+  "path": "/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency",
+  "title": "Consistency Models - Strong vs Eventual Consistency | Phase 3 — Distributed Systems Fundamentals | System Design Core",
+  "has_prose": true,
+  "len": 21495
+ },
+ {
+  "path": "/phase/phase-3/lesson/lesson-3-consensus-leader-election",
+  "title": "Consensus & Leader Election - Distributed Agreement | Phase 3 — Distributed Systems Fundamentals | System Design Core",
+  "has_prose": true,
+  "len": 21318
+ },
+ {
+  "path": "/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity",
+  "title": "Distributed Transactions & Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu | Phase 3 — Distributed Systems Fundamentals | System Design Core",
+  "has_prose": true,
+  "len": 35772
+ },
+ {
+  "path": "/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering",
+  "title": "Distributed ID & Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán | Phase 3 — Distributed Systems Fundamentals | System Design Core",
+  "has_prose": true,
+  "len": 27149
+ },
+ {
+  "path": "/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems",
+  "title": "Time & Event Ordering - Clock Problem Trong Distributed Systems | Phase 3 — Distributed Systems Fundamentals | System Design Core",
+  "has_prose": true,
+  "len": 20570
+ },
+ {
+  "path": "/phase/phase-4/lesson/lesson-1-performance-bottleneck-thinking",
+  "title": "Performance & Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn | Phase 4 — Scalability & Performance | System Design Core",
+  "has_prose": true,
+  "len": 17344
+ },
+ {
+  "path": "/phase/phase-4/lesson/lesson-2-caching-strategy-trade-consistency-de-lay-speed",
+  "title": "Caching Strategy - Trade Consistency Để Lấy Speed | Phase 4 — Scalability & Performance | System Design Core",
+  "has_prose": true,
+  "len": 22513
+ },
+ {
+  "path": "/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user",
+  "title": "CDN & Edge Computing - Distributed Cache Gần User | Phase 4 — Scalability & Performance | System Design Core",
+  "has_prose": true,
+  "len": 24888
+ },
+ {
+  "path": "/phase/phase-4/lesson/lesson-4-database-scaling-optimization",
+  "title": "Database Scaling & Optimization - Từ Query Tuning Đến Sharding | Phase 4 — Scalability & Performance | System Design Core",
+  "has_prose": true,
+  "len": 30156
+ },
+ {
+  "path": "/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control",
+  "title": "Rate Limiting & Load Control - Protect System Khỏi Overload | Phase 4 — Scalability & Performance | System Design Core",
+  "has_prose": true,
+  "len": 34098
+ },
+ {
+  "path": "/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues",
+  "title": "Asynchronous Processing & Queues - Defer Work Để Giảm Latency | Phase 4 — Scalability & Performance | System Design Core",
+  "has_prose": true,
+  "len": 30819
+ },
+ {
+  "path": "/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging",
+  "title": "Monitoring, Observability & Performance Debugging - Measure To Scale | Phase 4 — Scalability & Performance | System Design Core",
+  "has_prose": true,
+  "len": 32934
+ },
+ {
+  "path": "/phase/phase-5/lesson/lesson-1-architecture-evolution-mindset",
+  "title": "Architecture Evolution Mindset - Start Simple, Scale Gradually | Phase 5 — Real-World Architecture Patterns | System Design Core",
+  "has_prose": true,
+  "len": 29386
+ },
+ {
+  "path": "/phase/phase-5/lesson/lesson-2-head-heavy-systems",
+  "title": "Read-Heavy Systems - Design Cho 99% Reads | Phase 5 — Real-World Architecture Patterns | System Design Core",
+  "has_prose": true,
+  "len": 31803
+ },
+ {
+  "path": "/phase/phase-5/lesson/lesson-3-social-feed-systems",
+  "title": "Social Feed Systems - Kiến Trúc Phức Tạp Nhất Trong Consumer Apps | Phase 5 — Real-World Architecture Patterns | System Design Core",
+  "has_prose": true,
+  "len": 33343
+ },
+ {
+  "path": "/phase/phase-6/lesson/lesson-1-system-design-thinking-framework",
+  "title": "System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset | Phase 6 — System Design Mastery | System Design Core",
+  "has_prose": true,
+  "len": 31429
+ },
+ {
+  "path": "/phase/phase-6/lesson/lesson-2-snake-framework",
+  "title": "SNAKE Framework - Methodology Để Ace System Design Interview | Phase 6 — System Design Mastery | System Design Core",
+  "has_prose": true,
+  "len": 32579
+ },
+ {
+  "path": "/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making",
+  "title": "Trade-offs & Architecture Decision Making - Tư Duy Senior Architect | Phase 6 — System Design Mastery | System Design Core",
+  "has_prose": true,
+  "len": 26963
+ },
+ {
+  "path": "/phase/phase-6/lesson/lesson-4-real-interview-strategy",
+  "title": "Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế | Phase 6 — System Design Mastery | System Design Core",
+  "has_prose": true,
+  "len": 25598
+ },
+ {
+  "path": "/phase/phase-6/lesson/lesson-5-advanced-architecture-topics",
+  "title": "Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer | Phase 6 — System Design Mastery | System Design Core",
+  "has_prose": true,
+  "len": 36213
+ },
+ {
+  "path": "/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking",
+  "title": "Architect Mindset & Production Thinking - From Engineer To Trusted Architect | Phase 6 — System Design Mastery | System Design Core",
+  "has_prose": true,
+  "len": 37307
+ },
+ {
+  "path": "/docs/interview/preparation",
+  "title": "Interview Preparation | System Design Core",
+  "has_prose": false,
+  "len": 0
+ }
+]

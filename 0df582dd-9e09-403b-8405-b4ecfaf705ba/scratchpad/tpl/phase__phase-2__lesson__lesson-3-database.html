@@ -1,0 +1,347 @@
+<article class="prose-ui"><h1 id="database-scaling-chiến-lược-scale-data-layer">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<h2 id="tại-sao-database-luôn-là-bottleneck-đầu-tiên">§§SEG7§§</h2>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<pre><code>§§SEG10§§</code></pre>
+<p>§§SEG11§§</p>
+<pre><code>§§SEG12§§</code></pre>
+<p>§§SEG13§§</p>
+<pre><code>§§SEG14§§</code></pre>
+<p>§§SEG15§§</p>
+<h2 id="vertical-scaling-đơn-giản-nhưng-có-giới-hạn">§§SEG16§§</h2>
+<h3 id="định-nghĩa">§§SEG17§§</h3>
+<p>§§SEG18§§</p>
+<pre><code>§§SEG19§§</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG20§§</code></pre>
+<p>§§SEG21§§</p>
+<h3 id="ưu-điểm">§§SEG22§§</h3>
+<p>§§SEG23§§</p>
+<pre><code>§§SEG24§§</code></pre>
+<p>§§SEG25§§</p>
+<pre><code>§§SEG26§§</code></pre>
+<p>§§SEG27§§</p>
+<pre><code>§§SEG28§§</code></pre>
+<h3 id="nhược-điểm">§§SEG29§§</h3>
+<p>§§SEG30§§</p>
+<pre><code>§§SEG31§§</code></pre>
+<p>§§SEG32§§</p>
+<pre><code>§§SEG33§§</code></pre>
+<p>§§SEG34§§</p>
+<pre><code>§§SEG35§§</code></pre>
+<p>§§SEG36§§</p>
+<pre><code>§§SEG37§§</code></pre>
+<h3 id="trade-off-matrix">§§SEG38§§</h3>
+<pre><code>§§SEG39§§</code></pre>
+<h3 id="khi-nào-nên-dùng">§§SEG40§§</h3>
+<p>§§SEG41§§</p>
+<pre><code>§§SEG42§§</code></pre>
+<p>§§SEG43§§</p>
+<p>§§SEG44§§</p>
+<p>§§SEG45§§</p>
+<ul>
+<li>§§SEG46§§</li>
+<li>§§SEG47§§</li>
+<li>§§SEG48§§</li>
+<li>§§SEG49§§</li>
+</ul>
+<p>§§SEG50§§</p>
+<p>§§SEG51§§</p>
+<h3 id="lời-khuyên-cá-nhân">§§SEG52§§</h3>
+<p>§§SEG53§§</p>
+<p>§§SEG54§§</p>
+<ul>
+<li>§§SEG55§§</li>
+<li>§§SEG56§§</li>
+<li>§§SEG57§§</li>
+</ul>
+<p>§§SEG58§§</p>
+<h2 id="horizontal-scaling-phức-tạp-nhưng-unlimited">§§SEG59§§</h2>
+<h3 id="định-nghĩa-1">§§SEG60§§</h3>
+<p>§§SEG61§§</p>
+<pre><code>§§SEG62§§</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG63§§</code></pre>
+<p>§§SEG64§§</p>
+<h3 id="ưu-điểm-1">§§SEG65§§</h3>
+<pre><code>§§SEG66§§</code></pre>
+<h3 id="nhược-điểm-1">§§SEG67§§</h3>
+<pre><code>§§SEG68§§</code></pre>
+<h2 id="read-replicas-scale-reads-dễ-dàng">§§SEG69§§</h2>
+<h3 id="the-readwrite-pattern">§§SEG70§§</h3>
+<p>§§SEG71§§</p>
+<pre><code>§§SEG72§§</code></pre>
+<p>§§SEG73§§</p>
+<h3 id="master-slave-architecture">§§SEG74§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG75§§</code></pre>
+<p>§§SEG76§§</p>
+<p>§§SEG77§§</p>
+<pre><code>§§SEG78§§</code></pre>
+<h3 id="implementation-example">§§SEG79§§</h3>
+<pre><code class="language-python"># Database configuration
+class DatabaseRouter:
+    def __init__(self):
+        self.master = connect('master-db.example.com')
+        self.slaves = [
+            connect('slave1-db.example.com'),
+            connect('slave2-db.example.com'),
+            connect('slave3-db.example.com')
+        ]
+    
+    def write(self, query, params):
+        # Tất cả writes đi master
+        return self.master.execute(query, params)
+    
+    def read(self, query, params):
+        # Reads load balanced qua slaves
+        slave = random.choice(self.slaves)
+        return slave.execute(query, params)
+
+# Application code
+db = DatabaseRouter()
+
+def create_user(data):
+    # Write operation → Master
+    db.write("INSERT INTO users (...) VALUES (...)", data)
+
+def get_user(user_id):
+    # Read operation → Slave
+    return db.read("SELECT * FROM users WHERE id = ?", [user_id])
+
+def update_user(user_id, data):
+    # Write → Master
+    db.write("UPDATE users SET ... WHERE id = ?", data)
+    
+    # IMPORTANT: Read ngay sau write phải từ master
+    # Tránh đọc stale data từ slave (replication lag)
+    return self.master.execute("SELECT * FROM users WHERE id = ?", [user_id])
+</code></pre>
+<h3 id="replication-lag-vấn-đề-quan-trọng-nhất">§§SEG80§§</h3>
+<p>§§SEG81§§</p>
+<pre><code>§§SEG82§§</code></pre>
+<p>§§SEG83§§</p>
+<pre><code>§§SEG84§§</code></pre>
+<h3 id="solutions-for-replication-lag">§§SEG85§§</h3>
+<p>§§SEG86§§</p>
+<pre><code class="language-python">def update_profile(user_id, data):
+    # Write to master
+    db.write("UPDATE users SET ... WHERE id = ?", data)
+    
+    # Read from master to guarantee consistency
+    return db.master.execute("SELECT * FROM users WHERE id = ?", [user_id])
+
+User thấy changes ngay lập tức
+Load trên master tăng
+</code></pre>
+<p>§§SEG87§§</p>
+<pre><code class="language-python"># Sau write, flag trong session
+session['use_master_until'] = time.now() + 5_seconds
+
+def get_user(user_id):
+    if session.get('use_master_until', 0) &gt; time.now():
+        # Read from master trong 5 giây sau write
+        return db.master.execute(...)
+    else:
+        # Fallback to slave
+        return db.read(...)
+
+Automatic fallback
+Giảm load trên master
+Phức tạp hơn
+</code></pre>
+<p>§§SEG88§§</p>
+<pre><code class="language-python">def update_profile(user_id, data):
+    db.write("UPDATE users ...", data)
+    
+    return {
+        "status": "success",
+        "message": "Cập nhật thành công. Thay đổi có thể mất vài giây để hiển thị."
+    }
+
+Honest với user
+Simplest code
+Acceptable cho most use cases
+Slightly worse UX
+</code></pre>
+<h3 id="khi-nào-dùng-read-replicas">§§SEG89§§</h3>
+<pre><code>§§SEG90§§</code></pre>
+<p>§§SEG91§§</p>
+<p>§§SEG92§§</p>
+<p>§§SEG93§§</p>
+<h2 id="sharding-ultimate-scale-ultimate-complexity">§§SEG94§§</h2>
+<h3 id="vấn-đề-read-replicas-không-giải-quyết-được">§§SEG95§§</h3>
+<pre><code>§§SEG96§§</code></pre>
+<p>§§SEG97§§</p>
+<h3 id="sharding-concept">§§SEG98§§</h3>
+<p>§§SEG99§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG100§§</code></pre>
+<p>§§SEG101§§</p>
+<p>§§SEG102§§</p>
+<pre><code>§§SEG103§§</code></pre>
+<h3 id="shard-strategies">§§SEG104§§</h3>
+<p>§§SEG105§§</p>
+<pre><code class="language-python">def get_shard(user_id):
+    shard_id = hash(user_id) % num_shards
+    return shards[shard_id]
+
+# Ví dụ:
+user_id = 12345
+shard = hash(12345) % 4  # = 1
+→ User 12345 nằm ở Shard 1
+
+user_id = 67890  
+shard = hash(67890) % 4  # = 3
+→ User 67890 nằm ở Shard 3
+</code></pre>
+<pre><code>§§SEG106§§</code></pre>
+<p>§§SEG107§§</p>
+<pre><code class="language-python">def get_shard(user_id):
+    if user_id &lt; 250_000:
+        return shard_0
+    elif user_id &lt; 500_000:
+        return shard_1
+    elif user_id &lt; 750_000:
+        return shard_2
+    else:
+        return shard_3
+
+# Ví dụ:
+user_id = 100_000 → Shard 0
+user_id = 300_000 → Shard 1
+user_id = 900_000 → Shard 3
+</code></pre>
+<pre><code>§§SEG108§§</code></pre>
+<p>§§SEG109§§</p>
+<pre><code class="language-python">def get_shard(user_country):
+    shard_map = {
+        'US': us_shard,
+        'EU': eu_shard,
+        'Asia': asia_shard
+    }
+    return shard_map.get(user_country, us_shard)
+
+# Ví dụ:
+user_country = 'Vietnam' → asia_shard
+user_country = 'Germany' → eu_shard
+user_country = 'USA' → us_shard
+</code></pre>
+<pre><code>§§SEG110§§</code></pre>
+<p>§§SEG111§§</p>
+<pre><code class="language-python">def get_shard(entity_type, entity_id):
+    if entity_type == 'user':
+        return user_shard(entity_id)
+    elif entity_type == 'order':
+        return order_shard(entity_id)
+    elif entity_type == 'product':
+        return product_shard(entity_id)
+
+# Ví dụ:
+User data → User shards
+Order data → Order shards  
+Product data → Product shards
+</code></pre>
+<pre><code>§§SEG112§§</code></pre>
+<h3 id="sharding-challenges">§§SEG113§§</h3>
+<p>§§SEG114§§</p>
+<pre><code class="language-sql">-- Query users với followers &gt; 1000
+SELECT * FROM users WHERE followers_count &gt; 1000;
+
+Problem:
+- Data nằm ở 4 shards
+- Phải query TẤT CẢ 4 shards
+- Merge results từ 4 sources
+- Sort/paginate across shards
+
+Giải pháp:
+- Denormalize data (lưu followers_count riêng)
+- Use search engine (Elasticsearch) cho aggregations
+- Accept eventual consistency
+</code></pre>
+<p>§§SEG115§§</p>
+<pre><code class="language-python"># Transfer money user A → user B
+def transfer(from_user_id, to_user_id, amount):
+    from_shard = get_shard(from_user_id)
+    to_shard = get_shard(to_user_id)
+    
+    if from_shard != to_shard:
+        # Users ở different shards!
+        # Không thể dùng database transactions
+        # Phải implement 2-phase commit hoặc saga pattern
+        pass
+
+Giải pháp:
+- Avoid cross-shard transactions (design data để minimize)
+- Use distributed transaction protocols (2PC, Saga)
+- Accept eventual consistency với compensation
+</code></pre>
+<p>§§SEG116§§</p>
+<pre><code>§§SEG117§§</code></pre>
+<p>§§SEG118§§</p>
+<pre><code class="language-sql">-- Không thể dùng auto-increment vì conflict giữa shards
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,  -- Conflict!
+    ...
+);
+
+-- Shard 1: id = 1, 2, 3, ...
+-- Shard 2: id = 1, 2, 3, ... (DUPLICATE!)
+
+Giải pháp:
+- Use UUID (128-bit, guaranteed unique)
+- Snowflake ID (64-bit, time-ordered)
+- Shard-prefixed IDs (shard_id + local_id)
+</code></pre>
+<h3 id="khi-nào-dùng-sharding">§§SEG119§§</h3>
+<pre><code>§§SEG120§§</code></pre>
+<h3 id="lời-khuyên-từ-kinh-nghiệm">§§SEG121§§</h3>
+<p>§§SEG122§§</p>
+<p>§§SEG123§§</p>
+<p>§§SEG124§§</p>
+<p>§§SEG125§§</p>
+<p>§§SEG126§§</p>
+<pre><code>§§SEG127§§</code></pre>
+<p>§§SEG128§§</p>
+<h2 id="consistency-trade-offs">§§SEG129§§</h2>
+<h3 id="cap-theorem-reminder">§§SEG130§§</h3>
+<p>§§SEG131§§</p>
+<pre><code>§§SEG132§§</code></pre>
+<h3 id="consistency-models">§§SEG133§§</h3>
+<p>§§SEG134§§</p>
+<pre><code>§§SEG135§§</code></pre>
+<p>§§SEG136§§</p>
+<pre><code>§§SEG137§§</code></pre>
+<h3 id="choosing-consistency-level">§§SEG138§§</h3>
+<pre><code>§§SEG139§§</code></pre>
+<p>§§SEG140§§</p>
+<pre><code>§§SEG141§§</code></pre>
+<h2 id="key-takeaways">§§SEG142§§</h2>
+<p>§§SEG143§§</p>
+<pre><code>§§SEG144§§</code></pre>
+<p>§§SEG145§§</p>
+<pre><code>§§SEG146§§</code></pre>
+<p>§§SEG147§§</p>
+<pre><code>§§SEG148§§</code></pre>
+<p>§§SEG149§§</p>
+<ol>
+<li>§§SEG150§§</li>
+<li>§§SEG151§§</li>
+<li>§§SEG152§§</li>
+<li>§§SEG153§§</li>
+<li>§§SEG154§§</li>
+</ol>
+<p>§§SEG155§§</p>
+<p>§§SEG156§§</p>
+<ol>
+<li>§§SEG157§§</li>
+<li>§§SEG158§§</li>
+<li>§§SEG159§§</li>
+<li>§§SEG160§§</li>
+<li>§§SEG161§§</li>
+</ol>
+<p>§§SEG162§§</p>
+<p>§§SEG163§§</p>
+<p>§§SEG164§§</p></article>

@@ -1,0 +1,606 @@
+@0
+⟦Hàng Đợi Thông Điệp|Message Queues⟧ & ⟦Xử Lý Bất Đồng Bộ|Async Processing⟧: ⟦Tách Rời|Decoupling⟧ Các ⟦Dịch Vụ|Services⟧
+@1
+Tôi còn nhớ lần đầu tiên hệ thống ⟦môi trường thực tế|production⟧ của tôi sập chỉ vì một email.
+@2
+Người dùng tải lên một video. ⟦Máy chủ|Server⟧ phải:
+@3
+Lưu video (2 giây)
+@4
+Tạo ảnh thu nhỏ (5 giây)
+@5
+⟦Chuyển mã|Transcode⟧ 720p (30 giây)
+@6
+⟦Chuyển mã|Transcode⟧ 1080p (60 giây)
+@7
+Gửi email thông báo (1 giây)
+@8
+Tổng cộng: 98 giây. Người dùng phải đợi 98 giây mới nhận được ⟦phản hồi|response⟧.
+@9
+Kết quả? ⟦Hết thời gian chờ|Timeout⟧. Người dùng bực bội. ⟦Máy chủ|Server⟧ quá tải vì mỗi ⟦yêu cầu|request⟧ giữ kết nối suốt 98 giây.
+@10
+Một ⟦kỹ sư lâu năm|senior engineer⟧ nhìn tôi: *"Em biết ⟦hàng đợi thông điệp|message queue⟧ chưa?"*
+@11
+Tôi: *"Dạ chưa ạ..."*
+@12
+Đó là cái đêm tôi học về ⟦xử lý bất đồng bộ|async processing⟧. Và đó là một trong những ⟦mẫu thiết kế|patterns⟧ quan trọng nhất trong ⟦hệ thống phân tán|distributed systems⟧.
+@13
+Tại Sao Cần ⟦Xử Lý Bất Đồng Bộ|Async Processing⟧?
+@14
+Vấn Đề Của Cách Xử Lý ⟦Đồng Bộ|Synchronous⟧
+@15
+**⟦Đồng bộ|Synchronous⟧ = Người dùng đợi cho đến khi mọi thứ xong xuôi**
+@16
+sequenceDiagram
+    participant User
+    participant API
+    participant Storage
+    participant Processor
+    participant Email
+
+    User->>API: Tải lên video
+    API->>Storage: Lưu video (2s)
+    Storage-->>API: Xong
+    API->>Processor: Tạo ảnh thu nhỏ (5s)
+    Processor-->>API: Xong
+    API->>Processor: Chuyển mã 720p (30s)
+    Processor-->>API: Xong
+    API->>Processor: Chuyển mã 1080p (60s)
+    Processor-->>API: Xong
+    API->>Email: Gửi thông báo (1s)
+    Email-->>API: Xong
+    API-->>User: Thành công (sau 98s!)
+
+    Note over User,Email: Người dùng phải đợi 98 giây
+@17
+*Xử lý ⟦đồng bộ|synchronous⟧: Người dùng đợi cho đến khi mọi thứ hoàn thành*
+@18
+**Các vấn đề:**
+@19
+Trải nghiệm người dùng tệ hại
+   - Người dùng đợi 98 giây
+   - Hết thời gian chờ sau 30-60 giây
+   - Người dùng nghĩ ứng dụng bị lỗi
+
+Sử dụng tài nguyên kém hiệu quả
+   - Kết nối bị giữ suốt 98 giây
+   - Máy chủ chỉ xử lý được ít yêu cầu
+   - Cạn kiệt bộ nhớ/luồng
+
+Sự cố dây chuyền
+   - Dịch vụ email sập → Toàn bộ thao tác tải lên thất bại
+   - Chuyển mã lỗi → Người dùng không nhận được video
+   - Liên kết chặt
+
+@20
+Giải Pháp ⟦Bất Đồng Bộ|Async⟧
+@21
+**⟦Bất đồng bộ|Asynchronous⟧ = Người dùng nhận ⟦phản hồi|response⟧ ngay, việc xử lý diễn ra ở chế độ nền**
+@22
+sequenceDiagram
+    participant User
+    participant API
+    participant Queue
+    participant Worker
+    participant Email
+
+    User->>API: Tải lên video
+    API->>API: Lưu video (2s)
+    API->>Queue: Thêm tác vụ vào hàng đợi
+    Queue-->>API: Tác vụ đã vào hàng đợi
+    API-->>User: Thành công! Đang xử lý... (chỉ 2s)
+
+    Note over User,API: Người dùng nhận phản hồi sau 2s
+
+    Worker->>Queue: Hỏi xem có tác vụ không
+    Queue-->>Worker: Có tác vụ
+    Worker->>Worker: Tạo ảnh thu nhỏ (5s)
+    Worker->>Worker: Chuyển mã 720p (30s)
+    Worker->>Worker: Chuyển mã 1080p (60s)
+    Worker->>Email: Gửi thông báo
+
+    Note over Worker,Email: Xử lý ở chế độ nền
+@23
+*Xử lý ⟦bất đồng bộ|async⟧: Người dùng nhận ⟦phản hồi|response⟧ ngay, công việc diễn ra ở chế độ nền*
+@24
+**Lợi ích:**
+@25
+Trải nghiệm người dùng tuyệt vời
+   - Người dùng nhận phản hồi sau 2 giây
+   - Không bị hết thời gian chờ
+   - Trạng thái rõ ràng: "Đang xử lý..."
+
+Sử dụng tài nguyên hiệu quả hơn
+   - Kết nối được giải phóng ngay lập tức
+   - Máy chủ xử lý được nhiều yêu cầu
+   - Các worker mở rộng độc lập
+
+Khả năng chịu lỗi
+   - Email lỗi? Video vẫn được tải lên
+   - Có sẵn cơ chế thử lại
+   - Liên kết lỏng
+
+@26
+Kiến Thức Nền Tảng Về ⟦Hàng Đợi Thông Điệp|Message Queue⟧
+@27
+Các Khái Niệm Cốt Lõi
+@28
+**⟦Hàng đợi thông điệp|Message Queue⟧ = Vùng đệm giữa ⟦bên phát|producers⟧ và ⟦bên tiêu thụ|consumers⟧**
+@29
+graph LR
+    P1[Bên phát 1] -->|Phát thông điệp| Q[Hàng đợi thông điệp]
+    P2[Bên phát 2] -->|Phát thông điệp| Q
+    P3[Bên phát 3] -->|Phát thông điệp| Q
+
+    Q -->|Tiêu thụ thông điệp| C1[Bên tiêu thụ 1]
+    Q -->|Tiêu thụ thông điệp| C2[Bên tiêu thụ 2]
+    Q -->|Tiêu thụ thông điệp| C3[Bên tiêu thụ 3]
+
+    style Q fill:#ffd93d
+    style P1 fill:#51cf66
+    style P2 fill:#51cf66
+    style P3 fill:#51cf66
+    style C1 fill:#4dabf7
+    style C2 fill:#4dabf7
+    style C3 fill:#4dabf7
+@30
+*⟦Hàng đợi thông điệp|Message queue⟧ ⟦tách rời|decouples⟧ ⟦bên phát|producers⟧ và ⟦bên tiêu thụ|consumers⟧*
+@31
+**Thuật ngữ:**
+@32
+Producer (bên phát):   Dịch vụ tạo thông điệp (publish/send)
+Consumer (bên tiêu thụ): Dịch vụ xử lý thông điệp (consume/receive)
+Queue (hàng đợi):      Vùng đệm lưu thông điệp
+Message (thông điệp):  Đơn vị công việc (job/task/event)
+Broker (môi giới):     Dịch vụ quản lý hàng đợi (RabbitMQ, Kafka, SQS)
+
+@33
+Ví Dụ Đơn Giản
+@34
+**Dòng thời gian:**
+@35
+Lời gọi API:
+00:00 - Người dùng tải lên
+00:02 - API trả về (người dùng vui vẻ!)
+Hàng đợi có 1 tác vụ
+
+Chế độ nền:
+00:02 - Worker nhận tác vụ
+00:07 - Xong ảnh thu nhỏ
+00:37 - Xong 720p
+01:37 - Xong 1080p
+01:38 - Gửi thông báo
+
+Trải nghiệm người dùng: 2 giây
+Công việc thực tế: 98 giây (chạy nền)
+
+@36
+⟦Hàng Đợi|Queue⟧ Và Pub/Sub: Hai ⟦Mẫu Thiết Kế|Patterns⟧ Khác Nhau
+@37
+Mẫu ⟦Hàng Đợi|Queue⟧ (Điểm-Tới-Điểm / Point-to-Point)
+@38
+**Một thông điệp → Một ⟦bên tiêu thụ|consumer⟧**
+@39
+graph LR
+    P[Bên phát] -->|Thông điệp 1| Q[Hàng đợi]
+    P -->|Thông điệp 2| Q
+    P -->|Thông điệp 3| Q
+
+    Q -->|Thông điệp 1| C1[Bên tiêu thụ 1]
+    Q -->|Thông điệp 2| C2[Bên tiêu thụ 2]
+    Q -->|Thông điệp 3| C3[Bên tiêu thụ 3]
+
+    style Q fill:#ffd93d
+    style P fill:#51cf66
+    style C1 fill:#4dabf7
+    style C2 fill:#4dabf7
+    style C3 fill:#4dabf7
+@40
+*⟦Hàng đợi|Queue⟧: Mỗi thông điệp chỉ được một ⟦bên tiêu thụ|consumer⟧ xử lý*
+@41
+**Đặc điểm:**
+@42
+- Mỗi thông điệp chỉ được xử lý bởi 1 bên tiêu thụ
+- Cân bằng tải giữa các bên tiêu thụ
+- Dùng để phân phối tác vụ
+- Các bên cạnh tranh nhau để nhận thông điệp
+
+@43
+**⟦Tình huống sử dụng|Use cases⟧:**
+@44
+✓ Tác vụ nền (gửi email, xử lý ảnh)
+✓ Phân phối tác vụ (mã hoá video, tạo PDF)
+✓ San phẳng tải (làm mượt các đợt lưu lượng tăng đột biến)
+✓ Logic thử lại (thanh toán lỗi, lời gọi API lỗi)
+
+@45
+**Ví dụ:**
+@46
+Mẫu Pub/Sub (⟦Xuất Bản – Đăng Ký|Publish-Subscribe⟧)
+@47
+**Một thông điệp → Nhiều ⟦bên đăng ký|subscribers⟧**
+@48
+graph TB
+    P[Bên xuất bản] -->|Sự kiện: Người dùng được tạo| T[Topic: user.created]
+
+    T -->|Bản sao 1| S1[Dịch vụ email<br/>Gửi email chào mừng]
+    T -->|Bản sao 2| S2[Dịch vụ phân tích<br/>Ghi nhận đăng ký]
+    T -->|Bản sao 3| S3[Dịch vụ CRM<br/>Tạo liên hệ]
+    T -->|Bản sao 4| S4[Dịch vụ thông báo<br/>Gửi thông báo đẩy]
+
+    style T fill:#ffd93d
+    style P fill:#51cf66
+    style S1 fill:#4dabf7
+    style S2 fill:#4dabf7
+    style S3 fill:#4dabf7
+    style S4 fill:#4dabf7
+@49
+*Pub/Sub: Mỗi ⟦bên đăng ký|subscriber⟧ nhận một bản sao của thông điệp*
+@50
+**Đặc điểm:**
+@51
+- Mỗi thông điệp được sao chép tới TẤT CẢ bên đăng ký
+- Không có cạnh tranh
+- Dùng để phát sự kiện diện rộng
+- Các dịch vụ được tách rời
+
+@52
+**⟦Tình huống sử dụng|Use cases⟧:**
+@53
+✓ Thông báo sự kiện (người dùng đăng ký, đơn hàng được đặt)
+✓ Cập nhật thời gian thực (giá cổ phiếu, tỷ số trực tiếp)
+✓ Phân phát (fan-out) (1 sự kiện → nhiều hành động)
+✓ Ghi log kiểm toán (theo dõi mọi hành động)
+
+@54
+**Ví dụ:**
+@55
+So Sánh ⟦Sự Đánh Đổi|Trade-off⟧
+@56
+Hàng đợi (Điểm-tới-điểm):
+Ngữ nghĩa đơn giản (1 thông điệp = 1 bên tiêu thụ)
+Cân bằng tải một cách tự nhiên
+Dễ suy luận
+Giới hạn ở một hành động cho mỗi thông điệp
+Liên kết chặt nếu cần nhiều hành động
+
+Pub/Sub:
+Tách rời hoàn toàn các dịch vụ
+Dễ thêm bên đăng ký mới
+Phát sự kiện diện rộng một cách tự nhiên
+Phức tạp hơn (nhất quán cuối cùng)
+Khó gỡ lỗi hơn (ai đã xử lý cái gì?)
+Chi phí phụ do nhân bản thông điệp
+
+@57
+**⟦Khung ra quyết định|Decision framework⟧:**
+@58
+Dùng Hàng đợi khi:
+- Tác vụ cần được thực hiện đúng một lần
+- Cân bằng tải giữa các worker
+- Quy trình đơn giản
+
+Dùng Pub/Sub khi:
+- Nhiều dịch vụ cùng quan tâm đến sự kiện
+- Cần tách rời các dịch vụ
+- Mẫu phân phát (fan-out)
+- Có yêu cầu kiểm toán/ghi log
+
+@59
+⟦Bảo Đảm Phân Phối|Delivery Guarantees⟧: Hiểu Biết Then Chốt
+@60
+Phổ Các Mức Bảo Đảm
+@61
+**⟦Phân Phối Tối Đa Một Lần|At-Most-Once Delivery⟧**
+@62
+Thông điệp có thể bị mất, nhưng không bao giờ bị trùng lặp
+
+Dòng thời gian:
+Bên phát → Gửi thông điệp → Hàng đợi
+Hàng đợi → Giao cho bên tiêu thụ (có thể thất bại)
+Hàng đợi xoá thông điệp ngay lập tức
+
+Kết quả:
+- Thành công: Thông điệp được xử lý một lần ✓
+- Thất bại: Thông điệp bị mất ✗
+- Không bao giờ: Thông điệp bị xử lý hai lần ✓
+
+@63
+Nhanh nhất (không cần xác nhận)
+Đơn giản
+Có thể mất dữ liệu
+Không thử lại
+
+Tình huống sử dụng:
+- Số liệu đo/ghi log (mất một ít dữ liệu cũng không sao)
+- Luồng dữ liệu thời gian thực (dữ liệu cũ không còn giá trị)
+- Thông báo theo kiểu cố gắng hết mức (best-effort)
+
+@64
+**⟦Phân Phối Ít Nhất Một Lần|At-Least-Once Delivery⟧**
+@65
+Thông điệp không bao giờ bị mất, nhưng có thể bị trùng lặp
+
+Dòng thời gian:
+Bên phát → Gửi thông điệp → Hàng đợi
+Hàng đợi → Giao cho bên tiêu thụ
+Bên tiêu thụ → Xử lý
+Bên tiêu thụ → Xác nhận (ack) (có thể thất bại/hết thời gian chờ)
+Hàng đợi → Giao lại nếu không nhận được ack
+
+Kết quả:
+- Thành công: Thông điệp được xử lý một lần ✓
+- Thất bại: Thông điệp được giao lại ✓
+- Có thể xảy ra: Thông điệp bị xử lý nhiều lần ⚠️
+
+@66
+Không mất thông điệp
+Có sẵn logic thử lại
+Có thể xử lý trùng lặp
+Bắt buộc phải đảm bảo tính lũy đẳng
+
+Tình huống sử dụng:
+- Xử lý thanh toán (kèm tính lũy đẳng)
+- Hoàn tất đơn hàng
+- Logic nghiệp vụ quan trọng
+
+@67
+**⟦Phân Phối Đúng Một Lần|Exactly-Once Delivery⟧**
+@68
+Thông điệp được xử lý đúng một lần, có bảo đảm
+
+Cực kỳ khó đạt được trong hệ thống phân tán
+Đòi hỏi:
+- Giao dịch phân tán
+- Logic khử trùng lặp
+- Phối hợp giữa các dịch vụ
+
+Kết quả:
+- Luôn luôn: Thông điệp được xử lý đúng một lần ✓
+
+@69
+Ngữ nghĩa hoàn hảo
+Không mất, không trùng
+Rất phức tạp để triển khai
+Chi phí phụ về hiệu năng
+Thường bất khả thi trong thực tế
+
+Tình huống sử dụng:
+- Giao dịch tài chính
+- Nghiệp vụ quan trọng
+- Khi tuyệt đối không được phép trùng lặp
+
+@70
+⟦Tính Lũy Đẳng|Idempotency⟧: Giải Pháp Thực Tế
+@71
+**Vấn đề với ⟦phân phối ít nhất một lần|at-least-once⟧:**
+@72
+**Giải pháp: Các thao tác ⟦lũy đẳng|idempotent⟧**
+@73
+**Các kỹ thuật đảm bảo ⟦tính lũy đẳng|idempotency⟧:**
+@74
+**Quy tắc cá nhân:**
+@75
+**Luôn giả định ⟦phân phối ít nhất một lần|at-least-once delivery⟧. Luôn đảm bảo ⟦tính lũy đẳng|idempotency⟧.**
+@76
+Ngay cả khi ⟦hàng đợi|queue⟧ hứa hẹn ⟦đúng một lần|exactly-once⟧, các sự cố mạng, các lần ⟦thử lại|retries⟧ và ⟦lỗi|bugs⟧ vẫn có thể gây ra trùng lặp.
+@77
+⟦Hàng Đợi Thư Chết|Dead Letter Queue⟧ (DLQ): Xử Lý ⟦Sự Cố|Failures⟧
+@78
+Vấn Đề ⟦Thông Điệp Độc|Poison Message⟧
+@79
+**Vấn đề:**
+@80
+Kịch bản:
+- Thông điệp có lỗi (dữ liệu sai định dạng)
+- Worker xử lý → Thất bại
+- Hàng đợi thử lại → Lại thất bại
+- Hàng đợi thử lại → Lại thất bại
+- ...
+
+Kết quả:
+- Thông điệp không bao giờ thành công
+- Chặn hàng đợi (nếu có thứ tự)
+- Lãng phí tài nguyên
+- Các thông điệp khác bị kẹt phía sau
+
+@81
+Giải Pháp DLQ
+@82
+graph TB
+    Q[Hàng đợi chính] -->|1. Tiêu thụ| W[Worker]
+    W -->|2. Thành công?| S{Thành công?}
+    S -->|Có| A[Xác nhận<br/>Thông điệp bị xoá]
+    S -->|Không, thử lại| R[Số lần thử++]
+    R -->|< Số lần thử tối đa| Q
+    R -->|>= Số lần thử tối đa| DLQ[Hàng đợi thư chết]
+
+    DLQ -->|Xem xét thủ công| H[Con người/Gỡ lỗi]
+
+    style Q fill:#51cf66
+    style DLQ fill:#ff6b6b
+    style W fill:#4dabf7
+@83
+*⟦Hàng đợi thư chết|Dead Letter Queue⟧: Các thông điệp thất bại nhiều lần được chuyển sang DLQ*
+@84
+**Triển khai:**
+@85
+**⟦Giám sát|Monitoring⟧ DLQ:**
+@86
+**Xử lý các thông điệp trong DLQ:**
+@87
+1. Điều tra nguyên nhân gốc
+   - Dữ liệu sai định dạng?
+   - Lỗi trong mã?
+   - Dịch vụ bên ngoài bị sập?
+
+2. Khắc phục vấn đề
+   - Triển khai bản sửa mã
+   - Di chuyển dữ liệu
+   - Cập nhật cấu hình
+
+3. Phát lại thông điệp
+   - Chuyển DLQ → Hàng đợi chính
+   - Xử lý lại với bản sửa
+   - Xác minh thành công
+
+4. Hoặc loại bỏ
+   - Nếu thực sự không hợp lệ
+   - Nếu đã cũ (dữ liệu cũ)
+   - Ghi lại lý do
+
+@88
+Các ⟦Kịch Bản|Scenarios⟧ Thực Tế
+@89
+Kịch Bản 1: Xử Lý Đơn Hàng Thương Mại Điện Tử
+@90
+**Cơn ác mộng ⟦đồng bộ|synchronous⟧:**
+@91
+**⟦Bất đồng bộ|Async⟧ với ⟦hàng đợi|queue⟧:**
+@92
+**Kết quả:**
+@93
+Trải nghiệm người dùng:
+Trước: đợi 7 giây
+Sau:   2.2 giây (nhanh hơn 70%!)
+
+Năng lực hệ thống:
+Trước: 10 đơn hàng/phút (bị chặn bởi quá trình xử lý dài)
+Sau:   50 đơn hàng/phút (phản hồi nhanh)
+
+@94
+Kịch Bản 2: Hệ Thống Thông Báo
+@95
+**⟦Yêu cầu|Requirements⟧:**
+@96
+- Gửi thông báo đẩy đến hàng triệu người dùng
+- Nhiều kênh (đẩy, email, SMS)
+- Không được chặn phản hồi của API
+- Cần logic thử lại
+- Theo dõi trạng thái gửi
+
+@97
+**Kiến trúc:**
+@98
+graph TB
+    API[Máy chủ API] -->|Sự kiện| T[Topic: notifications]
+
+    T -->|Đăng ký| P[Hàng đợi đẩy]
+    T -->|Đăng ký| E[Hàng đợi email]
+    T -->|Đăng ký| S[Hàng đợi SMS]
+
+    P --> PW[Worker đẩy<br/>5 instance]
+    E --> EW[Worker email<br/>3 instance]
+    S --> SW[Worker SMS<br/>2 instance]
+
+    PW --> PN[Dịch vụ thông báo đẩy]
+    EW --> ES[Dịch vụ email]
+    SW --> SS[Dịch vụ SMS]
+
+    style T fill:#ffd93d
+    style P fill:#51cf66
+    style E fill:#51cf66
+    style S fill:#51cf66
+@99
+*Mẫu Pub/Sub: ⟦Sự kiện|Event⟧ được ⟦phân phát|fanout⟧ đến nhiều kênh*
+@100
+Kịch Bản 3: ⟦Đường Ống|Pipeline⟧ Xử Lý Ảnh
+@101
+**Chuỗi các phép biến đổi:**
+@102
+Tải lên ảnh gốc → Đổi kích thước → Nén → Đóng dấu bản quyền → Lưu lên CDN
+
+@103
+**Triển khai bằng ⟦hàng đợi|queues⟧:**
+@104
+**Lợi ích:**
+@105
+Mỗi bước độc lập
+Mở rộng từng bước riêng biệt
+Thử lại từng bước riêng lẻ
+Dễ thêm các phép biến đổi mới
+Giám sát hiệu năng của từng bước
+
+@106
+⟦Thực Hành Tốt Nhất|Best Practices⟧
+@107
+1. Thiết Kế Thông Điệp
+@108
+**Tại sao?**
+@109
+Thông điệp nhỏ hơn = nhanh hơn
+@110
+Tránh ⟦dữ liệu cũ|stale data⟧ (lấy dữ liệu mới từ cơ sở dữ liệu)
+@111
+Tốn ít ⟦băng thông|bandwidth⟧ mạng hơn
+@112
+2. Xử Lý Lỗi
+@113
+3. ⟦Giám Sát|Monitoring⟧
+@114
+4. Xử Lý ⟦Áp Lực Ngược|Backpressure⟧
+@115
+Những Điểm Cốt Lõi
+@116
+**⟦Hàng đợi thông điệp|Message queues⟧ giải quyết những vấn đề then chốt:**
+@117
+✓ Tách rời các dịch vụ
+✓ Chịu được lưu lượng tăng đột biến (vùng đệm)
+✓ Cho phép xử lý bất đồng bộ
+✓ Có sẵn logic thử lại
+✓ Cải thiện trải nghiệm người dùng (phản hồi nhanh)
+
+@118
+**Các ⟦mẫu thiết kế|patterns⟧:**
+@119
+Hàng đợi (Điểm-tới-điểm):
+- Phân phối tác vụ
+- Cân bằng tải
+- 1 thông điệp → 1 bên tiêu thụ
+
+Pub/Sub:
+- Phát sự kiện diện rộng
+- Mẫu phân phát (fan-out)
+- 1 thông điệp → N bên đăng ký
+
+@120
+**⟦Bảo đảm phân phối|Delivery guarantees⟧:**
+@121
+Tối đa một lần:  Nhanh, có thể mất dữ liệu
+Ít nhất một lần: Tin cậy, có thể trùng lặp (HÃY DÙNG CÁI NÀY)
+Đúng một lần:    Hoàn hảo, rất phức tạp (hiếm khi đạt được)
+
+→ Luôn đảm bảo tính lũy đẳng
+
+@122
+**⟦Thực hành tốt nhất|Best practices⟧:**
+@123
+✓ Giữ thông điệp nhỏ gọn (tham chiếu, không phải toàn bộ dữ liệu)
+✓ Đảm bảo tính lũy đẳng
+✓ Dùng DLQ cho thông điệp độc
+✓ Giám sát các chỉ số của hàng đợi
+✓ Xử lý áp lực ngược
+✓ Thử lại với các lỗi tạm thời
+✓ Cảnh báo khi có bất thường
+
+@124
+**Khi nào dùng ⟦hàng đợi thông điệp|message queues⟧?**
+@125
+Dùng hàng đợi khi:
+✓ Tác vụ chạy lâu (> 5 giây)
+✓ Người dùng không cần kết quả ngay
+✓ Cần tách rời các dịch vụ
+✓ Phải chịu lưu lượng tăng đột biến
+✓ Cần có sẵn logic thử lại
+
+Không dùng khi:
+✗ Người dùng cần phản hồi ngay lập tức
+✗ Quy trình đồng bộ
+✗ Các thao tác CRUD đơn giản
+
+@126
+**Lời khuyên cá nhân:**
+@127
+Hãy bắt đầu đơn giản với các dịch vụ được quản lý sẵn (AWS SQS, Google Pub/Sub). Chỉ tự vận hành ⟦hạ tầng|infrastructure⟧ riêng (RabbitMQ, Kafka) khi có ⟦yêu cầu|requirements⟧ cụ thể và ⟦nhóm|team⟧ có đủ chuyên môn.
+@128
+⟦Hàng đợi thông điệp|Message queues⟧ là một trong những ⟦mẫu thiết kế|patterns⟧ quan trọng nhất trong ⟦hệ thống phân tán|distributed systems⟧. Nắm vững nó, bạn sẽ mở khoá khả năng xây dựng những ứng dụng thực sự ⟦có khả năng mở rộng|scalable⟧ và bền bỉ trước sự cố.

@@ -1,0 +1,300 @@
+@0 h1
+Từ Code-First đến Problem-First: Bước Đầu Thay Đổi Tư Duy
+@1 p
+Tôi còn nhớ rõ lần đầu tiên bị senior architect hỏi: *"Tại sao em chọn Redis?"*
+@2 p
+Câu trả lời của tôi lúc đó? *"Vì Redis nhanh ạ."*
+@3 p
+Anh ấy mỉm cười: *"Nhanh hơn cái gì? Giải quyết vấn đề gì? Cost của nó là gì?"*
+@4 p
+Tôi câm nín. Đó là lúc tôi nhận ra: mình đang nghĩ như một lập trình viên, không phải một architect.
+@5 h2
+Tại Sao Phải Thay Đổi Tư Duy?
+@6 p
+Khi bạn giỏi code, bạn có xu hướng nhảy thẳng vào giải pháp. Thấy cache? Nghĩ ngay đến Redis. Thấy queue? RabbitMQ. Microservices? Kubernetes.
+@7 p
+Nhưng đó là **solution-first thinking** - tư duy nguy hiểm nhất trong system design.
+@8 p
+Tại sao? Vì bạn đang chọn công cụ trước khi hiểu vấn đề. Giống như mua thuốc trước khi biết mình bệnh gì.
+@9 p
+Một senior architect không bắt đầu bằng "Tôi sẽ dùng X". Họ bắt đầu bằng "Vấn đề tôi cần giải quyết là gì?"
+@10 h2
+Code-First Thinking: Tư Duy Lập Trình Viên
+@11 p
+Đây là cách một developer thường nghĩ:
+@12 p
+**Kịch bản:** Website bị chậm
+@13 pre
+Developer mindset:
+"Website chậm → Cần cache → Dùng Redis → Done!"
+
+@14 p
+Nghe có vẻ logic, nhưng thiếu rất nhiều thứ:
+@15 li
+Chậm ở đâu? Database queries? Network? API calls?
+@16 li
+Chậm khi nào? Peak hours? Mọi lúc?
+@17 li
+Chậm bao nhiêu? 100ms hay 5s?
+@18 li
+Cache thực sự giải quyết được không?
+@19 li
+Cost của cache là gì? Memory? Complexity? Stale data?
+@20 p
+Đó là 5 câu hỏi mà code-first thinking bỏ qua. Và đó chính là lý do nhiều giải pháp kỹ thuật fail.
+@21 h3
+Ví Dụ Thực Tế: Thảm Họa Microservices
+@22 p
+Tôi từng chứng kiến một startup với 0 users quyết định xây dựng hệ thống bằng microservices từ ngày đầu.
+@23 p
+Lý do? *"Netflix dùng microservices mà."*
+@24 p
+Kết quả sau 6 tháng:
+@25 li
+15 services cho tính năng đơn giản
+@26 li
+Deploy mất 2 giờ
+@27 li
+Debug nightmare (bug ở service nào?)
+@28 li
+Team burnout vì complexity
+@29 p
+Họ đã giải quyết được vấn đề gì? Không có. Vì họ chưa có vấn đề về scale. Họ cần một monolith đơn giản, ship nhanh, iterate nhanh.
+@30 p
+**Bài học:** Netflix dùng microservices để giải quyết vấn đề của Netflix (hàng triệu users, hàng trăm teams). Startup đó không có vấn đề đó.
+@31 h2
+Problem-First Thinking: Tư Duy Architect
+@32 p
+Đây là cách một architect tiếp cận:
+@33 p
+**Kịch bản:** Website bị chậm
+@34 pre
+Architect mindset:
+1. Define problem:
+   - Chậm ở đâu? → Measure: 80% thời gian ở database queries
+   - Queries nào? → Top 3 slow queries chiếm 90% load
+   
+2. Understand why:
+   - Tại sao slow? → Missing indexes
+   - Tại sao lại missing? → Schema design không tối ưu cho query pattern
+   
+3. Evaluate options:
+   - Option A: Add indexes → Simple, effective
+   - Option B: Cache query results → Complex, có thể không cần
+   - Option C: Rewrite queries → Time-consuming
+   
+4. Choose solution:
+   → Start với indexes (simple, high impact)
+   → Monitor
+   → Cache nếu vẫn chưa đủ
+
+@35 p
+Thấy sự khác biệt chưa?
+@36 p
+Architect không nhảy thẳng vào Redis. Họ **measure, analyze, evaluate, then decide**.
+@37 h3
+Framework: 5 Câu Hỏi Vàng
+@38 p
+Trước khi chọn bất kỳ giải pháp kỹ thuật nào, hãy tự hỏi:
+@39 p
+**1. Vấn đề thực sự là gì?**
+@40 p
+Không phải "website chậm". Mà là "homepage load time là 3s, users expect < 1s".
+@41 p
+Cụ thể, đo đạc được, có target rõ ràng.
+@42 p
+**2. Tại sao vấn đề này xảy ra?**
+@43 p
+Đào sâu. Hỏi "Why?" ít nhất 3 lần.
+@44 pre
+Website chậm
+→ Why? Database queries chậm
+→ Why? Full table scan
+→ Why? Không có index trên email column
+→ Root cause: Missing index
+
+@45 p
+**3. Giải pháp này giải quyết vấn đề gì?**
+@46 p
+"Redis làm website nhanh" là câu trả lời tồi.
+@47 p
+"Redis cache query results để giảm database load từ 1000 req/s xuống 100 req/s" là câu trả lời tốt.
+@48 p
+**4. Cost của giải pháp là gì?**
+@49 p
+Mọi giải pháp đều có cost:
+@50 li
+Redis: Thêm infrastructure, cache invalidation complexity, memory cost
+@51 li
+Microservices: Network latency, distributed system complexity, harder debugging
+@52 li
+Sharding: Cross-shard queries khó, resharding nightmare
+@53 p
+Không có free lunch. Trade-off luôn luôn tồn tại.
+@54 p
+**5. Có cách đơn giản hơn không?**
+@55 p
+Đây là câu hỏi quan trọng nhất.
+@56 p
+Trước khi thêm Redis, bạn đã thử add index chưa? Trước khi microservices, bạn đã thử scale monolith chưa?
+@57 p
+**"Simple solutions first. Complex solutions when necessary."**
+@58 h2
+Ví Dụ So Sánh: Thiết Kế Tính Năng "View Count"
+@59 p
+Hãy xem hai approach khác nhau cho cùng một tính năng.
+@60 h3
+Approach 1: Code-First (Bad)
+@61 pre
+Feature: Đếm số lượt xem video
+
+Developer thinking:
+"Cần đếm views → Dùng Redis counter → Increment mỗi view → Done"
+
+Implementation:
+- Mỗi view → redis.incr('video:123:views')
+- Display: redis.get('video:123:views')
+
+@62 p
+Trông ổn đấy. Nhưng sau 1 tháng production:
+@63 p
+**Vấn đề phát sinh:**
+@64 li
+Redis server restart → Mất hết data (views về 0)
+@65 li
+Không có historical data (views theo ngày/tháng)
+@66 li
+Không track được trending (views tăng nhanh)
+@67 li
+Bot traffic spam increment
+@68 p
+Developer bây giờ phải refactor toàn bộ, migrate data, handle downtime.
+@69 h3
+Approach 2: Problem-First (Good)
+@70 pre
+Feature: Đếm số lượt xem video
+
+Architect thinking:
+1. Requirements:
+   - Độ chính xác: Có cần 100% accurate? (Probably not)
+   - Scale: Bao nhiêu videos? Bao nhiêu views/s?
+   - Analytics: Cần track theo thời gian không?
+   - Fraud: Cần prevent bot spam không?
+
+2. Design:
+   - Write to database (persistent, source of truth)
+   - Async batch write (10s buffer) để giảm DB load
+   - Cache in Redis (fast read, có thể sai lệch 1-2%)
+   - Background job sync Redis ← → DB mỗi phút
+   
+3. Trade-offs accepted:
+   - View count có thể delay vài giây (acceptable)
+   - Có thể sai lệch nhỏ (acceptable cho social metric)
+   - Complex hơn solution 1 (necessary cho reliability)
+
+@71 p
+Approach này handle được:
+@72 li
+Redis fail → Fallback to DB
+@73 li
+Historical data → Có trong DB
+@74 li
+Trending → Query DB với time range
+@75 li
+Bot spam → Rate limit + validation layer
+@76 h2
+Bài Tập Thực Hành: Thay Đổi Mindset
+@77 h3
+Exercise 1: Phân Tích Quyết Định Của Bạn
+@78 p
+Nhớ lại một quyết định kỹ thuật gần đây bạn đã làm. Trả lời:
+@79 p
+**Bạn chọn giải pháp gì?** (VD: Dùng MongoDB thay vì PostgreSQL)
+@80 p
+**Lý do bạn chọn?** Viết ra lý do thật sự, không phải lý do "đẹp".
+@81 p
+**Bạn đã đo đạc vấn đề chưa?** Có metrics cụ thể không?
+@82 p
+**Bạn có xem xét alternatives không?** Có compare PostgreSQL không?
+@83 p
+**Cost/trade-offs là gì?** Bạn đã nghĩ đến chưa?
+@84 p
+Nếu câu trả lời 3, 4, 5 là "không" → Đó là code-first thinking.
+@85 h3
+Exercise 2: Reverse Engineering
+@86 p
+Chọn một app bạn hay dùng (Facebook, Instagram, Shopee...).
+@87 p
+**Nhiệm vụ:** Đừng đoán họ dùng tech gì. Thay vào đó:
+@88 p
+**Identify problems họ phải giải quyết:**
+@89 li
+Scale: Bao nhiêu users?
+@90 li
+Consistency: Like count phải accurate không?
+@91 li
+Latency: Feed load nhanh thế nào?
+@92 p
+**Reasoning:**
+@93 li
+Với scale này, họ không thể dùng 1 database
+@94 li
+Với latency requirement, họ phải có cache layer
+@95 li
+Với consistency requirement, họ có thể chấp nhận eventual consistency
+@96 p
+**Predict solutions:**
+@97 li
+Probably dùng CDN cho static assets
+@98 li
+Probably dùng cache cho feeds
+@99 li
+Probably eventual consistency cho like counts
+@100 p
+Thấy sự khác biệt chưa? Bạn đang reason từ problems → solutions, không phải ngược lại.
+@101 h2
+Checklist: Bạn Đã Thay Đổi Tư Duy Chưa?
+@102 p
+Đánh dấu những câu bạn đồng ý:
+@103 li
+Tôi hỏi "Vấn đề là gì?" trước khi nghĩ giải pháp
+@104 li
+Tôi measure vấn đề trước khi optimize
+@105 li
+Tôi có thể giải thích "Why" cho mọi technical decision
+@106 li
+Tôi xem xét ít nhất 2-3 alternatives trước khi chọn
+@107 li
+Tôi hiểu trade-offs của giải pháp tôi chọn
+@108 li
+Tôi bắt đầu simple, chỉ thêm complexity khi cần thiết
+@109 li
+Tôi có thể defend decisions của mình bằng data/reasoning
+@110 p
+Nếu bạn check được 5/7 → Bạn đang trên đường đúng.
+@111 h2
+Key Takeaways
+@112 p
+**Problem-first thinking không phải về việc biết nhiều công nghệ.**
+@113 p
+Nó về việc:
+@114 li
+Hiểu vấn đề sâu sắc
+@115 li
+Đo đạc và phân tích
+@116 li
+Cân nhắc trade-offs
+@117 li
+Chọn giải pháp phù hợp (không phải "best", mà "fit")
+@118 p
+**Code-first thinking** là reflexive: Thấy vấn đề → Nghĩ ngay solution quen thuộc.
+@119 p
+**Problem-first thinking** là deliberate: Hiểu vấn đề → Phân tích → Evaluate options → Decide.
+@120 p
+Sự khác biệt này quyết định bạn là một developer giỏi hay một architect giỏi.
+@121 p
+**Câu hỏi quan trọng nhất mà một architect luôn tự hỏi:**
+@122 p
+"Tôi đang giải quyết vấn đề gì? Và đây có thực sự là cách tốt nhất không?"
+@123 p
+Bắt đầu hỏi câu này từ hôm nay. Mọi thứ sẽ thay đổi.

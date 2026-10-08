@@ -1,0 +1,122 @@
+@59
+**Phân tích chi tiết:**
+@60
+Bit 0 (1 bit):
+- Luôn là 0 (dự trữ, bit dấu)
+
+Bit 1-41 (41 bit): Dấu thời gian
+- Số mili giây kể từ mốc epoch (epoch tuỳ chỉnh)
+- 2^41 ms ≈ 69 năm
+- Sắp xếp được theo thời gian!
+
+Bit 42-51 (10 bit): Machine ID
+- Xác định máy nào đã sinh ra ID
+- Hỗ trợ 2^10 = 1,024 máy
+- Được cấu hình khi khởi động
+
+Bit 52-63 (12 bit): Số thứ tự
+- Bộ đếm trong cùng một mili giây
+- 2^12 = 4,096 ID mỗi mili giây trên mỗi máy
+- Đặt lại mỗi khi sang mili giây mới
+
+@61
+**Tính toán năng lực:**
+@62
+Mỗi máy:
+- 4,096 ID/mili giây
+- 4,096,000 ID/giây
+- ~350 tỷ ID/ngày
+
+1,024 máy:
+- 4.2 triệu ID/giây trên toàn hệ thống
+- 360 nghìn tỷ ID/ngày
+
+Quá đủ!
+
+@63
+Cài Đặt
+@64
+Trích Xuất Siêu Dữ Liệu
+@65
+⟦Sự Đánh Đổi|Trade-offs⟧
+@66
+Ưu điểm:
+- 64 bit (gọn, hiệu quả)
+- Sắp theo thời gian (sắp xếp được, tốt cho CSDL)
+- Hiệu năng cao (không cần phối hợp)
+- Phi tập trung (không có điểm lỗi duy nhất)
+- Con người gỡ lỗi được (trích xuất dấu thời gian)
+- Đã được ngành kiểm chứng (Twitter, Discord, Instagram)
+
+Nhược điểm:
+- Phải quản lý Machine ID (cần cấu hình)
+- Bắt buộc đồng bộ đồng hồ (NTP)
+- Giới hạn 69 năm (cần đặt lại epoch)
+- Cạn số thứ tự trong cùng một mili giây (hiếm gặp)
+
+@67
+Vấn Đề ⟦Lệch Đồng Hồ|Clock Skew⟧
+@68
+**Vấn đề:**
+@69
+Đồng hồ máy A: 10:00:00.000
+Đồng hồ máy B: 10:00:05.000 (nhanh hơn 5 giây)
+
+Máy B sinh ra: ID = 1000005000...
+Máy A sinh ra: ID = 1000000000... (nhỏ hơn!)
+
+ID từ máy A < ID từ máy B về giá trị
+nhưng lại được sinh ra SAU về thời gian!
+
+→ Thứ tự bị phá vỡ
+
+@70
+**Giải pháp:**
+@71
+1. Đồng bộ NTP (khuyến nghị)
+   - Giữ các đồng hồ đồng bộ (độ lệch < 100ms)
+   - Giám sát độ lệch đồng hồ
+   - Cảnh báo nếu độ lệch > ngưỡng
+
+2. Từ chối sinh ID nếu đồng hồ chạy lùi
+   - Kiểm tra: current_time < last_time
+   - Báo lỗi hoặc chờ
+   - Đánh đổi: Tính sẵn sàng giảm
+
+3. Dùng đồng hồ logic (Lamport, Vector)
+   - Không phụ thuộc vào đồng hồ thực
+   - Cài đặt phức tạp
+
+@72
+Khi Nào Dùng Snowflake?
+@73
+Sử dụng Snowflake khi:
+✓ Cần ID sắp theo thời gian
+✓ Hiệu năng cơ sở dữ liệu là yếu tố sống còn
+✓ Cần ID 64 bit gọn nhẹ
+✓ Cần ID con người gỡ lỗi được
+✓ Thông lượng cao (hàng triệu ID/giây)
+✓ Có thể quản lý Machine ID
+
+Tránh Snowflake khi:
+✗ Không thể đồng bộ đồng hồ (NTP không tin cậy)
+✗ Sự đơn giản > Hiệu năng
+✗ Không muốn quản lý Machine ID
+✗ Cần ID thực sự ngẫu nhiên
+
+@74
+**Trải nghiệm cá nhân:**
+@75
+Snowflake là lựa chọn hàng đầu cho các hệ thống ⟦quy mô|scale⟧ lớn. Twitter, Discord, Instagram đều dùng nó.
+@76
+Tôi khuyên dùng Snowflake cho:
+@77
+Các API có ⟦lưu lượng|traffic⟧ cao
+@78
+Dữ liệu ⟦chuỗi thời gian|time-series⟧
+@79
+Hệ thống ⟦ghi log|logging⟧
+@80
+⟦Lưu trữ dựa trên sự kiện|Event sourcing⟧
+@81
+So Sánh: UUID Và Snowflake

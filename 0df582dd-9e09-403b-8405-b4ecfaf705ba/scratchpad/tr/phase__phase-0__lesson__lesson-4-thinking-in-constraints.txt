@@ -1,0 +1,666 @@
+@0
+⟦Tư Duy Theo Ràng Buộc|Thinking in Constraints⟧: Kỹ Thuật Là Quản Lý Giới Hạn
+@1
+Tôi còn nhớ lần đầu tiên thiết kế một hệ thống "cho 1 triệu người dùng".
+@2
+Tôi vẽ một sơ đồ kiến trúc thật đẹp: ⟦vi dịch vụ|microservices⟧, Kafka, Kubernetes, ⟦bộ nhớ đệm phân tán|distributed cache⟧, ⟦tự động mở rộng|auto-scaling⟧...
+@3
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ nhìn vào, hỏi một câu đơn giản: *"Em có ngân sách bao nhiêu?"*
+@4
+Tôi: *"Ngân sách ạ? Em chưa tính..."*
+@5
+Anh ấy: *"Kiến trúc này tốn $15.000/tháng. Ngân sách của em là $2.000/tháng. Em nghĩ sao?"*
+@6
+**Đó là lúc tôi học được bài học quan trọng nhất: Thiết kế không phải là vẽ sơ đồ đẹp. Thiết kế là làm việc với các ⟦ràng buộc|constraints⟧.**
+@7
+Tại Sao Ràng Buộc Là Điểm Bắt Đầu?
+@8
+Đối Chiếu Với Thực Tế
+@9
+Lý thuyết: "Thiết kế hệ thống chịu được 1 triệu người dùng!"
+
+Thực tế:
+- Ngân sách: $2.000/tháng (không phải vô hạn)
+- Nhóm: 2 lập trình viên (không phải 50)
+- Thời hạn: 2 tháng (không phải 2 năm)
+- Hạ tầng sẵn có: PostgreSQL đã được cài đặt
+- Chuyên môn: Nhóm chỉ biết Python và SQL
+
+→ Kiến trúc hoàn hảo không tồn tại
+→ Chỉ có kiến trúc phù hợp với các ràng buộc
+
+@10
+**Điểm mấu chốt:** Ràng buộc không phải là kẻ thù. Ràng buộc là **các tham số thiết kế**.
+@11
+⟦Khung Tư Duy|Framework⟧: Hệ Thống = Ràng Buộc + ⟦Đánh Đổi|Trade-offs⟧
+@12
+graph TB
+    PROBLEM[Bài toán kinh doanh]
+
+    PROBLEM --> CONSTRAINTS[Xác định ràng buộc]
+
+    CONSTRAINTS --> C1[Giới hạn kỹ thuật]
+    CONSTRAINTS --> C2[Giới hạn tài nguyên]
+    CONSTRAINTS --> C3[Giới hạn con người]
+
+    C1 --> DESIGN[Quyết định thiết kế]
+    C2 --> DESIGN
+    C3 --> DESIGN
+
+    DESIGN --> TRADEOFFS[Đánh giá đánh đổi]
+    TRADEOFFS --> SOLUTION[Giải pháp vừa vặn]
+
+    style CONSTRAINTS fill:#ff6b6b
+    style DESIGN fill:#ffd43b
+    style SOLUTION fill:#51cf66
+@13
+*Quy trình thiết kế hệ thống: Ràng buộc định hình quyết định, đánh đổi quyết định giải pháp*
+@14
+**Hiểu ràng buộc → Ra quyết định đúng → Tránh ⟦thiết kế thừa|over-engineering⟧ hoặc ⟦thiết kế thiếu|under-engineering⟧**
+@15
+Ràng buộc 1: Giới Hạn Tính Toán
+@16
+**Thực tế: CPU không vô hạn.**
+@17
+Những Con Số Bạn Phải Biết
+@18
+Năng lực của một lõi CPU:
+- Máy chủ web thông thường: ~1.000 yêu cầu/giây
+- Truy vấn cơ sở dữ liệu: ~10.000 truy vấn đơn giản/giây
+- Tuần tự hoá JSON: ~50.000 đối tượng/giây
+- Tính toán hàm băm: ~1.000.000 lần băm/giây
+
+Các con số này có thể dao động, nhưng bậc độ lớn mới là điều quan trọng!
+
+@19
+**Kịch bản ví dụ:**
+@20
+Yêu cầu: Xử lý 10.000 yêu cầu/giây
+
+Phương án 1: Một máy chủ cực mạnh (32 lõi)
+- Năng lực lý thuyết: 32.000 req/s
+- Chi phí: $800/tháng
+- Rủi ro: Điểm lỗi duy nhất
+
+Phương án 2: 10 máy chủ tầm trung (mỗi máy 4 lõi)
+- Năng lực: 10 × 4.000 = 40.000 req/s
+- Chi phí: 10 × $200 = $2.000/tháng
+- Lợi ích: Có dự phòng, dễ mở rộng hơn
+
+Phương án 3: Bắt đầu với 2 máy chủ, mở rộng sau
+- Năng lực hiện tại: 2 × 4.000 = 8.000 req/s
+- Chi phí: $400/tháng
+- Đối chiếu thực tế: Bạn có thực sự có 10 nghìn req/s không?
+
+Chọn phương án nào?
+→ Tuỳ vào các ràng buộc khác (ngân sách, tốc độ tăng trưởng, mức chịu rủi ro)
+
+@21
+Ví Dụ Về Ràng Buộc Tính Toán
+@22
+**Trường hợp 1: Xử lý ảnh**
+@23
+Nhiệm vụ: Thay đổi kích thước 1 triệu ảnh
+Một máy chủ: 100 ảnh/giây
+Thời gian: 1 triệu / 100 = 10.000 giây = 2,8 giờ
+
+Ràng buộc: Phải xong trong 30 phút
+Tính toán: 1 triệu / 1.800 giây = cần 556 ảnh/giây
+Giải pháp: 6 máy chủ (6 × 100 = 600 ảnh/giây)
+
+Phương án khác: Tối ưu thuật toán
+- Xử lý song song: 400 ảnh/giây trên cùng phần cứng
+- Chỉ cần 2 máy chủ thay vì 6
+- Đánh đổi: Thời gian phát triển và chi phí hạ tầng
+
+@24
+**Trường hợp 2: Phân tích dữ liệu thời gian thực**
+@25
+Yêu cầu: Xử lý 100 nghìn sự kiện/giây
+
+Đơn luồng: Tối đa 10 nghìn sự kiện/giây
+Ràng buộc: Không chịu nổi tải
+
+Các phương án:
+1. Mở rộng theo chiều dọc (máy lớn hơn)
+   - Máy chủ 16 lõi → 160 nghìn sự kiện/giây
+   - Chi phí: $1.200/tháng
+
+2. Mở rộng theo chiều ngang (thêm máy)
+   - 10 máy chủ 2 lõi → 200 nghìn sự kiện/giây
+   - Chi phí: 10 × $100 = $1.000/tháng
+
+3. Tối ưu mã + dùng hàng đợi làm vùng đệm
+   - Tối ưu lên 50 nghìn sự kiện/giây mỗi lõi
+   - Máy chủ 2 lõi xử lý được 100 nghìn
+   - Chi phí: $200/tháng
+   - Đánh đổi: Thời gian phát triển
+
+Quyết định dựa trên ràng buộc:
+- Ngân sách eo hẹp → Phương án 3
+- Thời gian gấp → Phương án 1 hoặc 2
+- Dài hạn → Phương án 3 rồi mở rộng theo Phương án 2
+
+@26
+Ràng buộc 2: Giới Hạn Bộ Nhớ
+@27
+**Thực tế: RAM không miễn phí và có giới hạn vật lý.**
+@28
+Tính Toán Bộ Nhớ
+@29
+Yêu cầu thông thường:
+
+Mỗi phiên người dùng: ~1KB
+1 triệu người dùng: 1GB RAM
+
+Mỗi đối tượng lưu đệm: ~10KB
+100 nghìn đối tượng lưu đệm: 1GB RAM
+
+Mỗi kết nối cơ sở dữ liệu: ~10MB
+100 kết nối: 1GB RAM
+
+Một máy chủ 16GB:
+- Hệ điều hành chiếm: ~2GB
+- Ứng dụng: ~2GB
+- Kết nối cơ sở dữ liệu (100): ~1GB
+- Bộ nhớ đệm: còn ~10GB
+- Phiên người dùng (10 triệu): Cần 10GB
+→ Vừa khít, hoặc phải nén/loại bỏ bớt
+
+@30
+**Ví dụ: ⟦Chiến lược lưu đệm|Caching strategy⟧**
+@31
+Thương mại điện tử: 1 triệu sản phẩm
+
+Lưu đệm toàn bộ:
+- Dữ liệu sản phẩm: mỗi cái 1KB
+- Tổng: 1GB RAM
+- Chi phí: Vừa vặn trong một instance Redis ($50/tháng)
+- Lợi ích: Mọi sản phẩm đều được lưu đệm
+
+Lưu đệm một phần (sản phẩm "nóng"):
+- 10% sản phẩm = 90% lưu lượng
+- Bộ nhớ đệm: 100 nghìn sản phẩm = 100MB
+- Chi phí: Nằm sẵn trong RAM của máy chủ ứng dụng
+- Lợi ích: Miễn phí, đủ tốt
+
+Chọn phương án nào?
+→ Kiểm tra ràng buộc: Ngân sách? Bộ nhớ còn trống?
+→ Nếu ngân sách ổn, lưu đệm toàn bộ = logic đơn giản hơn
+→ Nếu ngân sách eo hẹp, lưu đệm một phần = đủ dùng
+
+@32
+Các Quyết Định Về Ràng Buộc Bộ Nhớ
+@33
+**Trường hợp: Bộ nhớ đệm dòng thời gian của người dùng**
+@34
+Ứng dụng mạng xã hội: 10 triệu người dùng
+
+Phương án 1: Lưu đệm toàn bộ dòng thời gian
+- 10 triệu người dùng × 100 bài × 1KB = 1TB RAM
+- Chi phí: $10.000/tháng (cụm Redis)
+- Lợi ích: Dòng thời gian tải tức thì
+
+Phương án 2: Chỉ lưu đệm người dùng đang hoạt động
+- 1 triệu người dùng hoạt động × 100 bài × 1KB = 100GB RAM
+- Chi phí: $1.000/tháng
+- Lợi ích: Tỷ lệ trúng bộ nhớ đệm 90% (đủ tốt)
+
+Phương án 3: Lưu đệm theo nhu cầu
+- Bộ nhớ đệm LRU, giới hạn 10GB
+- Chi phí: $100/tháng
+- Lợi ích: Bao phủ dữ liệu "nóng" nhất
+- Đánh đổi: Có một số lần trượt bộ nhớ đệm
+
+Kiểm tra ràng buộc:
+- 10 triệu người dùng, nhưng chỉ 1 triệu hoạt động hằng ngày
+- Ngân sách: tổng $2.000/tháng
+→ Phương án 2 hoặc 3 là hợp lý
+→ Phương án 1 là thiết kế thừa
+
+@35
+Ràng buộc 3: Giới Hạn Mạng
+@36
+**Thực tế: Mạng có giới hạn về ⟦độ trễ|latency⟧ và ⟦băng thông|bandwidth⟧.**
+@37
+Các Định Luật Vật Lý
+@38
+Tốc độ ánh sáng: 300.000 km/s
+Nhưng trong cáp quang: 200.000 km/s
+
+New York ↔ San Francisco: 4.000 km
+Độ trễ tối thiểu theo lý thuyết: 4.000 / 200.000 = 20ms
+Thực tế: 40-70ms (chi phí định tuyến)
+
+→ Không thể thắng được vật lý
+→ Đây là ràng buộc nền tảng
+
+@39
+**Ngân sách độ trễ:**
+@40
+Mức chịu đựng của người dùng: 100-200ms cho một lần tải trang web
+
+Phân bổ ngân sách:
+- Tra cứu DNS: 20ms
+- Bắt tay TCP: 20ms
+- Bắt tay TLS: 40ms
+- Yêu cầu/Phản hồi: 20ms
+- Máy chủ xử lý: ???
+
+Đã dùng: 100ms
+Còn lại cho máy chủ: 0-100ms
+
+Ràng buộc: Máy chủ phải phản hồi trong tối đa 100ms
+
+@41
+Ví Dụ Về Ràng Buộc Mạng
+@42
+**Trường hợp 1: Người dùng toàn cầu**
+@43
+Ứng dụng có người dùng khắp thế giới
+
+Không có CDN:
+- Người dùng Mỹ → Máy chủ Singapore: độ trễ 200ms
+- Tài nguyên tĩnh (ảnh, JS, CSS): 5MB
+- Thời gian tải: 200ms + (5MB / 10Mbps) = 200ms + 4s = 4,2s
+- Trải nghiệm người dùng: TỆ HẠI
+
+Có CDN:
+- Người dùng Mỹ → Điểm biên CDN ở Mỹ: độ trễ 20ms
+- Tài nguyên tĩnh được lưu đệm tại điểm biên
+- Thời gian tải: 20ms + (5MB / 50Mbps) = 20ms + 0,8s = 0,82s
+- Trải nghiệm người dùng: TỐT
+
+Đánh đổi chi phí:
+- Không có CDN: $0
+- Có CDN: $50/tháng
+- Quyết định: CDN đáng tiền (trải nghiệm người dùng là then chốt)
+
+@44
+**Trường hợp 2: Vị trí cơ sở dữ liệu**
+@45
+Máy chủ ứng dụng ở Mỹ, cơ sở dữ liệu ở châu Âu
+
+Mỗi truy vấn:
+- Mỹ → châu Âu: độ trễ 100ms
+- Thực thi truy vấn: 10ms
+- Châu Âu → Mỹ: độ trễ 100ms
+- Tổng: 210ms mỗi truy vấn
+
+Trang cần 10 truy vấn:
+- Tổng: 2.100ms = 2,1 giây
+- Không thể chấp nhận!
+
+Giải pháp:
+1. Chuyển cơ sở dữ liệu về Mỹ
+   - Độ trễ: 10ms mỗi truy vấn
+   - Tổng: 100ms cho 10 truy vấn
+   - Đánh đổi: Vướng vấn đề chủ quyền dữ liệu?
+
+2. Nhân bản cơ sở dữ liệu (bản sao chỉ đọc đặt ở Mỹ)
+   - Đọc: 10ms
+   - Ghi: Vẫn mất 100ms tới máy chủ chính
+   - Đánh đổi: Nhất quán cuối cùng
+
+3. Lớp bộ nhớ đệm
+   - Trúng bộ nhớ đệm: 1ms
+   - Trượt bộ nhớ đệm: 210ms
+   - Đánh đổi: Có thể gặp dữ liệu cũ
+
+Quyết định dựa trên ràng buộc:
+- Yêu cầu độ trễ: < 200ms → Cần giải pháp
+- Dữ liệu phải ở lại châu Âu → Phương án 2 hoặc 3
+- Cần nhất quán mạnh → Phương án 2
+
+@46
+Ràng buộc 4: Giới Hạn Cơ Sở Dữ Liệu
+@47
+**Thực tế: Cơ sở dữ liệu có giới hạn về ⟦thông lượng|throughput⟧ và dung lượng lưu trữ.**
+@48
+Năng Lực Của Cơ Sở Dữ Liệu
+@49
+Giới hạn thông thường của PostgreSQL:
+
+Năng lực ghi:
+- Một máy chủ: ~10.000 lượt ghi/giây
+- Với SSD: ~50.000 lượt ghi/giây
+- Ghi theo lô: ~100.000 lượt ghi/giây
+
+Năng lực đọc:
+- Truy vấn đơn giản: ~100.000 lượt đọc/giây
+- Truy vấn phức tạp: ~1.000 lượt đọc/giây
+- Có chỉ mục: cải thiện gấp 10 lần
+
+Lưu trữ:
+- Giới hạn thực tế: ~10TB mỗi máy chủ
+- Vượt mức đó: Cân nhắc phân mảnh dữ liệu (sharding)
+
+Kết nối:
+- Số kết nối tối đa: ~500
+- Thực tế: ~200 kết nối hoạt động
+
+@50
+**Ví dụ: Ứng dụng ghi nhiều**
+@51
+Hệ thống ghi log: 50.000 lượt ghi/giây
+
+Một PostgreSQL duy nhất:
+- Tối đa: 10.000 lượt ghi/giây
+- Ràng buộc: Không chịu nổi tải
+
+Các phương án:
+1. Ghi theo lô
+   - Gom 100 lượt ghi, chèn cùng lúc
+   - Hiệu quả: 100.000 lượt ghi/giây
+   - Đánh đổi: Trễ một chút (chấp nhận được với log)
+
+2. Dùng CSDL tối ưu cho ghi (Cassandra)
+   - Năng lực: 1.000.000 lượt ghi/giây
+   - Đánh đổi: Mô hình truy vấn khác, nhóm phải học thêm
+
+3. Hàng đợi + worker chạy nền
+   - Nhận lượt ghi vào hàng đợi (tức thì)
+   - Worker ghi vào CSDL (tốc độ có kiểm soát)
+   - Đánh đổi: Dữ liệu được lưu bền vững sau một khoảng trễ
+
+Kiểm tra ràng buộc:
+- Nhóm thành thạo PostgreSQL
+- Log có thể trễ 1-2 giây
+→ Phương án 1 (ghi theo lô) là phù hợp nhất
+→ Đơn giản, tận dụng kiến thức sẵn có, đáp ứng yêu cầu
+
+@52
+Ràng buộc 5: Giới Hạn Con Người (Quy Mô Nhóm)
+@53
+**Ràng buộc hay bị bỏ qua nhất: Năng lực của chính nhóm bạn.**
+@54
+Thực Tế Về Quy Mô Nhóm
+@55
+Quy mô nhóm: 2 lập trình viên
+
+Có thể duy trì:
+- Hệ thống nguyên khối: ✅ Dễ dàng
+- 3-5 vi dịch vụ: ⚠️ Khó khăn
+- Hơn 10 vi dịch vụ: ❌ Không thể
+- Kubernetes: ❌ Quá phức tạp
+- Triển khai đơn giản: ✅ Thiết yếu
+
+Tại sao?
+- Mỗi dịch vụ cần: triển khai, giám sát, gỡ lỗi
+- 10 dịch vụ = gấp 10 lần gánh nặng vận hành
+- 2 lập trình viên không thể quản lý tốt 10 dịch vụ
+
+@56
+Khung Tư Duy Về Ràng Buộc Nhóm
+@57
+Nhóm 1-3 người:
+✓ Hệ thống nguyên khối
+✓ Bộ công nghệ đơn giản (những gì nhóm đã biết)
+✓ Dịch vụ được quản lý sẵn (giảm việc vận hành)
+✗ Vi dịch vụ
+✗ Hạ tầng phức tạp
+✗ Công nghệ mới
+
+Nhóm 5-10 người:
+✓ Hệ thống nguyên khối chia mô-đun
+✓ Vi dịch vụ đơn giản (2-3 dịch vụ)
+✓ Kết hợp công nghệ mới + quen thuộc
+⚠️ Vi dịch vụ toàn phần (rủi ro)
+
+Nhóm từ 20 người trở lên:
+✓ Vi dịch vụ
+✓ Nhiều bộ công nghệ
+✓ Có nhóm vận hành riêng
+✓ Hạ tầng phức tạp
+
+@58
+**Ví dụ thực tế:**
+@59
+Công ty khởi nghiệp: 3 lập trình viên
+
+Phương án A: Kiến trúc vi dịch vụ
+- 8 dịch vụ
+- Triển khai trên Kubernetes
+- Service mesh
+- Truy vết phân tán
+Thời gian phát triển: 6 tháng
+Bảo trì: 2 lập trình viên toàn thời gian chỉ để vận hành
+Phát triển tính năng: CHẬM
+
+Phương án B: Hệ thống nguyên khối có cấu trúc tốt
+- Một kho mã nguồn, các mô-đun rõ ràng
+- Triển khai trên Heroku
+- Giám sát đơn giản
+Thời gian phát triển: 6 tuần
+Bảo trì: 0,5 lập trình viên cho vận hành
+Phát triển tính năng: NHANH
+
+Thực tế ràng buộc:
+- 3 lập trình viên không thể duy trì 8 dịch vụ
+- Tốc độ ra thị trường là sống còn với công ty khởi nghiệp
+→ Phương án B là lựa chọn khả thi duy nhất
+
+@60
+Danh Sách Kiểm Tra Ràng Buộc
+@61
+**Trước khi thiết kế bất kỳ hệ thống nào, hãy hỏi:**
+@62
+Ràng buộc kỹ thuật:
+☐ Cần năng lực CPU bao nhiêu? (yêu cầu/giây)
+☐ Bộ nhớ còn bao nhiêu? (kích thước bộ nhớ đệm, lưu phiên)
+☐ Độ trễ mạng có chấp nhận được không? (vị trí người dùng, vị trí máy chủ)
+☐ Thông lượng cơ sở dữ liệu có đủ không? (lượt ghi/đọc mỗi giây)
+☐ Dung lượng lưu trữ? (kích thước dữ liệu hiện tại và 2 năm sau)
+
+Ràng buộc tài nguyên:
+☐ Ngân sách? ($X/tháng cho hạ tầng)
+☐ Thời hạn? (X tuần để ra mắt)
+☐ Cái giá của sự cố? (có chịu được ngừng hoạt động không?)
+
+Ràng buộc con người:
+☐ Quy mô nhóm? (X lập trình viên)
+☐ Chuyên môn của nhóm? (biết Y, cần học Z?)
+☐ Năng lực vận hành? (ai duy trì hệ thống?)
+☐ Gánh nặng trực sự cố? (có giám sát 24/7 được không?)
+
+Ràng buộc tăng trưởng:
+☐ Quy mô hiện tại? (X người dùng, Y yêu cầu/ngày)
+☐ Tăng trưởng dự kiến? (gấp 2 lần/năm hay 10 lần/năm?)
+☐ Tải đỉnh so với trung bình? (mẫu hình lưu lượng?)
+
+@63
+Quy Trình Thiết Kế Dựa Trên Ràng Buộc
+@64
+**Khung tư duy từng bước:**
+@65
+1. Xác định TẤT CẢ ràng buộc
+   - Giới hạn kỹ thuật
+   - Giới hạn tài nguyên (ngân sách, thời gian)
+   - Giới hạn con người (nhóm, chuyên môn)
+
+2. Xếp hạng ưu tiên các ràng buộc
+   - Đâu là giới hạn cứng? (không được vi phạm)
+   - Đâu là giới hạn mềm? (có thể thương lượng)
+
+3. Thiết kế trong phạm vi ràng buộc
+   - Bắt đầu đơn giản
+   - Chỉ thêm độ phức tạp khi ràng buộc đòi hỏi
+
+4. Kiểm chứng với các ràng buộc
+   - Giải pháp có vừa ngân sách không?
+   - Nhóm có duy trì được không?
+   - Có đáp ứng yêu cầu hiệu năng không?
+
+5. Ghi lại các quyết định về ràng buộc
+   - Tại sao chọn X thay vì Y?
+   - Ràng buộc nào đã ảnh hưởng đến quyết định?
+
+@66
+**Ví dụ áp dụng:**
+@67
+Yêu cầu: Xây dựng bảng điều khiển phân tích dữ liệu
+
+Các ràng buộc đã xác định:
+- Ngân sách: $500/tháng (giới hạn cứng)
+- Nhóm: 1 lập trình viên (giới hạn cứng)
+- Dữ liệu: 100GB (hiện tại), tăng 10GB/tháng
+- Truy vấn: Tổng hợp phức tạp
+- Người dùng: 50 người dùng nội bộ
+- Thời hạn: 2 tuần để có MVP
+
+Các quyết định dựa trên ràng buộc:
+
+Chọn cơ sở dữ liệu:
+- PostgreSQL ✓
+  - Xử lý 100GB dễ dàng
+  - Nhóm biết SQL
+  - Truy vấn phức tạp: hỗ trợ sẵn
+  - Chi phí: $50/tháng cho bản được quản lý sẵn
+
+- Cassandra ✗
+  - Quá mức cần thiết cho 100GB
+  - Nhóm không biết
+  - Tổng hợp phức tạp: khó
+  - Đắt hơn
+
+Triển khai:
+- Heroku ✓
+  - Đơn giản, được quản lý sẵn
+  - $200/tháng (trong ngân sách)
+  - 1 lập trình viên quản lý được
+
+- Kubernetes ✗
+  - Thiết lập phức tạp
+  - Cần người vận hành chuyên trách
+  - Vượt ngân sách nếu dùng bản quản lý sẵn
+
+Bộ nhớ đệm:
+- Bỏ qua cho MVP ✓
+  - 50 người dùng = lưu lượng thấp
+  - Có thể thêm sau nếu chậm
+  - Tiết kiệm thời gian phát triển
+
+Kết quả:
+- Tổng chi phí: $250/tháng (dưới ngân sách)
+- Phát triển: 2 tuần (kịp thời hạn)
+- Bảo trì: Tối thiểu (nhóm quản lý được)
+- Hiệu năng: Đủ tốt cho quy mô hiện tại
+
+@68
+Sai Lầm Phổ Biến: Phớt Lờ Ràng Buộc
+@69
+**Sai lầm 1: Thiết kế cho quy mô tưởng tượng**
+@70
+❌ Tệ:
+"Biết đâu một ngày nào đó ta sẽ có 10 triệu người dùng, vậy dùng Kubernetes ngay bây giờ đi."
+
+Thực tế:
+- Hiện tại: 100 người dùng
+- Thời hạn: 6 tháng để chứng minh sản phẩm phù hợp thị trường
+- Ngân sách: $2.000/tháng
+
+✅ Tốt:
+"Bắt đầu với Heroku. Nếu đạt 100 nghìn người dùng (thành công!),
+ta sẽ có doanh thu để chi trả việc chuyển sang Kubernetes.
+Đừng tối ưu cho những vấn đề ta chưa có."
+
+@71
+**Sai lầm 2: Phớt lờ ràng buộc về nhóm**
+@72
+❌ Tệ:
+"Dùng Rust để đạt hiệu năng tối đa đi!"
+
+Thực tế:
+- Nhóm biết Python
+- Yêu cầu hiệu năng: 1.000 req/s
+- Python xử lý 1.000 req/s dễ dàng
+
+✅ Tốt:
+"Dùng Python. Nhóm làm việc hiệu quả ngay lập tức.
+Rust sẽ tốn 3 tháng để học.
+Ràng buộc hiệu năng không bị vi phạm."
+
+@73
+**Sai lầm 3: Mặc định ngân sách là vô hạn**
+@74
+❌ Tệ:
+"Ta sẽ dùng Kubernetes quản lý sẵn, CSDL quản lý sẵn, bộ nhớ đệm quản lý sẵn,
+mọi thứ đều quản lý sẵn!"
+
+Chi phí: $8.000/tháng
+
+Thực tế:
+- Ngân sách: $2.000/tháng
+- Vi phạm ràng buộc cứng
+
+✅ Tốt:
+"Dùng Heroku ($200), PostgreSQL quản lý sẵn ($50),
+và bộ nhớ đệm ở tầng ứng dụng (miễn phí).
+Tổng: $250/tháng. Vừa ngân sách."
+
+@75
+Những Điểm Cốt Lõi
+@76
+**Kỹ thuật = Quản lý ràng buộc**
+@77
+Không phải: "Kiến trúc nào là tốt nhất?"
+Mà là: "Kiến trúc nào phù hợp với các ràng buộc của tôi?"
+
+@78
+**5 nhóm ràng buộc:**
+@79
+1. Tính toán: Giới hạn năng lực CPU
+2. Bộ nhớ: Giới hạn RAM sẵn có
+3. Mạng: Giới hạn độ trễ và băng thông
+4. Cơ sở dữ liệu: Giới hạn thông lượng và lưu trữ
+5. Con người: Giới hạn quy mô và chuyên môn của nhóm
+
+@80
+**Khung tư duy:**
+@81
+Thiết kế hệ thống = Ràng buộc + Đánh đổi
+
+Ràng buộc → Xác định điều gì khả thi
+Đánh đổi → Chọn giữa các khả năng
+Vừa vặn → Giải pháp tôn trọng các ràng buộc
+
+@82
+**Quy trình thiết kế:**
+@83
+1. Xác định ràng buộc (tất cả!)
+2. Xếp ưu tiên (giới hạn cứng hay mềm)
+3. Thiết kế trong phạm vi ràng buộc
+4. Kiểm chứng giải pháp có phù hợp
+5. Ghi lại các quyết định
+
+@84
+**Hãy nhớ:**
+@85
+Kiến trúc hoàn hảo nhưng phớt lờ ràng buộc = Vô dụng
+Kiến trúc đủ tốt và tôn trọng ràng buộc = Có thể ra mắt
+
+Ràng buộc không phải kẻ thù
+Ràng buộc là tham số thiết kế
+
+Làm việc CÙNG ràng buộc, đừng CHỐNG LẠI chúng
+
+@86
+**Sự thay đổi tư duy cần có:**
+@87
+Từ: "Làm sao xây hệ thống hoàn hảo?"
+Sang: "Làm sao xây đúng hệ thống với các ràng buộc của tôi?"
+
+Từ: "Thực hành tốt nhất bảo X"
+Sang: "Ràng buộc của tôi đòi hỏi Y"
+
+Từ: "Chuẩn bị sẵn cho mọi thứ trong tương lai"
+Sang: "Giải quyết ràng buộc hôm nay, thích ứng ngày mai"
+
+@88
+Bạn đã học tư duy ưu tiên vấn đề (Bài 1) và ⟦tư duy đánh đổi|trade-off thinking⟧ (Bài 2).
+@89
+Giờ với tư duy ràng buộc (bài này), bạn đã có một ⟦mô hình tư duy|mental model⟧ hoàn chỉnh:
+@90
+**Vấn đề → Ràng buộc → Đánh đổi → Giải pháp**
+@91
+Đây là cách các kiến trúc sư lâu năm thực sự suy nghĩ.

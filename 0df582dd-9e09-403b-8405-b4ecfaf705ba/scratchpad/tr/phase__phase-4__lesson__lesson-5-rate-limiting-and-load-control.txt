@@ -1,0 +1,639 @@
+@0
+⟦Giới Hạn Tần Suất|Rate Limiting⟧ & ⟦Kiểm Soát Tải|Load Control⟧ - Bảo Vệ Hệ Thống Khỏi ⟦Quá Tải|Overload⟧
+@1
+Bạn xây dựng một API hoàn hảo. Mã sạch, cơ sở dữ liệu được tối ưu, hạ tầng vững chắc.
+@2
+Rồi một ngày, ⟦lưu lượng|traffic⟧ bất ngờ ⟦tăng đột biến|spike⟧ gấp 10 lần. Nguyên nhân có thể là:
+@3
+Một bài đăng lan truyền chóng mặt trên mạng xã hội
+@4
+Tấn công bằng bot
+@5
+Lỗi ở phía máy khách (vòng lặp ⟦thử lại|retry⟧ vô hạn)
+@6
+Đợt ⟦giảm giá chớp nhoáng|flash sale⟧ trong thương mại điện tử
+@7
+**Hệ thống sụp đổ. Cơ sở dữ liệu bị quá tải. Máy chủ sập. Toàn bộ dịch vụ ngừng hoạt động.**
+@8
+Không phải vì ⟦kiến trúc|architecture⟧ tồi. Mà vì **không có các cơ chế bảo vệ.**
+@9
+**⟦Mô hình tư duy|Mental model⟧ quan trọng:** Hệ thống phải biết tự bảo vệ mình. Không thể tin rằng ⟦lưu lượng|traffic⟧ lúc nào cũng ở mức hợp lý.
+@10
+Bài học này dạy bạn:
+@11
+Các thuật toán ⟦giới hạn tần suất|rate limiting⟧ (token bucket, leaky bucket)
+@12
+⟦Giới hạn tần suất phân tán|Distributed rate limiting⟧
+@13
+⟦Áp lực ngược|Backpressure⟧ & ⟦cắt giảm tải|load shedding⟧
+@14
+Mẫu ⟦bộ ngắt mạch|circuit breaker⟧
+@15
+Khi nào dùng kỹ thuật nào
+@16
+Tại Sao Cần ⟦Giới Hạn Tần Suất|Rate Limiting⟧?
+@17
+Vấn Đề 1: Cạn Kiệt Tài Nguyên
+@18
+**Mọi hệ thống đều có giới hạn.**
+@19
+Cơ sở dữ liệu: 1000 kết nối
+Máy chủ API: 10,000 yêu cầu đồng thời
+Mạng: băng thông 1 Gbps
+
+@20
+**Vượt quá giới hạn → hệ thống sập.**
+@21
+Không có ⟦giới hạn tần suất|rate limiting⟧, một máy khách có thể chiếm dụng toàn bộ tài nguyên.
+@22
+Vấn Đề 2: Kiểm Soát ⟦Chi Phí|Cost⟧
+@23
+**Các dịch vụ đám mây tính phí theo mức sử dụng.**
+@24
+API Gateway: $3.50 cho mỗi triệu yêu cầu
+Lambda: $0.20 cho mỗi triệu lượt gọi
+Cơ sở dữ liệu: $0.10 cho mỗi GB truyền tải
+
+@25
+**⟦Lưu lượng|Traffic⟧ không được kiểm soát = ⟦chi phí|cost⟧ không giới hạn.**
+@26
+Một đợt tấn công bằng bot có thể tạo ra hàng triệu ⟦yêu cầu|requests⟧ → hoá đơn $10.000 chỉ trong 1 ngày.
+@27
+Vấn Đề 3: Lạm Dụng & Bảo Mật
+@28
+**Kẻ tấn công khai thác hệ thống:**
+@29
+Dò mật khẩu đăng nhập bằng ⟦vét cạn|brute force⟧ (thử hàng nghìn mật khẩu)
+@30
+Cào dữ liệu (thu thập toàn bộ cơ sở dữ liệu)
+@31
+DDoS (làm quá tải bằng ⟦lưu lượng|traffic⟧ rác)
+@32
+**⟦Giới hạn tần suất|Rate limiting⟧ = tuyến phòng thủ đầu tiên.**
+@33
+Vấn Đề 4: Sử Dụng Công Bằng
+@34
+**Một người dùng không nên độc chiếm tài nguyên.**
+@35
+Trong hệ thống ⟦đa khách thuê|multi-tenant⟧, chỉ 1 khách hàng gửi ⟦yêu cầu|requests⟧ ồ ạt → ảnh hưởng tới tất cả khách hàng.
+@36
+**⟦Giới hạn tần suất|Rate limiting⟧ đảm bảo sự công bằng.**
+@37
+⟦Tình Huống Sử Dụng|Use Cases⟧
+@38
+**Hạn mức API:**
+@39
+Gói miễn phí: 1000 yêu cầu/ngày
+@40
+Gói Pro: 100.000 yêu cầu/ngày
+@41
+**Số lần đăng nhập:**
+@42
+5 lần thất bại → khoá tài khoản 15 phút
+@43
+**Truy vấn tìm kiếm:**
+@44
+10 lượt tìm kiếm/phút cho mỗi người dùng
+@45
+**Tải tệp lên:**
+@46
+100 MB/giờ cho mỗi người dùng
+@47
+Các Thuật Toán ⟦Giới Hạn Tần Suất|Rate Limiting⟧
+@48
+Có nhiều thuật toán, mỗi thuật toán phù hợp với một ⟦tình huống sử dụng|use case⟧ khác nhau.
+@49
+1. Fixed Window Counter (Bộ Đếm Cửa Sổ Cố Định)
+@50
+**Thuật toán đơn giản nhất.**
+@51
+**Ví dụ:**
+@52
+Cửa sổ: 1 phút
+Giới hạn: 100 yêu cầu
+
+00:00-00:59: 100 yêu cầu ✅
+01:00-01:59: Đặt lại bộ đếm, 100 yêu cầu ✅
+
+@53
+**Vấn đề: Hiện tượng ở ranh giới cửa sổ**
+@54
+00:59: 100 yêu cầu (chạm mức tối đa)
+01:00: Đặt lại
+01:01: 100 yêu cầu
+
+Tổng cộng 200 yêu cầu trong 2 giây! ⚠️
+
+@55
+**⟦Lưu lượng bùng nổ|Burst traffic⟧ tại ranh giới cửa sổ vượt qua được giới hạn.**
+@56
+2. Sliding Window Log (Nhật Ký Cửa Sổ Trượt)
+@57
+**Theo dõi ⟦dấu thời gian|timestamp⟧ của mỗi yêu cầu.**
+@58
+**Ví dụ:**
+@59
+Cửa sổ: 60 giây
+Giới hạn: 100 yêu cầu
+
+Yêu cầu lúc 10:00:30
+→ Đếm số yêu cầu từ 09:59:30 đến 10:00:30
+→ Nếu < 100, cho phép
+
+@60
+**Ưu điểm:**
+@61
+Chính xác (không có vấn đề ở ranh giới cửa sổ)
+@62
+Giới hạn tần suất mượt mà
+@63
+**Nhược điểm:**
+@64
+Tốn bộ nhớ (lưu tất cả ⟦dấu thời gian|timestamps⟧)
+@65
+Thời gian tra cứu O(N)
+@66
+3. Sliding Window Counter (Bộ Đếm Cửa Sổ Trượt – Dạng ⟦Lai|Hybrid⟧)
+@67
+**Kết hợp cửa sổ cố định + phép tính trượt.**
+@68
+**Làm mượt các đợt ⟦tăng đột biến|spikes⟧ của cửa sổ cố định với bộ nhớ O(1).**
+@69
+4. Token Bucket (Thùng Token – PHỔ BIẾN NHẤT)
+@70
+**Thùng chứa các token. Mỗi yêu cầu tiêu thụ 1 token.**
+@71
+**Ví dụ:**
+@72
+Sức chứa: 100 token
+Tốc độ nạp lại: 10 token/giây
+
+Bắt đầu: 100 token
+Yêu cầu 1: còn 99 token (cho phép)
+Yêu cầu 2: còn 98 token (cho phép)
+... (100 yêu cầu)
+Yêu cầu 101: còn 0 token (từ chối) ❌
+
+Chờ 1 giây: +10 token
+Yêu cầu 102: còn 9 token (cho phép) ✅
+
+@73
+**Ưu điểm:**
+@74
+Cho phép ⟦bùng nổ|bursts⟧ (tận dụng số token đã tích luỹ)
+@75
+Tốc độ dài hạn ổn định
+@76
+Triển khai đơn giản
+@77
+**Nhược điểm:**
+@78
+Các đợt ⟦bùng nổ|bursts⟧ có thể làm quá tải các dịch vụ ⟦hạ nguồn|downstream⟧
+@79
+**Được dùng bởi:** AWS API Gateway, Kong, Nginx.
+@80
+5. Leaky Bucket (Thùng Rò Rỉ)
+@81
+**Thùng rò rỉ token với tốc độ không đổi.**
+@82
+**Khác biệt so với Token Bucket:**
+@83
+**Token Bucket:** Đầu ra theo ⟦đợt bùng nổ|bursty⟧ (có thể gửi nhiều yêu cầu cùng lúc nếu còn token)\n
+**Leaky Bucket:** Đầu ra đều đặn (tốc độ không đổi, không có ⟦bùng nổ|bursts⟧)
+@84
+flowchart LR
+    subgraph TokenBucket["Token Bucket"]
+        TB_Input[Yêu cầu] -->|Tốc độ thay đổi| TB_Bucket[Thùng]
+        TB_Bucket -->|Có thể bùng nổ| TB_Output[Đầu ra]
+    end
+
+    subgraph LeakyBucket["Leaky Bucket"]
+        LB_Input[Yêu cầu] -->|Tốc độ thay đổi| LB_Queue[Hàng đợi]
+        LB_Queue -->|Tốc độ không đổi| LB_Output[Đầu ra]
+    end
+@85
+**Token Bucket = giới hạn tần suất đầu vào.**\n
+**Leaky Bucket = giới hạn tần suất đầu ra.**
+@86
+So Sánh Các Thuật Toán
+@87
+Thuật toán
+@88
+Bộ nhớ
+@89
+Độ chính xác
+@90
+⟦Bùng nổ|Bursts⟧
+@91
+⟦Tình huống sử dụng|Use Case⟧
+@92
+Cửa sổ cố định
+@94
+Thấp
+@95
+Có
+@96
+Hạn mức đơn giản
+@97
+Nhật ký trượt
+@99
+Cao
+@100
+Không
+@101
+Giới hạn chính xác
+@102
+Bộ đếm trượt
+@104
+Trung bình
+@105
+Không
+@106
+Cân bằng tốt
+@109
+Tốt
+@110
+Có
+@111
+Phần lớn API
+@114
+Tốt
+@115
+Không
+@116
+⟦Định hình lưu lượng|Traffic shaping⟧
+@117
+**Token Bucket = phổ biến nhất vì cân bằng giữa sự đơn giản + hiệu quả.**
+@118
+⟦Giới Hạn Tần Suất Phân Tán|Distributed Rate Limiting⟧
+@119
+**Vấn đề:** Có nhiều máy chủ API, làm sao đồng bộ các giới hạn tần suất?
+@120
+flowchart TB
+    User[Người dùng]
+    LB[Bộ cân bằng tải]
+
+    subgraph Servers
+        S1[Máy chủ 1<br/>Bộ đếm cục bộ: 50]
+        S2[Máy chủ 2<br/>Bộ đếm cục bộ: 50]
+        S3[Máy chủ 3<br/>Bộ đếm cục bộ: 50]
+    end
+
+    User --> LB
+    LB --> S1
+    LB --> S2
+    LB --> S3
+@121
+**Giới hạn: 100 req/phút cho mỗi người dùng.**
+@122
+Nếu mỗi máy chủ tự theo dõi riêng → người dùng có thể gửi 50 yêu cầu tới mỗi máy chủ = tổng cộng 150! ⚠️
+@123
+Giải Pháp 1: Trạng Thái Tập Trung (Redis)
+@124
+**Lưu các bộ đếm trong Redis dùng chung.**
+@125
+**Token bucket trong Redis:**
+@126
+**Ưu điểm:**
+@127
+Chính xác trên toàn bộ các máy chủ
+@128
+Logic tập trung
+@129
+**Nhược điểm:**
+@130
+Redis là ⟦điểm lỗi duy nhất|single point of failure⟧
+@131
+⟦Độ trễ|latency⟧ mạng cho mỗi yêu cầu
+@132
+Redis có thể trở thành ⟦điểm nghẽn|bottleneck⟧
+@133
+Giải Pháp 2: ⟦Nhất Quán Cuối Cùng|Eventually Consistent⟧ (Gossip)
+@134
+**Mỗi máy chủ duy trì trạng thái cục bộ, đồng bộ định kỳ.**
+@135
+**Ưu điểm:**
+@136
+Không có ⟦điểm lỗi duy nhất|single point of failure⟧
+@137
+⟦Độ trễ|latency⟧ thấp (kiểm tra cục bộ)
+@138
+**Nhược điểm:**
+@139
+Không chính xác (⟦nhất quán cuối cùng|eventual consistency⟧)
+@140
+Triển khai phức tạp
+@141
+Cách Tiếp Cận ⟦Lai|Hybrid⟧ (Thực Tế)
+@142
+**⟦Bộ nhớ đệm|cache⟧ cục bộ + Redis.**
+@143
+**Cân bằng giữa độ chính xác + ⟦hiệu năng|performance⟧.**
+@144
+Các ⟦Tiêu Đề|Headers⟧ Phản Hồi Về ⟦Giới Hạn Tần Suất|Rate Limiting⟧
+@145
+**Máy khách cần biết trạng thái giới hạn tần suất.**
+@146
+**Các ⟦tiêu đề|headers⟧ chuẩn:**
+@147
+**Máy khách có thể:**
+@148
+Hiển thị hạn mức cho người dùng
+@149
+Triển khai ⟦lùi thời gian theo cấp số nhân|exponential backoff⟧
+@150
+Lên lịch gửi yêu cầu một cách hiệu quả
+@151
+⟦Áp Lực Ngược|Backpressure⟧ - Đẩy Ngược Lại ⟦Thượng Nguồn|Upstream⟧
+@152
+**⟦Giới hạn tần suất|Rate limiting⟧ bảo vệ hệ thống khỏi ⟦lưu lượng|traffic⟧ bên ngoài. ⟦Áp lực ngược|Backpressure⟧ bảo vệ khỏi tình trạng quá tải bên trong.**
+@153
+Vấn Đề
+@154
+sequenceDiagram
+    participant API
+    participant Queue
+    participant Worker
+    participant DB
+
+    API->>Queue: Nhanh (1000 msg/s)
+    Queue->>Worker: Trung bình (100 msg/s)
+    Worker->>DB: Chậm (10 truy vấn/s)
+
+    Note over Queue: Hàng đợi phình to vô hạn!
+@155
+**⟦Bên phát|Producer⟧ nhanh hơn ⟦bên tiêu thụ|consumer⟧ → ⟦hàng đợi|queue⟧ bùng nổ.**
+@156
+Giải Pháp: ⟦Áp Lực Ngược|Backpressure⟧
+@157
+**Làm chậm ⟦bên phát|producer⟧ khi ⟦bên tiêu thụ|consumer⟧ bị quá tải.**
+@158
+**API kiểm tra kích thước ⟦hàng đợi|queue⟧:**
+@159
+**503 Service Unavailable = tín hiệu ⟦áp lực ngược|backpressure⟧.**
+@160
+⟦Áp Lực Ngược|Backpressure⟧ Trong Reactive Streams
+@161
+**Cách tiếp cận hiện đại: kéo dữ liệu theo yêu cầu.**
+@162
+**⟦Bên tiêu thụ|Consumer⟧ tự kéo dữ liệu theo nhịp độ của mình, thay vì bị đẩy tới.**
+@163
+⟦Cắt Giảm Tải|Load Shedding⟧ - Loại Bỏ Bớt ⟦Lưu Lượng|Traffic⟧ Để Sống Sót
+@164
+**Khi hệ thống quá tải, từ chối bớt ⟦yêu cầu|requests⟧ để bảo vệ chức năng cốt lõi.**
+@165
+⟦Cắt Giảm Tải|Shedding⟧ Theo Mức Ưu Tiên
+@166
+**Không phải mọi yêu cầu đều quan trọng như nhau.**
+@167
+**Ví dụ về mức ưu tiên:**
+@168
+**Loại bỏ ⟦lưu lượng|traffic⟧ có mức ưu tiên thấp trước.**
+@169
+⟦Cắt Giảm Tải|Shedding⟧ Thích Ứng
+@170
+**Cắt giảm dựa trên các ⟦chỉ số|metrics⟧ sức khoẻ của hệ thống.**
+@171
+**Suy giảm dần dần thay vì cắt đứt đột ngột.**
+@172
+⟦Bộ Ngắt Mạch|Circuit Breaker⟧ - Ngừng Gọi Các Dịch Vụ Đang Lỗi
+@173
+**⟦Mẫu|Pattern⟧ để ngăn chặn ⟦lỗi dây chuyền|cascading failures⟧.**
+@174
+Vấn Đề
+@175
+sequenceDiagram
+    participant API
+    participant ServiceA
+    participant ServiceB
+
+    API->>ServiceB: Yêu cầu
+    ServiceB-->>API: Hết thời gian chờ (30s)
+
+    API->>ServiceB: Thử lại
+    ServiceB-->>API: Hết thời gian chờ (30s)
+
+    Note over API: Mọi luồng đều bị chặn!<br/>API không còn phản hồi
+@176
+**Dịch vụ B sập → API cứ tiếp tục thử → API cũng sập theo.**
+@177
+Các Trạng Thái Của ⟦Bộ Ngắt Mạch|Circuit Breaker⟧
+@178
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open: Số lỗi vượt ngưỡng
+    Open --> HalfOpen: Hết thời gian chờ
+    HalfOpen --> Closed: Thành công
+    HalfOpen --> Open: Thất bại
+@179
+**Các trạng thái:**
+@180
+**Closed – Đóng (Bình thường):**
+@181
+Các yêu cầu đi qua bình thường
+@182
+Theo dõi số lỗi
+@183
+**Open – Mở (Đã lỗi):**
+@184
+Từ chối yêu cầu ngay lập tức (⟦thất bại nhanh|fail fast⟧)
+@185
+Không gọi dịch vụ đang lỗi
+@186
+Trả về dữ liệu từ ⟦bộ nhớ đệm|cache⟧ hoặc lỗi
+@187
+**Half-Open – Nửa mở (Đang thử nghiệm):**
+@188
+Cho phép một số lượng yêu cầu giới hạn
+@189
+Kiểm tra xem dịch vụ đã phục hồi chưa
+@190
+Đóng nếu thành công, mở nếu thất bại
+@191
+Triển Khai
+@192
+**Cách dùng:**
+@193
+Lợi Ích
+@194
+**1. ⟦Thất bại nhanh|Fail fast⟧**
+@195
+Không lãng phí thời gian ⟦thử lại|retry⟧ với dịch vụ đang lỗi
+@196
+Giải phóng luồng/tài nguyên
+@197
+**2. Cho dịch vụ thời gian phục hồi**
+@198
+Ngừng dồn dập gọi vào dịch vụ đã lỗi
+@199
+Cho phép phục hồi một cách êm ái
+@200
+**3. Ngăn chặn ⟦lỗi dây chuyền|cascading failures⟧**
+@201
+Một dịch vụ sập ≠ toàn bộ hệ thống sập
+@202
+**4. Cung cấp phương án ⟦dự phòng|fallbacks⟧**
+@203
+⟦Mẫu Vách Ngăn|Bulkhead Pattern⟧ - Cô Lập Sự Cố
+@204
+**Đừng để một ⟦thành phần|component⟧ chiếm hết toàn bộ tài nguyên.**
+@205
+⟦Vách Ngăn|Bulkheads⟧ Bằng ⟦Nhóm Luồng|Thread Pool⟧
+@206
+**Dịch vụ B chậm/treo → chỉ chiếm dụng 10 luồng trong nhóm luồng của B.**
+@207
+Dịch vụ A và C vẫn hoạt động bình thường.
+@208
+⟦Vách Ngăn|Bulkheads⟧ Bằng ⟦Nhóm Kết Nối|Connection Pool⟧
+@209
+Kết Hợp Tất Cả Lại
+@210
+**Chiến lược bảo vệ toàn diện:**
+@211
+flowchart TD
+    Request[Yêu cầu đến]
+
+    RL{Giới hạn tần suất}
+    LB{Bộ cân bằng tải}
+    CB{Bộ ngắt mạch}
+    Service[Dịch vụ]
+    DB[(CSDL)]
+
+    Request --> RL
+    RL -->|Cho phép| LB
+    RL -->|Từ chối| Deny[429 Too Many Requests]
+
+    LB --> CB
+    CB -->|Closed/Half-Open| Service
+    CB -->|Open| Fallback[Phản hồi dự phòng]
+
+    Service --> DB
+    DB -->|Chậm| Shed[Cắt giảm tải]
+    Shed -->|Loại bỏ| Drop[503 Service Unavailable]
+@212
+**Các lớp bảo vệ:**
+@213
+**⟦Giới hạn tần suất|Rate limiting⟧:** Ngăn chặn lạm dụng
+@214
+**⟦Bộ ngắt mạch|Circuit breaker⟧:** ⟦Thất bại nhanh|Fail fast⟧ khi các dịch vụ ⟦hạ nguồn|downstream⟧ gặp sự cố
+@215
+**⟦Áp lực ngược|Backpressure⟧:** Làm chậm lại khi ⟦hàng đợi|queues⟧ đầy
+@216
+**⟦Cắt giảm tải|Load shedding⟧:** Loại bỏ bớt ⟦lưu lượng|traffic⟧ khi quá tải
+@217
+**⟦Vách ngăn|Bulkhead⟧:** Cô lập sự cố
+@218
+**⟦Phòng thủ nhiều lớp|Defense in depth⟧.**
+@219
+Khuyến Nghị Thực Tế
+@220
+1. Bắt Đầu Với ⟦Giới Hạn Tần Suất|Rate Limiting⟧
+@221
+**Mọi API công khai đều cần ⟦giới hạn tần suất|rate limiting⟧.**
+@222
+**Ngay cả các API nội bộ cũng được hưởng lợi từ ⟦giới hạn tần suất|rate limiting⟧.**
+@223
+2. Triển Khai ⟦Bộ Ngắt Mạch|Circuit Breakers⟧ Cho Các ⟦Phụ Thuộc|Dependencies⟧ Bên Ngoài
+@224
+3. ⟦Giám Sát|Monitor⟧ & ⟦Cảnh Báo|Alert⟧
+@225
+**Theo dõi các ⟦chỉ số|metrics⟧:**
+@226
+- Số lần chạm giới hạn tần suất (theo từng endpoint, từng người dùng)
+- Các lần chuyển trạng thái của bộ ngắt mạch
+- Độ sâu hàng đợi
+- Độ trễ yêu cầu (p50, p95, p99)
+- Tỉ lệ lỗi
+
+@227
+**⟦Cảnh báo|Alert⟧ khi:**
+@228
+Thường xuyên chạm giới hạn tần suất (có thể cần nâng giới hạn)
+@229
+⟦Bộ ngắt mạch|Circuit breaker⟧ mở (có vấn đề ở ⟦phụ thuộc|dependency⟧)
+@230
+⟦Hàng đợi|Queue⟧ đang phình to (cần ⟦áp lực ngược|backpressure⟧)
+@231
+4. Thiết Kế Để Suy Giảm Có Kiểm Soát
+@232
+**⟦Suy giảm có kiểm soát|Graceful degradation⟧ > sập hoàn toàn.**
+@233
+5. Kiểm Thử Dưới Tải
+@234
+**⟦Kiểm thử tải|Load testing⟧ nên kích hoạt được các cơ chế bảo vệ.**
+@235
+**Xác minh:**
+@236
+⟦Giới hạn tần suất|Rate limiting⟧ được kích hoạt
+@237
+⟦Bộ ngắt mạch|Circuit breaker⟧ mở khi có lỗi
+@238
+Hệ thống vẫn ổn định khi quá tải
+@239
+⟦Mô Hình Tư Duy|Mental Model⟧: Hệ Thống Phải Tự Bảo Vệ Mình
+@240
+**Nhận thức cốt lõi:**
+@241
+**Hệ thống tốt không giả định mọi điều kiện đều hoàn hảo. Chúng lường trước và xử lý được lạm dụng, sự cố và quá tải.**
+@242
+Hệ thống tồi:
+  Giả định: Lưu lượng hợp lý, các phụ thuộc đáng tin cậy
+  Thực tế: Lưu lượng tăng đột biến → sập
+
+Hệ thống tốt:
+  Giả định: Chuyện gì cũng có thể xảy ra
+  Thiết kế: Cơ chế bảo vệ ở mọi tầng
+  Thực tế: Lưu lượng tăng đột biến → suy giảm có kiểm soát
+
+@243
+**⟦Tư duy|Mindset⟧ của ⟦kiến trúc sư|architect⟧:**
+@244
+**⟦Lưu lượng|Traffic⟧ bên ngoài:** ⟦Giới hạn tần suất|Rate limiting⟧
+@245
+**Sự cố ở các ⟦phụ thuộc|dependency⟧:** ⟦Bộ ngắt mạch|Circuit breaker⟧
+@246
+**Quá tải bên trong:** ⟦Áp lực ngược|Backpressure⟧, ⟦cắt giảm tải|load shedding⟧
+@247
+**Cô lập tài nguyên:** ⟦Mẫu vách ngăn|Bulkhead pattern⟧
+@248
+**Hệ thống tự bảo vệ = ⟦độ tin cậy|reliability⟧.**
+@249
+Những Điểm Cốt Lõi
+@250
+**1. ⟦Giới hạn tần suất|Rate limiting⟧ ngăn chặn lạm dụng và cạn kiệt tài nguyên**
+@251
+Thuật toán token bucket phổ biến nhất. ⟦Giới hạn tần suất phân tán|Distributed rate limiting⟧ cần Redis hoặc gossip.
+@252
+**2. ⟦Bộ ngắt mạch|Circuit breaker⟧ ngăn chặn ⟦lỗi dây chuyền|cascading failures⟧**
+@253
+⟦Thất bại nhanh|Fail fast⟧, cho dịch vụ thời gian phục hồi, cung cấp phương án ⟦dự phòng|fallbacks⟧.
+@254
+**3. ⟦Áp lực ngược|Backpressure⟧ đẩy ngược lại các ⟦bên phát|producers⟧ ở ⟦thượng nguồn|upstream⟧**
+@255
+Ngăn ⟦hàng đợi|queue⟧ bùng nổ, duy trì sự ổn định của hệ thống.
+@256
+**4. ⟦Cắt giảm tải|Load shedding⟧ loại bỏ bớt ⟦lưu lượng|traffic⟧ để sống sót**
+@257
+Theo mức ưu tiên hoặc thích ứng. Thà suy giảm có kiểm soát còn hơn sập hoàn toàn.
+@258
+**5. ⟦Mẫu vách ngăn|Bulkhead pattern⟧ cô lập sự cố**
+@259
+Tách riêng ⟦nhóm luồng|thread pools⟧/⟦nhóm kết nối|connection pools⟧ cho từng ⟦phụ thuộc|dependency⟧.
+@260
+**6. ⟦Phòng thủ nhiều lớp|Defense in depth⟧**
+@261
+Nhiều lớp bảo vệ. ⟦Giới hạn tần suất|Rate limiting⟧ + ⟦bộ ngắt mạch|circuit breaker⟧ + ⟦cắt giảm tải|load shedding⟧.
+@262
+**7. ⟦Giám sát|Monitor⟧ và ⟦cảnh báo|alert⟧ khi cơ chế bảo vệ được kích hoạt**
+@263
+Cơ chế bảo vệ được kích hoạt = tín hiệu cảnh báo sớm.
+@264
+**8. Thiết kế để suy giảm có kiểm soát**
+@265
+Các chiến lược ⟦dự phòng|fallback⟧ tốt hơn là sập hoàn toàn.
+@266
+**9. Kiểm thử khi quá tải**
+@267
+⟦Kiểm thử tải|Load testing⟧ nên vận hành thử các cơ chế bảo vệ.
+@268
+**Hãy nhớ: Hệ thống tốt nhất là hệ thống sống sót được trước lạm dụng, xử lý sự cố một cách êm ái và tự động bảo vệ chính mình. Đừng đợi đến khi xảy ra sự cố trong ⟦môi trường thực tế|production⟧ mới bổ sung các cơ chế bảo vệ này - hãy xây dựng chúng ngay từ đầu.**

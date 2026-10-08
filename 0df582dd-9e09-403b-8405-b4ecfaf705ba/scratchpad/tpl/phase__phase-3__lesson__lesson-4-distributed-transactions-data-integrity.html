@@ -1,0 +1,665 @@
+<article class="prose-ui"><h1 id="distributed-transactions--data-integrity">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<h2 id="tại-sao-acid-breaks-trong-distributed-systems">§§SEG7§§</h2>
+<h3 id="acid-trong-single-database">§§SEG8§§</h3>
+<p>§§SEG9§§</p>
+<pre><code class="language-python"># Single database - ACID guaranteed
+def transfer_money(from_account, to_account, amount):
+    db.begin_transaction()
+    try:
+        db.execute("UPDATE accounts SET balance = balance - ? WHERE id = ?", 
+                   amount, from_account)
+        db.execute("UPDATE accounts SET balance = balance + ? WHERE id = ?", 
+                   amount, to_account)
+        db.commit()
+    except:
+        db.rollback()  # All changes undone
+</code></pre>
+<p>§§SEG10§§</p>
+<pre><code>§§SEG11§§</code></pre>
+<h3 id="acid-breaks-trong-distributed-systems">§§SEG12§§</h3>
+<p>§§SEG13§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG14§§</code></pre>
+<p>§§SEG15§§</p>
+<p>§§SEG16§§</p>
+<pre><code>§§SEG17§§</code></pre>
+<p>§§SEG18§§</p>
+<pre><code>§§SEG19§§</code></pre>
+<p>§§SEG20§§</p>
+<pre><code>§§SEG21§§</code></pre>
+<h2 id="2-phase-commit-2pc-the-traditional-solution">§§SEG22§§</h2>
+<h3 id="how-2pc-works">§§SEG23§§</h3>
+<p>§§SEG24§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG25§§</code></pre>
+<p>§§SEG26§§</p>
+<p>§§SEG27§§</p>
+<pre><code>§§SEG28§§</code></pre>
+<p>§§SEG29§§</p>
+<pre><code>§§SEG30§§</code></pre>
+<h3 id="2pc-implementation-example">§§SEG31§§</h3>
+<pre><code class="language-python">class TwoPhaseCommitCoordinator:
+    def __init__(self, participants):
+        self.participants = participants
+        self.transaction_id = generate_id()
+    
+    def execute_transaction(self, operations):
+        # Phase 1: Prepare
+        print("Phase 1: Prepare")
+        votes = []
+        
+        for participant in self.participants:
+            try:
+                vote = participant.prepare(self.transaction_id, operations)
+                votes.append(vote)
+                print(f"{participant.name}: {vote}")
+            except Exception as e:
+                votes.append("NO")
+                print(f"{participant.name}: ERROR - {e}")
+        
+        # Decision
+        if all(vote == "YES" for vote in votes):
+            decision = "COMMIT"
+        else:
+            decision = "ABORT"
+        
+        print(f"\nDecision: {decision}")
+        
+        # Phase 2: Commit or Abort
+        print("Phase 2: Execute decision")
+        results = []
+        
+        for participant in self.participants:
+            if decision == "COMMIT":
+                result = participant.commit(self.transaction_id)
+            else:
+                result = participant.abort(self.transaction_id)
+            results.append(result)
+            print(f"{participant.name}: {result}")
+        
+        return decision == "COMMIT"
+
+# Usage
+coordinator = TwoPhaseCommitCoordinator([
+    payment_service,
+    inventory_service,
+    order_service
+])
+
+success = coordinator.execute_transaction({
+    'payment': {'amount': 100},
+    'inventory': {'product_id': 123, 'quantity': 1},
+    'order': {'user_id': 456}
+})
+</code></pre>
+<h3 id="the-fatal-flaw-blocking">§§SEG32§§</h3>
+<p>§§SEG33§§</p>
+<pre><code>§§SEG34§§</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG35§§</code></pre>
+<p>§§SEG36§§</p>
+<p>§§SEG37§§</p>
+<pre><code>§§SEG38§§</code></pre>
+<h3 id="2pc-trade-offs">§§SEG39§§</h3>
+<pre><code>§§SEG40§§</code></pre>
+<h3 id="khi-nào-dùng-2pc">§§SEG41§§</h3>
+<pre><code>§§SEG42§§</code></pre>
+<p>§§SEG43§§</p>
+<p>§§SEG44§§</p>
+<p>§§SEG45§§</p>
+<h2 id="saga-pattern-the-practical-solution">§§SEG46§§</h2>
+<h3 id="saga-concept">§§SEG47§§</h3>
+<p>§§SEG48§§</p>
+<p>§§SEG49§§</p>
+<pre><code>§§SEG50§§</code></pre>
+<p>§§SEG51§§</p>
+<pre><code>§§SEG52§§</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG53§§</code></pre>
+<p>§§SEG54§§</p>
+<h3 id="saga-implementation-orchestration">§§SEG55§§</h3>
+<p>§§SEG56§§</p>
+<pre><code class="language-python">class OrderSagaOrchestrator:
+    def __init__(self):
+        self.payment_service = PaymentService()
+        self.inventory_service = InventoryService()
+        self.order_service = OrderService()
+    
+    def create_order(self, order_data):
+        saga_state = {
+            'payment_id': None,
+            'reservation_id': None,
+            'order_id': None
+        }
+        
+        try:
+            # Step 1: Charge payment
+            print("Step 1: Charging payment...")
+            payment_id = self.payment_service.charge(
+                order_data['amount']
+            )
+            saga_state['payment_id'] = payment_id
+            print(f"✓ Payment charged: {payment_id}")
+            
+            # Step 2: Reserve inventory
+            print("Step 2: Reserving inventory...")
+            reservation_id = self.inventory_service.reserve(
+                order_data['product_id'],
+                order_data['quantity']
+            )
+            saga_state['reservation_id'] = reservation_id
+            print(f"✓ Inventory reserved: {reservation_id}")
+            
+            # Step 3: Create order
+            print("Step 3: Creating order...")
+            order_id = self.order_service.create(order_data)
+            saga_state['order_id'] = order_id
+            print(f"✓ Order created: {order_id}")
+            
+            return {
+                'status': 'success',
+                'order_id': order_id
+            }
+            
+        except Exception as e:
+            print(f"\nSaga failed: {e}")
+            print("Starting compensation...")
+            
+            # Compensate in reverse order
+            self._compensate(saga_state)
+            
+            return {
+                'status': 'failed',
+                'error': str(e)
+            }
+    
+    def _compensate(self, saga_state):
+        # Reverse order: Order → Inventory → Payment
+        
+        if saga_state['order_id']:
+            print("Compensating: Cancel order")
+            try:
+                self.order_service.cancel(saga_state['order_id'])
+                print("✓ Order cancelled")
+            except Exception as e:
+                print(f"⚠ Order compensation failed: {e}")
+        
+        if saga_state['reservation_id']:
+            print("Compensating: Release inventory")
+            try:
+                self.inventory_service.release(saga_state['reservation_id'])
+                print("✓ Inventory released")
+            except Exception as e:
+                print(f"⚠ Inventory compensation failed: {e}")
+        
+        if saga_state['payment_id']:
+            print("Compensating: Refund payment")
+            try:
+                self.payment_service.refund(saga_state['payment_id'])
+                print("✓ Payment refunded")
+            except Exception as e:
+                print(f"⚠ Payment compensation failed: {e}")
+
+# Usage
+orchestrator = OrderSagaOrchestrator()
+result = orchestrator.create_order({
+    'user_id': 123,
+    'product_id': 456,
+    'quantity': 2,
+    'amount': 50.00
+})
+</code></pre>
+<p>§§SEG57§§</p>
+<pre><code>§§SEG58§§</code></pre>
+<p>§§SEG59§§</p>
+<pre><code>§§SEG60§§</code></pre>
+<h3 id="saga-implementation-choreography">§§SEG61§§</h3>
+<p>§§SEG62§§</p>
+<pre><code class="language-python"># Payment Service
+class PaymentService:
+    def charge(self, amount):
+        # Process payment
+        payment_id = process_payment(amount)
+        
+        # Publish event
+        event_bus.publish('payment.charged', {
+            'payment_id': payment_id,
+            'amount': amount
+        })
+        
+        return payment_id
+    
+    @event_bus.subscribe('order.failed')
+    def on_order_failed(self, event):
+        # Compensate: Refund
+        payment_id = event['payment_id']
+        self.refund(payment_id)
+        
+        event_bus.publish('payment.refunded', {
+            'payment_id': payment_id
+        })
+
+# Inventory Service  
+class InventoryService:
+    @event_bus.subscribe('payment.charged')
+    def on_payment_charged(self, event):
+        try:
+            # Reserve inventory
+            reservation_id = self.reserve(event['product_id'])
+            
+            event_bus.publish('inventory.reserved', {
+                'reservation_id': reservation_id,
+                'payment_id': event['payment_id']
+            })
+        except OutOfStockError:
+            # Trigger compensation
+            event_bus.publish('order.failed', {
+                'reason': 'out_of_stock',
+                'payment_id': event['payment_id']
+            })
+    
+    @event_bus.subscribe('order.failed')
+    def on_order_failed(self, event):
+        # Compensate: Release inventory
+        if event.get('reservation_id'):
+            self.release(event['reservation_id'])
+            
+            event_bus.publish('inventory.released', {
+                'reservation_id': event['reservation_id']
+            })
+
+# Order Service
+class OrderService:
+    @event_bus.subscribe('inventory.reserved')
+    def on_inventory_reserved(self, event):
+        try:
+            # Create order
+            order_id = self.create_order(event)
+            
+            event_bus.publish('order.created', {
+                'order_id': order_id
+            })
+        except Exception as e:
+            # Trigger compensation
+            event_bus.publish('order.failed', {
+                'reason': str(e),
+                'payment_id': event['payment_id'],
+                'reservation_id': event['reservation_id']
+            })
+</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG63§§</code></pre>
+<p>§§SEG64§§</p>
+<h3 id="orchestration-vs-choreography">§§SEG65§§</h3>
+<pre><code>§§SEG66§§</code></pre>
+<p>§§SEG67§§</p>
+<pre><code>§§SEG68§§</code></pre>
+<h2 id="compensation-thinking-the-core-mindset">§§SEG69§§</h2>
+<h3 id="compensation--rollback">§§SEG70§§</h3>
+<p>§§SEG71§§</p>
+<pre><code class="language-python"># Database rollback: Undo changes
+db.begin_transaction()
+db.execute("INSERT INTO orders ...")
+db.rollback()  # Changes disappear completely
+# As if nothing happened
+</code></pre>
+<p>§§SEG72§§</p>
+<pre><code class="language-python"># Saga compensation: Reverse effect
+payment_id = payment_service.charge(100)  # Money charged
+# Later...
+payment_service.refund(payment_id)  # Money returned
+
+# NOT same as rollback:
+- Payment happened (visible in logs)
+- Refund is separate transaction
+- Both visible in audit trail
+</code></pre>
+<p>§§SEG73§§</p>
+<pre><code>§§SEG74§§</code></pre>
+<h3 id="designing-compensating-transactions">§§SEG75§§</h3>
+<p>§§SEG76§§</p>
+<pre><code class="language-python"># BAD: Not idempotent
+def refund_payment(payment_id):
+    payment = get_payment(payment_id)
+    payment.amount = 0  # If called twice → problem
+    save(payment)
+
+# GOOD: Idempotent
+def refund_payment(payment_id):
+    payment = get_payment(payment_id)
+    
+    if payment.status == 'refunded':
+        return  # Already refunded, skip
+    
+    payment.status = 'refunded'
+    payment.refunded_at = now()
+    save(payment)
+</code></pre>
+<p>§§SEG77§§</p>
+<pre><code class="language-python">def _compensate(self, saga_state):
+    compensation_errors = []
+    
+    # Try each compensation
+    for step in reversed(saga_state['completed_steps']):
+        try:
+            step.compensate()
+        except Exception as e:
+            # Log but continue
+            compensation_errors.append({
+                'step': step.name,
+                'error': str(e)
+            })
+            logger.error(f"Compensation failed: {step.name} - {e}")
+    
+    # If any compensation failed → Manual intervention needed
+    if compensation_errors:
+        alert_ops_team({
+            'saga_id': saga_state['id'],
+            'failures': compensation_errors,
+            'action_needed': 'manual_compensation'
+        })
+</code></pre>
+<p>§§SEG78§§</p>
+<pre><code class="language-python"># Cannot compensate:
+Email sent (cannot "unsend")
+SMS sent
+External API called (no control)
+Physical shipment initiated
+
+# Solutions:
+Put compensable actions first
+Non-compensable actions last (after all risks)
+Make them idempotent (safe to retry)
+</code></pre>
+<h3 id="compensation-order-matters">§§SEG79§§</h3>
+<pre><code>§§SEG80§§</code></pre>
+<h2 id="idempotency-the-safety-net">§§SEG81§§</h2>
+<h3 id="định-nghĩa-idempotency">§§SEG82§§</h3>
+<p>§§SEG83§§</p>
+<pre><code>§§SEG84§§</code></pre>
+<h3 id="tại-sao-cần-idempotency">§§SEG85§§</h3>
+<p>§§SEG86§§</p>
+<pre><code>§§SEG87§§</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG88§§</code></pre>
+<p>§§SEG89§§</p>
+<h3 id="implementing-idempotency">§§SEG90§§</h3>
+<p>§§SEG91§§</p>
+<pre><code class="language-python">class PaymentService:
+    def __init__(self):
+        self.processed_requests = {}  # In practice: Redis/DB
+    
+    def charge(self, amount, idempotency_key):
+        # Check if already processed
+        if idempotency_key in self.processed_requests:
+            # Return cached result
+            print(f"Duplicate request detected: {idempotency_key}")
+            return self.processed_requests[idempotency_key]
+        
+        # First time seeing this request
+        print(f"Processing new request: {idempotency_key}")
+        
+        # Process payment
+        payment_id = self._process_payment(amount)
+        
+        # Cache result
+        self.processed_requests[idempotency_key] = {
+            'payment_id': payment_id,
+            'amount': amount,
+            'status': 'success'
+        }
+        
+        return self.processed_requests[idempotency_key]
+
+# Client usage
+payment_service = PaymentService()
+
+# Client generates unique key
+idempotency_key = "order_123_payment_attempt_1"
+
+# First call
+result1 = payment_service.charge(100, idempotency_key)
+# Processing new request: order_123_payment_attempt_1
+# Result: payment_id=pay_789
+
+# Retry (network failed, client retries)
+result2 = payment_service.charge(100, idempotency_key)
+# Duplicate request detected: order_123_payment_attempt_1
+# Result: payment_id=pay_789 (SAME!)
+
+# Charged only once ✓
+</code></pre>
+<p>§§SEG92§§</p>
+<pre><code class="language-python"># Production-grade implementation
+class IdempotentPaymentService:
+    def charge(self, amount, idempotency_key):
+        # Check cache (Redis với TTL 24h)
+        cached = redis.get(f"idempotency:{idempotency_key}")
+        if cached:
+            return json.loads(cached)
+        
+        # Acquire lock để prevent concurrent duplicates
+        lock_key = f"lock:idempotency:{idempotency_key}"
+        with redis.lock(lock_key, timeout=30):
+            # Double-check sau khi có lock
+            cached = redis.get(f"idempotency:{idempotency_key}")
+            if cached:
+                return json.loads(cached)
+            
+            # Process payment
+            result = self._process_payment(amount)
+            
+            # Cache result với TTL 24h
+            redis.setex(
+                f"idempotency:{idempotency_key}",
+                86400,  # 24 hours
+                json.dumps(result)
+            )
+            
+            return result
+</code></pre>
+<p>§§SEG93§§</p>
+<pre><code class="language-python"># NOT idempotent
+def add_item_to_cart(user_id, product_id):
+    cart = get_cart(user_id)
+    cart.items.append(product_id)  # Duplicate if called twice
+    save(cart)
+
+# Idempotent
+def add_item_to_cart(user_id, product_id):
+    cart = get_cart(user_id)
+    if product_id not in cart.items:  # Check first
+        cart.items.append(product_id)
+    save(cart)
+
+# Even better: Use Set
+def add_item_to_cart(user_id, product_id):
+    cart = get_cart(user_id)
+    cart.items.add(product_id)  # Set naturally idempotent
+    save(cart)
+</code></pre>
+<p>§§SEG94§§</p>
+<pre><code class="language-sql">-- Allows duplicates
+CREATE TABLE payments (
+    id SERIAL PRIMARY KEY,
+    order_id INT,
+    amount DECIMAL
+);
+
+-- Can insert same order_id multiple times!
+
+-- Prevent duplicates
+CREATE TABLE payments (
+    id SERIAL PRIMARY KEY,
+    order_id INT UNIQUE,  -- Unique constraint
+    amount DECIMAL
+);
+
+-- Second insert with same order_id → Error
+-- Application catches error → Return cached result
+</code></pre>
+<h3 id="idempotency-best-practices">§§SEG95§§</h3>
+<p>§§SEG96§§</p>
+<pre><code class="language-javascript">// Client generates key
+const idempotencyKey = `${userId}_${orderId}_${Date.now()}_${uuidv4()}`;
+
+fetch('/api/payment/charge', {
+    method: 'POST',
+    headers: {
+        'Idempotency-Key': idempotencyKey
+    },
+    body: JSON.stringify({ amount: 100 })
+});
+</code></pre>
+<p>§§SEG97§§</p>
+<pre><code>§§SEG98§§</code></pre>
+<p>§§SEG99§§</p>
+<pre><code class="language-python"># BAD
+if duplicate_request:
+    return 200, cached_result
+
+# GOOD
+if duplicate_request:
+    return 200, cached_result  # Same as original
+else:
+    result = process()
+    return 200, result  # Same status code
+</code></pre>
+<p>§§SEG100§§</p>
+<pre><code class="language-python"># Compensation cũng phải idempotent
+def compensate_payment(payment_id, idempotency_key):
+    # Check if already compensated
+    if already_refunded(payment_id):
+        return cached_result
+    
+    # Refund
+    refund_payment(payment_id)
+    
+    # Cache compensation result
+    cache_result(idempotency_key, result)
+</code></pre>
+<h2 id="real-world-example-e-commerce-checkout">§§SEG101§§</h2>
+<p>§§SEG102§§</p>
+<pre><code class="language-python">class CheckoutSaga:
+    def __init__(self):
+        self.payment_service = PaymentService()
+        self.inventory_service = InventoryService()
+        self.order_service = OrderService()
+        self.shipping_service = ShippingService()
+    
+    def execute(self, checkout_data, idempotency_key):
+        # Check idempotency
+        cached = self._check_cache(idempotency_key)
+        if cached:
+            return cached
+        
+        saga_state = {
+            'steps_completed': [],
+            'checkout_id': checkout_data['checkout_id']
+        }
+        
+        try:
+            # Step 1: Reserve inventory (compensable)
+            reservation = self.inventory_service.reserve(
+                checkout_data['items'],
+                idempotency_key=f"{idempotency_key}_inventory"
+            )
+            saga_state['steps_completed'].append({
+                'name': 'inventory',
+                'data': reservation,
+                'compensate': lambda: self.inventory_service.release(reservation['id'])
+            })
+            
+            # Step 2: Charge payment (compensable)
+            payment = self.payment_service.charge(
+                checkout_data['amount'],
+                idempotency_key=f"{idempotency_key}_payment"
+            )
+            saga_state['steps_completed'].append({
+                'name': 'payment',
+                'data': payment,
+                'compensate': lambda: self.payment_service.refund(payment['id'])
+            })
+            
+            # Step 3: Create order (compensable)
+            order = self.order_service.create(
+                checkout_data,
+                idempotency_key=f"{idempotency_key}_order"
+            )
+            saga_state['steps_completed'].append({
+                'name': 'order',
+                'data': order,
+                'compensate': lambda: self.order_service.cancel(order['id'])
+            })
+            
+            # Step 4: Create shipment (NOT compensable - put last)
+            shipment = self.shipping_service.create(
+                order['id'],
+                idempotency_key=f"{idempotency_key}_shipment"
+            )
+            # No compensation - cannot undo physical shipment
+            
+            result = {
+                'status': 'success',
+                'order_id': order['id'],
+                'shipment_id': shipment['id']
+            }
+            
+            # Cache result
+            self._cache_result(idempotency_key, result)
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Saga failed: {e}")
+            
+            # Compensate in reverse order
+            self._compensate(saga_state)
+            
+            return {
+                'status': 'failed',
+                'error': str(e)
+            }
+    
+    def _compensate(self, saga_state):
+        # Reverse order
+        for step in reversed(saga_state['steps_completed']):
+            try:
+                logger.info(f"Compensating: {step['name']}")
+                step['compensate']()
+                logger.info(f"✓ Compensated: {step['name']}")
+            except Exception as e:
+                logger.error(f"Compensation failed: {step['name']} - {e}")
+                # Alert ops team
+                alert_ops_team({
+                    'saga_id': saga_state['checkout_id'],
+                    'step': step['name'],
+                    'error': str(e)
+                })
+</code></pre>
+<h2 id="key-takeaways">§§SEG103§§</h2>
+<p>§§SEG104§§</p>
+<pre><code>§§SEG105§§</code></pre>
+<p>§§SEG106§§</p>
+<pre><code>§§SEG107§§</code></pre>
+<p>§§SEG108§§</p>
+<pre><code>§§SEG109§§</code></pre>
+<p>§§SEG110§§</p>
+<pre><code>§§SEG111§§</code></pre>
+<p>§§SEG112§§</p>
+<pre><code>§§SEG113§§</code></pre>
+<p>§§SEG114§§</p>
+<pre><code>§§SEG115§§</code></pre>
+<p>§§SEG116§§</p>
+<pre><code>§§SEG117§§</code></pre>
+<p>§§SEG118§§</p>
+<p>§§SEG119§§</p>
+<ol>
+<li>§§SEG120§§</li>
+<li>§§SEG121§§</li>
+<li>§§SEG122§§</li>
+<li>§§SEG123§§</li>
+<li>§§SEG124§§</li>
+</ol>
+<p>§§SEG125§§</p>
+<p>§§SEG126§§</p></article>

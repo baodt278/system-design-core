@@ -1,0 +1,223 @@
+<article class="prose-ui"><h1 id="consensus--leader-election-distributed-agreement">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<h2 id="tại-sao-cần-consensus">§§SEG7§§</h2>
+<h3 id="the-fundamental-problem">§§SEG8§§</h3>
+<p>§§SEG9§§</p>
+<pre><code>§§SEG10§§</code></pre>
+<p>§§SEG11§§</p>
+<p>§§SEG12§§</p>
+<pre><code>§§SEG13§§</code></pre>
+<p>§§SEG14§§</p>
+<h3 id="real-world-scenarios-cần-consensus">§§SEG15§§</h3>
+<p>§§SEG16§§</p>
+<pre><code>§§SEG17§§</code></pre>
+<p>§§SEG18§§</p>
+<pre><code>§§SEG19§§</code></pre>
+<p>§§SEG20§§</p>
+<pre><code>§§SEG21§§</code></pre>
+<p>§§SEG22§§</p>
+<h2 id="distributed-agreement-problem">§§SEG23§§</h2>
+<h3 id="the-challenge">§§SEG24§§</h3>
+<p>§§SEG25§§</p>
+<pre><code>§§SEG26§§</code></pre>
+<h3 id="example-coordinating-3-servers">§§SEG27§§</h3>
+<pre><code>§§SEG28§§</code></pre>
+<p>§§SEG29§§</p>
+<pre><code>§§SEG30§§</code></pre>
+<p>§§SEG31§§</p>
+<h3 id="requirements-for-consensus">§§SEG32§§</h3>
+<p>§§SEG33§§</p>
+<pre><code>§§SEG34§§</code></pre>
+<h2 id="raft-consensus-algorithm-dễ-hiểu">§§SEG35§§</h2>
+<h3 id="why-raft">§§SEG36§§</h3>
+<p>§§SEG37§§</p>
+<p>§§SEG38§§</p>
+<p>§§SEG39§§</p>
+<h3 id="raft-core-ideas">§§SEG40§§</h3>
+<p>§§SEG41§§</p>
+<pre><code>§§SEG42§§</code></pre>
+<p>§§SEG43§§</p>
+<h3 id="server-states-trong-raft">§§SEG44§§</h3>
+<p>§§SEG45§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG46§§</code></pre>
+<p>§§SEG47§§</p>
+<p>§§SEG48§§</p>
+<ul>
+<li>§§SEG49§§</li>
+<li>§§SEG50§§</li>
+<li>§§SEG51§§</li>
+<li>§§SEG52§§</li>
+</ul>
+<p>§§SEG53§§</p>
+<ul>
+<li>§§SEG54§§</li>
+<li>§§SEG55§§</li>
+<li>§§SEG56§§</li>
+</ul>
+<p>§§SEG57§§</p>
+<ul>
+<li>§§SEG58§§</li>
+<li>§§SEG59§§</li>
+<li>§§SEG60§§</li>
+</ul>
+<h2 id="leader-election-step-by-step">§§SEG61§§</h2>
+<h3 id="normal-operation">§§SEG62§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG63§§</code></pre>
+<p>§§SEG64§§</p>
+<p>§§SEG65§§</p>
+<pre><code>§§SEG66§§</code></pre>
+<h3 id="leader-failure--election">§§SEG67§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG68§§</code></pre>
+<p>§§SEG69§§</p>
+<p>§§SEG70§§</p>
+<p>§§SEG71§§</p>
+<pre><code>§§SEG72§§</code></pre>
+<p>§§SEG73§§</p>
+<pre><code>§§SEG74§§</code></pre>
+<p>§§SEG75§§</p>
+<pre><code>§§SEG76§§</code></pre>
+<p>§§SEG77§§</p>
+<pre><code>§§SEG78§§</code></pre>
+<h3 id="election-timeout-critical-design">§§SEG79§§</h3>
+<p>§§SEG80§§</p>
+<pre><code>§§SEG81§§</code></pre>
+<p>§§SEG82§§</p>
+<pre><code class="language-python"># Mỗi server có random timeout
+election_timeout = random(150ms, 300ms)
+
+# Server 1: 173ms
+# Server 2: 245ms  
+# Server 3: 198ms
+
+→ Server 1 timeout trước
+→ Start election trước
+→ Likely win before others timeout
+→ Avoid split votes
+</code></pre>
+<p>§§SEG83§§</p>
+<pre><code>§§SEG84§§</code></pre>
+<h2 id="majority-quorum-the-magic-number">§§SEG85§§</h2>
+<h3 id="why-majority">§§SEG86§§</h3>
+<p>§§SEG87§§</p>
+<p>§§SEG88§§</p>
+<h3 id="the-math">§§SEG89§§</h3>
+<pre><code>§§SEG90§§</code></pre>
+<h3 id="guarantee-chỉ-1-leader">§§SEG91§§</h3>
+<p>§§SEG92§§</p>
+<pre><code>§§SEG93§§</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG94§§</code></pre>
+<p>§§SEG95§§</p>
+<h3 id="overlap-property">§§SEG96§§</h3>
+<p>§§SEG97§§</p>
+<pre><code>§§SEG98§§</code></pre>
+<p>§§SEG99§§</p>
+<pre><code>§§SEG100§§</code></pre>
+<h3 id="why-odd-numbers">§§SEG101§§</h3>
+<pre><code>§§SEG102§§</code></pre>
+<p>§§SEG103§§</p>
+<pre><code>§§SEG104§§</code></pre>
+<h2 id="split-brain-problem">§§SEG105§§</h2>
+<h3 id="what-is-split-brain">§§SEG106§§</h3>
+<p>§§SEG107§§</p>
+<pre><code>§§SEG108§§</code></pre>
+<h3 id="how-split-brain-happens">§§SEG109§§</h3>
+<p>§§SEG110§§</p>
+<pre><code>§§SEG111§§</code></pre>
+<p>§§SEG112§§</p>
+<pre><code>§§SEG113§§</code></pre>
+<h3 id="how-raft-prevents-split-brain">§§SEG114§§</h3>
+<p>§§SEG115§§</p>
+<pre><code>§§SEG116§§</code></pre>
+<p>§§SEG117§§</p>
+<pre><code>§§SEG118§§</code></pre>
+<p>§§SEG119§§</p>
+<pre><code>§§SEG120§§</code></pre>
+<h3 id="split-brain-recovery">§§SEG121§§</h3>
+<p>§§SEG122§§</p>
+<pre><code>§§SEG123§§</code></pre>
+<h2 id="raft-leader-election-complete-example">§§SEG124§§</h2>
+<h3 id="initial-state">§§SEG125§§</h3>
+<pre><code>§§SEG126§§</code></pre>
+<pre><code>§§SEG127§§</code></pre>
+<h3 id="timeline">§§SEG128§§</h3>
+<p>§§SEG129§§</p>
+<pre><code>§§SEG130§§</code></pre>
+<p>§§SEG131§§</p>
+<pre><code>§§SEG132§§</code></pre>
+<p>§§SEG133§§</p>
+<pre><code>§§SEG134§§</code></pre>
+<p>§§SEG135§§</p>
+<pre><code>§§SEG136§§</code></pre>
+<p>§§SEG137§§</p>
+<pre><code>§§SEG138§§</code></pre>
+<p>§§SEG139§§</p>
+<pre><code>§§SEG140§§</code></pre>
+<h2 id="mental-model-distributed-agreement">§§SEG141§§</h2>
+<h3 id="core-principle">§§SEG142§§</h3>
+<p>§§SEG143§§</p>
+<pre><code>§§SEG144§§</code></pre>
+<h3 id="design-implications">§§SEG145§§</h3>
+<p>§§SEG146§§</p>
+<pre><code>§§SEG147§§</code></pre>
+<p>§§SEG148§§</p>
+<pre><code>§§SEG149§§</code></pre>
+<p>§§SEG150§§</p>
+<pre><code>§§SEG151§§</code></pre>
+<h3 id="when-to-use-consensus">§§SEG152§§</h3>
+<p>§§SEG153§§</p>
+<pre><code>§§SEG154§§</code></pre>
+<p>§§SEG155§§</p>
+<pre><code>§§SEG156§§</code></pre>
+<h3 id="systems-using-consensus">§§SEG157§§</h3>
+<p>§§SEG158§§</p>
+<pre><code>§§SEG159§§</code></pre>
+<p>§§SEG160§§</p>
+<pre><code>§§SEG161§§</code></pre>
+<p>§§SEG162§§</p>
+<pre><code>§§SEG163§§</code></pre>
+<p>§§SEG164§§</p>
+<pre><code>§§SEG165§§</code></pre>
+<h2 id="common-mistakes--how-to-avoid">§§SEG166§§</h2>
+<h3 id="mistake-1-không-dùng-majority-quorum">§§SEG167§§</h3>
+<pre><code>§§SEG168§§</code></pre>
+<h3 id="mistake-2-forget-về-split-brain">§§SEG169§§</h3>
+<pre><code>§§SEG170§§</code></pre>
+<h3 id="mistake-3-even-số-servers">§§SEG171§§</h3>
+<pre><code>§§SEG172§§</code></pre>
+<h3 id="mistake-4-không-hiểu-consistency-trade-off">§§SEG173§§</h3>
+<pre><code>§§SEG174§§</code></pre>
+<h2 id="key-takeaways">§§SEG175§§</h2>
+<p>§§SEG176§§</p>
+<pre><code>§§SEG177§§</code></pre>
+<p>§§SEG178§§</p>
+<pre><code>§§SEG179§§</code></pre>
+<p>§§SEG180§§</p>
+<pre><code>§§SEG181§§</code></pre>
+<p>§§SEG182§§</p>
+<pre><code>§§SEG183§§</code></pre>
+<p>§§SEG184§§</p>
+<pre><code>§§SEG185§§</code></pre>
+<p>§§SEG186§§</p>
+<blockquote>
+<p>§§SEG187§§</p>
+</blockquote>
+<p>§§SEG188§§</p>
+<p>§§SEG189§§</p>
+<ol>
+<li>§§SEG190§§</li>
+<li>§§SEG191§§</li>
+<li>§§SEG192§§</li>
+<li>§§SEG193§§</li>
+</ol>
+<p>§§SEG194§§</p>
+<p>§§SEG195§§</p>
+<blockquote>
+<p>§§SEG196§§</p>
+</blockquote>
+<p>§§SEG197§§</p>
+<p>§§SEG198§§</p></article>

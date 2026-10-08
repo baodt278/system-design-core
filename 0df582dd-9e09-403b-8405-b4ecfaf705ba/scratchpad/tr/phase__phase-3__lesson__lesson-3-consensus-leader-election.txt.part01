@@ -1,0 +1,398 @@
+@0
+⟦Đồng Thuận|Consensus⟧ & ⟦Bầu Chọn Nút Chủ|Leader Election⟧: Thỏa Thuận Trong ⟦Hệ Thống Phân Tán|Distributed Agreement⟧
+@1
+Tôi còn nhớ lần đầu tiên ⟦gỡ lỗi|debug⟧ một ⟦lỗi|bug⟧ ⟦não phân đôi|split brain⟧.
+@2
+Một hệ thống ⟦môi trường thực tế|production⟧ với 5 ⟦máy chủ|servers⟧. Mạng bị ⟦phân vùng|partition⟧. Hình thành 2 nhóm máy chủ: Nhóm A (3 máy chủ) và Nhóm B (2 máy chủ).
+@3
+Cả hai nhóm đều nghĩ mình là ⟦nút chủ|leader⟧. Cả hai đều nhận ⟦thao tác ghi|writes⟧. Dữ liệu xung đột khắp nơi.
+@4
+Khôi phục mất 2 ngày. ⟦Đối soát dữ liệu|Data reconciliation⟧ mất 1 tuần.
+@5
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ nói: *"Em chưa hiểu ⟦đồng thuận|consensus⟧. ⟦Hệ thống phân tán|Distributed systems⟧ phải THỐNG NHẤT trước khi HÀNH ĐỘNG."*
+@6
+Đó là bài học đắt giá về các ⟦thuật toán đồng thuận|consensus algorithms⟧.
+@7
+Tại Sao Cần ⟦Đồng Thuận|Consensus⟧?
+@8
+Vấn Đề Cốt Lõi
+@9
+**Hệ thống một ⟦máy chủ|server⟧: Đơn giản**
+@10
+Máy khách → Máy chủ (ra quyết định) → Thực thi
+
+@11
+Chỉ có 1 bên ra quyết định. Không có bất đồng.
+@12
+**⟦Hệ thống phân tán|Distributed system⟧: Phức tạp**
+@13
+Máy khách → Máy chủ 1 (nghĩ mình là nút chủ)
+      → Máy chủ 2 (nghĩ mình là nút chủ)
+      → Máy chủ 3 (nghĩ mình là nút chủ)
+
+Ai quyết định? Ai là nút chủ?
+
+@14
+Nếu không có ⟦cơ chế thỏa thuận|agreement mechanism⟧ → Hỗn loạn.
+@15
+Các Kịch Bản Thực Tế Cần ⟦Đồng Thuận|Consensus⟧
+@16
+**Kịch bản 1: ⟦Bầu Chọn Máy Chủ Chính|Master Election⟧ Cho ⟦Cơ Sở Dữ Liệu|Database⟧**
+@17
+Cơ sở dữ liệu chính (master) chết
+→ Cần bầu master mới từ các bản sao (replica)
+→ Tất cả bản sao phải thống nhất master mới là ai
+→ Không được có 2 master (não phân đôi - split brain)
+
+@18
+**Kịch bản 2: ⟦Khóa Phân Tán|Distributed Lock⟧**
+@19
+2 dịch vụ cần truy cập cùng một tài nguyên
+→ Chỉ 1 dịch vụ được phép truy cập tại 1 thời điểm
+→ Cần thống nhất ai đang giữ khóa (lock)
+→ Không được để cả 2 đều nghĩ mình có khóa
+
+@20
+**Kịch bản 3: ⟦Quản Lý Cấu Hình|Configuration Management⟧**
+@21
+Cập nhật cấu hình trong cụm (cluster)
+→ Tất cả các nút phải thấy cùng một cấu hình
+→ Không được có cấu hình thiếu nhất quán
+→ Cần đồng thuận trên các bản cập nhật cấu hình
+
+@22
+**Điểm mấu chốt:** ⟦Hệ thống phân tán|Distributed systems⟧ cần một cơ chế để **thống nhất về ⟦trạng thái|state⟧** trước khi hành động.
+@23
+Bài Toán ⟦Thỏa Thuận Phân Tán|Distributed Agreement Problem⟧
+@24
+Thách Thức
+@25
+Trong ⟦hệ thống phân tán|distributed system⟧ với mạng không đáng tin cậy:
+@26
+Các vấn đề:
+- Thông điệp có thể bị mất
+- Thông điệp có thể bị trễ
+- Máy chủ có thể sập
+- Mạng có thể bị phân vùng
+
+Câu hỏi: Làm sao để tất cả máy chủ thống nhất?
+
+@27
+Ví Dụ: Điều Phối 3 ⟦Máy Chủ|Servers⟧
+@28
+Mục tiêu: Quyết định giá trị cho biến X
+
+Máy chủ 1 đề xuất: X = 10
+Máy chủ 2 đề xuất: X = 20
+Máy chủ 3 đề xuất: X = 10
+
+Làm sao để tất cả thống nhất trên 1 giá trị?
+
+@29
+**Cách tiếp cận ngây thơ (KHÔNG HOẠT ĐỘNG):**
+@30
+1. Máy chủ 1 phát tin: "X = 10"
+2. Chờ phản hồi từ tất cả máy chủ
+3. Nếu đa số đồng ý → Commit (xác nhận)
+
+Vấn đề:
+- Máy chủ 2 sập trước khi phản hồi
+- Máy chủ 1 không biết: Máy chủ 2 chết hay mạng chậm?
+- Chờ mãi mãi? Bỏ cuộc sau bao lâu?
+
+@31
+**Cần một ⟦thuật toán đồng thuận|consensus algorithm⟧ để giải quyết vấn đề này.**
+@32
+Các Yêu Cầu Của ⟦Đồng Thuận|Consensus⟧
+@33
+Một ⟦thuật toán đồng thuận|consensus algorithm⟧ phải đảm bảo:
+@34
+1. Thống nhất (Agreement): Tất cả máy chủ hoạt động đúng quyết định cùng một giá trị
+
+2. Hợp lệ (Validity): Nếu máy chủ quyết định giá trị V,
+   thì V phải được đề xuất bởi một máy chủ nào đó
+
+3. Kết thúc (Termination): Tất cả máy chủ hoạt động đúng cuối cùng đều ra quyết định
+
+4. Chịu lỗi (Fault tolerance): Vẫn hoạt động ngay cả khi một số máy chủ gặp sự cố
+
+@35
+Raft: ⟦Thuật Toán Đồng Thuận|Consensus Algorithm⟧ Dễ Hiểu
+@36
+Tại Sao Là Raft?
+@37
+Trước Raft có Paxos (1989). Paxos nổi tiếng là cực kỳ khó hiểu.
+@38
+Raft (2014) được thiết kế với mục tiêu: **Dễ hiểu**.
+@39
+Tôi khuyên bạn học Raft trước. Nó đủ để hiểu những nền tảng của ⟦đồng thuận|consensus⟧.
+@40
+Các Ý Tưởng Cốt Lõi Của Raft
+@41
+Raft chia bài toán thành 3 bài toán con:
+@42
+1. Bầu chọn nút chủ (Leader Election): Chọn 1 máy chủ làm nút chủ
+2. Nhân bản log (Log Replication): Nút chủ nhân bản các lệnh đến các nút theo (follower)
+3. An toàn (Safety): Đảm bảo tính nhất quán khi có sự cố
+
+@43
+Chúng ta tập trung vào ⟦Bầu Chọn Nút Chủ|Leader Election⟧ (quan trọng nhất).
+@44
+Các ⟦Trạng Thái|States⟧ Của ⟦Máy Chủ|Server⟧ Trong Raft
+@45
+Mỗi máy chủ có thể ở 1 trong 3 ⟦trạng thái|states⟧:
+@46
+stateDiagram-v2
+    [*] --> Follower
+    Follower --> Candidate: Hết thời gian chờ bầu chọn
+    Candidate --> Leader: Nhận đa số phiếu
+    Candidate --> Follower: Phát hiện đã có nút chủ
+    Leader --> Follower: Phát hiện nhiệm kỳ cao hơn
+    Follower --> Follower: Nhận heartbeat
+@47
+*Ba ⟦trạng thái|states⟧ trong Raft: ⟦Nút theo|Follower⟧, ⟦Ứng viên|Candidate⟧ và ⟦Nút chủ|Leader⟧*
+@48
+**⟦Nút theo|Follower⟧:**
+@49
+Trạng thái thụ động
+@50
+Nhận và phản hồi các ⟦yêu cầu|requests⟧
+@51
+Không khởi tạo yêu cầu
+@52
+Hầu hết máy chủ ở trạng thái này
+@53
+**⟦Ứng viên|Candidate⟧:**
+@54
+Trạng thái chuyển tiếp
+@55
+Xin phiếu bầu từ các máy chủ khác
+@56
+Cố gắng trở thành ⟦nút chủ|leader⟧
+@57
+**⟦Nút chủ|Leader⟧:**
+@58
+Xử lý tất cả ⟦yêu cầu|requests⟧ từ ⟦máy khách|client⟧
+@59
+⟦Nhân bản|Replicate⟧ log đến các ⟦nút theo|followers⟧
+@60
+Chỉ có 1 nút chủ tại 1 thời điểm
+@61
+⟦Bầu Chọn Nút Chủ|Leader Election⟧: Từng Bước Một
+@62
+Hoạt Động Bình Thường
+@63
+sequenceDiagram
+    participant L as Leader
+    participant F1 as Follower 1
+    participant F2 as Follower 2
+    participant F3 as Follower 3
+
+    L->>F1: Heartbeat
+    L->>F2: Heartbeat
+    L->>F3: Heartbeat
+
+    Note over L,F3: Nút chủ gửi heartbeat<br/>định kỳ để duy trì quyền lãnh đạo
+@64
+*⟦Nút chủ|Leader⟧ gửi ⟦tín hiệu nhịp tim|heartbeats⟧ định kỳ để báo "tôi còn sống"*
+@65
+**Quy trình:**
+@66
+1. Nút chủ gửi thông điệp heartbeat (nhịp tim) định kỳ (mỗi 50-100ms)
+2. Các nút theo nhận heartbeat → Đặt lại bộ đếm thời gian bầu chọn
+3. Mọi người đều vui vẻ, hệ thống ổn định
+
+@67
+⟦Nút Chủ|Leader⟧ Gặp ⟦Sự Cố|Failure⟧ & Bầu Chọn
+@68
+sequenceDiagram
+    participant L as Leader (DEAD)
+    participant F1 as Follower 1
+    participant F2 as Follower 2
+    participant F3 as Follower 3
+
+    Note over L: Nút chủ sập
+
+    Note over F1: Hết thời gian chờ!<br/>Trở thành Candidate
+
+    F1->>F2: Xin phiếu bầu
+    F1->>F3: Xin phiếu bầu
+
+    F2->>F1: Đồng ý bỏ phiếu
+    F3->>F1: Đồng ý bỏ phiếu
+
+    Note over F1: Đã nhận đa số!<br/>Trở thành Leader
+
+    F1->>F2: Tôi là Leader (heartbeat)
+    F1->>F3: Tôi là Leader (heartbeat)
+@69
+*Khi ⟦nút chủ|leader⟧ chết, ⟦quá trình bầu chọn|election process⟧ bắt đầu*
+@70
+**Quy Trình Chi Tiết:**
+@71
+**Bước 1: ⟦Nút theo|Follower⟧ ⟦hết thời gian chờ|timeout⟧**
+@72
+Nút theo 1 không nhận được heartbeat trong 150-300ms (ngẫu nhiên)
+→ Cho rằng nút chủ đã chết
+→ Chuyển sang trạng thái Ứng viên (Candidate)
+→ Tăng số nhiệm kỳ (term++)
+→ Tự bỏ phiếu cho chính mình
+
+@73
+**Bước 2: Xin phiếu bầu**
+@74
+Ứng viên gửi các RPC RequestVote đến tất cả máy chủ:
+
+RequestVote {
+    term: 5,           // Nhiệm kỳ hiện tại
+    candidateId: 1,    // ID của tôi
+    lastLogIndex: 100, // Mục log cuối cùng của tôi
+    lastLogTerm: 4     // Nhiệm kỳ của mục log cuối cùng
+}
+
+@75
+**Bước 3: Các ⟦nút theo|followers⟧ bỏ phiếu**
+@76
+Nút theo nhận RequestVote:
+
+if request.term < my_term:
+    Từ chối (tôi biết nhiệm kỳ cao hơn)
+
+if already_voted_this_term:
+    Từ chối (đã bỏ phiếu rồi)
+
+if my_log_is_more_updated:
+    Từ chối (log của ứng viên đã lỗi thời)
+
+else:
+    Đồng ý bỏ phiếu
+    Cập nhật my_term = request.term
+
+@77
+**Bước 4: ⟦Ứng viên|Candidate⟧ đếm phiếu**
+@78
+Ứng viên thu thập phiếu bầu:
+
+if votes_received >= (num_servers / 2) + 1:
+    Trở thành LEADER
+    Gửi heartbeat đến tất cả máy chủ
+
+elif another_server_became_leader:
+    Trở thành FOLLOWER
+
+elif election_timeout:
+    Bắt đầu cuộc bầu chọn mới (tăng nhiệm kỳ, thử lại)
+
+@79
+⟦Thời Gian Chờ Bầu Chọn|Election Timeout⟧: Thiết Kế Then Chốt
+@80
+**Vấn đề:** Nếu 2 ⟦ứng viên|candidates⟧ bắt đầu bầu chọn cùng lúc thì sao?
+@81
+Ứng viên 1 và Ứng viên 2 cùng xin phiếu bầu
+→ Mỗi ứng viên nhận 2 phiếu (bao gồm phiếu của chính mình)
+→ Không ai có đa số
+→ Chia phiếu (split vote)!
+
+@82
+**Giải pháp: ⟦Thời gian chờ bầu chọn ngẫu nhiên|Randomized election timeouts⟧**
+@83
+**Xác suất:**
+@84
+Với thời gian chờ ngẫu nhiên:
+- Hơn 90% cuộc bầu chọn chọn được nút chủ trong 1 vòng
+- Hiếm khi chia phiếu
+- Hệ thống hội tụ nhanh
+
+@85
+⟦Túc Số Đa Số|Majority Quorum⟧: Con Số Kỳ Diệu
+@86
+Tại Sao Là Đa Số?
+@87
+**Câu hỏi then chốt:** Tại sao cần đa số phiếu? Tại sao không phải nhất trí (tất cả)?
+@88
+**Trả lời:** Đa số đảm bảo an toàn.
+@89
+Phần Toán Học
+@90
+Tổng số máy chủ: N
+Đa số: floor(N/2) + 1
+
+Ví dụ:
+N = 3 → Đa số = 2
+N = 5 → Đa số = 3
+N = 7 → Đa số = 4
+
+@91
+Đảm Bảo: Chỉ Có 1 ⟦Nút Chủ|Leader⟧
+@92
+**Kịch bản: ⟦Phân vùng mạng|Network partition⟧**
+@93
+Tổng cộng: 5 máy chủ
+Bị phân vùng thành 2 nhóm:
+
+Nhóm A: 3 máy chủ (đa số!)
+Nhóm B: 2 máy chủ (thiểu số)
+
+Nhóm A có thể bầu nút chủ (3 phiếu >= 3 cần thiết)
+Nhóm B KHÔNG thể bầu nút chủ (2 phiếu < 3 cần thiết)
+
+→ Chỉ có 1 nút chủ!
+
+@94
+graph TB
+    subgraph "Nhóm A (3 máy chủ)"
+        A1[Máy chủ 1]
+        A2[Máy chủ 2]
+        A3[Máy chủ 3]
+        A1 -.->|Bỏ phiếu| A2
+        A2 -.->|Bỏ phiếu| A1
+        A3 -.->|Bỏ phiếu| A1
+    end
+
+    subgraph "Nhóm B (2 máy chủ)"
+        B1[Máy chủ 4]
+        B2[Máy chủ 5]
+        B1 -.->|Bỏ phiếu| B2
+        B2 -.->|Bỏ phiếu| B1
+    end
+
+    style A1 fill:#51cf66
+    style B1 fill:#ff6b6b
+    style B2 fill:#ff6b6b
+@95
+*Nhóm A có đa số, bầu được ⟦nút chủ|leader⟧. Nhóm B không đủ phiếu.*
+@96
+Tính Chất Giao Nhau
+@97
+**Nhận định then chốt:**
+@98
+Bất kỳ 2 túc số đa số (majority quorum) nào cũng PHẢI giao nhau
+
+N = 5, Đa số = 3
+
+Túc số 1: {Máy chủ 1, Máy chủ 2, Máy chủ 3}
+Túc số 2: {Máy chủ 2, Máy chủ 4, Máy chủ 5}
+
+Giao nhau: Máy chủ 2
+
+→ Không thể có 2 nhóm đa số tách rời nhau
+→ Không thể có 2 nút chủ trong cùng nhiệm kỳ
+
+@99
+**Chứng minh:**
+@100
+N máy chủ
+Đa số = floor(N/2) + 1
+
+2 nhóm đa số:
+Túc số A: >= floor(N/2) + 1 máy chủ
+Túc số B: >= floor(N/2) + 1 máy chủ
+
+Tổng nếu tách rời:
+>= 2 * (floor(N/2) + 1)
+>= N + 2
+
+Nhưng chỉ có N máy chủ!
+→ Mâu thuẫn
+→ Phải giao nhau
+

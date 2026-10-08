@@ -1,0 +1,362 @@
+@102
+Tư Duy Thiết Kế (Phỏng Vấn, Lên Kế Hoạch)
+@103
+**Trọng tâm: Các quyết định ⟦kiến trúc|architecture⟧, ⟦đánh đổi|trade-offs⟧, lý giải**
+@104
+Các câu hỏi cần trả lời:
+- Cần những thành phần nào?
+- Chúng tương tác với nhau ra sao?
+- Điểm nghẽn nằm ở đâu?
+- Cái gì có thể hỏng và xử lý thế nào?
+- Mỗi lựa chọn có những đánh đổi gì?
+- Hệ thống mở rộng ra sao?
+
+Đầu ra:
+- Sơ đồ kiến trúc
+- Trách nhiệm của từng thành phần
+- Hợp đồng API
+- Mô hình dữ liệu (mức tổng quan)
+- Phân tích đánh đổi
+
+@105
+**Ví dụ hội thoại:**
+@106
+Người phỏng vấn: "Thiết kế Twitter"
+
+Bạn (tư duy thiết kế):
+"Tôi xin bắt đầu với các yêu cầu...
+- 500 triệu người dùng mỗi ngày
+- 200 triệu tweet mỗi ngày
+- Thiên về đọc (95% là đọc)
+
+Kiến trúc:
+- Dịch vụ phân phát (fan-out) để phân phối tweet
+- Bộ nhớ đệm dòng thời gian trong Redis
+- CDN cho nội dung đa phương tiện
+- PostgreSQL phân mảnh để lưu trữ lâu dài
+
+Đánh đổi then chốt: Fan-out khi ghi và fan-out khi đọc
+- Với người dùng bình thường: Fan-out khi ghi (tính trước dòng thời gian)
+- Với người nổi tiếng: Fan-out khi đọc (quá nhiều người theo dõi)
+- Cách tiếp cận kết hợp cân bằng hiệu năng ghi và đọc
+
+Điểm nghẽn:
+- Tạo dòng thời gian trong quá trình fan-out
+- Phân phối nội dung đa phương tiện
+- Vấn đề người nổi tiếng "nóng"
+
+Xử lý sự cố:
+- Hàng đợi cho fan-out (nếu dịch vụ sập thì thử lại)
+- Xử lý bất đồng bộ (nhất quán cuối cùng là được)
+- Bộ ngắt mạch cho các dịch vụ bên ngoài
+"
+
+@107
+Tư Duy Hiện Thực Hoá (Xây Dựng)
+@108
+**Trọng tâm: Mã nguồn, thuật toán, công nghệ cụ thể**
+@109
+Các câu hỏi cần trả lời:
+- Dùng framework nào?
+- Tổ chức mã ra sao?
+- Dùng thư viện nào?
+- Xử lý các trường hợp biên thế nào?
+- Kiểm thử thế nào?
+- Triển khai thế nào?
+
+Đầu ra:
+- Mã chạy được
+- Kiểm thử đơn vị
+- Kiểm thử tích hợp
+- Script triển khai
+- Tài liệu
+
+@110
+**Ví dụ:**
+@111
+Cân Bằng Cả Hai
+@112
+**Kỹ sư giỏi biết cân bằng giữa tư duy thiết kế và tư duy hiện thực hoá:**
+@113
+Giai đoạn thiết kế:
+- Nghĩ ở mức tổng quan
+- Tập trung vào kiến trúc
+- Lý giải các đánh đổi
+- Đừng sa lầy vào chi tiết hiện thực hoá
+
+Giai đoạn hiện thực hoá:
+- Nghĩ ở mức chi tiết
+- Tập trung vào chất lượng mã
+- Xử lý các trường hợp biên
+- Giữ vững tầm nhìn kiến trúc
+
+Đừng trộn lẫn các giai đoạn:
+Phỏng vấn thiết kế: "Tôi sẽ dùng FastAPI với async/await..."
+   → Quá thiên về hiện thực hoá
+
+Lúc viết mã: "Để tôi thiết kế lại toàn bộ kiến trúc..."
+   → Sai thời điểm
+
+Thiết kế: Tập trung vào cái gì và tại sao
+Hiện thực hoá: Tập trung vào làm thế nào
+
+@114
+⟦Khung Tư Duy|Framework⟧ Hoàn Chỉnh: Kết Hợp Tất Cả Lại
+@115
+**Khi tiếp cận một bài toán ⟦thiết kế hệ thống|system design⟧:**
+@116
+⟦Khung Tư Duy|Framework⟧ Từng Bước
+@117
+1. LÀM RÕ (5 phút)
+   ├─ Yêu cầu chức năng
+   ├─ Yêu cầu phi chức năng
+   ├─ Quy mô (người dùng, lưu lượng, dữ liệu)
+   └─ Ràng buộc (ngân sách, thời hạn, nhóm)
+
+2. ƯỚC LƯỢNG (5 phút)
+   ├─ Các phép ước tính nhanh
+   ├─ Tỷ lệ đọc/ghi
+   ├─ Nhu cầu lưu trữ
+   └─ Nhu cầu băng thông
+
+3. THIẾT KẾ TỔNG QUAN (10 phút)
+   ├─ Vẽ các thành phần chính
+   ├─ Thể hiện luồng dữ liệu
+   ├─ Xác định đường đi then chốt
+   └─ Nêu rõ các quyết định quan trọng
+
+4. ĐI SÂU (15 phút)
+   ├─ Thiết kế API
+   ├─ Mô hình dữ liệu
+   ├─ Chi tiết thuật toán
+   ├─ Chiến lược lưu đệm
+   └─ Cách tiếp cận mở rộng
+
+5. ĐÁNH ĐỔI (10 phút)
+   ├─ Thảo luận các phương án khác
+   ├─ Lý giải các lựa chọn
+   ├─ Nêu các đánh đổi
+   └─ Xử lý các trường hợp biên
+
+6. TỔNG KẾT (5 phút)
+   ├─ Điểm nghẽn & giải pháp
+   ├─ Các kịch bản sự cố
+   ├─ Chiến lược giám sát
+   └─ Cải tiến trong tương lai
+
+@118
+Danh Sách Kiểm Tra Trong Đầu
+@119
+**Trước khi chốt thiết kế, hãy kiểm tra:**
+@120
+☑ Yêu cầu đã rõ ràng?
+☑ Đã xác định ràng buộc?
+☑ Đã tính toán quy mô?
+☑ Đã biết tỷ lệ đọc/ghi?
+☑ Đã xác định điểm nghẽn?
+☑ Đã xem xét các kiểu sự cố?
+☑ Các đánh đổi đã được lý giải?
+☑ Lộ trình mở rộng đã rõ ràng?
+☑ Đã có kế hoạch giám sát?
+☑ Đã ước lượng chi phí?
+
+@121
+Những Sai Lầm Thường Gặp Cần Tránh
+@122
+Nhảy ngay vào giải pháp
+   → Hãy làm rõ yêu cầu trước
+
+Thiết kế thừa cho một tương lai chưa biết
+   → Thiết kế cho quy mô gấp 2 lần, không phải 100 lần
+
+Bỏ qua ràng buộc
+   → Ngân sách, thời hạn, nhóm đều ảnh hưởng đến thiết kế
+
+Sao chép kiến trúc của các công ty công nghệ lớn
+   → Quy mô của họ ≠ quy mô của bạn
+
+Xem nhẹ các kịch bản sự cố
+   → Hệ thống sẽ hỏng, hãy lên kế hoạch cho điều đó
+
+Bỏ qua giám sát
+   → Không thể cải thiện thứ bạn không đo lường
+
+Hoàn hảo hay ra mắt được
+   → MVP trước, cải tiến sau
+
+@123
+Ứng Dụng Thực Tế
+@124
+**Ví dụ: Thiết kế một ứng dụng giống Instagram**
+@125
+Áp Dụng ⟦Khung Tư Duy|Framework⟧
+@126
+**1. Làm rõ ⟦yêu cầu|requirements⟧:**
+@127
+Chức năng:
+- Tải ảnh lên
+- Theo dõi người dùng khác
+- Xem bảng tin (ảnh từ những người mình theo dõi)
+- Thích, bình luận
+- Tìm kiếm người dùng
+
+Phi chức năng:
+- 100 triệu người dùng
+- 50 triệu người dùng hoạt động mỗi ngày
+- 10 triệu ảnh được tải lên/ngày
+- Thiên về đọc (xem:tải lên = 100:1)
+- Độ trễ: Bảng tin < 500ms
+- Tính sẵn sàng: 99,9%
+
+@128
+**2. ⟦Ước lượng|Estimate⟧:**
+@129
+Lưu trữ:
+- 10 triệu ảnh/ngày × trung bình 2MB = 20TB/ngày
+- 20TB × 365 = 7,3PB/năm
+→ Cần lưu trữ đối tượng (S3)
+
+Lưu lượng:
+- Tải lên: 10 triệu/ngày / 86400 giây ≈ 115 lượt tải lên/giây
+- Lượt xem: 115 × 100 = 11.500 lượt xem/giây
+→ Thiên về đọc, lưu đệm là then chốt
+
+Cơ sở dữ liệu:
+- 100 triệu người dùng × 500 byte = 50GB (bảng users)
+- 3,6 tỷ ảnh/năm × 200 byte siêu dữ liệu = 720GB/năm
+→ SQL vẫn xử lý được, phân mảnh sau 2-3 năm
+
+@130
+**3. Thiết kế tổng quan:**
+@131
+[Di động/Web]
+    ↓
+[CDN] (hình ảnh)
+    ↓
+[Bộ cân bằng tải]
+    ↓
+[Máy chủ API] (phi trạng thái)
+    ↓
+[Bộ nhớ đệm Redis] ← Dòng thời gian bảng tin
+    ↓
+[PostgreSQL] ← Siêu dữ liệu
+    ↓
+[S3] ← Lưu trữ ảnh
+
+@132
+**4. Các quyết định then chốt:**
+@133
+Lưu trữ ảnh: S3
+- Bền vững, dễ mở rộng
+- Tích hợp với CDN
+- Đánh đổi: Chi phí và độ tin cậy
+
+Tạo bảng tin: Fan-out khi ghi
+- Tính trước bảng tin
+- Đọc nhanh (< 50ms từ bộ nhớ đệm)
+- Đánh đổi: Khuếch đại ghi (write amplification)
+
+Lưu đệm: Dòng thời gian trong Redis
+- Lưu 1000 bài viết gần nhất cho mỗi người dùng
+- TTL: Không hết hạn (vô hiệu hoá chủ động)
+- Đánh đổi: Chi phí bộ nhớ và hiệu năng đọc
+
+Cơ sở dữ liệu: PostgreSQL có phân mảnh
+- Nhất quán mạnh cho dữ liệu quan trọng
+- Phân mảnh theo user_id sau 2 năm
+- Đánh đổi: Độ phức tạp và quy mô
+
+@134
+**5. Các ⟦đánh đổi|trade-offs⟧ đã thảo luận:**
+@135
+Fan-out khi ghi hay khi đọc:
+- Chọn khi ghi vì hệ thống thiên về đọc
+- Vấn đề người nổi tiếng: Chuyển sang kéo (pull) với tài khoản > 10 nghìn người theo dõi
+
+SQL hay NoSQL:
+- Chọn SQL vì tính nhất quán và quan hệ dữ liệu
+- Có thể thêm bản sao chỉ đọc, rồi phân mảnh
+
+Đồng bộ hay bất đồng bộ:
+- Tải ảnh lên: Đồng bộ (người dùng chờ)
+- Fan-out bảng tin: Bất đồng bộ (nhất quán cuối cùng là được)
+
+@136
+**6. Tổng kết:**
+@137
+Điểm nghẽn:
+- Tạo bảng tin (giải quyết bằng fan-out bất đồng bộ)
+- Phân phối ảnh (giải quyết bằng CDN)
+- Đọc cơ sở dữ liệu (giải quyết bằng lưu đệm)
+
+Giám sát:
+- Tỷ lệ tải lên thành công
+- Độ trễ tải bảng tin
+- Tỷ lệ trúng bộ nhớ đệm
+- Độ trễ fan-out
+
+Cải tiến trong tương lai:
+- Xếp hạng bảng tin bằng ML
+- Tính năng Stories
+- Video trực tiếp
+- Gợi ý nội dung
+
+@138
+Những Điểm Cốt Lõi
+@139
+**⟦Tư duy thiết kế hệ thống|System design thinking⟧ ≠ Biết ⟦mẫu thiết kế|patterns⟧**
+@140
+Mẫu thiết kế là công cụ.
+Tư duy là biết khi nào dùng công cụ nào.
+
+@141
+**Chuyển đổi tư duy:**
+@142
+Từ:  "Dùng công nghệ gì?"
+Sang: "Giải quyết vấn đề gì?"
+
+Từ:  "Thực hành tốt nhất"
+Sang: "Phù hợp nhất với bối cảnh"
+
+Từ:  "Sao chép công ty công nghệ lớn"
+Sang: "Thiết kế cho quy mô của mình"
+
+@143
+**⟦Khung tư duy|Framework⟧:**
+@144
+1. Yêu cầu trước tiên (luôn luôn)
+2. Ràng buộc định hình thiết kế
+3. Tính toán quy mô (con số rất quan trọng)
+4. Từ trên xuống khi lên kế hoạch
+5. Thiết kế cho gấp 2 lần, không phải 100 lần
+6. Lý giải mọi quyết định
+7. Đánh đổi quan trọng hơn sự hoàn hảo
+
+@145
+**Phép thử tối thượng:**
+@146
+Tư duy thiết kế tốt = Có thể giải thích "TẠI SAO" cho mọi quyết định
+
+Nếu bạn không giải thích được tại sao:
+- Tại sao chọn cơ sở dữ liệu này?
+- Tại sao chọn chiến lược lưu đệm này?
+- Tại sao chọn kiến trúc này?
+
+→ Bạn chưa hiểu chính thiết kế của mình
+→ Hãy quay lại và suy nghĩ sâu hơn
+
+@147
+**Hãy nhớ:**
+@148
+Kỹ sư mới vào nghề: Biết các mẫu thiết kế
+Kỹ sư trung cấp: Áp dụng các mẫu thiết kế
+Kỹ sư lâu năm: Biết khi nào KHÔNG áp dụng mẫu thiết kế
+
+Làm chủ thiết kế hệ thống = Tư duy, không phải học thuộc lòng
+
+@149
+Bạn đã học đủ các ⟦mẫu thiết kế|patterns⟧ qua 5 phần. Phần 6 là để mài giũa quá trình tư duy.
+@150
+**Hãy luyện tập ⟦khung tư duy|thinking framework⟧, không chỉ học thuộc ⟦mẫu thiết kế|patterns⟧.**
+@151
+Đó là điều phân biệt ⟦kỹ sư lâu năm|Senior Engineer⟧ với ⟦kỹ sư mới vào nghề|Junior Engineer⟧.

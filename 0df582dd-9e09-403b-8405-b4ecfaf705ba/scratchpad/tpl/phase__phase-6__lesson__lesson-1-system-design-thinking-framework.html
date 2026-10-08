@@ -1,0 +1,596 @@
+<article class="prose-ui"><h1 id="system-design-thinking-framework-từ-biết-pattern-đến-biết-tư-duy">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<p>§§SEG10§§</p>
+<p>§§SEG11§§</p>
+<p>§§SEG12§§</p>
+<h2 id="system-design-thinking-là-gì">§§SEG13§§</h2>
+<h3 id="định-nghĩa">§§SEG14§§</h3>
+<p>§§SEG15§§</p>
+<p>§§SEG16§§</p>
+<ul>
+<li>§§SEG17§§</li>
+<li>§§SEG18§§</li>
+<li>§§SEG19§§</li>
+</ul>
+<p>§§SEG20§§</p>
+<ul>
+<li>§§SEG21§§</li>
+<li>§§SEG22§§</li>
+<li>§§SEG23§§</li>
+<li>§§SEG24§§</li>
+</ul>
+<h3 id="ví-dụ-so-sánh">§§SEG25§§</h3>
+<p>§§SEG26§§</p>
+<pre><code>§§SEG27§§</code></pre>
+<p>§§SEG28§§</p>
+<pre><code>§§SEG29§§</code></pre>
+<p>§§SEG30§§</p>
+<p>§§SEG31§§</p>
+<p>§§SEG32§§</p>
+<h2 id="the-mental-shift-từ-what-tech-sang-what-problem">§§SEG33§§</h2>
+<h3 id="old-mindset-what-tech-to-use">§§SEG34§§</h3>
+<pre><code>§§SEG35§§</code></pre>
+<p>§§SEG36§§</p>
+<pre><code>§§SEG37§§</code></pre>
+<h3 id="new-mindset-what-problem-to-solve">§§SEG38§§</h3>
+<pre><code>§§SEG39§§</code></pre>
+<p>§§SEG40§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG41§§</code></pre>
+<p>§§SEG42§§</p>
+<h2 id="requirement-driven-design">§§SEG43§§</h2>
+<p>§§SEG44§§</p>
+<h3 id="functional-requirements">§§SEG45§§</h3>
+<p>§§SEG46§§</p>
+<pre><code class="language-python"># Example: URL Shortener
+
+Functional Requirements:
+1. Shorten URL
+   - Input: long URL
+   - Output: short URL
+   - Example: https://example.com/long-path → ex.co/abc123
+
+2. Redirect
+   - Input: short URL
+   - Output: redirect to original URL
+   - Must work consistently
+
+3. Custom aliases (optional)
+   - User can choose short code
+   - Example: ex.co/my-link
+
+4. Analytics (optional)
+   - Track clicks
+   - Show statistics
+
+5. Expiration (optional)
+   - URL expires after X days
+   - Auto-cleanup
+</code></pre>
+<p>§§SEG47§§</p>
+<pre><code>§§SEG48§§</code></pre>
+<h3 id="non-functional-requirements-critical">§§SEG49§§</h3>
+<p>§§SEG50§§</p>
+<pre><code class="language-python"># Non-Functional Requirements
+
+1. Scale
+   - Users: 1M, 10M, hay 100M?
+   - Requests: 100 req/s hay 100K req/s?
+   - Data: 1GB hay 10TB?
+   - Growth rate: 2x/year hay 10x/year?
+
+2. Performance
+   - Latency: &lt; 100ms? &lt; 1s?
+   - Throughput: 1K req/s? 1M req/s?
+   - Availability: 99%? 99.99%?
+
+3. Consistency
+   - Strong consistency needed?
+   - Eventual consistency OK?
+   - Tolerance for stale data?
+
+4. Durability
+   - Data loss acceptable? (NO for banking, maybe OK for analytics)
+   - Backup requirements?
+   - Recovery time objective (RTO)?
+
+5. Security
+   - Authentication needed?
+   - Authorization model?
+   - Data encryption?
+   - Rate limiting?
+
+6. Cost
+   - Budget constraints?
+   - Optimize for cost vs performance?
+</code></pre>
+<p>§§SEG51§§</p>
+<pre><code class="language-python"># Example: URL Shortener
+
+Given:
+- 100M URLs shortened per month
+- 10B redirects per month
+- 5 years retention
+
+Calculate:
+
+# Write traffic
+writes_per_second = 100M / (30 * 24 * 3600)
+                  ≈ 40 writes/second
+
+# Read traffic  
+reads_per_second = 10B / (30 * 24 * 3600)
+                 ≈ 4,000 reads/second
+
+# Read:Write ratio = 100:1
+→ Read-heavy system → Caching critical
+
+# Storage
+urls_total = 100M/month × 12 months × 5 years
+           = 6 billion URLs
+
+storage_per_url = 500 bytes (URL + metadata)
+total_storage = 6B × 500 bytes
+              = 3TB
+
+→ Single database can handle (scale vertically first)
+
+# Bandwidth
+write_bandwidth = 40 req/s × 500 bytes
+                = 20 KB/s (negligible)
+
+read_bandwidth = 4,000 req/s × 500 bytes  
+               = 2 MB/s (manageable)
+
+→ Network not bottleneck
+
+Conclusion:
+- Database: Start with single PostgreSQL
+- Caching: Critical (Redis for hot URLs)
+- CDN: Not needed (no static assets)
+- Sharding: Not needed yet (3TB manageable)
+</code></pre>
+<p>§§SEG52§§</p>
+<pre><code>§§SEG53§§</code></pre>
+<h2 id="constraint-first-thinking">§§SEG54§§</h2>
+<p>§§SEG55§§</p>
+<h3 id="types-of-constraints">§§SEG56§§</h3>
+<p>§§SEG57§§</p>
+<pre><code class="language-python"># Database constraints
+- Single database max: ~10K writes/second
+- PostgreSQL max connections: ~500
+- Redis max memory: Depends on instance (16GB typical)
+- Network latency: Speed of light (can't beat physics)
+
+# CAP theorem constraint
+- Can't have perfect Consistency + Availability với Partition tolerance
+- Must choose trade-off
+
+# Eventual consistency constraint
+- Distributed caches → replication lag
+- Async processing → delay
+</code></pre>
+<p>§§SEG58§§</p>
+<pre><code class="language-python"># Timeline
+- MVP in 1 month → Simple architecture
+- No deadline pressure → Can optimize
+
+# Budget
+- Limited ($1000/month) → Optimize for cost
+- Unlimited → Optimize for performance
+
+# Team
+- 2 developers → Choose simple stack
+- 20 developers → Can handle complexity
+
+# Compliance
+- GDPR → Data residency requirements
+- PCI DSS → Strict security requirements
+- HIPAA → Healthcare data protection
+</code></pre>
+<p>§§SEG59§§</p>
+<pre><code class="language-python"># Current scale
+- 1K users → Monolith OK
+- 1M users → Need horizontal scaling
+- 100M users → Need distributed architecture
+
+# Growth rate
+- Stable growth (2x/year) → Scale gradually
+- Hypergrowth (10x/year) → Plan for scale early
+
+# Traffic pattern
+- Uniform → Simple load balancing
+- Spiky (Black Friday) → Need burst capacity
+- Predictable → Can optimize
+- Unpredictable → Need flexibility
+</code></pre>
+<h3 id="constraint-analysis-framework">§§SEG60§§</h3>
+<pre><code class="language-python">def analyze_constraints(problem):
+    """Framework để identify constraints"""
+    
+    constraints = {
+        # Hard constraints (cannot violate)
+        'hard': [
+            'Budget: $5000/month maximum',
+            'Timeline: 3 months to launch',
+            'Availability: Must be 99.9%',
+            'Compliance: GDPR required'
+        ],
+        
+        # Soft constraints (prefer but flexible)
+        'soft': [
+            'Team familiar with Python',
+            'Prefer open-source solutions',
+            'Easy to maintain'
+        ],
+        
+        # Technical limits
+        'technical': [
+            'Database writes: &lt; 1000/second',
+            'Read latency: &lt; 200ms',
+            'Network: Public internet (not dedicated)'
+        ],
+        
+        # Scale limits
+        'scale': [
+            'Current: 10K users',
+            'Target: 100K users in 1 year',
+            'Data: Currently 100GB, growing 10GB/month'
+        ]
+    }
+    
+    return constraints
+
+# Design decisions từ constraints
+def make_decisions(constraints):
+    """Derive design từ constraints"""
+    
+    decisions = []
+    
+    # Budget constraint → Choose managed services
+    if constraints['hard']['budget'] &lt; 10000:
+        decisions.append('Use managed services (RDS, ElastiCache)')
+        decisions.append('Avoid self-managed Kubernetes')
+    
+    # Timeline constraint → Choose familiar tech
+    if constraints['hard']['timeline'] &lt; 6_months:
+        decisions.append('Use team\'s existing stack')
+        decisions.append('Avoid learning new paradigms')
+    
+    # Scale constraint → Start simple
+    if constraints['scale']['current'] &lt; 100K:
+        decisions.append('Monolith architecture')
+        decisions.append('Vertical scaling first')
+    
+    return decisions
+</code></pre>
+<p>§§SEG61§§</p>
+<pre><code>§§SEG62§§</code></pre>
+<h2 id="top-down-vs-bottom-up-design">§§SEG63§§</h2>
+<p>§§SEG64§§</p>
+<h3 id="top-down-design-recommended-for-interviews">§§SEG65§§</h3>
+<p>§§SEG66§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG67§§</code></pre>
+<p>§§SEG68§§</p>
+<p>§§SEG69§§</p>
+<pre><code class="language-python"># Step 1: High-level boxes
+"""
+[Client] → [Load Balancer] → [API Servers] → [Database]
+                                    ↓
+                                [Cache]
+"""
+
+# Step 2: Define components
+"""
+Load Balancer: Nginx
+API Servers: Python/FastAPI (stateless)
+Cache: Redis  
+Database: PostgreSQL
+"""
+
+# Step 3: Detail interactions
+"""
+Client:
+- HTTPS requests
+- JWT authentication
+- Rate limited
+
+API Servers:
+- RESTful endpoints
+- Horizontal scaling
+- Health checks
+
+Cache:
+- Store hot data
+- TTL: 5 minutes
+- Cache-aside pattern
+"""
+
+# Step 4: API design
+"""
+POST /shorten
+Body: {"url": "https://..."}
+Response: {"short_url": "ex.co/abc123"}
+
+GET /{shortCode}
+Response: 302 Redirect
+"""
+
+# Step 5: Data models
+"""
+CREATE TABLE urls (
+    id BIGSERIAL PRIMARY KEY,
+    short_code VARCHAR(10) UNIQUE,
+    original_url TEXT,
+    created_at TIMESTAMP,
+    expires_at TIMESTAMP
+);
+"""
+
+# Step 6: Deep dive critical parts
+"""
+Short code generation:
+- Base62 encoding (a-z, A-Z, 0-9)
+- 7 characters = 62^7 = 3.5 trillion combinations
+- Collision handling: retry với new code
+"""
+</code></pre>
+<p>§§SEG70§§</p>
+<pre><code>§§SEG71§§</code></pre>
+<p>§§SEG72§§</p>
+<pre><code>§§SEG73§§</code></pre>
+<h3 id="bottom-up-design-good-for-implementation">§§SEG74§§</h3>
+<p>§§SEG75§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG76§§</code></pre>
+<p>§§SEG77§§</p>
+<p>§§SEG78§§</p>
+<pre><code class="language-python"># Step 1: Core data model
+"""
+What data do we store?
+- URL mapping
+- Metadata
+- Analytics
+
+CREATE TABLE urls (...);
+"""
+
+# Step 2: Core logic
+"""
+How do we generate short codes?
+- Base62 encoding
+- Collision handling
+- Validation
+"""
+
+# Step 3: API layer
+"""
+What endpoints do we need?
+POST /shorten
+GET /{code}
+"""
+
+# Step 4: Caching
+"""
+Cache hot URLs
+Redis sorted set by access frequency
+"""
+
+# Step 5: Scaling
+"""
+Add load balancer
+Multiple API servers
+Database read replicas
+"""
+
+# Step 6: Monitoring
+"""
+Metrics: latency, error rate
+Alerts: high latency, failures
+Dashboards
+"""
+</code></pre>
+<p>§§SEG79§§</p>
+<pre><code>§§SEG80§§</code></pre>
+<p>§§SEG81§§</p>
+<pre><code>§§SEG82§§</code></pre>
+<h3 id="khi-nào-dùng-approach-nào">§§SEG83§§</h3>
+<pre><code>§§SEG84§§</code></pre>
+<p>§§SEG85§§</p>
+<pre><code>§§SEG86§§</code></pre>
+<h2 id="scalability-mindset">§§SEG87§§</h2>
+<p>§§SEG88§§</p>
+<p>§§SEG89§§</p>
+<h3 id="the-scalability-spectrum">§§SEG90§§</h3>
+<pre><code>§§SEG91§§</code></pre>
+<p>§§SEG92§§</p>
+<pre><code class="language-python">def choose_architecture(current_scale, target_scale, timeline):
+    """Choose architecture dựa trên scale"""
+    
+    if current_scale &lt; 10_000 and target_scale &lt; 100_000:
+        return {
+            'architecture': 'Monolith',
+            'database': 'Single PostgreSQL',
+            'cache': 'Redis (optional)',
+            'reasoning': 'Simple, ship fast, iterate'
+        }
+    
+    elif current_scale &lt; 1_000_000 and target_scale &lt; 10_000_000:
+        return {
+            'architecture': 'Modular Monolith',
+            'database': 'PostgreSQL with read replicas',
+            'cache': 'Redis cluster',
+            'reasoning': 'Balance simplicity with scalability'
+        }
+    
+    else:  # &gt; 10M users
+        return {
+            'architecture': 'Microservices',
+            'database': 'Sharded PostgreSQL or NoSQL',
+            'cache': 'Distributed Redis',
+            'messaging': 'Kafka for async',
+            'reasoning': 'Need independent scaling, team autonomy'
+        }
+</code></pre>
+<h3 id="design-for-scalability-without-over-engineering">§§SEG93§§</h3>
+<p>§§SEG94§§</p>
+<p>§§SEG95§§</p>
+<pre><code class="language-python"># Bad: Stateful
+sessions = {}  # In-memory state
+
+def handle_request(user_id):
+    session = sessions[user_id]  # Tied to this server
+    # ...
+
+# Good: Stateless
+def handle_request(user_id, session_token):
+    session = redis.get(f"session:{session_token}")  # Any server can handle
+    # ...
+</code></pre>
+<p>§§SEG96§§</p>
+<pre><code class="language-sql">-- Don't wait until slow to add indexes
+
+-- Add early
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_posts_created_at ON posts(created_at);
+CREATE INDEX idx_posts_user_id ON posts(user_id);
+
+-- Small cost now, huge benefit later
+</code></pre>
+<p>§§SEG97§§</p>
+<pre><code class="language-python"># Track metrics early
+metrics.increment('api.requests')
+metrics.timing('api.latency', duration)
+metrics.gauge('active_users', count)
+
+# When scale issues hit, you have data
+# Without metrics = flying blind
+</code></pre>
+<p>§§SEG98§§</p>
+<pre><code class="language-python"># Long tasks → Async
+
+# Synchronous
+def create_user(email):
+    user = db.create(email)
+    send_welcome_email(email)  # Block 5 seconds
+    generate_thumbnail(user)    # Block 10 seconds
+    return user  # User waits 15 seconds
+
+# Asynchronous
+def create_user(email):
+    user = db.create(email)
+    queue.publish('user.created', user.id)  # Fire and forget
+    return user  # User waits 100ms
+
+# Workers handle async
+@worker.task
+def on_user_created(user_id):
+    send_welcome_email(user_id)
+    generate_thumbnail(user_id)
+</code></pre>
+<p>§§SEG99§§</p>
+<pre><code class="language-python"># Even trong monolith, structure well
+
+# Bad: Everything in one file
+# app.py (5000 lines)
+
+# Good: Clear boundaries
+/services
+  /user_service.py
+  /post_service.py
+  /notification_service.py
+/models
+/api
+
+# Khi cần split to microservices, boundaries already clear
+</code></pre>
+<h2 id="design-vs-implementation-thinking">§§SEG100§§</h2>
+<p>§§SEG101§§</p>
+<h3 id="design-thinking-interviews-planning">§§SEG102§§</h3>
+<p>§§SEG103§§</p>
+<pre><code>§§SEG104§§</code></pre>
+<p>§§SEG105§§</p>
+<pre><code>§§SEG106§§</code></pre>
+<h3 id="implementation-thinking-building">§§SEG107§§</h3>
+<p>§§SEG108§§</p>
+<pre><code>§§SEG109§§</code></pre>
+<p>§§SEG110§§</p>
+<pre><code class="language-python"># Implementation details
+
+# Short code generation algorithm
+def generate_short_code(url_id):
+    """Convert numeric ID to base62 string"""
+    BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    
+    if url_id == 0:
+        return BASE62[0]
+    
+    result = []
+    while url_id &gt; 0:
+        result.append(BASE62[url_id % 62])
+        url_id //= 62
+    
+    return ''.join(reversed(result))
+
+# Collision handling
+def create_short_url(long_url, max_retries=3):
+    for attempt in range(max_retries):
+        url_id = get_next_id()
+        short_code = generate_short_code(url_id)
+        
+        try:
+            db.insert(short_code, long_url)
+            return short_code
+        except UniqueViolation:
+            # Collision, retry
+            continue
+    
+    raise Exception("Failed to generate unique short code")
+</code></pre>
+<h3 id="balance-both">§§SEG111§§</h3>
+<p>§§SEG112§§</p>
+<pre><code>§§SEG113§§</code></pre>
+<h2 id="the-complete-framework-putting-it-all-together">§§SEG114§§</h2>
+<p>§§SEG115§§</p>
+<h3 id="step-by-step-framework">§§SEG116§§</h3>
+<pre><code>§§SEG117§§</code></pre>
+<h3 id="mental-checklist">§§SEG118§§</h3>
+<p>§§SEG119§§</p>
+<pre><code>§§SEG120§§</code></pre>
+<h3 id="common-mistakes-to-avoid">§§SEG121§§</h3>
+<pre><code>§§SEG122§§</code></pre>
+<h2 id="real-world-application">§§SEG123§§</h2>
+<p>§§SEG124§§</p>
+<h3 id="apply-framework">§§SEG125§§</h3>
+<p>§§SEG126§§</p>
+<pre><code>§§SEG127§§</code></pre>
+<p>§§SEG128§§</p>
+<pre><code>§§SEG129§§</code></pre>
+<p>§§SEG130§§</p>
+<pre><code>§§SEG131§§</code></pre>
+<p>§§SEG132§§</p>
+<pre><code>§§SEG133§§</code></pre>
+<p>§§SEG134§§</p>
+<pre><code>§§SEG135§§</code></pre>
+<p>§§SEG136§§</p>
+<pre><code>§§SEG137§§</code></pre>
+<h2 id="key-takeaways">§§SEG138§§</h2>
+<p>§§SEG139§§</p>
+<pre><code>§§SEG140§§</code></pre>
+<p>§§SEG141§§</p>
+<pre><code>§§SEG142§§</code></pre>
+<p>§§SEG143§§</p>
+<pre><code>§§SEG144§§</code></pre>
+<p>§§SEG145§§</p>
+<pre><code>§§SEG146§§</code></pre>
+<p>§§SEG147§§</p>
+<pre><code>§§SEG148§§</code></pre>
+<p>§§SEG149§§</p>
+<p>§§SEG150§§</p>
+<p>§§SEG151§§</p></article>

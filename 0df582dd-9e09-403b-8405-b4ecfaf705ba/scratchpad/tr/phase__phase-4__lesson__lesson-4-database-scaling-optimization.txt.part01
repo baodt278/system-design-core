@@ -1,0 +1,391 @@
+@0
+Mở Rộng Và Tối Ưu ⟦Cơ Sở Dữ Liệu|Database⟧ - Từ ⟦Tinh Chỉnh Truy Vấn|Query Tuning⟧ Đến ⟦Phân Mảnh Dữ Liệu|Sharding⟧
+@1
+Trong hầu hết các hệ thống, ⟦cơ sở dữ liệu|database⟧ là **⟦điểm nghẽn|bottleneck⟧ lớn nhất**.
+@2
+⟦Máy chủ ứng dụng|Application server⟧ ⟦mở rộng theo chiều ngang|scale horizontal⟧ rất dễ - thêm ⟦máy chủ|server⟧, gắn thêm ⟦bộ cân bằng tải|load balancer⟧, xong. Nhưng cơ sở dữ liệu thì sao? Đây là một bài toán khó.
+@3
+**Tại sao?**
+@4
+Cơ sở dữ liệu là **⟦có trạng thái|stateful⟧**. Không thể đơn giản thêm một máy chủ cơ sở dữ liệu rồi kỳ vọng nó tự động hoạt động. Dữ liệu phải được ⟦đồng bộ|sync⟧, ⟦giao dịch|transactions⟧ phải ⟦nhất quán|consistent⟧, ⟦truy vấn|queries⟧ phải được điều phối.
+@5
+Khi cơ sở dữ liệu chậm, toàn bộ hệ thống chậm. Khi cơ sở dữ liệu sập, toàn bộ hệ thống sập.
+@6
+**⟦Mô hình tư duy|Mental model⟧ quan trọng nhất:**
+@7
+**Mở rộng cơ sở dữ liệu không phải là một giải pháp duy nhất. Đó là một lộ trình tiến dần từ ⟦tối ưu|optimization⟧ đơn giản → các ⟦mẫu phân tán|distributed patterns⟧ phức tạp.**
+@8
+Bài này dạy bạn:
+@9
+⟦Tối ưu truy vấn|Query optimization⟧ và ⟦đánh chỉ mục|indexing⟧ (tuyến phòng thủ đầu tiên)
+@10
+⟦Bản sao chỉ đọc|Read replicas⟧ (mở rộng việc đọc)
+@11
+⟦Phân mảnh dữ liệu|Sharding⟧ (mở rộng việc ghi và ⟦lưu trữ|storage⟧)
+@12
+Khi nào dùng kỹ thuật nào
+@13
+⟦Sự đánh đổi|Trade-offs⟧ của từng cách tiếp cận
+@14
+Tại Sao ⟦Cơ Sở Dữ Liệu|Database⟧ Là ⟦Điểm Nghẽn|Bottleneck⟧?
+@15
+Trước khi học cách mở rộng, hãy hiểu tại sao cơ sở dữ liệu lại giới hạn ⟦hiệu năng|performance⟧.
+@16
+1. ⟦Điểm Nghẽn|Bottleneck⟧ Disk I/O
+@17
+**Cơ sở dữ liệu lưu dữ liệu trên đĩa. Đĩa chậm hơn RAM 1000 lần.**
+@18
+Đọc RAM:  ~100 nano giây
+Đọc SSD:  ~100 micro giây (chậm hơn 1000 lần)
+Đọc HDD:  ~10 mili giây (chậm hơn 100.000 lần)
+
+@19
+**Mỗi truy vấn = các lần đọc đĩa.**
+@20
+Truy vấn càng phức tạp → càng nhiều disk I/O → càng chậm.
+@21
+2. Các Đảm Bảo ACID
+@22
+**Cơ sở dữ liệu phải duy trì ⟦tính nhất quán|consistency⟧.**
+@23
+**⟦Tính nguyên tử|Atomicity⟧:** Giao dịch hoặc thực hiện toàn bộ, hoặc không thực hiện gì
+@24
+**⟦Tính nhất quán|Consistency⟧:** Dữ liệu hợp lệ theo các ⟦ràng buộc|constraints⟧
+@25
+**⟦Tính cô lập|Isolation⟧:** Các ⟦giao dịch đồng thời|concurrent transactions⟧ không xung đột nhau
+@26
+**⟦Độ bền dữ liệu|Durability⟧:** Dữ liệu đã ⟦commit|committed⟧ không bị mất
+@27
+**ACID có ⟦chi phí|cost⟧:**
+@28
+⟦Khoá|Locking⟧ (chặn truy cập đồng thời)
+@29
+⟦Nhật ký ghi trước|Write-ahead log⟧ (tốn thêm lượt ghi)
+@30
+Điều phối giao dịch (⟦chi phí phụ|overhead⟧)
+@31
+**⟦Sự đánh đổi|Trade-off⟧:** Tính đúng đắn và hiệu năng.
+@32
+3. Vấn Đề Chỉ Có Một Nút Ghi
+@33
+**Hầu hết RDBMS có kiến trúc ⟦một nút ghi|single-writer⟧.**
+@34
+Chỉ 1 ⟦nút|node⟧ xử lý việc ghi để duy trì tính nhất quán.
+@35
+Việc đọc có thể mở rộng (⟦bản sao|replicas⟧), nhưng việc ghi là điểm nghẽn.
+@36
+4. Dữ Liệu Tăng Trưởng
+@37
+**Dữ liệu tăng → hiệu năng giảm.**
+@38
+Bảng 1K dòng:   Truy vấn 10ms
+Bảng 100K dòng: Truy vấn 50ms
+Bảng 10M dòng:  Truy vấn 5000ms
+
+@39
+Không có ⟦chỉ mục|indexing⟧ phù hợp, truy vấn sẽ chậm đi theo cấp số nhân.
+@40
+**Điểm mấu chốt:** Phải tối ưu trước khi mở rộng. Mở rộng một hệ thống tốn kém thì vẫn tốn kém.
+@41
+Chiến Lược ⟦Chỉ Mục|Index⟧ - Tuyến Phòng Thủ Đầu Tiên
+@42
+**⟦Chỉ mục|Index⟧ là cấu trúc dữ liệu giúp cơ sở dữ liệu tìm dữ liệu nhanh hơn.**
+@43
+Không có chỉ mục = ⟦quét toàn bảng|full table scan⟧ (đọc toàn bộ các dòng).\n
+ Có chỉ mục = ⟦tra cứu trực tiếp|direct lookup⟧ (giống mục lục của một cuốn sách).
+@44
+⟦Chỉ Mục|Index⟧ B-Tree (Mặc Định)
+@45
+**Loại chỉ mục phổ biến nhất.**
+@46
+**Cấu trúc:**
+@48
+**Thời gian tra cứu:** O(log N) - cực nhanh với các tập dữ liệu lớn.
+@49
+**Khi nào dùng:**
+@50
+Các cột trong mệnh đề WHERE
+@51
+Các khoá JOIN
+@52
+Các cột ORDER BY
+@53
+⟦Khoá ngoại|Foreign keys⟧
+@54
+⟦Chỉ Mục Kết Hợp|Composite Index⟧
+@55
+**Chỉ mục trên nhiều cột.**
+@56
+**Hiệu quả cho:**
+@57
+**Quy tắc: Chỉ mục được khớp từ trái sang phải.**
+@58
+⟦Chỉ Mục Bao Phủ|Covering Index⟧
+@59
+**Chỉ mục chứa tất cả các cột mà truy vấn cần.**
+@60
+**Lợi ích:** Cơ sở dữ liệu không cần truy cập bảng, chỉ đọc chỉ mục → cực nhanh.
+@61
+⟦Chỉ Mục Một Phần|Partial Index⟧
+@62
+**Chỉ mục trên một tập con các dòng.**
+@63
+**Chỉ mục nhỏ hơn → tra cứu nhanh hơn, tốn ít dung lượng lưu trữ hơn.**
+@64
+Đánh Đổi Khi Dùng ⟦Chỉ Mục|Index⟧
+@65
+**Quá nhiều chỉ mục:**
+@66
+Ghi chậm (phải cập nhật tất cả chỉ mục)
+@67
+Tốn thêm dung lượng lưu trữ
+@68
+⟦Bộ lập kế hoạch truy vấn|Query planner⟧ bị "rối"
+@69
+**Quá ít chỉ mục:**
+@70
+Đọc chậm (quét toàn bảng)
+@71
+**Cân bằng:** Đánh chỉ mục cho các truy vấn có ⟦lưu lượng|traffic⟧ cao, theo dõi mức độ sử dụng.
+@72
+⟦Tối Ưu Truy Vấn|Query Optimization⟧ - Làm Truy Vấn Nhanh Hơn
+@73
+Kể cả có chỉ mục, truy vấn viết tệ vẫn chậm.
+@74
+EXPLAIN ANALYZE - Người Bạn Thân Nhất Của Bạn
+@75
+**Xem ⟦kế hoạch thực thi truy vấn|query execution plan⟧.**
+@76
+**Kết quả:**
+@78
+**Cần để ý:**
+@79
+**Seq Scan** (quét tuần tự toàn bảng) → thêm chỉ mục
+@80
+**Cost cao** → tối ưu truy vấn
+@81
+**Rows removed by filter** (số dòng bị bộ lọc loại bỏ) → cải thiện mệnh đề WHERE
+@82
+SELECT * Là Tai Hoạ
+@83
+**Tệ:**
+@84
+Lấy về tất cả các cột (có thể tới 50 cột, nhiều KB dữ liệu).
+@85
+**Tốt:**
+@86
+Chỉ lấy những cột cần thiết.
+@87
+**Tác động:**
+@88
+Ít disk I/O hơn
+@89
+Ít dữ liệu truyền qua mạng hơn
+@90
+Tận dụng ⟦bộ nhớ đệm|cache⟧ tốt hơn
+@91
+Tránh Dùng OR Trong Mệnh Đề WHERE
+@92
+**Tệ:**
+@93
+Cơ sở dữ liệu phải quét 2 chỉ mục hoặc quét toàn bảng.
+@94
+**Tốt:**
+@95
+2 lượt quét chỉ mục riêng biệt, sau đó gộp lại.
+@96
+Dùng LIMIT
+@97
+**Tệ:**
+@98
+Lấy về hàng triệu dòng, sắp xếp toàn bộ.
+@99
+**Tốt:**
+@100
+Dừng sau 20 dòng, không phải sắp xếp toàn bộ.
+@101
+Tránh Dùng Hàm Trong WHERE
+@102
+**Tệ:**
+@103
+Không thể dùng chỉ mục (vì hàm được áp lên cột).
+@104
+**Tốt:**
+@105
+Chỉ mục có thể dùng được.
+@106
+Vấn Đề N+1 - Sát Thủ Thầm Lặng Của Hiệu Năng
+@107
+**N+1 là một trong những ⟦lỗi|bugs⟧ phổ biến và nguy hiểm nhất.**
+@108
+Vấn Đề
+@109
+**Tổng cộng: 1 + 10 = 11 truy vấn.**
+@110
+Với 100 ⟦người dùng|users⟧ → 101 truy vấn.\n
+ Với 1000 người dùng → 1001 truy vấn.
+@111
+**Mỗi truy vấn có ⟦độ trễ|latency⟧ 10ms → 1001 truy vấn = 10 giây!**
+@112
+Giải Pháp 1: ⟦Tải Sớm|Eager Loading⟧
+@113
+**1 truy vấn thay vì N+1.**
+@114
+Giải Pháp 2: ⟦Tải Theo Lô|Batch Loading⟧
+@115
+**Tổng cộng 2 truy vấn.**
+@116
+Giải Pháp Từ Các Framework
+@117
+**Rails:**
+@118
+**Django:**
+@119
+**TypeORM:**
+@120
+**Luôn kiểm tra câu SQL được sinh ra để tránh N+1.**
+@121
+⟦Phi Chuẩn Hoá|Denormalization⟧ - Đánh Đổi Tính Nhất Quán Lấy Hiệu Năng
+@122
+**⟦Chuẩn hoá|Normalization⟧ = tránh trùng lặp dữ liệu.**\n
+**⟦Phi chuẩn hoá|Denormalization⟧ = chủ động nhân đôi dữ liệu để đạt hiệu năng.**
+@123
+Ví Dụ: Tổng Giá Trị Đơn Hàng
+@124
+**Đã chuẩn hoá (chậm):**
+@125
+Phép ⟦tổng hợp|aggregation⟧ tốn kém ở mỗi ⟦yêu cầu|request⟧.
+@126
+**Đã phi chuẩn hoá (nhanh):**
+@127
+**⟦Sự đánh đổi|Trade-off⟧:** Tốn thêm dung lượng lưu trữ + cập nhật phức tạp hơn để đổi lấy hiệu năng đọc.
+@128
+Khi Nào Nên ⟦Phi Chuẩn Hoá|Denormalize⟧
+@129
+**⟦Phi chuẩn hoá|Denormalize⟧ khi:**
+@130
+Các phép ⟦tổng hợp|aggregations⟧ tốn kém
+@131
+Dữ liệu ít thay đổi
+@132
+⟦Khối lượng công việc thiên về đọc|Read-heavy workload⟧
+@133
+**Không ⟦phi chuẩn hoá|denormalize⟧ khi:**
+@134
+Dữ liệu thay đổi thường xuyên
+@135
+Việc ⟦đồng bộ hoá|synchronization⟧ phức tạp
+@136
+Yêu cầu ⟦nhất quán mạnh|strong consistency⟧
+@137
+⟦Khung Nhìn Cụ Thể Hoá|Materialized Views⟧
+@138
+**⟦Phi chuẩn hoá|Denormalization⟧ ở cấp cơ sở dữ liệu.**
+@139
+Kết quả được tính toán trước, truy vấn nhanh.
+@140
+⟦Bản Sao Chỉ Đọc|Read Replicas⟧ - Mở Rộng Việc Đọc Theo Chiều Ngang
+@141
+**⟦Bản sao chỉ đọc|Read replica⟧ = bản sao của ⟦cơ sở dữ liệu chính|primary database⟧, xử lý ⟦lưu lượng|traffic⟧ đọc.**
+@142
+flowchart TB
+    subgraph Writes
+        App1[Máy chủ ứng dụng] -->|Ghi| Primary[CSDL chính]
+    end
+
+    subgraph Reads
+        App2[Máy chủ ứng dụng] -->|Đọc| Replica1[Bản sao chỉ đọc 1]
+        App3[Máy chủ ứng dụng] -->|Đọc| Replica2[Bản sao chỉ đọc 2]
+        App4[Máy chủ ứng dụng] -->|Đọc| Replica3[Bản sao chỉ đọc 3]
+    end
+
+    Primary -.->|Nhân bản| Replica1
+    Primary -.->|Nhân bản| Replica2
+    Primary -.->|Nhân bản| Replica3
+@143
+Cách Hoạt Động
+@144
+**1. ⟦Cơ sở dữ liệu chính|Primary database⟧ xử lý việc ghi**
+@145
+Mọi lệnh INSERT, UPDATE, DELETE → ⟦máy chủ chính|primary⟧
+@146
+**2. Thay đổi được ⟦nhân bản|replicate⟧ sang các ⟦bản sao|replicas⟧**
+@147
+⟦Nhân bản bất đồng bộ|Async replication⟧ (thường là vậy)
+@148
+⟦Chuyển binary log|Binary log shipping⟧ (MySQL) hoặc ⟦chuyển WAL|WAL shipping⟧ (PostgreSQL)
+@149
+**3. Các ⟦bản sao|replicas⟧ xử lý việc đọc**
+@150
+Truy vấn SELECT → các bản sao
+@151
+Phân bổ ⟦tải|load⟧ cho nhiều bản sao
+@152
+Lợi Ích
+@153
+**Mở rộng ⟦lưu lượng|traffic⟧ đọc:**
+@154
+Thêm bản sao khi lưu lượng đọc tăng
+@155
+⟦Máy chủ chính|Primary⟧ không bị quá tải
+@156
+**Phân bố theo địa lý:**
+@157
+⟦Bản sao|Replica⟧ ở Singapore cho người dùng châu Á
+@158
+⟦Bản sao|Replica⟧ ở Mỹ cho người dùng Mỹ
+@159
+⟦Độ trễ|Latency⟧ thấp hơn
+@160
+**Truy vấn phân tích:**
+@161
+Chạy các báo cáo tốn kém trên bản sao
+@162
+Không ảnh hưởng tới lưu lượng của ⟦môi trường thực tế|production⟧
+@163
+⟦Độ Trễ Nhân Bản|Replication Lag⟧
+@164
+**Vấn đề: Các ⟦bản sao|replicas⟧ không được cập nhật ngay lập tức.**
+@165
+t=0: Ghi vào máy chủ chính (user.status = 'active')
+t=1: Đọc từ bản sao (user.status = 'pending')  ← dữ liệu cũ!
+t=2: Nhân bản bắt kịp (user.status = 'active')
+
+@166
+**Độ trễ thường gặp: 10-100ms, có thể cao hơn.**
+@167
+Xử Lý ⟦Độ Trễ Nhân Bản|Replication Lag⟧
+@168
+**1. ⟦Nhất quán đọc-sau-ghi|Read-after-write consistency⟧**
+@169
+**2. ⟦Gắn phiên|Session stickiness⟧**
+@170
+⟦Phiên|session⟧ của người dùng luôn đọc từ cùng một ⟦bản sao|replica⟧
+@171
+Trải nghiệm nhất quán
+@172
+**3. Các lượt đọc quan trọng lấy từ ⟦máy chủ chính|primary⟧**
+@173
+Các Kiểu ⟦Nhân Bản|Replication⟧
+@174
+**⟦Bất đồng bộ|Asynchronous⟧ (mặc định):**
+@175
+⟦Máy chủ chính|Primary⟧ không đợi ⟦bản sao|replica⟧ xác nhận
+@176
+Ghi nhanh
+@177
+Rủi ro: bản sao bị trễ, có thể mất dữ liệu
+@178
+**⟦Đồng bộ|Synchronous⟧:**
+@179
+⟦Máy chủ chính|Primary⟧ đợi ít nhất 1 ⟦bản sao|replica⟧ xác nhận
+@180
+Ghi chậm hơn
+@181
+⟦Nhất quán mạnh|Strong consistency⟧
+@182
+**⟦Bán đồng bộ|Semi-synchronous⟧:**
+@183
+Đợi 1 bản sao, các bản sao còn lại ⟦bất đồng bộ|async⟧
+@184
+Cân bằng giữa hiệu năng và ⟦độ bền dữ liệu|durability⟧

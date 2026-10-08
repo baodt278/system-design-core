@@ -1,0 +1,412 @@
+@0 h1
+Mental Model Recap - Củng Cố Tư Duy System Design
+@1 p
+Chúng ta đã đi qua 7 lessons trong Phase 0. Đây không phải là phase dạy technology hay design patterns. Đây là phase **thay đổi cách bạn think**.
+@2 p
+Trước khi move sang Phase 1, tôi muốn pause và recap lại những mental shifts quan trọng nhất. Những shifts này sẽ theo bạn trong suốt journey từ đây.
+@3 p
+Think về nó như foundation của một tòa nhà. Bạn có thể học hết các công cụ, patterns, technologies — nhưng nếu foundation sai, everything else sẽ shaky.
+@4 h2
+The Four Core Mindsets
+@5 p
+Phase 0 xoay quanh 4 mindset shifts cốt lõi. Đây không phải checklist để học thuộc. Đây là **lenses** để nhìn problems.
+@6 pre
+graph TB
+    A[Mental Model Shifts] --> B[No Best Solution]
+    A --> C[Always Ask Why]
+    A --> D[Trade-offs > Technology]
+    A --> E[System > Code]
+    
+    style A fill:#FF6B6B
+    style B fill:#4ECDC4
+    style C fill:#4ECDC4
+    style D fill:#4ECDC4
+    style E fill:#4ECDC4
+@7 p
+Hãy đi sâu vào từng mindset.
+@8 h2
+1. Không Có "Best Solution"
+@9 p
+Đây là shift khó nhất để accept, đặc biệt khi bạn mới transition từ developer.
+@10 p
+**The old mindset:**
+"Có một giải pháp tốt nhất. Tôi cần tìm nó."
+@11 p
+**The new mindset:**
+"Mọi solution đều có trade-offs. Tôi cần tìm solution phù hợp nhất với context này."
+@12 h3
+Tại Sao Mindset Này Quan Trọng?
+@13 p
+Khi bạn tin có "best solution", bạn sẽ:
+@14 li
+Waste time tìm kiếm perfection
+@15 li
+Copy solutions không phù hợp context
+@16 li
+Rigid khi requirements change
+@17 li
+Miss opportunities để optimize cho specific needs
+@18 p
+Khi bạn accept "no best solution", bạn sẽ:
+@19 li
+Focus vào understanding constraints
+@20 li
+Design for current context
+@21 li
+Flexible khi adapt
+@22 li
+Make conscious trade-offs
+@23 h3
+Real Example
+@24 p
+Câu hỏi: "Database nào best cho application của tôi?"
+@25 p
+**Wrong approach:** "PostgreSQL là best vì X, Y, Z"
+@26 p
+**Right approach:**
+"Depends on your needs:
+@27 li
+Relational data với ACID? → PostgreSQL
+@28 li
+Document với flexible schema? → MongoDB
+@29 li
+High-throughput writes? → Cassandra
+@30 li
+Simple key-value? → Redis
+@31 p
+Each có trade-offs. Best choice depends on YOUR constraints."
+@32 h2
+2. Always Ask "Why"
+@33 p
+Mindset shift này về **questioning everything** — không accept answers at face value.
+@34 p
+**The old mindset:**
+"Senior engineer nói dùng microservices → tôi dùng microservices"
+@35 p
+**The new mindset:**
+"Tại sao microservices? Problem nào nó solve? Trade-offs gì? Có alternatives?"
+@36 h3
+Why "Why" Matters
+@37 p
+Trong system design, mọi decision đều có ripple effects. Nếu bạn không hiểu **reasoning** behind decisions, bạn sẽ:
+@38 li
+Repeat mistakes của người khác
+@39 li
+Không adapt được khi context changes
+@40 li
+Make inconsistent decisions
+@41 li
+Không defend được choices của mình
+@42 h3
+The Five Whys Technique
+@43 p
+Khi ai đó suggest một solution, drill down:
+@44 pre
+"Chúng ta nên dùng Redis."
+→ Why Redis?
+
+"Để cache data."
+→ Why cache? Performance issue gì?
+
+"API response time ~2 seconds."
+→ Why slow? Database query chậm?
+
+"Có, query scan whole table."
+→ Why không add index trước?
+
+"Ah... chưa thử index."
+
+@45 p
+Thường thì sau 2-3 "why", bạn discover simpler solution.
+@46 h3
+Apply To Everything
+@47 li
+Why microservices instead of monolith?
+@48 li
+Why NoSQL instead of SQL?
+@49 li
+Why Kubernetes instead of simple VMs?
+@50 li
+Why event-driven instead of request-response?
+@51 li
+Why cache this data?
+@52 li
+Why split this service?
+@53 p
+Không có câu hỏi "stupid". Mọi "why" đều valid.
+@54 h2
+3. Trade-offs Quan Trọng Hơn Technology
+@55 p
+Đây là shift from **technology-first** sang **problem-first thinking**.
+@56 p
+**The old mindset:**
+"Technology X hot và mới. Tôi muốn dùng X."
+@57 p
+**The new mindset:**
+"Problem là gì? Trade-offs nào matter? Technology nào fit best cho trade-offs này?"
+@58 h3
+Why This Matters
+@59 p
+Technology is just a tool. Choosing technology WITHOUT understanding trade-offs giống như:
+@60 li
+Mua Ferrari để đi chợ hàng ngày
+@61 li
+Dùng sledgehammer để đóng đinh
+@62 li
+Over-engineer cho problems đơn giản
+@63 p
+Good architects think về trade-offs FIRST, technology SECOND.
+@64 h3
+Common Trade-offs
+@65 p
+Mọi design decision involve trade-offs:
+@66 p
+**Consistency vs Availability:**
+@67 li
+Strong consistency → có thể sacrifice availability
+@68 li
+High availability → có thể accept eventual consistency
+@69 p
+**Performance vs Cost:**
+@70 li
+Better performance → more expensive infrastructure
+@71 li
+Lower cost → accept slower response times
+@72 p
+**Simplicity vs Flexibility:**
+@73 li
+Simple architecture → harder to extend
+@74 li
+Flexible architecture → more complexity upfront
+@75 p
+**Build vs Buy:**
+@76 li
+Build custom → full control, higher cost
+@77 li
+Use managed services → less control, faster delivery
+@78 h3
+Framework Thinking
+@79 p
+Thay vì think "technology nào?", think:
+@80 li
+Trade-off nào critical cho problem này?
+@81 li
+Trade-off nào acceptable?
+@82 li
+Technology nào support trade-offs đó?
+@83 pre
+flowchart TD
+    A[Problem + Constraints] --> B[Identify Critical Trade-offs]
+    B --> C[Rank Trade-offs by Priority]
+    C --> D[Choose Technology that Fits]
+    
+    E[Wrong Flow] --> F[Cool Technology]
+    F --> G[Force into Problem]
+    
+    style A fill:#90EE90
+    style B fill:#90EE90
+    style C fill:#90EE90
+    style D fill:#90EE90
+    style E fill:#FF6B6B
+    style F fill:#FF6B6B
+    style G fill:#FF6B6B
+@84 h2
+4. System Thinking Trên Code Thinking
+@85 p
+Đây là biggest shift — from **micro level** (code) to **macro level** (system).
+@86 p
+**The old mindset:**
+"Tôi viết clean code, optimize algorithms, follow best practices. That's enough."
+@87 p
+**The new mindset:**
+"Code chỉ là một phần. Tôi cần think về: components interaction, data flow, failure modes, scaling, monitoring, operations."
+@88 h3
+Why This Shift Is Hard
+@89 p
+Developers spend years optimizing code:
+@90 li
+Clean architecture
+@91 li
+Design patterns
+@92 li
+Algorithm optimization
+@93 li
+Code quality
+@94 p
+Suddenly, system design nói: "Code quality ít quan trọng hơn system quality."
+@95 p
+Điều này không có nghĩa code không quan trọng. Nhưng **good code trong bad architecture vẫn fail**.
+@96 h3
+What Is System Thinking?
+@97 p
+System thinking means nhìn **whole picture**, không chỉ individual parts:
+@98 p
+**Code thinking:**
+@99 li
+Function này O(n²) → optimize to O(n log n)
+@100 li
+Class này violate SOLID → refactor
+@101 p
+**System thinking:**
+@102 li
+Service này become bottleneck at scale → cần split hay scale?
+@103 li
+Database này single point of failure → cần replication?
+@104 li
+Network latency between services → có nên merge services?
+@105 li
+Failure ở component A affect component B như thế nào?
+@106 h3
+Example: Payment Processing
+@107 p
+**Code-level thinking:**
+@108 pre
+PaymentService.process(payment):
+  - Validate payment data
+  - Call payment gateway
+  - Update database
+  - Return response
+
+@109 p
+**System-level thinking:**
+@110 pre
+1. What if payment gateway timeout?
+   → Retry? Queue? Idempotency?
+
+2. What if database down khi update?
+   → Đã charge customer nhưng chưa save record?
+
+3. How to handle high load?
+   → Queue-based processing? Rate limiting?
+
+4. How to monitor failures?
+   → Metrics? Alerts? Dashboards?
+
+5. How to debug issues in production?
+   → Logging? Tracing? Correlation IDs?
+
+@111 p
+Code thinking focus vào logic. System thinking focus vào **reliability, scalability, observability**.
+@112 h2
+Kết Nối 4 Mindsets
+@113 p
+4 mindsets này không isolated. Chúng interconnected:
+@114 pre
+graph LR
+    A[No Best Solution] --> B[Ask Why]
+    B --> C[Understand Trade-offs]
+    C --> D[System Thinking]
+    D --> A
+    
+    style A fill:#FFD700
+    style B fill:#FFD700
+    style C fill:#FFD700
+    style D fill:#FFD700
+@115 p
+**Flow tự nhiên:**
+@116 p
+Accept **không có best solution** → bạn open-minded
+@117 p
+**Ask why** → bạn understand reasoning
+@118 p
+Focus vào **trade-offs** → bạn make informed decisions
+@119 p
+Apply **system thinking** → bạn see big picture
+@120 p
+Mỗi mindset reinforce mindsets khác.
+@121 h2
+From Mindset To Practice
+@122 p
+Okay, bạn understand 4 mindsets. Bây giờ làm sao apply?
+@123 h3
+Daily Practices
+@124 p
+**1. Review Past Decisions**
+@125 p
+Pick một architectural decision trong project của bạn. Ask:
+@126 li
+Tại sao decision đó?
+@127 li
+Trade-offs gì?
+@128 li
+Với hindsight, còn đúng không?
+@129 li
+Học được gì?
+@130 p
+**2. Challenge Yourself**
+@131 p
+Mỗi khi bạn muốn dùng một technology:
+@132 li
+Write down 3 reasons why
+@133 li
+Write down 2 alternatives
+@134 li
+Compare trade-offs
+@135 li
+Justify choice
+@136 p
+**3. Think In Systems**
+@137 p
+Khi debug issue trong production:
+@138 li
+Đừng chỉ fix bug
+@139 li
+Ask: tại sao bug này xảy ra?
+@140 li
+System design nào prevent nó?
+@141 li
+Có issues tương tự khác không?
+@142 p
+**4. Learn From Others**
+@143 p
+Đọc architecture blogs, case studies:
+@144 li
+Không copy solutions
+@145 li
+Focus vào reasoning
+@146 li
+Understand their constraints
+@147 li
+Note trade-offs họ chọn
+@148 h3
+Red Flags To Watch
+@149 p
+Dấu hiệu bạn chưa internalize mindsets:
+@150 p
+"Best practice là X, nên tôi dùng X"
+→ Missing: context và trade-offs
+@151 p
+"Senior engineer nói như vậy"
+→ Missing: asking why
+@152 p
+"Technology Y hot, tôi muốn learn"
+→ Missing: problem-first thinking
+@153 p
+"Code này clean và fast"
+→ Missing: system-level concerns
+@154 p
+Khi bạn catch yourself thinking như vậy — pause và apply framework.
+@155 h2
+Key Takeaways
+@156 p
+Nếu chỉ nhớ 4 điều từ Phase 0:
+@157 p
+**1. No Best Solution**
+→ Context determines "best". Focus on fit, not perfection.
+@158 p
+**2. Always Ask Why**
+→ Understanding reasoning > memorizing solutions.
+@159 p
+**3. Trade-offs > Technology**
+→ Choose based on constraints, not trends.
+@160 p
+**4. System > Code**
+→ Good code in bad architecture still fails.
+@161 h2
+Final Thought
+@162 p
+Mindset shift không xảy ra overnight. Tôi mất 2 năm để truly internalize những principles này.
+@163 p
+Bạn sẽ catch yourself thinking theo old ways. That's normal. Mỗi lần đó, consciously apply new mindset. Overtime, nó trở thành automatic.
+@164 p
+Remember: **System design is not about knowing all technologies. It's about thinking clearly about trade-offs trong complex contexts.**

@@ -1,0 +1,72 @@
+@0 h2
+1) Giới thiệu Phase
+@1 p
+Phase 1 là nền tảng bắt buộc trước khi đi sâu vào distributed systems và kiến trúc quy mô lớn.
+@2 p
+Mục tiêu của phase này là giúp bạn nhìn hệ thống như một dòng chảy hoàn chỉnh: từ request đầu vào, qua các thành phần xử lý, đến dữ liệu và phản hồi cuối cùng.
+@3 p
+Khi học xong, bạn không chỉ "biết thuật ngữ" mà có thể phân tích hệ thống theo tư duy kỹ sư thiết kế.
+@4 h2
+2) Learning Objectives
+@5 li
+Hiểu vai trò của từng thành phần trong một hệ thống web.
+@6 li
+Phân biệt khi nào nên dùng sync, khi nào nên dùng async.
+@7 li
+Theo dõi data flow để tìm bottleneck chính xác.
+@8 li
+Đọc và đánh giá hệ thống bằng các chỉ số nền tảng: latency, throughput, availability.
+@9 li
+Nhận diện constraint và trade-off khi ra quyết định kiến trúc.
+@10 h2
+3) Bạn sẽ học gì trong phase này
+@11 li
+**System components:** client, API, service, database, cache, queue và mối quan hệ giữa chúng.
+@12 li
+**Communication patterns:** cách service giao tiếp đồng bộ và bất đồng bộ trong bối cảnh thực tế.
+@13 li
+**Data flow:** request đi qua hệ thống như thế nào và điểm nghẽn thường xuất hiện ở đâu.
+@14 li
+**Bottlenecks:** cách phát hiện, ưu tiên, và xử lý bottleneck theo impact.
+@15 li
+**Performance fundamentals:** đọc đúng các chỉ số quan trọng thay vì tối ưu cảm tính.
+@16 li
+**Constraints & trade-offs:** vì sao mỗi quyết định luôn có mặt được và mặt mất.
+@17 h2
+4) Lessons Overview
+@18 h3
+Lesson 1 — Components trong một hệ thống web
+@19 p
+Hiểu kiến trúc cơ bản của hệ thống web hiện đại và trách nhiệm của từng thành phần.
+@20 h3
+Lesson 2 — Communication Patterns — Sync vs Async trong Distributed Systems
+@21 p
+Nắm cách chọn mô hình giao tiếp phù hợp theo yêu cầu latency, reliability và complexity.
+@22 h3
+Lesson 3 — Data Flow & Bottlenecks — Tìm và tối ưu điểm nghẽn
+@23 p
+Phân tích đường đi dữ liệu để xác định đúng bottleneck và đưa ra hướng tối ưu thực dụng.
+@24 h3
+Lesson 4 — Latency, Throughput, Availability và CAP Theorem
+@25 p
+Xây nền tảng tư duy về hiệu năng, độ sẵn sàng và các giới hạn cốt lõi trong hệ phân tán.
+@26 h2
+5) Kết quả sau khi hoàn thành Phase 1
+@27 p
+Bạn có thể:
+@28 li
+Phân tích một hệ thống ở mức kiến trúc cơ bản.
+@29 li
+Đặt câu hỏi đúng về scale, hiệu năng và độ ổn định.
+@30 li
+Giải thích rõ quyết định sync/async theo bối cảnh.
+@31 li
+Nhìn thấy bottleneck trước khi tối ưu.
+@32 li
+Thảo luận trade-off với tư duy hệ thống thay vì tư duy tính năng đơn lẻ.
+@33 h2
+6) Chuẩn bị cho Phase 2
+@34 p
+Sau Phase 1, bạn đã có nền tư duy đủ chắc để bước vào **Phase 2 — Core Building Blocks**.
+@35 p
+Ở phase tiếp theo, bạn sẽ đi sâu vào từng khối cốt lõi như load balancing, caching, database scaling và message queue, với trọng tâm là cách dùng đúng theo bài toán thực tế.

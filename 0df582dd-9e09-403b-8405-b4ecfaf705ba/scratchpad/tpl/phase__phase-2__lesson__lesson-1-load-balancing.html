@@ -1,0 +1,617 @@
+<article class="prose-ui"><h1 id="load-balancing-traffic-distribution-trong-distributed-systems">§§SEG0§§</h1>
+<h2 id="tldr">§§SEG1§§</h2>
+<ul>
+<li>§§SEG2§§</li>
+<li>§§SEG3§§</li>
+<li>§§SEG4§§</li>
+<li>§§SEG5§§</li>
+</ul>
+<h2 id="what-is-load-balancing">§§SEG6§§</h2>
+<p>§§SEG7§§</p>
+<h2 id="why-does-load-balancing-matter">§§SEG8§§</h2>
+<ul>
+<li>§§SEG9§§</li>
+<li>§§SEG10§§</li>
+<li>§§SEG11§§</li>
+<li>§§SEG12§§</li>
+</ul>
+<h2 id="when-should-you-use-it">§§SEG13§§</h2>
+<ul>
+<li>§§SEG14§§</li>
+<li>§§SEG15§§</li>
+<li>§§SEG16§§</li>
+<li>§§SEG17§§</li>
+</ul>
+<h2 id="how-does-it-work">§§SEG18§§</h2>
+<ol>
+<li>§§SEG19§§</li>
+<li>§§SEG20§§</li>
+<li>§§SEG21§§</li>
+<li>§§SEG22§§</li>
+</ol>
+<h2 id="trade-offs-cần-nắm">§§SEG23§§</h2>
+<ul>
+<li>§§SEG24§§</li>
+<li>§§SEG25§§</li>
+<li>§§SEG26§§</li>
+<li>§§SEG27§§</li>
+</ul>
+<h2 id="key-terms-aiseo-quick-definitions">§§SEG28§§</h2>
+<ul>
+<li>§§SEG29§§</li>
+<li>§§SEG30§§</li>
+<li>§§SEG31§§</li>
+<li>§§SEG32§§</li>
+</ul>
+<p>§§SEG33§§</p>
+<p>§§SEG34§§</p>
+<p>§§SEG35§§</p>
+<p>§§SEG36§§</p>
+<h2 id="tại-sao-load-balancing-tồn-tại">§§SEG37§§</h2>
+<h3 id="vấn-đề-cơ-bản-single-server-limits">§§SEG38§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG39§§</code></pre>
+<p>§§SEG40§§</p>
+<pre><code>§§SEG41§§</code></pre>
+<h3 id="solution-1-vertical-scaling-scale-up">§§SEG42§§</h3>
+<pre><code>§§SEG43§§</code></pre>
+<p>§§SEG44§§</p>
+<ul>
+<li>§§SEG45§§</li>
+<li>§§SEG46§§</li>
+<li>§§SEG47§§</li>
+<li>§§SEG48§§</li>
+</ul>
+<h3 id="solution-2-horizontal-scaling-scale-out">§§SEG49§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG50§§</code></pre>
+<p>§§SEG51§§</p>
+<pre><code>§§SEG52§§</code></pre>
+<p>§§SEG53§§</p>
+<p>§§SEG54§§</p>
+<p>§§SEG55§§</p>
+<p>§§SEG56§§</p>
+<h2 id="load-balancer-là-gì">§§SEG57§§</h2>
+<p>§§SEG58§§</p>
+<p>§§SEG59§§</p>
+<p>§§SEG60§§</p>
+<p>§§SEG61§§</p>
+<pre><code>§§SEG62§§</code></pre>
+<p>§§SEG63§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG64§§</code></pre>
+<p>§§SEG65§§</p>
+<h2 id="benefits-của-load-balancing">§§SEG66§§</h2>
+<h3 id="benefit-1-increased-capacity">§§SEG67§§</h3>
+<pre><code>§§SEG68§§</code></pre>
+<h3 id="benefit-2-high-availability">§§SEG69§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG70§§</code></pre>
+<p>§§SEG71§§</p>
+<p>§§SEG72§§</p>
+<pre><code>§§SEG73§§</code></pre>
+<p>§§SEG74§§</p>
+<pre><code>§§SEG75§§</code></pre>
+<h3 id="benefit-3-zero-downtime-deployment">§§SEG76§§</h3>
+<pre><code>§§SEG77§§</code></pre>
+<p>§§SEG78§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG79§§</code></pre>
+<h3 id="benefit-4-geographic-distribution">§§SEG80§§</h3>
+<pre><code>§§SEG81§§</code></pre>
+<p>§§SEG82§§</p>
+<pre><code>§§SEG83§§</code></pre>
+<h2 id="load-balancing-algorithms">§§SEG84§§</h2>
+<p>§§SEG85§§</p>
+<h3 id="algorithm-1-round-robin">§§SEG86§§</h3>
+<p>§§SEG87§§</p>
+<p>§§SEG88§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG89§§</code></pre>
+<p>§§SEG90§§</p>
+<pre><code class="language-python">servers = ['server_a', 'server_b', 'server_c']
+current_index = 0
+
+def get_next_server():
+    global current_index
+    server = servers[current_index]
+    current_index = (current_index + 1) % len(servers)
+    return server
+
+# Request flow
+get_next_server()  # → server_a
+get_next_server()  # → server_b
+get_next_server()  # → server_c
+get_next_server()  # → server_a (cycle repeats)
+</code></pre>
+<p>§§SEG91§§</p>
+<p>§§SEG92§§</p>
+<p>§§SEG93§§</p>
+<p>§§SEG94§§</p>
+<p>§§SEG95§§</p>
+<pre><code>§§SEG96§§</code></pre>
+<p>§§SEG97§§</p>
+<p>§§SEG98§§</p>
+<h3 id="algorithm-2-least-connections">§§SEG99§§</h3>
+<p>§§SEG100§§</p>
+<p>§§SEG101§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG102§§</code></pre>
+<p>§§SEG103§§</p>
+<pre><code class="language-python">servers = {
+    'server_a': {'connections': 10, 'url': '192.168.1.10'},
+    'server_b': {'connections': 5, 'url': '192.168.1.11'},
+    'server_c': {'connections': 8, 'url': '192.168.1.12'}
+}
+
+def get_next_server():
+    # Tìm server có ít connections nhất
+    min_server = min(servers.items(), 
+                     key=lambda x: x[1]['connections'])
+    return min_server[0]
+
+# New request arrives
+server = get_next_server()  # → server_b (5 connections)
+servers[server]['connections'] += 1  # Now 6
+
+# Next request
+server = get_next_server()  # → server_b again (6 connections)
+</code></pre>
+<p>§§SEG104§§</p>
+<p>§§SEG105§§</p>
+<p>§§SEG106§§</p>
+<p>§§SEG107§§</p>
+<p>§§SEG108§§</p>
+<p>§§SEG109§§</p>
+<p>§§SEG110§§</p>
+<p>§§SEG111§§</p>
+<pre><code>§§SEG112§§</code></pre>
+<p>§§SEG113§§</p>
+<p>§§SEG114§§</p>
+<h3 id="algorithm-3-weighted-round-robin">§§SEG115§§</h3>
+<p>§§SEG116§§</p>
+<p>§§SEG117§§</p>
+<pre><code>§§SEG118§§</code></pre>
+<p>§§SEG119§§</p>
+<pre><code class="language-python">servers = [
+    {'name': 'server_a', 'weight': 4},  # Powerful
+    {'name': 'server_b', 'weight': 2},  # Normal
+    {'name': 'server_c', 'weight': 2}   # Normal
+]
+
+# Distribution:
+# Server A gets 4 requests
+# Server B gets 2 requests
+# Server C gets 2 requests
+# Total: 8 requests per cycle
+
+# In ratio: 4:2:2 or 2:1:1
+</code></pre>
+<p>§§SEG120§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG121§§</code></pre>
+<p>§§SEG122§§</p>
+<pre><code class="language-python">def weighted_round_robin():
+    # Expand servers theo weight
+    expanded = []
+    for server in servers:
+        expanded.extend([server['name']] * server['weight'])
+    
+    # expanded = ['server_a', 'server_a', 'server_a', 'server_a',
+    #             'server_b', 'server_b', 
+    #             'server_c', 'server_c']
+    
+    # Apply Round Robin trên expanded list
+    current_index = 0
+    while True:
+        server = expanded[current_index]
+        current_index = (current_index + 1) % len(expanded)
+        yield server
+</code></pre>
+<p>§§SEG123§§</p>
+<p>§§SEG124§§</p>
+<p>§§SEG125§§</p>
+<p>§§SEG126§§</p>
+<p>§§SEG127§§</p>
+<p>§§SEG128§§</p>
+<h3 id="algorithm-4-ip-hash-consistent-hashing">§§SEG129§§</h3>
+<p>§§SEG130§§</p>
+<p>§§SEG131§§</p>
+<pre><code class="language-python">def get_server(client_ip):
+    hash_value = hash(client_ip)
+    server_index = hash_value % num_servers
+    return servers[server_index]
+
+# Example
+get_server('192.168.1.100')  # → server_a
+get_server('192.168.1.101')  # → server_c
+get_server('192.168.1.100')  # → server_a (same!)
+</code></pre>
+<p>§§SEG132§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG133§§</code></pre>
+<p>§§SEG134§§</p>
+<p>§§SEG135§§</p>
+<p>§§SEG136§§</p>
+<p>§§SEG137§§</p>
+<p>§§SEG138§§</p>
+<p>§§SEG139§§</p>
+<p>§§SEG140§§</p>
+<p>§§SEG141§§</p>
+<p>§§SEG142§§</p>
+<pre><code class="language-python">#  IP Hash approach
+def handle_request(client_ip):
+    server = hash(client_ip) % num_servers
+    # Session stored on server → tied to server
+
+#  Shared session approach
+def handle_request(session_id):
+    session = redis.get(f"session:{session_id}")
+    # Any server can handle → true stateless
+</code></pre>
+<h2 id="health-checks-tránh-route-đến-dead-servers">§§SEG143§§</h2>
+<p>§§SEG144§§</p>
+<pre><code>§§SEG145§§</code></pre>
+<p>§§SEG146§§</p>
+<p>§§SEG147§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG148§§</code></pre>
+<h3 id="health-check-implementation">§§SEG149§§</h3>
+<p>§§SEG150§§</p>
+<pre><code class="language-python">from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/health')
+def health_check():
+    # Check critical dependencies
+    checks = {
+        'database': check_database_connection(),
+        'cache': check_cache_connection(),
+        'disk_space': check_disk_space()
+    }
+    
+    if all(checks.values()):
+        return jsonify({
+            'status': 'healthy',
+            'checks': checks
+        }), 200
+    else:
+        return jsonify({
+            'status': 'unhealthy',
+            'checks': checks
+        }), 503  # Service Unavailable
+
+def check_database_connection():
+    try:
+        db.execute("SELECT 1")
+        return True
+    except:
+        return False
+
+def check_cache_connection():
+    try:
+        cache.ping()
+        return True
+    except:
+        return False
+</code></pre>
+<p>§§SEG151§§</p>
+<pre><code class="language-python">import requests
+import time
+
+servers = [
+    {'url': 'http://server1.example.com', 'healthy': True},
+    {'url': 'http://server2.example.com', 'healthy': True},
+    {'url': 'http://server3.example.com', 'healthy': True}
+]
+
+def health_check_loop():
+    while True:
+        for server in servers:
+            try:
+                response = requests.get(
+                    f"{server['url']}/health",
+                    timeout=2  # 2 second timeout
+                )
+                
+                if response.status_code == 200:
+                    server['healthy'] = True
+                    print(f"{server['url']}: Healthy ")
+                else:
+                    server['healthy'] = False
+                    print(f"{server['url']}: Unhealthy ")
+                    
+            except requests.exceptions.Timeout:
+                server['healthy'] = False
+                print(f"{server['url']}: Timeout ")
+                
+            except requests.exceptions.ConnectionError:
+                server['healthy'] = False
+                print(f"{server['url']}: Connection failed ")
+        
+        time.sleep(10)  # Check every 10 seconds
+
+def get_healthy_servers():
+    return [s for s in servers if s['healthy']]
+</code></pre>
+<h3 id="health-check-best-practices">§§SEG152§§</h3>
+<p>§§SEG153§§</p>
+<pre><code class="language-python">#  BAD: Chỉ return OK
+@app.route('/health')
+def health():
+    return "OK", 200
+
+#  GOOD: Check critical dependencies
+@app.route('/health')
+def health():
+    if not database.is_connected():
+        return "Database down", 503
+    
+    if not cache.is_connected():
+        return "Cache down", 503
+    
+    if disk_usage() &gt; 90:
+        return "Disk full", 503
+    
+    return "OK", 200
+</code></pre>
+<p>§§SEG154§§</p>
+<pre><code>§§SEG155§§</code></pre>
+<p>§§SEG156§§</p>
+<pre><code class="language-python">#  BAD: Remove after 1 failed check
+if health_check_failed:
+    remove_from_pool(server)
+
+#  GOOD: Remove after N consecutive failures
+server['failed_checks'] = server.get('failed_checks', 0) + 1
+
+if server['failed_checks'] &gt;= 3:  # 3 consecutive failures
+    remove_from_pool(server)
+elif health_check_success:
+    server['failed_checks'] = 0  # Reset counter
+</code></pre>
+<p>§§SEG157§§</p>
+<p>§§SEG158§§</p>
+<pre><code class="language-python"># Nếu TẤT CẢ servers unhealthy:
+healthy_servers = get_healthy_servers()
+
+if len(healthy_servers) == 0:
+    # Option A: Route to all servers anyway (some might work)
+    # Option B: Return 503 Service Unavailable
+    # Option C: Route to backup servers in different region
+    
+    # Choose based on use case
+</code></pre>
+<p>§§SEG159§§</p>
+<p>§§SEG160§§</p>
+<p>§§SEG161§§</p>
+<p>§§SEG162§§</p>
+<h2 id="layer-4-vs-layer-7-load-balancing">§§SEG163§§</h2>
+<p>§§SEG164§§</p>
+<h3 id="osi-model-quick-recap">§§SEG165§§</h3>
+<pre><code>§§SEG166§§</code></pre>
+<h3 id="layer-4-load-balancing-transport-layer">§§SEG167§§</h3>
+<p>§§SEG168§§</p>
+<p>§§SEG169§§</p>
+<ul>
+<li>§§SEG170§§</li>
+<li>§§SEG171§§</li>
+<li>§§SEG172§§</li>
+<li>§§SEG173§§</li>
+</ul>
+<p>§§SEG174§§</p>
+<ul>
+<li>§§SEG175§§</li>
+<li>§§SEG176§§</li>
+<li>§§SEG177§§</li>
+<li>§§SEG178§§</li>
+<li>§§SEG179§§</li>
+</ul>
+<p>§§SEG180§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG181§§</code></pre>
+<p>§§SEG182§§</p>
+<pre><code>§§SEG183§§</code></pre>
+<p>§§SEG184§§</p>
+<p>§§SEG185§§</p>
+<p>§§SEG186§§</p>
+<p>§§SEG187§§</p>
+<p>§§SEG188§§</p>
+<ul>
+<li>§§SEG189§§</li>
+<li>§§SEG190§§</li>
+<li>§§SEG191§§</li>
+<li>§§SEG192§§</li>
+</ul>
+<p>§§SEG193§§</p>
+<ul>
+<li>§§SEG194§§</li>
+<li>§§SEG195§§</li>
+<li>§§SEG196§§</li>
+</ul>
+<h3 id="layer-7-load-balancing-application-layer">§§SEG197§§</h3>
+<p>§§SEG198§§</p>
+<p>§§SEG199§§</p>
+<ul>
+<li>§§SEG200§§</li>
+<li>§§SEG201§§</li>
+<li>§§SEG202§§</li>
+<li>§§SEG203§§</li>
+<li>§§SEG204§§</li>
+<li>§§SEG205§§</li>
+</ul>
+<p>§§SEG206§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG207§§</code></pre>
+<p>§§SEG208§§</p>
+<pre><code class="language-nginx"># Nginx configuration (Layer 7)
+
+# Route by URL path
+location /api/users {
+    proxy_pass http://user_service;
+}
+
+location /api/orders {
+    proxy_pass http://order_service;
+}
+
+location /api/payments {
+    proxy_pass http://payment_service;
+}
+
+# Route by header
+if ($http_x_api_version = "v2") {
+    proxy_pass http://api_v2_servers;
+}
+
+# Route by cookie
+if ($cookie_beta_user = "true") {
+    proxy_pass http://beta_servers;
+}
+
+# Admin traffic to special servers
+location /admin {
+    proxy_pass http://admin_servers;
+    # Can add authentication here
+}
+</code></pre>
+<p>§§SEG209§§</p>
+<pre><code class="language-python"># SSL termination
+# LB handles HTTPS, forwards HTTP to backends
+Client --HTTPS--&gt; LB --HTTP--&gt; Backend
+(encrypted)          (unencrypted, fast)
+
+# Request modification
+# Add custom headers
+X-Forwarded-For: client_ip
+X-Request-ID: unique_id
+
+# Response modification
+# Gzip compression
+# Add security headers (CORS, CSP)
+
+# Content-based routing
+if content_type == "video/mp4":
+    route_to_video_servers()
+elif content_type == "image/jpeg":
+    route_to_image_servers()
+</code></pre>
+<p>§§SEG210§§</p>
+<p>§§SEG211§§</p>
+<p>§§SEG212§§</p>
+<p>§§SEG213§§</p>
+<p>§§SEG214§§</p>
+<ul>
+<li>§§SEG215§§</li>
+<li>§§SEG216§§</li>
+<li>§§SEG217§§</li>
+<li>§§SEG218§§</li>
+<li>§§SEG219§§</li>
+</ul>
+<p>§§SEG220§§</p>
+<ul>
+<li>§§SEG221§§</li>
+<li>§§SEG222§§</li>
+<li>§§SEG223§§</li>
+<li>§§SEG224§§</li>
+<li>§§SEG225§§</li>
+</ul>
+<h3 id="comparison-table">§§SEG226§§</h3>
+<pre><code>§§SEG227§§</code></pre>
+<h3 id="decision-framework">§§SEG228§§</h3>
+<pre><code>§§SEG229§§</code></pre>
+<p>§§SEG230§§</p>
+<p>§§SEG231§§</p>
+<p>§§SEG232§§</p>
+<p>§§SEG233§§</p>
+<h2 id="real-world-architecture-example">§§SEG234§§</h2>
+<p>§§SEG235§§</p>
+<p>§§SEG236§§</p>
+<ul>
+<li>§§SEG237§§</li>
+<li>§§SEG238§§</li>
+<li>§§SEG239§§</li>
+<li>§§SEG240§§</li>
+</ul>
+<p>§§SEG241§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG242§§</code></pre>
+<p>§§SEG243§§</p>
+<pre><code class="language-yaml"># Layer 7 Load Balancer config
+
+# Web servers pool
+- path: /*
+  backend: web_servers
+  algorithm: round_robin
+  health_check:
+    path: /health
+    interval: 10s
+    timeout: 5s
+    unhealthy_threshold: 3
+  
+# API servers pool
+- path: /api/*
+  backend: api_servers
+  algorithm: least_connections  # APIs vary in execution time
+  health_check:
+    path: /api/health
+    interval: 10s
+    timeout: 5s
+  
+# Admin servers pool
+- path: /admin/*
+  backend: admin_servers
+  algorithm: round_robin
+  health_check:
+    path: /admin/health
+    interval: 10s
+  ip_whitelist:  # Security: Only allow from office IPs
+    - 203.0.113.0/24
+</code></pre>
+<p>§§SEG244§§</p>
+<ol>
+<li>§§SEG245§§</li>
+<li>§§SEG246§§</li>
+<li>§§SEG247§§</li>
+<li>§§SEG248§§</li>
+<li>§§SEG249§§<ul>
+<li>§§SEG250§§</li>
+<li>§§SEG251§§</li>
+</ul>
+</li>
+<li>§§SEG252§§</li>
+<li>§§SEG253§§</li>
+</ol>
+<h2 id="key-takeaways">§§SEG254§§</h2>
+<p>§§SEG255§§</p>
+<ul>
+<li>§§SEG256§§</li>
+<li>§§SEG257§§</li>
+<li>§§SEG258§§</li>
+<li>§§SEG259§§</li>
+</ul>
+<p>§§SEG260§§</p>
+<ul>
+<li>§§SEG261§§</li>
+<li>§§SEG262§§</li>
+<li>§§SEG263§§</li>
+<li>§§SEG264§§</li>
+</ul>
+<p>§§SEG265§§</p>
+<ul>
+<li>§§SEG266§§</li>
+<li>§§SEG267§§</li>
+<li>§§SEG268§§</li>
+<li>§§SEG269§§</li>
+</ul>
+<p>§§SEG270§§</p>
+<ul>
+<li>§§SEG271§§</li>
+<li>§§SEG272§§</li>
+<li>§§SEG273§§</li>
+</ul>
+<p>§§SEG274§§</p>
+<ul>
+<li>§§SEG275§§</li>
+<li>§§SEG276§§</li>
+<li>§§SEG277§§</li>
+<li>§§SEG278§§</li>
+<li>§§SEG279§§</li>
+</ul>
+<p>§§SEG280§§</p>
+<ol>
+<li>§§SEG281§§</li>
+<li>§§SEG282§§</li>
+<li>§§SEG283§§</li>
+<li>§§SEG284§§</li>
+</ol>
+<p>§§SEG285§§</p>
+<p>§§SEG286§§</p></article>

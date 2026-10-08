@@ -1,0 +1,561 @@
+@0 h1
+Components và Communication: Hiểu Bản Chất Của Một Hệ Thống
+@1 p
+Lần đầu tiên tôi phải debug một production issue, tôi hoàn toàn choáng váng.
+@2 p
+API response chậm. Nhưng chậm ở đâu? Database? Application? Network? Cache?
+@3 p
+Senior architect ngồi bên cạnh, vẽ một diagram đơn giản:
+@4 pre
+Client → Load Balancer → App Server → Cache → Database
+
+@5 p
+Rồi anh hỏi: *"Request đi qua bao nhiêu bước? Mỗi bước mất bao lâu?"*
+@6 p
+Đó là lần đầu tiên tôi hiểu: **Hệ thống không phải là một khối code. Nó là tập hợp các components tương tác với nhau.**
+@7 h2
+Tại Sao Phải Hiểu Components?
+@8 p
+Khi bạn code, bạn nhìn vào functions, classes, modules. Đó là **code-level view**.
+@9 p
+Khi bạn design systems, bạn phải nhìn vào **components và interactions**. Đó là **architecture-level view**.
+@10 p
+Sự khác biệt?
+@11 p
+**Code-level:**
+@12 p
+**Architecture-level:**
+@13 pre
+Client → API Gateway → User Service → Database
+         (50ms)         (10ms)         (200ms)
+         
+Total latency: 260ms
+Bottleneck: Database (200ms = 77% of total time)
+
+@14 p
+Architecture-level view giúp bạn:
+@15 li
+Identify bottlenecks nhanh chóng
+@16 li
+Understand failure points
+@17 li
+Design for scale
+@18 li
+Communicate với team
+@19 p
+**Bạn không thể optimize cái bạn không hiểu.**
+@20 h2
+Anatomy Của Một Hệ Thống Web
+@21 p
+Mọi web system, dù đơn giản hay phức tạp, đều có cùng building blocks cơ bản.
+@22 h3
+Component 1: Client (Browser/Mobile App)
+@23 p
+**Vai trò:** User interface, gửi requests, render responses
+@24 p
+**Đặc điểm:**
+@25 li
+Không đáng tin cậy (user có thể modify code)
+@26 li
+Không kiểm soát được environment (network, device)
+@27 li
+Stateful (lưu data locally)
+@28 p
+**Implication cho architect:**
+@29 pre
+NEVER trust client
+- Không validate ở client là đủ
+- Không lưu sensitive data
+- Không rely vào client-side logic cho business rules
+
+ALWAYS validate server-side
+- Client validation chỉ là UX enhancement
+- Server validation là security requirement
+
+@30 p
+**Ví dụ thực tế:**
+@31 p
+Tôi từng thấy một app validate giá sản phẩm ở client. Hacker modify JavaScript, đổi giá từ $100 thành $1, submit form.
+@32 p
+Server tin tưởng client → Database lưu order với giá $1 → Company mất tiền.
+@33 p
+**Bài học:** Client là presentation layer, không phải business logic layer.
+@34 h3
+Component 2: Load Balancer
+@35 p
+**Vai trò:** Phân phối traffic đều giữa multiple servers
+@36 p
+**Khi nào cần?**
+@37 li
+Khi 1 server không đủ xử lý traffic
+@38 li
+Khi cần high availability (1 server die, còn servers khác)
+@39 p
+**Khi nào KHÔNG cần?**
+@40 li
+Startup với < 1000 users
+@41 li
+Internal tools với ít traffic
+@42 li
+Prototypes/MVPs
+@43 p
+**Trade-offs:**
+@44 pre
+Gains:
+- Distribute load evenly
+- No single point of failure
+- Rolling deployment (update từng server)
+
+Costs:
+- Thêm 1 layer complexity
+- Load balancer itself có thể là SPOF (nếu không redundant)
+- Network latency (+10-50ms)
+
+@45 p
+**Algorithms phổ biến:**
+@46 p
+**Round Robin:**
+@47 pre
+Request 1 → Server A
+Request 2 → Server B  
+Request 3 → Server C
+Request 4 → Server A (repeat)
+
+@48 p
+Đơn giản, phân phối đều. Nhưng không care server nào đang overload.
+@49 p
+**Least Connections:**
+@50 pre
+Server A: 50 active connections
+Server B: 20 active connections
+Server C: 35 active connections
+
+→ New request goes to Server B
+
+@51 p
+Smart hơn, nhưng cần track state.
+@52 p
+**Weighted Round Robin:**
+@53 pre
+Server A (16GB RAM): weight = 2
+Server B (8GB RAM): weight = 1
+
+→ A gets 2 requests for every 1 request to B
+
+@54 p
+Useful khi servers có specs khác nhau.
+@55 p
+**Personal insight:** Trong thực tế, tôi thấy Round Robin là sufficient cho 90% cases. Least Connections chỉ cần khi requests có execution time rất khác nhau.
+@56 h3
+Component 3: Application Server
+@57 p
+**Vai trò:** Business logic, process requests, orchestrate data flow
+@58 p
+**Stateless vs Stateful - Quyết định quan trọng:**
+@59 p
+**Stateless Server:**
+@60 p
+**Stateful Server:**
+@61 p
+**Trade-off decision:**
+@62 pre
+Choose Stateless when:
+- Need horizontal scaling
+- Multiple servers behind load balancer
+- Cloud environment (servers can die anytime)
+
+Choose Stateful when:
+- Need extremely low latency (no DB roundtrip)
+- WebSocket connections (need persistent connection)
+- Small scale (1-2 servers)
+
+@63 p
+**Tôi recommend:** Default to stateless. Stateful chỉ khi có lý do rất tốt.
+@64 h3
+Component 4: Cache Layer
+@65 p
+**Vai trò:** Lưu frequently accessed data in-memory để giảm DB load
+@66 p
+**Khi nào dùng cache?**
+@67 pre
+Cache khi:
+- Read >> Write (ratio 10:1 or higher)
+- Data không thay đổi thường xuyên
+- Expensive queries (complex JOINs, aggregations)
+- High traffic endpoints
+
+Không cache khi:
+- Write-heavy workload
+- Data thay đổi liên tục (real-time stock prices)
+- Personalized data per user (mỗi user khác nhau)
+
+@68 p
+**Ví dụ thực tế: E-commerce Product Page**
+@69 p
+**Cache Invalidation - The Hard Problem:**
+@70 p
+Phil Karlton nói: *"There are only two hard things in Computer Science: cache invalidation and naming things."*
+@71 p
+Anh ấy đúng. Cache invalidation là nightmare.
+@72 p
+**Problem:**
+@73 pre
+1. User updates profile → Database updated
+2. Cache vẫn có old data
+3. User refresh → Sees old data (cache hit)
+4. User confused, files bug report
+
+@74 p
+**Solutions:**
+@75 p
+**Option 1: TTL (Time To Live)**
+@76 p
+**Option 2: Active Invalidation**
+@77 p
+**Option 3: Cache-Aside Pattern (Recommended)**
+@78 p
+**Personal rule:** Start simple với TTL. Chỉ thêm active invalidation khi data freshness thực sự critical.
+@79 h3
+Component 5: Database
+@80 p
+**Vai trò:** Persistent storage, source of truth
+@81 p
+**Database là bottleneck phổ biến nhất.**
+@82 p
+Tại sao? Vì disk I/O chậm hơn memory 100,000 lần.
+@83 pre
+Memory read: 100 nanoseconds
+Disk read: 10 milliseconds
+
+10ms / 100ns = 100,000x slower
+
+@84 p
+**Implications:**
+@85 p
+**Minimize database calls**
+@86 li
+Use cache
+@87 li
+Batch queries
+@88 li
+Eager loading (N+1 problem)
+@89 p
+**Optimize queries**
+@90 li
+Add indexes
+@91 li
+Avoid SELECT *
+@92 li
+Use EXPLAIN ANALYZE
+@93 p
+**Scale database last**
+@94 li
+Optimize application first
+@95 li
+Add cache second
+@96 li
+Scale DB only when necessary (expensive)
+@97 p
+**Ví dụ real-world:**
+@98 p
+Một team complain: "Database quá chậm, cần upgrade server!"
+@99 p
+Tôi check query logs:
+@100 p
+Vấn đề? Không có index trên email column → Full table scan.
+@101 p
+Solution:
+@102 p
+**Cost:** $0 và 30 giây setup time.
+@103 p
+Thay vì upgrade server ($500/month), fix query (free). **Always optimize before scaling.**
+@104 h2
+Communication Patterns: Sync vs Async
+@105 p
+Đây là một trong những decisions quan trọng nhất trong system design.
+@106 h3
+Synchronous (Request-Response)
+@107 p
+**How it works:**
+@108 pre
+Client → [HTTP Request] → Server
+Client ← [Wait...] ←
+Client ← [HTTP Response] ← Server
+
+@109 p
+**Đặc điểm:**
+@110 li
+Client blocks và đợi response
+@111 li
+Immediate feedback
+@112 li
+Tight coupling (client phụ thuộc server)
+@113 p
+**Khi nào dùng:**
+@114 li
+User cần kết quả ngay lập tức
+@115 li
+Simple workflows
+@116 li
+CRUD operations
+@117 p
+**Ví dụ:**
+@118 h3
+Asynchronous (Message Queue)
+@119 p
+**How it works:**
+@120 pre
+Client → [HTTP Request] → Server → [Add to Queue] → Return immediately
+                                         ↓
+                                    Background Worker → Process job
+
+@121 p
+**Đặc điểm:**
+@122 li
+Client không đợi
+@123 li
+Eventual processing
+@124 li
+Loose coupling (client không care who processes)
+@125 p
+**Khi nào dùng:**
+@126 li
+Process mất nhiều thời gian (> 5 seconds)
+@127 li
+User không cần kết quả ngay
+@128 li
+Need to handle traffic spikes
+@129 p
+**Ví dụ:**
+@130 p
+**User experience:**
+@131 li
+Upload → Gets response sau 2s (tốt)
+@132 li
+Video ready → Notification sau 1-2 phút (acceptable)
+@133 p
+Nếu làm sync → User đợi 98 giây → Timeout → Bad UX.
+@134 h3
+Trade-off Matrix
+@135 pre
+Synchronous:
+Simple logic
+Immediate feedback
+Easy debugging
+Poor UX for slow operations
+Timeout risk
+Can't handle traffic spikes
+
+Asynchronous:
+Better UX (fast response)
+Can handle spikes (queue buffers)
+Retry logic built-in
+Complex (need queue infrastructure)
+Eventual consistency
+Harder debugging (distributed tracing)
+
+@136 p
+**Decision framework:**
+@137 h2
+Data Flow & Bottleneck Detection
+@138 p
+**Golden rule:** Hệ thống chỉ nhanh bằng component chậm nhất.
+@139 h3
+Measuring Data Flow
+@140 p
+**Example flow: User loads homepage**
+@141 pre
+Step 1: DNS lookup               → 20ms
+Step 2: TCP handshake           → 50ms
+Step 3: TLS negotiation         → 100ms
+Step 4: HTTP request to server  → 10ms
+Step 5: Server processing       → 30ms
+Step 6: Database query          → 500ms ← BOTTLENECK
+Step 7: Server render HTML      → 20ms
+Step 8: Response to client      → 10ms
+Step 9: Browser parse/render    → 200ms
+
+Total: 940ms
+Bottleneck: Database (500ms = 53% of total)
+
+@142 p
+**Action plan:**
+@143 li
+Optimize database query (add index)
+@144 li
+Add cache layer
+@145 li
+Measure again
+@146 p
+**Sau optimization:**
+@147 pre
+Step 6: Cache hit               → 5ms
+
+Total: 445ms (52% faster!)
+
+@148 p
+**Lesson:** Đừng optimize bừa. Measure → Find bottleneck → Optimize bottleneck.
+@149 h3
+Common Bottlenecks & Solutions
+@150 p
+**Bottleneck 1: Database**
+@151 pre
+Symptoms: High query latency, CPU/IO maxed out
+Solutions:
+- Add indexes
+- Optimize queries
+- Add read replicas
+- Implement caching
+
+@152 p
+**Bottleneck 2: Network**
+@153 pre
+Symptoms: High latency, timeouts
+Solutions:
+- CDN for static assets
+- Reduce payload size (compression)
+- Fewer HTTP requests (bundling)
+
+@154 p
+**Bottleneck 3: Application Logic**
+@155 pre
+Symptoms: High CPU usage, slow response
+Solutions:
+- Profile code
+- Optimize algorithms (O(n²) → O(n log n))
+- Add caching
+- Horizontal scaling
+
+@156 h2
+Practical Exercise: Analyze Real System
+@157 p
+Hãy phân tích Instagram post flow.
+@158 p
+**User action:** Post a photo
+@159 p
+**System flow:**
+@160 pre
+1. Mobile app → Upload image → CDN
+2. CDN → Return URL
+3. App → API: Create post (URL, caption)
+4. API → Save to database (posts table)
+5. API → Add to queue: "fanout_post"
+6. API → Return success to user
+7. Background worker → Get followers list
+8. Worker → Write post to each follower's feed (cache)
+9. Followers → Open app → See new post
+
+@161 p
+**Analysis:**
+@162 p
+**Components:**
+@163 li
+Mobile app (client)
+@164 li
+CDN (image storage)
+@165 li
+API servers (stateless)
+@166 li
+Database (persistent storage)
+@167 li
+Message queue (async processing)
+@168 li
+Background workers
+@169 li
+Redis (feed cache)
+@170 p
+**Communication:**
+@171 li
+Step 1-6: Synchronous (user needs immediate confirmation)
+@172 li
+Step 7-9: Asynchronous (followers don't need instant update)
+@173 p
+**Bottlenecks:**
+@174 li
+If celebrity with 10M followers → Fanout to 10M feeds
+@175 li
+Solution: Don't fanout for celebrities, load on-demand
+@176 p
+**Trade-offs:**
+@177 li
+Normal users: Fast reads (pre-generated feed), slow writes
+@178 li
+Celebrities: Fast writes (no fanout), slower reads (query on-demand)
+@179 h2
+Mental Model: Everything Is A System
+@180 p
+Áp dụng component thinking vào mọi thứ.
+@181 p
+**Coffee shop:**
+@182 li
+Components: Cashier, Barista, Equipment, Inventory
+@183 li
+Communication: Order ticket (async!)
+@184 li
+Bottleneck: 1 barista vs 10 customers → Queue builds up
+@185 p
+**Solution (system design):**
+@186 li
+Add more baristas (horizontal scaling)
+@187 li
+Better espresso machine (vertical scaling)
+@188 li
+Self-service kiosks (offload cashier)
+@189 p
+**Warehouse:**
+@190 li
+Components: Receiving, Storage, Picking, Shipping
+@191 li
+Communication: Order system
+@192 li
+Bottleneck: Manual picking → Slow
+@193 p
+**Solution:**
+@194 li
+Robots for picking (automation)
+@195 li
+Better inventory system (optimize routing)
+@196 p
+Khi bạn nhìn thế giới qua lens của systems, bạn bắt đầu thấy patterns giống nhau ở khắp nơi.
+@197 h2
+Key Takeaways
+@198 p
+**Mọi hệ thống đều có 3 elements:**
+@199 li
+**Components** - Building blocks thực hiện công việc
+@200 li
+**Communication** - Cách components tương tác
+@201 li
+**Constraints** - Giới hạn về resources, latency, throughput
+@202 p
+**Để hiểu một hệ thống:**
+@203 li
+Identify components
+@204 li
+Map data flow
+@205 li
+Measure each step
+@206 li
+Find bottleneck
+@207 li
+Optimize bottleneck (not everything)
+@208 p
+**Sync vs Async guideline:**
+@209 li
+Sync: User needs result now, simple workflow
+@210 li
+Async: Long processing, traffic spikes, decoupling
+@211 p
+**Cache guideline:**
+@212 li
+Cache: Read-heavy, expensive queries, static data
+@213 li
+Don't cache: Write-heavy, personalized, real-time
+@214 p
+**Component thinking không chỉ cho software.** Nó là mental model để analyze bất kỳ complex system nào.
+@215 p
+Từ bây giờ, mỗi khi bạn nhìn một app, hãy tự hỏi:
+@216 p
+*"Components nào? Communicate thế nào? Bottleneck ở đâu?"*
+@217 p
+Practice mental model này. Nó sẽ thay đổi cách bạn nhìn nhận systems.

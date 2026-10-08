@@ -1,0 +1,838 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect | Phase 6 — System Design Mastery | System Design Core</title><meta name="description" content="Master trade off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture "/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making"/><meta property="og:title" content="Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect | Phase 6 — System Design Mastery"/><meta property="og:description" content="Master trade off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture "/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect | Phase 6 — System Design Mastery"/><meta name="twitter:description" content="Master trade off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture "/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 6 — System Design Mastery</p><p class="mt-3 text-xl font-semibold text-ink">Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect</p><p class="mt-3 text-sm leading-7 text-ink-dim">Master trade-off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture decisions như Senior Engineer với CAP theorem intuition.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-1-system-design-thinking-framework"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-2-snake-framework"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">SNAKE Framework - Methodology Để Ace System Design Interview</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-4-real-interview-strategy"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-5-advanced-architecture-topics"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-6">Phase 6 — System Design Mastery</a></li><li>/</li><li aria-current="page" class="text-ink">Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Master trade-off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture decisions như Senior Engineer với CAP theorem intuition.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect"><article class="prose-ui"><h1 id="trade-offs--architecture-decision-making">Trade-offs &amp; Architecture Decision Making</h1>
+<p>Sau 3 năm làm việc, tôi được promote lên Senior Engineer.</p>
+<p>Manager hỏi: <em>&quot;Em nghĩ điều gì phân biệt Senior Engineer với Junior Engineer?&quot;</em></p>
+<p>Tôi tự tin: <em>&quot;Senior biết nhiều patterns hơn, code giỏi hơn, có experience hơn.&quot;</em></p>
+<p>Manager lắc đầu: <em>&quot;Không. Senior Engineer giỏi ở <strong>trade-off thinking</strong>.&quot;</em></p>
+<p>Một tuần sau, trong architecture review:</p>
+<p>Junior Engineer: <em>&quot;Em suggest dùng microservices cho project mới.&quot;</em></p>
+<p>Manager: <em>&quot;Tại sao?&quot;</em></p>
+<p>Junior: <em>&quot;Vì microservices là best practice, scale tốt, Netflix dùng.&quot;</em></p>
+<p>Manager: <em>&quot;Với 3 developers và 500 users, cost của microservices là gì? Benefit là gì? Trade-off có worth it không?&quot;</em></p>
+<p>Junior: <em>&quot;... Em chưa nghĩ đến.&quot;</em></p>
+<p><strong>Đó là lúc tôi thực sự hiểu.</strong></p>
+<p>Senior Engineer không phải là người biết nhiều nhất. Mà là người <strong>reason about trade-offs tốt nhất</strong>.</p>
+<h2 id="tại-sao-trade-off-thinking-là-core-skill">Tại Sao Trade-off Thinking Là Core Skill?</h2>
+<h3 id="the-fundamental-truth">The Fundamental Truth</h3>
+<p><strong>Trong software architecture, không có perfect solution.</strong></p>
+<pre><code>Perfect solution = Myth
+Real solution = Trade-offs
+
+Mọi quyết định technical đều có:
+Benefits (gains)
+Costs (sacrifices)
+
+Choose solution = Choose which trade-off to accept
+</code></pre>
+<h3 id="junior-vs-senior-thinking">Junior vs Senior Thinking</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    subgraph Junior Thinking
+        J1[Problem] --&gt; J2[Google &quot;best solution&quot;]
+        J2 --&gt; J3[Apply pattern]
+        J3 --&gt; J4[Done]
+    end
+    
+    subgraph Senior Thinking
+        S1[Problem] --&gt; S2[List alternatives]
+        S2 --&gt; S3[Analyze trade-offs]
+        S3 --&gt; S4[Consider context]
+        S4 --&gt; S5[Choose &amp; justify]
+        S5 --&gt; S6[Document reasoning]
+    end
+    
+    style J3 fill:#ff6b6b
+    style S5 fill:#51cf66</code></pre>
+<p><em>Junior copy solutions, Senior evaluate trade-offs</em></p>
+<p><strong>Example comparison:</strong></p>
+<pre><code>Problem: Need cache layer
+
+Junior:
+&quot;Use Redis. It&#x27;s fast and everyone uses it.&quot;
+
+Senior:
+&quot;Let&#x27;s evaluate caching options:
+
+Option 1: Redis
+Very fast (&lt; 1ms)
+Rich data structures
+Persistence optional
+Memory expensive at scale
+Operational overhead
+Cost: ~$500/month for 16GB
+
+Option 2: Memcached
+Simple, stable
+Slightly lower memory footprint
+No persistence
+Limited data structures
+Cost: ~$400/month
+
+Option 3: Application-level cache (in-process)
+Zero latency
+No infrastructure cost
+Simple
+Not shared across servers
+Limited by server memory
+
+Given our context:
+- 5 app servers
+- Read-heavy (90% cache hit rate expected)
+- Budget-conscious startup
+- Simple use case (key-value only)
+
+Recommendation: Memcached
+Reasoning: Simplicity + cost savings outweigh Redis features we don&#x27;t need.
+We can migrate to Redis later if we need persistence.&quot;
+
+→ Analyzed options
+→ Listed trade-offs
+→ Considered context
+→ Justified decision
+</code></pre>
+<p><strong>Thấy sự khác biệt chưa?</strong></p>
+<p>Senior không chỉ choose solution. Senior <strong>justify why that solution fits context</strong>.</p>
+<h2 id="the-major-trade-offs-mọi-architect-phải-hiểu">The Major Trade-offs Mọi Architect Phải Hiểu</h2>
+<h3 id="trade-off-1-consistency-vs-availability">Trade-off 1: Consistency vs Availability</h3>
+<p><strong>From CAP Theorem:</strong></p>
+<pre><code>Trong distributed system with network partition:
+Cannot have BOTH perfect Consistency AND perfect Availability
+
+Must choose:
+- CP (Consistency + Partition tolerance)
+- AP (Availability + Partition tolerance)
+</code></pre>
+<p><strong>Real-world translation:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    A[Strong Consistency] ---|Trade-off| B[High Availability]
+    
+    A --&gt; A1[Banking&lt;br/&gt;Payments&lt;br/&gt;Inventory]
+    B --&gt; B1[Social Media&lt;br/&gt;Analytics&lt;br/&gt;Feeds]
+    
+    style A fill:#ff6b6b
+    style B fill:#51cf66</code></pre>
+<p><em>Consistency vs Availability: Chọn dựa trên business requirements</em></p>
+<p><strong>Scenario: E-commerce Inventory</strong></p>
+<pre><code class="language-python"># Strong Consistency (CP)
+def purchase_product(product_id, quantity):
+    # Lock row, ensure stock accurate
+    with db.transaction():
+        product = db.query(&quot;SELECT * FROM products WHERE id = ? FOR UPDATE&quot;, product_id)
+        
+        if product.stock &lt; quantity:
+            return {&quot;error&quot;: &quot;Out of stock&quot;}
+        
+        product.stock -= quantity
+        db.commit()
+        
+        return {&quot;success&quot;: True}
+
+# Trade-offs:
+No overselling (critical!)
+Accurate inventory
+Slow (lock + transaction overhead)
+Lower availability (if DB down, can&#x27;t sell)
+Poor scalability (locks limit concurrency)
+
+Why choose this: Overselling = angry customers + revenue loss
+Consistency &gt; Availability for this use case
+</code></pre>
+<p><strong>Scenario: Social Media Likes</strong></p>
+<pre><code class="language-python"># High Availability (AP)
+def like_post(post_id, user_id):
+    # Async write, eventual consistency
+    cache.increment(f&quot;post:{post_id}:likes&quot;)
+    queue.publish({
+        &quot;event&quot;: &quot;post_liked&quot;,
+        &quot;post_id&quot;: post_id,
+        &quot;user_id&quot;: user_id
+    })
+    
+    return {&quot;success&quot;: True}
+
+# Worker processes queue eventually
+@worker.task
+def process_like(event):
+    db.execute(&quot;INSERT INTO likes ...&quot;)
+
+# Trade-offs:
+Super fast (&lt; 10ms)
+Always available
+High scalability
+Like count might be slightly off
+Eventual consistency (delay 1-2s)
+
+Why choose this: User doesn&#x27;t care if count is 99 or 101
+Availability &gt; Consistency for this use case
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code class="language-python">def choose_consistency_level(feature):
+    &quot;&quot;&quot;Framework để decide consistency vs availability&quot;&quot;&quot;
+    
+    # Ask critical questions
+    questions = {
+        &quot;financial_impact&quot;: &quot;Sai data = mất tiền?&quot;,
+        &quot;user_experience&quot;: &quot;User notice inconsistency?&quot;,
+        &quot;legal_requirement&quot;: &quot;Compliance yêu cầu consistency?&quot;,
+        &quot;failure_cost&quot;: &quot;Downtime cost bao nhiêu?&quot;
+    }
+    
+    if feature.financial_impact == &quot;high&quot;:
+        return &quot;Strong Consistency (CP)&quot;
+    
+    if feature.legal_requirement == &quot;yes&quot;:
+        return &quot;Strong Consistency (CP)&quot;
+    
+    if feature.user_experience == &quot;unaffected_by_slight_delay&quot;:
+        return &quot;Eventual Consistency (AP)&quot;
+    
+    if feature.failure_cost == &quot;very_high&quot;:
+        return &quot;High Availability (AP)&quot;
+    
+    # Default: Strong consistency (safer)
+    return &quot;Strong Consistency (CP)&quot;
+
+# Examples
+choose_consistency_level(Payment)           # → CP (financial)
+choose_consistency_level(UserProfile)       # → CP (user-facing)
+choose_consistency_level(ViewCount)         # → AP (doesn&#x27;t matter)
+choose_consistency_level(Recommendations)   # → AP (can be stale)
+</code></pre>
+<h3 id="trade-off-2-latency-vs-cost">Trade-off 2: Latency vs Cost</h3>
+<p><strong>The reality: Speed costs money.</strong></p>
+<pre><code>Lower latency = Higher cost (usually)
+
+Ways to reduce latency:
+- More servers (costly)
+- Faster hardware (costly)
+- Closer to users (CDN = costly)
+- More caching (memory = costly)
+- Database optimization (engineering time = costly)
+</code></pre>
+<p><strong>Scenario: API Response Time</strong></p>
+<pre><code class="language-python"># Baseline: No optimization
+# Latency: 500ms
+# Cost: $500/month (basic setup)
+
+# Option 1: Add Redis cache
+# Latency: 50ms (10x improvement)
+# Cost: $500 + $300 = $800/month
+# ROI: Worth it? Depends on user value
+
+# Option 2: Add CDN for static assets
+# Latency: 200ms (2.5x improvement)
+# Cost: $500 + $100 = $600/month
+# ROI: Better bang for buck
+
+# Option 3: Upgrade database (vertical scale)
+# Latency: 300ms (1.7x improvement)
+# Cost: $500 + $400 = $900/month
+# ROI: Expensive for little gain
+
+# Option 4: All of the above
+# Latency: 30ms (16x improvement)
+# Cost: $500 + $300 + $100 + $400 = $1,300/month
+# ROI: Overkill? Depends on requirements
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code class="language-python"># Latency requirements tiers
+
+Tier 1: Real-time (&lt; 50ms)
+Use cases: Gaming, trading, video calls
+Cost: Very high
+Solution: Aggressive caching, edge computing, WebSocket
+
+Tier 2: Interactive (&lt; 200ms)
+Use cases: Web apps, mobile apps
+Cost: Medium
+Solution: Cache, CDN, optimized queries
+
+Tier 3: Responsive (&lt; 1s)
+Use cases: Reports, batch operations
+Cost: Low
+Solution: Basic optimization, no over-engineering
+
+Tier 4: Background (&lt; 10s)
+Use cases: Email, notifications, analytics
+Cost: Very low
+Solution: Async processing, queues
+</code></pre>
+<p><strong>Trade-off analysis:</strong></p>
+<pre><code>Question: &quot;Should we add Redis cache?&quot;
+
+Don&#x27;t answer immediately. Analyze:
+
+Current state:
+- API latency: 400ms
+- DB query: 300ms (bottleneck)
+- Users: 10K
+- Complaints: Few
+
+With Redis:
+- API latency: 50ms (8x improvement)
+- Cost: +$300/month
+- Complexity: +1 component to manage
+- Cache invalidation: New problems
+
+Is trade-off worth it?
+- 10K users × $5/month revenue = $50K/month
+- Better UX might increase retention 5% = +$2.5K/month
+- Cost = $300/month
+- ROI = $2.5K / $300 = 8.3x
+
+Decision: Yes, worth it
+</code></pre>
+<p><strong>Personal guideline:</strong></p>
+<pre><code>Optimize latency when:
+✓ User experience directly affected
+✓ Business metrics correlate with speed
+✓ Cost is justified by revenue/retention
+✓ Current latency exceeds tier requirements
+
+Don&#x27;t optimize when:
+✗ Users don&#x27;t notice difference
+✗ No business impact
+✗ Cost too high relative to benefit
+✗ Premature (don&#x27;t have scale yet)
+</code></pre>
+<h3 id="trade-off-3-simplicity-vs-scalability">Trade-off 3: Simplicity vs Scalability</h3>
+<p><strong>The eternal tension: Simple now hoặc scale later?</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    SIMPLE[Simple Architecture&lt;br/&gt;Monolith] ---|Growth pressure| COMPLEX[Complex Architecture&lt;br/&gt;Microservices]
+    
+    SIMPLE --&gt; S1[Fast development&lt;br/&gt;Easy debugging&lt;br/&gt;Low ops cost]
+    COMPLEX --&gt; C1[Independent scaling&lt;br/&gt;Team autonomy&lt;br/&gt;Fault isolation]
+    
+    style SIMPLE fill:#51cf66
+    style COMPLEX fill:#ffd43b</code></pre>
+<p><em>Simplicity vs Scalability spectrum: Different stages need different approaches</em></p>
+<p><strong>Scenario: Startup Architecture Decision</strong></p>
+<pre><code class="language-python"># Context
+startup = {
+    &quot;users&quot;: 1000,
+    &quot;developers&quot;: 3,
+    &quot;runway&quot;: &quot;12 months&quot;,
+    &quot;goal&quot;: &quot;Product-market fit&quot;
+}
+
+# Option 1: Microservices from day 1
+architecture_1 = {
+    &quot;services&quot;: [&quot;user-service&quot;, &quot;order-service&quot;, &quot;payment-service&quot;, &quot;notification-service&quot;],
+    &quot;infrastructure&quot;: [&quot;Kubernetes&quot;, &quot;Kafka&quot;, &quot;Service Mesh&quot;],
+    &quot;time_to_market&quot;: &quot;6 months&quot;,
+    &quot;operational_complexity&quot;: &quot;High&quot;,
+    &quot;cost&quot;: &quot;$5000/month&quot;
+}
+
+# Trade-offs:
+&quot;Scales to millions&quot; (not needed yet)
+Modern architecture
+6 months to MVP (too slow!)
+High complexity với 3 devs
+Expensive for 1K users
+Might not reach PMF before running out of money
+
+# Option 2: Monolith with good structure
+architecture_2 = {
+    &quot;structure&quot;: &quot;Modular monolith&quot;,
+    &quot;infrastructure&quot;: [&quot;Heroku&quot;, &quot;PostgreSQL&quot;, &quot;Redis&quot;],
+    &quot;time_to_market&quot;: &quot;6 weeks&quot;,
+    &quot;operational_complexity&quot;: &quot;Low&quot;,
+    &quot;cost&quot;: &quot;$500/month&quot;
+}
+
+# Trade-offs:
+Ship fast (critical for startup!)
+Easy to change (iterate quickly)
+Low cost
+Simple operations
+Might need to refactor later (acceptable!)
+Not &quot;impressive&quot; architecture
+
+# Which to choose?
+# Startup context → Option 2
+# Why: Speed &gt; Scalability at this stage
+# Can refactor when/if successful
+</code></pre>
+<p><strong>The Refactor Path (Often Better):</strong></p>
+<pre><code>Stage 1: Monolith (0-10K users)
+- Simple, fast iteration
+- Find product-market fit
+Time: 6 months
+
+Stage 2: Modular Monolith (10K-100K users)
+- Extract modules, clear boundaries
+- Add caching, read replicas
+Time: +3 months
+
+Stage 3: Selective Microservices (100K-1M users)
+- Split hot services only
+- Keep core monolith
+Time: +6 months
+
+Stage 4: Full Microservices (if needed at 1M+)
+- Proven bottlenecks
+- Have team &amp; resources
+Time: +12 months
+
+Total: ~27 months, but with revenue and team growth
+vs
+Microservices Day 1: 6 months, might never launch
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code class="language-python">def choose_architecture(context):
+    &quot;&quot;&quot;Simple vs Complex architecture decision&quot;&quot;&quot;
+    
+    if context.users &lt; 10_000:
+        return &quot;Monolith&quot;
+    
+    if context.developers &lt; 10:
+        return &quot;Modular Monolith&quot;
+    
+    if context.has_proven_bottlenecks and context.can_afford_complexity:
+        return &quot;Selective Microservices&quot;
+    
+    if context.users &gt; 10_000_000 and context.developers &gt; 50:
+        return &quot;Full Microservices&quot;
+    
+    # Default: Keep it simple
+    return &quot;Monolith&quot;
+</code></pre>
+<h3 id="trade-off-4-premature-optimization">Trade-off 4: Premature Optimization</h3>
+<p><strong>&quot;Premature optimization is the root of all evil&quot; - Donald Knuth</strong></p>
+<pre><code>The trap:
+&quot;Let&#x27;s build it to scale to 100M users from day 1!&quot;
+
+Reality:
+- 99% of startups never reach 100M users
+- Over-engineering for scale you don&#x27;t have = wasted time
+- Time wasted = opportunity cost
+
+Better approach:
+- Build for 2x current scale
+- Monitor and optimize when needed
+- Iterate based on real data
+</code></pre>
+<p><strong>Example: Over-optimization</strong></p>
+<pre><code class="language-python"># Engineer&#x27;s proposal for new feature
+
+&quot;We need to build a notification system.
+I propose:
+
+- Kafka for event streaming
+- Cassandra for storage (scales to billions)
+- Microservices architecture
+- Service mesh for reliability
+- Custom protocol for low latency
+- Machine learning for personalization
+
+Timeline: 4 months
+Cost: $50K in infrastructure
+Team: 3 developers full-time&quot;
+
+# Senior architect&#x27;s response:
+
+&quot;Let&#x27;s start simpler:
+
+Current scale:
+- 5K users
+- ~100 notifications/day
+- 99% email, 1% push
+
+MVP approach:
+- PostgreSQL for storage (we already have it)
+- Background job processor (Celery)
+- SendGrid API for emails
+- FCM for push notifications
+
+Timeline: 1 week
+Cost: $50/month (SendGrid + FCM)
+Team: 1 developer part-time
+
+We can refactor when we hit 100K users.
+Right now, shipping fast &gt; perfect architecture.&quot;
+
+→ 4 months vs 1 week
+→ $50K vs $50/month
+→ 3 devs vs 1 dev
+
+Which would you choose?
+</code></pre>
+<p><strong>When to optimize:</strong></p>
+<pre><code>Optimize when:
+- Have real performance problem
+- Problem affects users/revenue
+- Have data showing bottleneck
+- Cost of not optimizing &gt; cost of optimizing
+
+Don&#x27;t optimize when:
+- &quot;Might need it someday&quot;
+- &quot;Best practice says so&quot;
+- No measurement/data
+- Users not complaining
+</code></pre>
+<h2 id="cap-theorem-intuition-beyond-theory">CAP Theorem Intuition (Beyond Theory)</h2>
+<p><strong>CAP Theorem simplified:</strong></p>
+<pre><code>C - Consistency: All nodes see same data
+A - Availability: System always responds
+P - Partition tolerance: Works despite network issues
+
+In distributed system: Can only guarantee 2 out of 3
+</code></pre>
+<p>But in reality, <strong>network partitions always happen</strong>. So choice is really:</p>
+<pre><code>CP (Consistency + Partition tolerance):
+→ Choose Consistency over Availability
+→ System might refuse requests to stay consistent
+
+AP (Availability + Partition tolerance):
+→ Choose Availability over Consistency
+→ System always responds, might show stale data
+</code></pre>
+<p><strong>Intuitive examples:</strong></p>
+<p><strong>Bank ATM (CP System):</strong></p>
+<pre><code>Scenario: Network partition between ATMs và central bank
+
+CP Behavior:
+- ATM detects partition
+- ATM disables withdrawals
+- Shows error: &quot;Service temporarily unavailable&quot;
+- Prevents inconsistent balance
+
+Why CP:
+- Cannot risk showing wrong balance
+- Cannot risk double withdrawal
+- Correctness &gt; Availability
+
+User impact:
+- Frustrated (can&#x27;t withdraw)
+- But trust maintained (no data corruption)
+</code></pre>
+<p><strong>Facebook News Feed (AP System):</strong></p>
+<pre><code>Scenario: Network partition between data centers
+
+AP Behavior:
+- Both data centers continue serving
+- Users might see slightly different feeds
+- Eventually reconciles when partition heals
+- Some likes might take seconds to appear
+
+Why AP:
+- User can still browse (good UX)
+- Slightly stale feed acceptable
+- Availability &gt; Perfect Consistency
+
+User impact:
+- Can use app (happy)
+- Doesn&#x27;t notice 2-second delay in like counts
+</code></pre>
+<p><strong>Decision matrix:</strong></p>
+<pre><code>Use CP when:
+✓ Financial transactions
+✓ Inventory management
+✓ User authentication
+✓ Booking systems (seats, tickets)
+✓ Medical records
+
+Use AP when:
+✓ Social media feeds
+✓ View/like counts
+✓ Recommendations
+✓ Analytics dashboards
+✓ Search results
+</code></pre>
+<h2 id="how-to-defend-architecture-decisions">How to Defend Architecture Decisions</h2>
+<p><strong>In architecture reviews, you will be challenged. Here&#x27;s how to defend:</strong></p>
+<h3 id="the-defense-framework">The Defense Framework</h3>
+<pre><code>1. State the problem clearly
+2. List alternatives considered
+3. Explain trade-offs of each
+4. Show why chosen solution fits context
+5. Acknowledge limitations
+6. Define success metrics
+</code></pre>
+<p><strong>Example defense:</strong></p>
+<pre><code>Challenger: &quot;Why did you choose PostgreSQL over MongoDB?&quot;
+
+Weak defense:
+&quot;PostgreSQL is better.&quot;
+
+Strong defense:
+&quot;Let me explain the reasoning:
+
+Problem:
+We need to store user data, orders, and relationships.
+ACID transactions critical (payment flow).
+
+Alternatives considered:
+
+Option 1: PostgreSQL
+ACID transactions
+Rich query capabilities (JOINs)
+Team already familiar
+Proven at scale (Instagram uses it)
+Vertical scaling limits
+Schema changes expensive
+Fit: High (requirements align)
+
+Option 2: MongoDB
+Horizontal scaling easier
+Flexible schema
+Good for rapid prototyping
+No ACID across documents
+JOIN-like operations expensive
+Team needs training
+Fit: Medium (some benefits, key drawbacks)
+
+Option 3: Cassandra
+Massive scale (billions of rows)
+High availability
+Eventual consistency (not acceptable)
+Complex operations model
+Overkill for our scale (10K users)
+Fit: Low (over-engineering)
+
+Decision: PostgreSQL
+Why:
+- ACID transactions non-negotiable (payments)
+- Rich querying needed (reports, analytics)
+- Team productivity (no learning curve)
+- Our scale (10K → 100K users) well within PostgreSQL capacity
+
+Trade-offs accepted:
+- Vertical scaling limit (can handle 100K-1M users, enough for now)
+- Schema migrations (acceptable with good practices)
+
+Success metrics:
+- Query latency &lt; 100ms (currently 50ms)
+- Zero transaction failures
+- Developer velocity maintained
+
+If PostgreSQL becomes bottleneck (&gt; 1M users):
+- Add read replicas first
+- Then shard if needed
+- Migration path exists
+
+Questions?&quot;
+
+→ Thorough analysis
+→ Context-driven decision
+→ Trade-offs acknowledged
+→ Success criteria defined
+→ Evolution path planned
+</code></pre>
+<h3 id="common-challenges--responses">Common Challenges &amp; Responses</h3>
+<p><strong>Challenge 1: &quot;Why not use [trendy technology]?&quot;</strong></p>
+<pre><code>Response template:
+&quot;[Technology X] is great for [specific use case].
+Our requirements are [Y], which [X] doesn&#x27;t optimize for.
+Specifically, [trade-off Z] doesn&#x27;t align with our priorities.
+We chose [our solution] because [reasoning].&quot;
+
+Example:
+&quot;Kafka is great for high-throughput event streaming.
+Our requirement is simple task queue (100 jobs/minute).
+Kafka&#x27;s operational complexity doesn&#x27;t justify the benefit at our scale.
+We chose RabbitMQ for simplicity and quick setup.&quot;
+</code></pre>
+<p><strong>Challenge 2: &quot;This won&#x27;t scale!&quot;</strong></p>
+<pre><code>Response template:
+&quot;Let&#x27;s quantify &#x27;scale&#x27;.
+Current: [X users/requests]
+Growth: [Y% per month]
+Capacity: [Solution handles Z]
+Timeline: [N months before bottleneck]
+Plan: [Mitigation strategy]&quot;
+
+Example:
+&quot;Current: 10K users, 1K requests/minute
+Growth: 20% monthly
+Single PostgreSQL handles: 10K writes/second
+Timeline: ~24 months before bottleneck (at 150K users)
+Plan: Add read replicas at 50K users, shard at 200K+ if needed
+This buys us 2 years to validate product-market fit.&quot;
+</code></pre>
+<p><strong>Challenge 3: &quot;Too complex / Too simple&quot;</strong></p>
+<pre><code>Response:
+&quot;Complexity should match the problem.
+
+Our constraints:
+- [Scale/Users/Traffic]
+- [Team size/expertise]
+- [Timeline/Budget]
+
+Given these, [solution] is appropriately sized.
+If constraints change, we&#x27;ll re-evaluate.&quot;
+
+Example:
+&quot;Our constraints:
+- 5K users, 100 req/s
+- 2 developers
+- 1-month deadline
+- $500/month budget
+
+Microservices would be over-engineering.
+Monolith with good structure ships fast and handles scale.
+We can split later if proven necessary.&quot;
+</code></pre>
+<h2 id="practical-exercise-trade-off-analysis">Practical Exercise: Trade-off Analysis</h2>
+<p><strong>Try analyzing this scenario:</strong></p>
+<p><strong>Problem:</strong> Design caching strategy for e-commerce product pages</p>
+<p><strong>Context:</strong></p>
+<ul>
+<li>100K products</li>
+<li>1M page views/day</li>
+<li>Products update pricing hourly</li>
+<li>Flash sales change prices every minute</li>
+<li>70% traffic on top 1K products (hot items)</li>
+</ul>
+<p><strong>Options:</strong></p>
+<p><strong>Option A: Aggressive caching (long TTL)</strong></p>
+<pre><code class="language-python">cache_ttl = 3600  # 1 hour
+
+Benefits:
+- Very fast (&lt; 10ms)
+- Low database load
+- Handle traffic spikes
+
+Costs:
+- Stale prices (up to 1 hour old)
+- Flash sale prices delayed
+- User complaints possible
+</code></pre>
+<p><strong>Option B: Short TTL</strong></p>
+<pre><code class="language-python">cache_ttl = 60  # 1 minute
+
+Benefits:
+- Reasonably fresh data
+- Flash sales mostly accurate
+- Balanced approach
+
+Costs:
+- More cache misses
+- Higher DB load
+- Slightly slower
+</code></pre>
+<p><strong>Option C: Smart invalidation</strong></p>
+<pre><code class="language-python"># Cache-aside pattern with event-driven invalidation
+
+on_price_update(product_id):
+    cache.delete(f&quot;product:{product_id}&quot;)
+
+Benefits:
+- Always fresh
+- Still fast (cached until update)
+- Best user experience
+
+Costs:
+- Complex implementation
+- Invalidation bugs possible
+- Need event system
+</code></pre>
+<p><strong>Your task:</strong></p>
+<ol>
+<li>Which option would you choose?</li>
+<li>Why?</li>
+<li>What trade-offs are you accepting?</li>
+<li>How would you defend your choice?</li>
+</ol>
+<p><strong>My analysis:</strong></p>
+<pre><code>Recommendation: Option C (Smart invalidation)
+
+Reasoning:
+- Price accuracy critical (e-commerce trust)
+- Flash sales are revenue driver (can&#x27;t be stale)
+- Complexity justified by business value
+- 70% hot items = high cache hit rate still
+
+Trade-offs accepted:
+- Implementation time (+1 week)
+- Operational complexity (monitoring invalidation)
+- Dependency on event system
+
+But:
+- Revenue impact of accurate pricing &gt; development cost
+- Event system useful for other features
+- Monitoring is necessity anyway
+
+Alternative for MVP: Option B
+- If timeline tight, start with 1-min TTL
+- Migrate to Option C when proven valuable
+- Phased approach reduces risk
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Trade-off thinking = Core skill of Senior Engineer</strong></p>
+<pre><code>Junior: &quot;Which technology is best?&quot;
+Senior: &quot;Which trade-offs fit our context?&quot;
+
+Experience = Pattern library
+Seniority = Trade-off reasoning
+</code></pre>
+<p><strong>Major trade-offs:</strong></p>
+<pre><code>Consistency vs Availability
+→ Financial data: Consistency
+→ Social data: Availability
+
+Latency vs Cost
+→ Calculate ROI
+→ Optimize when justified
+
+Simplicity vs Scalability
+→ Start simple
+→ Scale when needed (with data)
+
+Early optimization vs Iteration
+→ Build for 2x, not 100x
+→ Premature optimization = waste
+</code></pre>
+<p><strong>Defense framework:</strong></p>
+<pre><code>1. State problem clearly
+2. List alternatives
+3. Explain trade-offs
+4. Justify choice with context
+5. Acknowledge limitations
+6. Define success metrics
+7. Plan evolution path
+</code></pre>
+<p><strong>CAP theorem intuition:</strong></p>
+<pre><code>Network partitions happen (P is given)
+Choose: C or A
+
+C (Consistency): Banking, payments, bookings
+A (Availability): Social media, analytics, feeds
+
+No perfect answer, only contextual fit
+</code></pre>
+<p><strong>Mental model:</strong></p>
+<pre><code>Every architectural decision:
+- Has trade-offs (always!)
+- Depends on context (no universal &quot;best&quot;)
+- Should be justified (with reasoning)
+- Can evolve (not permanent)
+- Requires measurement (not gut feeling)
+</code></pre>
+<p><strong>The ultimate test:</strong></p>
+<pre><code>Good architect can answer:
+&quot;Why did you choose X over Y?&quot;
+
+With:
+✓ Clear problem understanding
+✓ Alternative options
+✓ Trade-off analysis
+✓ Context alignment
+✓ Success metrics
+✓ Evolution plan
+
+Not with:
+✗ &quot;It&#x27;s best practice&quot;
+✗ &quot;Everyone uses it&quot;
+✗ &quot;It&#x27;s newer/faster/cooler&quot;
+</code></pre>
+<p><strong>Remember:</strong></p>
+<pre><code>Perfect architecture = Myth
+Good architecture = Right trade-offs for your context
+
+Master trade-off thinking
+Master architecture decision making
+Master being a Senior Engineer
+</code></pre>
+<p>Bạn đã học patterns, frameworks, systems. Giờ là lúc học <strong>reason about them</strong>.</p>
+<p><strong>Trade-off thinking separates Senior from Junior. Master it.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-6/lesson/lesson-2-snake-framework"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>SNAKE Framework - Methodology Để Ace System Design Interview</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-6/lesson/lesson-4-real-interview-strategy">Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n11:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-6\",\"lesson\",\"lesson-3-trade-offs-and-architecture-decision-making\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-6\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-3-trade-offs-and-architecture-decision-making\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],\"$L6\",\"$L7\"]}]]}]}],\"$L8\"]}]}]]}],{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{\"children\":[\"$Ld\",{},null,false,false]},[\"$Le\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Lf\",[],[]],false,false],\"$L10\",false]],\"m\":\"$undefined\",\"G\":[\"$11\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"12:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n14:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n15:\"$Sreact.suspense\"\n21:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n23:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}]\n7:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n8:[\"$\",\"$L12\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nd:[\"$\",\"$1\",\"c\",{\"children\":[\"$L13\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L14\",null,{\"children\":[\"$\",\"$15\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@16\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L17\",\"$L18\",\"$L19\",\"$L1a\"]}],\"$L1b\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1c\",\"$L1d\",\"$L1e\",\"$L1f\"]}],\"$L20\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"10:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L21\",null,{\"children\":\"$L22\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L23\",null,{\"children\":[\"$\",\"$15\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L24\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1b:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n20:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"13:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 6 — System Design Mastery\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Master trade-off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture decisions như Senior Engineer với CAP theorem intuition.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-system-design-thinking-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-1-system-design-thinking-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\"}]]}]}],[\"$\",\"li\",\"lesson-2-snake-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-2-snake-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"SNAKE Framework - Methodology Để Ace System Design Interview\"}]]}]}],[\"$\",\"li\",\"lesson-3-trade-offs-and-architecture-decision-making\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\"}]]}]}],[\"$\",\"li\",\"lesson-4-real-interview-strategy\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-4-real-interview-strategy\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\"}]]}]}],[\"$\",\"li\",\"lesson-5-advanced-architecture-topics\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"}]]}]}],[\"$\",\"li\",\"lesson-6-architect-mindset-production-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L25\",\"$L26\"]}]}]]}]]}],\"$L27\"]}],\"$L28\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"29:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n25:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n26:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\"}]\n27:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"hover:text-ink\",\"children\":\"Phase 6 — System Design Mastery\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Master trade-off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture decisions như Senior Engineer với CAP theorem intuition.\"}]]}],[\"$\",\"$L29\",null,{\"path\":\"/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making\",\"title\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\",\"description\":\"Master trade-off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture decisions như Senior Engineer với CAP theorem intuition.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\",\"children\":\"$L2a\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-2-snake-framework\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"SNAKE Framework - Methodology Để Ace System Design Interview\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-4-real-interview-strategy\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2b:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"2a:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"trade-offs--architecture-decision-making\",\"children\":\"Trade-offs \u0026 Architecture Decision Making\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Sau 3 năm làm việc, tôi được promote lên Senior Engineer.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Manager hỏi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Em nghĩ điều gì phân biệt Senior Engineer với Junior Engineer?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi tự tin: \",[\"$\",\"em\",null,{\"children\":\"\\\"Senior biết nhiều patterns hơn, code giỏi hơn, có experience hơn.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Manager lắc đầu: \",[\"$\",\"em\",null,{\"children\":[\"\\\"Không. Senior Engineer giỏi ở \",[\"$\",\"strong\",null,{\"children\":\"trade-off thinking\"}],\".\\\"\"]}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Một tuần sau, trong architecture review:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Junior Engineer: \",[\"$\",\"em\",null,{\"children\":\"\\\"Em suggest dùng microservices cho project mới.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Manager: \",[\"$\",\"em\",null,{\"children\":\"\\\"Tại sao?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Junior: \",[\"$\",\"em\",null,{\"children\":\"\\\"Vì microservices là best practice, scale tốt, Netflix dùng.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Manager: \",[\"$\",\"em\",null,{\"children\":\"\\\"Với 3 developers và 500 users, cost của microservices là gì? Benefit là gì? Trade-off có worth it không?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Junior: \",[\"$\",\"em\",null,{\"children\":\"\\\"... Em chưa nghĩ đến.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Đó là lúc tôi thực sự hiểu.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior Engineer không phải là người biết nhiều nhất. Mà là người \",[\"$\",\"strong\",null,{\"children\":\"reason about trade-offs tốt nhất\"}],\".\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-trade-off-thinking-là-core-skill\",\"children\":\"Tại Sao Trade-off Thinking Là Core Skill?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-fundamental-truth\",\"children\":\"The Fundamental Truth\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trong software architecture, không có perfect solution.\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Perfect solution = Myth\\nReal solution = Trade-offs\\n\\nMọi quyết định technical đều có:\\nBenefits (gains)\\nCosts (sacrifices)\\n\\nChoose solution = Choose which trade-off to accept\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"junior-vs-senior-thinking\",\"children\":\"Junior vs Senior Thinking\"}],\"\\n\",[\"$\",\"$L2b\",null,{\"chart\":\"graph TB\\n    subgraph Junior Thinking\\n        J1[Problem] --\u003e J2[Google \\\"best solution\\\"]\\n        J2 --\u003e J3[Apply pattern]\\n        J3 --\u003e J4[Done]\\n    end\\n    \\n    subgraph Senior Thinking\\n        S1[Problem] --\u003e S2[List alternatives]\\n        S2 --\u003e S3[Analyze trade-offs]\\n        S3 --\u003e S4[Consider context]\\n        S4 --\u003e S5[Choose \u0026 justify]\\n        S5 --\u003e S6[Document reasoning]\\n    end\\n    \\n    style J3 fill:#ff6b6b\\n    style S5 fill:#51cf66\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Junior copy solutions, Senior evaluate trade-offs\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example comparison:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Problem: Need cache layer\\n\\nJunior:\\n\\\"Use Redis. It's fast and everyone uses it.\\\"\\n\\nSenior:\\n\\\"Let's evaluate caching options:\\n\\nOption 1: Redis\\nVery fast (\u003c 1ms)\\nRich data structures\\nPersistence optional\\nMemory expensive at scale\\nOperational overhead\\nCost: ~$500/month for 16GB\\n\\nOption 2: Memcached\\nSimple, stable\\nSlightly lower memory footprint\\nNo persistence\\nLimited data structures\\nCost: ~$400/month\\n\\nOption 3: Application-level cache (in-process)\\nZero latency\\nNo infrastructure cost\\nSimple\\nNot shared across servers\\nLimited by server memory\\n\\nGiven our context:\\n- 5 app servers\\n- Read-heavy (90% cache hit rate expected)\\n- Budget-conscious startup\\n- Simple use case (key-value only)\\n\\nRecommendation: Memcached\\nReasoning: Simplicity + cost savings outweigh Redis features we don't need.\\nWe can migrate to Redis later if we need persistence.\\\"\\n\\n→ Analyzed options\\n→ Listed trade-offs\\n→ Considered context\\n→ Justified decision\\n\"}]}],\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\"]}]\n"])</script><script>self.__next_f.push([1,"2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Thấy sự khác biệt chưa?\"}]}]\n2d:[\"$\",\"p\",null,{\"children\":[\"Senior không chỉ choose solution. Senior \",[\"$\",\"strong\",null,{\"children\":\"justify why that solution fits context\"}],\".\"]}]\n2e:[\"$\",\"h2\",null,{\"id\":\"the-major-trade-offs-mọi-architect-phải-hiểu\",\"children\":\"The Major Trade-offs Mọi Architect Phải Hiểu\"}]\n2f:[\"$\",\"h3\",null,{\"id\":\"trade-off-1-consistency-vs-availability\",\"children\":\"Trade-off 1: Consistency vs Availability\"}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"From CAP Theorem:\"}]}]\n31:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Trong distributed system with network partition:\\nCannot have BOTH perfect Consistency AND perfect Availability\\n\\nMust choose:\\n- CP (Consistency + Partition tolerance)\\n- AP (Availability + Partition tolerance)\\n\"}]}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real-world translation:\"}]}]\n33:[\"$\",\"$L2b\",null,{\"chart\":\"graph LR\\n    A[Strong Consistency] ---|Trade-off| B[High Availability]\\n    \\n    A --\u003e A1[Banking\u003cbr/\u003ePayments\u003cbr/\u003eInventory]\\n    B --\u003e B1[Social Media\u003cbr/\u003eAnalytics\u003cbr/\u003eFeeds]\\n    \\n    style A fill:#ff6b6b\\n    style B fill:#51cf66\"}]\n34:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Consistency vs Availability: Chọn dựa trên business requirements\"}]}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario: E-commerce Inventory\"}]}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Strong Consistency (CP)\\ndef purchase_product(product_id, quantity):\\n    # Lock row, ensure stock accurate\\n    with db.transaction():\\n        product = db.query(\\\"SELECT * FROM products WHERE id = ? FOR UPDATE\\\", product_id)\\n        \\n        if product.stock \u003c quantity:\\n            return {\\\"error\\\": \\\"Out of stock\\\"}\\n        \\n        product.stock -= quantity\\n        db.commit()\\n        \\n        return {\\\"success\\\": True}\\n\\n# Trade-offs:\\nNo overselling (critical!)\\nAccurate inventory\\nSlow (lock + transaction overhead)\\nLower availability (if DB down, can't sell)\\nPoor scalability (locks limit concurrency)\\n\\nWhy choose this: Overselling = angry customers + revenue loss\\nConsistency \u003e Availability for this use case\\n\"}]}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario: Social Media Likes\"}]}]\n38:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# High Availability (AP)\\ndef like_post(post_id, user_id):\\n    # Async write, eventual consistency\\n    cache.increment(f\\\"post:{post_id}:likes\\\")\\n    queue.publish({\\n        \\\"event\\\": \\\"post_liked\\\",\\n        \\\"post_id\\\": post_id,\\n        \\\"user_id\\\": user_id\\n    })\\n    \\n    return {\\\"success\\\": True}\\n\\n# Worker processes queue eventually\\n@worker.task\\ndef process_like(event):\\n    db.execute(\\\"INSERT INTO likes ...\\\")\\n\\n# Trade-offs:\\nSuper fast (\u003c 10ms)\\nAlways available\\nHigh scalability\\nLike count might be slightly off\\nEventual consistency (delay 1-2s)\\n\\nWhy choose this: User doesn't care if count is 99 or 101\\nAvailability \u003e Consistency for this use case\\n\"}]}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\n91:T46f,def choose_consistency_level(feature):\n    \"\"\"Framework để decide consistency vs availability\"\"\"\n    \n    # Ask critical questions\n    questions = {\n        \"financial_impact\": \"Sai data = mất tiền?\",\n        \"user_experience\": \"User notice inconsistency?\",\n        \"legal_requirement\": \"Compliance yêu cầu consistency?\",\n        \"failure_cost\": \"Downtime cost bao nhiêu?\"\n    }\n    \n    if feature.financial_impact == \"high\":\n        return \"Strong Consistency (CP)\"\n    \n    if feature.legal_requirement == \"yes\":\n        return \"Strong Consistency (CP)\"\n    \n    if feature.user_experience == \"unaffected_by_slight_delay\":\n        return \"Eventual Consistency (AP)\"\n    \n    if feature.failure_cost == \"very_high\":\n        return \"High Availability (AP)\"\n    \n    # Default: Strong consistency (sa"])</script><script>self.__next_f.push([1,"fer)\n    return \"Strong Consistency (CP)\"\n\n# Examples\nchoose_consistency_level(Payment)           # → CP (financial)\nchoose_consistency_level(UserProfile)       # → CP (user-facing)\nchoose_consistency_level(ViewCount)         # → AP (doesn't matter)\nchoose_consistency_level(Recommendations)   # → AP (can be stale)\n3a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$91\"}]}]\n3b:[\"$\",\"h3\",null,{\"id\":\"trade-off-2-latency-vs-cost\",\"children\":\"Trade-off 2: Latency vs Cost\"}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The reality: Speed costs money.\"}]}]\n3d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Lower latency = Higher cost (usually)\\n\\nWays to reduce latency:\\n- More servers (costly)\\n- Faster hardware (costly)\\n- Closer to users (CDN = costly)\\n- More caching (memory = costly)\\n- Database optimization (engineering time = costly)\\n\"}]}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario: API Response Time\"}]}]\n3f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Baseline: No optimization\\n# Latency: 500ms\\n# Cost: $500/month (basic setup)\\n\\n# Option 1: Add Redis cache\\n# Latency: 50ms (10x improvement)\\n# Cost: $500 + $300 = $800/month\\n# ROI: Worth it? Depends on user value\\n\\n# Option 2: Add CDN for static assets\\n# Latency: 200ms (2.5x improvement)\\n# Cost: $500 + $100 = $600/month\\n# ROI: Better bang for buck\\n\\n# Option 3: Upgrade database (vertical scale)\\n# Latency: 300ms (1.7x improvement)\\n# Cost: $500 + $400 = $900/month\\n# ROI: Expensive for little gain\\n\\n# Option 4: All of the above\\n# Latency: 30ms (16x improvement)\\n# Cost: $500 + $300 + $100 + $400 = $1,300/month\\n# ROI: Overkill? Depends on requirements\\n\"}]}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Latency requirements tiers\\n\\nTier 1: Real-time (\u003c 50ms)\\nUse cases: Gaming, trading, video calls\\nCost: Very high\\nSolution: Aggressive caching, edge computing, WebSocket\\n\\nTier 2: Interactive (\u003c 200ms)\\nUse cases: Web apps, mobile apps\\nCost: Medium\\nSolution: Cache, CDN, optimized queries\\n\\nTier 3: Responsive (\u003c 1s)\\nUse cases: Reports, batch operations\\nCost: Low\\nSolution: Basic optimization, no over-engineering\\n\\nTier 4: Background (\u003c 10s)\\nUse cases: Email, notifications, analytics\\nCost: Very low\\nSolution: Async processing, queues\\n\"}]}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off analysis:\"}]}]\n43:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Question: \\\"Should we add Redis cache?\\\"\\n\\nDon't answer immediately. Analyze:\\n\\nCurrent state:\\n- API latency: 400ms\\n- DB query: 300ms (bottleneck)\\n- Users: 10K\\n- Complaints: Few\\n\\nWith Redis:\\n- API latency: 50ms (8x improvement)\\n- Cost: +$300/month\\n- Complexity: +1 component to manage\\n- Cache invalidation: New problems\\n\\nIs trade-off worth it?\\n- 10K users × $5/month revenue = $50K/month\\n- Better UX might increase retention 5% = +$2.5K/month\\n- Cost = $300/month\\n- ROI = $2.5K / $300 = 8.3x\\n\\nDecision: Yes, worth it\\n\"}]}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Personal guideline:\"}]}]\n45:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Optimize latency when:\\n✓ User experience directly affected\\n✓ Business metrics correlate with speed\\n✓ Cost is justified by revenue/retention\\n✓ Current latency exceeds tier requirements\\n\\nDon't optimize when:\\n✗ Users don't notice difference\\n✗ No business impact\\n✗ Cost too high relative to benefit\\n✗ Premature (don't have scale yet)\\n\"}]}]\n46:[\"$\",\"h3\",null,{\"id\":\"trade-off-3-simplicity-vs-scalability\",\"children\":\"Trade-off 3: Simplicity vs Scalability\"}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The eternal tension: Simple now hoặc scale later?\"}]}]\n48:[\"$\",\"$L2b\",null,{\"chart\":\"graph LR\\n    SIMPLE[Simple Architecture\u003cbr/\u003eMonolith] ---|Growth pressure| COMPLEX[Complex Architect"])</script><script>self.__next_f.push([1,"ure\u003cbr/\u003eMicroservices]\\n    \\n    SIMPLE --\u003e S1[Fast development\u003cbr/\u003eEasy debugging\u003cbr/\u003eLow ops cost]\\n    COMPLEX --\u003e C1[Independent scaling\u003cbr/\u003eTeam autonomy\u003cbr/\u003eFault isolation]\\n    \\n    style SIMPLE fill:#51cf66\\n    style COMPLEX fill:#ffd43b\"}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Simplicity vs Scalability spectrum: Different stages need different approaches\"}]}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario: Startup Architecture Decision\"}]}]\n92:T4af,# Context\nstartup = {\n    \"users\": 1000,\n    \"developers\": 3,\n    \"runway\": \"12 months\",\n    \"goal\": \"Product-market fit\"\n}\n\n# Option 1: Microservices from day 1\narchitecture_1 = {\n    \"services\": [\"user-service\", \"order-service\", \"payment-service\", \"notification-service\"],\n    \"infrastructure\": [\"Kubernetes\", \"Kafka\", \"Service Mesh\"],\n    \"time_to_market\": \"6 months\",\n    \"operational_complexity\": \"High\",\n    \"cost\": \"$5000/month\"\n}\n\n# Trade-offs:\n\"Scales to millions\" (not needed yet)\nModern architecture\n6 months to MVP (too slow!)\nHigh complexity với 3 devs\nExpensive for 1K users\nMight not reach PMF before running out of money\n\n# Option 2: Monolith with good structure\narchitecture_2 = {\n    \"structure\": \"Modular monolith\",\n    \"infrastructure\": [\"Heroku\", \"PostgreSQL\", \"Redis\"],\n    \"time_to_market\": \"6 weeks\",\n    \"operational_complexity\": \"Low\",\n    \"cost\": \"$500/month\"\n}\n\n# Trade-offs:\nShip fast (critical for startup!)\nEasy to change (iterate quickly)\nLow cost\nSimple operations\nMight need to refactor later (acceptable!)\nNot \"impressive\" architecture\n\n# Which to choose?\n# Startup context → Option 2\n# Why: Speed \u003e Scalability at this stage\n# Can refactor when/if successful\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$92\"}]}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The Refactor Path (Often Better):\"}]}]\n4d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Stage 1: Monolith (0-10K users)\\n- Simple, fast iteration\\n- Find product-market fit\\nTime: 6 months\\n\\nStage 2: Modular Monolith (10K-100K users)\\n- Extract modules, clear boundaries\\n- Add caching, read replicas\\nTime: +3 months\\n\\nStage 3: Selective Microservices (100K-1M users)\\n- Split hot services only\\n- Keep core monolith\\nTime: +6 months\\n\\nStage 4: Full Microservices (if needed at 1M+)\\n- Proven bottlenecks\\n- Have team \u0026 resources\\nTime: +12 months\\n\\nTotal: ~27 months, but with revenue and team growth\\nvs\\nMicroservices Day 1: 6 months, might never launch\\n\"}]}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\n4f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def choose_architecture(context):\\n    \\\"\\\"\\\"Simple vs Complex architecture decision\\\"\\\"\\\"\\n    \\n    if context.users \u003c 10_000:\\n        return \\\"Monolith\\\"\\n    \\n    if context.developers \u003c 10:\\n        return \\\"Modular Monolith\\\"\\n    \\n    if context.has_proven_bottlenecks and context.can_afford_complexity:\\n        return \\\"Selective Microservices\\\"\\n    \\n    if context.users \u003e 10_000_000 and context.developers \u003e 50:\\n        return \\\"Full Microservices\\\"\\n    \\n    # Default: Keep it simple\\n    return \\\"Monolith\\\"\\n\"}]}]\n50:[\"$\",\"h3\",null,{\"id\":\"trade-off-4-premature-optimization\",\"children\":\"Trade-off 4: Premature Optimization\"}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"Premature optimization is the root of all evil\\\" - Donald Knuth\"}]}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"The trap:\\n\\\"Let's build it to scale to 100M users from day 1!\\\"\\n\\nReality:\\n- 99% of startups never reach 100M users\\n- Over-engineering for scale you don't have = wasted time\\n- Time wasted = opportunity cost\\n\\nBetter approach:\\n- Build for 2x current scale\\n- Monitor and optimize when needed\\n- Iterate based on real data\\n\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example: Over-optimization\"}]}]\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Engineer"])</script><script>self.__next_f.push([1,"'s proposal for new feature\\n\\n\\\"We need to build a notification system.\\nI propose:\\n\\n- Kafka for event streaming\\n- Cassandra for storage (scales to billions)\\n- Microservices architecture\\n- Service mesh for reliability\\n- Custom protocol for low latency\\n- Machine learning for personalization\\n\\nTimeline: 4 months\\nCost: $50K in infrastructure\\nTeam: 3 developers full-time\\\"\\n\\n# Senior architect's response:\\n\\n\\\"Let's start simpler:\\n\\nCurrent scale:\\n- 5K users\\n- ~100 notifications/day\\n- 99% email, 1% push\\n\\nMVP approach:\\n- PostgreSQL for storage (we already have it)\\n- Background job processor (Celery)\\n- SendGrid API for emails\\n- FCM for push notifications\\n\\nTimeline: 1 week\\nCost: $50/month (SendGrid + FCM)\\nTeam: 1 developer part-time\\n\\nWe can refactor when we hit 100K users.\\nRight now, shipping fast \u003e perfect architecture.\\\"\\n\\n→ 4 months vs 1 week\\n→ $50K vs $50/month\\n→ 3 devs vs 1 dev\\n\\nWhich would you choose?\\n\"}]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"When to optimize:\"}]}]\n56:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Optimize when:\\n- Have real performance problem\\n- Problem affects users/revenue\\n- Have data showing bottleneck\\n- Cost of not optimizing \u003e cost of optimizing\\n\\nDon't optimize when:\\n- \\\"Might need it someday\\\"\\n- \\\"Best practice says so\\\"\\n- No measurement/data\\n- Users not complaining\\n\"}]}]\n57:[\"$\",\"h2\",null,{\"id\":\"cap-theorem-intuition-beyond-theory\",\"children\":\"CAP Theorem Intuition (Beyond Theory)\"}]\n58:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"CAP Theorem simplified:\"}]}]\n59:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"C - Consistency: All nodes see same data\\nA - Availability: System always responds\\nP - Partition tolerance: Works despite network issues\\n\\nIn distributed system: Can only guarantee 2 out of 3\\n\"}]}]\n5a:[\"$\",\"p\",null,{\"children\":[\"But in reality, \",[\"$\",\"strong\",null,{\"children\":\"network partitions always happen\"}],\". So choice is really:\"]}]\n5b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"CP (Consistency + Partition tolerance):\\n→ Choose Consistency over Availability\\n→ System might refuse requests to stay consistent\\n\\nAP (Availability + Partition tolerance):\\n→ Choose Availability over Consistency\\n→ System always responds, might show stale data\\n\"}]}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Intuitive examples:\"}]}]\n5d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bank ATM (CP System):\"}]}]\n5e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario: Network partition between ATMs và central bank\\n\\nCP Behavior:\\n- ATM detects partition\\n- ATM disables withdrawals\\n- Shows error: \\\"Service temporarily unavailable\\\"\\n- Prevents inconsistent balance\\n\\nWhy CP:\\n- Cannot risk showing wrong balance\\n- Cannot risk double withdrawal\\n- Correctness \u003e Availability\\n\\nUser impact:\\n- Frustrated (can't withdraw)\\n- But trust maintained (no data corruption)\\n\"}]}]\n5f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Facebook News Feed (AP System):\"}]}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario: Network partition between data centers\\n\\nAP Behavior:\\n- Both data centers continue serving\\n- Users might see slightly different feeds\\n- Eventually reconciles when partition heals\\n- Some likes might take seconds to appear\\n\\nWhy AP:\\n- User can still browse (good UX)\\n- Slightly stale feed acceptable\\n- Availability \u003e Perfect Consistency\\n\\nUser impact:\\n- Can use app (happy)\\n- Doesn't notice 2-second delay in like counts\\n\"}]}]\n61:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision matrix:\"}]}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Use CP when:\\n✓ Financial transactions\\n✓ Inventory management\\n✓ User authentication\\n✓ Booking systems (seats, tickets)\\n✓ Medical records\\n\\nUse AP when:\\n✓ Social media feeds\\n✓ View/like counts\\n✓ Recommendations\\n✓ Analytics dashboards\\n✓ Search results\\n\"}]}]\n63:[\"$\",\"h2\",null,{\"id\":\"how-to-defend-archite"])</script><script>self.__next_f.push([1,"cture-decisions\",\"children\":\"How to Defend Architecture Decisions\"}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"In architecture reviews, you will be challenged. Here's how to defend:\"}]}]\n65:[\"$\",\"h3\",null,{\"id\":\"the-defense-framework\",\"children\":\"The Defense Framework\"}]\n66:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. State the problem clearly\\n2. List alternatives considered\\n3. Explain trade-offs of each\\n4. Show why chosen solution fits context\\n5. Acknowledge limitations\\n6. Define success metrics\\n\"}]}]\n67:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example defense:\"}]}]\n93:T66f,"])</script><script>self.__next_f.push([1,"Challenger: \"Why did you choose PostgreSQL over MongoDB?\"\n\nWeak defense:\n\"PostgreSQL is better.\"\n\nStrong defense:\n\"Let me explain the reasoning:\n\nProblem:\nWe need to store user data, orders, and relationships.\nACID transactions critical (payment flow).\n\nAlternatives considered:\n\nOption 1: PostgreSQL\nACID transactions\nRich query capabilities (JOINs)\nTeam already familiar\nProven at scale (Instagram uses it)\nVertical scaling limits\nSchema changes expensive\nFit: High (requirements align)\n\nOption 2: MongoDB\nHorizontal scaling easier\nFlexible schema\nGood for rapid prototyping\nNo ACID across documents\nJOIN-like operations expensive\nTeam needs training\nFit: Medium (some benefits, key drawbacks)\n\nOption 3: Cassandra\nMassive scale (billions of rows)\nHigh availability\nEventual consistency (not acceptable)\nComplex operations model\nOverkill for our scale (10K users)\nFit: Low (over-engineering)\n\nDecision: PostgreSQL\nWhy:\n- ACID transactions non-negotiable (payments)\n- Rich querying needed (reports, analytics)\n- Team productivity (no learning curve)\n- Our scale (10K → 100K users) well within PostgreSQL capacity\n\nTrade-offs accepted:\n- Vertical scaling limit (can handle 100K-1M users, enough for now)\n- Schema migrations (acceptable with good practices)\n\nSuccess metrics:\n- Query latency \u003c 100ms (currently 50ms)\n- Zero transaction failures\n- Developer velocity maintained\n\nIf PostgreSQL becomes bottleneck (\u003e 1M users):\n- Add read replicas first\n- Then shard if needed\n- Migration path exists\n\nQuestions?\"\n\n→ Thorough analysis\n→ Context-driven decision\n→ Trade-offs acknowledged\n→ Success criteria defined\n→ Evolution path planned\n"])</script><script>self.__next_f.push([1,"68:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"$93\"}]}]\n69:[\"$\",\"h3\",null,{\"id\":\"common-challenges--responses\",\"children\":\"Common Challenges \u0026 Responses\"}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Challenge 1: \\\"Why not use [trendy technology]?\\\"\"}]}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Response template:\\n\\\"[Technology X] is great for [specific use case].\\nOur requirements are [Y], which [X] doesn't optimize for.\\nSpecifically, [trade-off Z] doesn't align with our priorities.\\nWe chose [our solution] because [reasoning].\\\"\\n\\nExample:\\n\\\"Kafka is great for high-throughput event streaming.\\nOur requirement is simple task queue (100 jobs/minute).\\nKafka's operational complexity doesn't justify the benefit at our scale.\\nWe chose RabbitMQ for simplicity and quick setup.\\\"\\n\"}]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Challenge 2: \\\"This won't scale!\\\"\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Response template:\\n\\\"Let's quantify 'scale'.\\nCurrent: [X users/requests]\\nGrowth: [Y% per month]\\nCapacity: [Solution handles Z]\\nTimeline: [N months before bottleneck]\\nPlan: [Mitigation strategy]\\\"\\n\\nExample:\\n\\\"Current: 10K users, 1K requests/minute\\nGrowth: 20% monthly\\nSingle PostgreSQL handles: 10K writes/second\\nTimeline: ~24 months before bottleneck (at 150K users)\\nPlan: Add read replicas at 50K users, shard at 200K+ if needed\\nThis buys us 2 years to validate product-market fit.\\\"\\n\"}]}]\n6e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Challenge 3: \\\"Too complex / Too simple\\\"\"}]}]\n6f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Response:\\n\\\"Complexity should match the problem.\\n\\nOur constraints:\\n- [Scale/Users/Traffic]\\n- [Team size/expertise]\\n- [Timeline/Budget]\\n\\nGiven these, [solution] is appropriately sized.\\nIf constraints change, we'll re-evaluate.\\\"\\n\\nExample:\\n\\\"Our constraints:\\n- 5K users, 100 req/s\\n- 2 developers\\n- 1-month deadline\\n- $500/month budget\\n\\nMicroservices would be over-engineering.\\nMonolith with good structure ships fast and handles scale.\\nWe can split later if proven necessary.\\\"\\n\"}]}]\n70:[\"$\",\"h2\",null,{\"id\":\"practical-exercise-trade-off-analysis\",\"children\":\"Practical Exercise: Trade-off Analysis\"}]\n71:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Try analyzing this scenario:\"}]}]\n72:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Problem:\"}],\" Design caching strategy for e-commerce product pages\"]}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Context:\"}]}]\n74:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"100K products\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"1M page views/day\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Products update pricing hourly\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Flash sales change prices every minute\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"70% traffic on top 1K products (hot items)\"}],\"\\n\"]}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Options:\"}]}]\n76:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option A: Aggressive caching (long TTL)\"}]}]\n77:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"cache_ttl = 3600  # 1 hour\\n\\nBenefits:\\n- Very fast (\u003c 10ms)\\n- Low database load\\n- Handle traffic spikes\\n\\nCosts:\\n- Stale prices (up to 1 hour old)\\n- Flash sale prices delayed\\n- User complaints possible\\n\"}]}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option B: Short TTL\"}]}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"cache_ttl = 60  # 1 minute\\n\\nBenefits:\\n- Reasonably fresh data\\n- Flash sales mostly accurate\\n- Balanced approach\\n\\nCosts:\\n- More cache misses\\n- Higher DB load\\n- Slightly slower\\n\"}]}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option C: Smart invalidation\"}]}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Cache-aside pattern with event-driven invalidation\\n\\non_price_update(product_"])</script><script>self.__next_f.push([1,"id):\\n    cache.delete(f\\\"product:{product_id}\\\")\\n\\nBenefits:\\n- Always fresh\\n- Still fast (cached until update)\\n- Best user experience\\n\\nCosts:\\n- Complex implementation\\n- Invalidation bugs possible\\n- Need event system\\n\"}]}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Your task:\"}]}]\n7d:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Which option would you choose?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Why?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"What trade-offs are you accepting?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"How would you defend your choice?\"}],\"\\n\"]}]\n7e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"My analysis:\"}]}]\n7f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Recommendation: Option C (Smart invalidation)\\n\\nReasoning:\\n- Price accuracy critical (e-commerce trust)\\n- Flash sales are revenue driver (can't be stale)\\n- Complexity justified by business value\\n- 70% hot items = high cache hit rate still\\n\\nTrade-offs accepted:\\n- Implementation time (+1 week)\\n- Operational complexity (monitoring invalidation)\\n- Dependency on event system\\n\\nBut:\\n- Revenue impact of accurate pricing \u003e development cost\\n- Event system useful for other features\\n- Monitoring is necessity anyway\\n\\nAlternative for MVP: Option B\\n- If timeline tight, start with 1-min TTL\\n- Migrate to Option C when proven valuable\\n- Phased approach reduces risk\\n\"}]}]\n80:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n81:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off thinking = Core skill of Senior Engineer\"}]}]\n82:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Junior: \\\"Which technology is best?\\\"\\nSenior: \\\"Which trade-offs fit our context?\\\"\\n\\nExperience = Pattern library\\nSeniority = Trade-off reasoning\\n\"}]}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Major trade-offs:\"}]}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Consistency vs Availability\\n→ Financial data: Consistency\\n→ Social data: Availability\\n\\nLatency vs Cost\\n→ Calculate ROI\\n→ Optimize when justified\\n\\nSimplicity vs Scalability\\n→ Start simple\\n→ Scale when needed (with data)\\n\\nEarly optimization vs Iteration\\n→ Build for 2x, not 100x\\n→ Premature optimization = waste\\n\"}]}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Defense framework:\"}]}]\n86:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. State problem clearly\\n2. List alternatives\\n3. Explain trade-offs\\n4. Justify choice with context\\n5. Acknowledge limitations\\n6. Define success metrics\\n7. Plan evolution path\\n\"}]}]\n87:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"CAP theorem intuition:\"}]}]\n88:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Network partitions happen (P is given)\\nChoose: C or A\\n\\nC (Consistency): Banking, payments, bookings\\nA (Availability): Social media, analytics, feeds\\n\\nNo perfect answer, only contextual fit\\n\"}]}]\n89:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mental model:\"}]}]\n8a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Every architectural decision:\\n- Has trade-offs (always!)\\n- Depends on context (no universal \\\"best\\\")\\n- Should be justified (with reasoning)\\n- Can evolve (not permanent)\\n- Requires measurement (not gut feeling)\\n\"}]}]\n8b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The ultimate test:\"}]}]\n8c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Good architect can answer:\\n\\\"Why did you choose X over Y?\\\"\\n\\nWith:\\n✓ Clear problem understanding\\n✓ Alternative options\\n✓ Trade-off analysis\\n✓ Context alignment\\n✓ Success metrics\\n✓ Evolution plan\\n\\nNot with:\\n✗ \\\"It's best practice\\\"\\n✗ \\\"Everyone uses it\\\"\\n✗ \\\"It's newer/faster/cooler\\\"\\n\"}]}]\n8d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember:\"}]}]\n8e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Perfect architecture = Myth\\nGood architecture = Right trade-offs for your context\\n\\nMaster trade-off thinking\\nMaster ar"])</script><script>self.__next_f.push([1,"chitecture decision making\\nMaster being a Senior Engineer\\n\"}]}]\n8f:[\"$\",\"p\",null,{\"children\":[\"Bạn đã học patterns, frameworks, systems. Giờ là lúc học \",[\"$\",\"strong\",null,{\"children\":\"reason about them\"}],\".\"]}]\n90:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off thinking separates Senior from Junior. Master it.\"}]}]\n"])</script><script>self.__next_f.push([1,"22:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"94:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n16:null\n"])</script><script>self.__next_f.push([1,"24:[[\"$\",\"title\",\"0\",{\"children\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect | Phase 6 — System Design Mastery | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Master trade off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture \"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Master trade off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture \"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Master trade off thinking trong system design: Consistency vs Availability, Latency vs Cost, Simplicity vs Scalability. Học cách justify và defend architecture \"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L94\",\"14\",{}]]\n"])</script></body></html>

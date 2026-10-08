@@ -1,0 +1,398 @@
+@141
+Nhóm Xác thực: Dịch vụ xác thực
+Nhóm Thanh toán: Dịch vụ thanh toán
+Nhóm Đơn hàng: Dịch vụ đơn hàng
+
+Mỗi nhóm tự triển khai độc lập
+
+@142
+**Tiêu chí quyết định:**
+@143
+Nhóm trên 30-50 kỹ sư
+@144
+Cơ cấu tổ chức rõ ràng
+@145
+Các nhóm phụ trách những ⟦miền nghiệp vụ|domains⟧ tách biệt
+@146
+Tín Hiệu 3: ⟦Yêu Cầu|Requirements⟧ Mở Rộng Khác Nhau
+@147
+**Triệu chứng:**
+@148
+Dịch vụ đơn hàng: 10 req/s
+Xử lý ảnh: 1000 req/s
+Thanh toán: 50 req/s
+
+@149
+**Mở rộng toàn bộ hệ thống nguyên khối sẽ lãng phí tài nguyên.**
+@150
+**Giải pháp:** Tách riêng dịch vụ có ⟦lưu lượng|traffic⟧ cao.
+@151
+Xử lý ảnh → Dịch vụ riêng
+  → Mở rộng lên 20 phiên bản (instance)
+Phần còn lại của ứng dụng → 3 phiên bản
+
+Tiết kiệm chi phí + hiệu năng tốt hơn
+
+@152
+Tín Hiệu 4: Giới Hạn Về Công Nghệ
+@153
+**Triệu chứng:**
+@154
+Ứng dụng chính: Ruby (tốt cho CRUD)
+Mô hình ML: Cần Python
+Thời gian thực: Cần Node.js/Go
+
+@155
+**Giải pháp:** ⟦Kiến trúc đa ngôn ngữ|Polyglot architecture⟧.
+@156
+Ứng dụng chính: Ruby on Rails
+Dịch vụ ML: Python + TensorFlow
+Dịch vụ WebSocket: Node.js
+
+@157
+**Công cụ khác nhau cho những công việc khác nhau.**
+@158
+Những Thứ Không Phải Tín Hiệu (Không Nên Chuyển Đổi)
+@159
+**"Có thể sau này chúng ta sẽ cần mở rộng"**
+@160
+⟦Tối ưu quá sớm|Premature optimization⟧. YAGNI (You Aren't Gonna Need It - Bạn sẽ không cần đến nó đâu).
+@161
+**"Vi dịch vụ là ⟦thực hành tốt nhất|best practice⟧"**
+@162
+Thực hành tốt nhất cho ai? Netflix? Bạn đâu phải Netflix.
+@163
+**"⟦Phát triển hướng CV|Resume-driven development⟧"**
+@164
+Muốn học Kubernetes không phải là lý do chính đáng để làm dự án phức tạp lên.
+@165
+**"Hệ thống nguyên khối trông lộn xộn quá"**
+@166
+Hãy dọn dẹp cấu trúc mã. Dùng nguyên khối mô-đun hoá. Đừng nhảy ngay sang vi dịch vụ.
+@167
+Chiến Lược ⟦Chuyển Đổi|Migration⟧ - Tiến Hoá Dần Dần
+@168
+**KHÔNG BAO GIỜ viết lại toàn bộ hệ thống.**
+@169
+Strangler Fig Pattern (Mẫu Cây Đa Bóp Nghẹt)
+@170
+**Thay thế dần hệ thống nguyên khối, từng phần một.**
+@171
+flowchart TB
+    Users[Người dùng]
+    Router[Bộ định tuyến/Gateway]
+
+    subgraph New["Dịch vụ mới"]
+        AuthNew[Dịch vụ xác thực<br/>Đã chuyển]
+        PaymentNew[Dịch vụ thanh toán<br/>Đã chuyển]
+    end
+
+    subgraph Old["Nguyên khối"]
+        Users2[Mô-đun người dùng<br/>⏳ Chưa chuyển]
+        Orders2[Mô-đun đơn hàng<br/>⏳ Chưa chuyển]
+    end
+
+    Users --> Router
+    Router -->|/auth/*| AuthNew
+    Router -->|/payment/*| PaymentNew
+    Router -->|/users/*| Old
+    Router -->|/orders/*| Old
+@172
+**Quy trình:**
+@173
+**Giai đoạn 1:** Chọn mô-đun để tách ra (mô-đun ít ⟦liên kết|coupled⟧ nhất)
+@174
+Ứng viên: Dịch vụ thanh toán
+Phụ thuộc: Ít
+Tác động: Giá trị cao
+
+@175
+**Giai đoạn 2:** Xây dựng dịch vụ mới
+@176
+Tái hiện chức năng
+Thêm kiểm thử
+Đạt tương đương về tính năng
+
+@177
+**Giai đoạn 3:** Chuyển hướng lưu lượng dần dần
+@178
+Tuần 1: 5% lưu lượng sang dịch vụ mới
+Tuần 2: 25%
+Tuần 3: 50%
+Tuần 4: 100%
+
+@179
+**Giai đoạn 4:** Loại bỏ dần mã cũ
+@180
+Giám sát lỗi
+Gỡ khỏi hệ thống nguyên khối
+Ăn mừng 🎉
+
+@181
+**Giai đoạn 5:** Lặp lại với mô-đun tiếp theo
+@182
+**Lợi ích:**
+@183
+Rủi ro thấp (⟦triển khai dần|gradual rollout⟧)
+@184
+Dễ dàng ⟦hoàn tác|rollback⟧
+@185
+Rút kinh nghiệm sau mỗi lần ⟦chuyển đổi|migration⟧
+@186
+Hoạt động kinh doanh không bị gián đoạn
+@187
+⟦Phản Mẫu|Anti-Pattern⟧: ⟦Viết Lại Toàn Bộ Một Lần|Big Bang Rewrite⟧
+@188
+**KHÔNG LÀM:**
+@189
+1. Ngừng phát triển tính năng
+2. Viết lại mọi thứ thành vi dịch vụ
+3. Triển khai tất cả một lần (big bang)
+4. Cầu mong nó chạy được
+
+@190
+**Tại sao thất bại:**
+@191
+Đóng băng phát triển 6-12 tháng
+@192
+Doanh nghiệp đánh mất lợi thế cạnh tranh
+@193
+Yêu cầu thay đổi trong lúc đang viết lại
+@194
+⟦Lỗi|Bugs⟧ trong hệ thống mới
+@195
+Không thể hoàn tác dễ dàng
+@196
+**Những thất bại nổi tiếng:**
+@197
+Netscape (viết lại trình duyệt, thua Internet Explorer)
+@198
+Friendster (viết lại, thua Facebook)
+@199
+**Quy tắc:** Hãy tiến hoá, đừng viết lại.
+@200
+Các ⟦Phản Mẫu|Anti-Patterns⟧ - Tránh Những Sai Lầm Này
+@201
+Phản Mẫu 1: ⟦Vi Dịch Vụ|Microservices⟧ Quá Sớm
+@202
+**Kịch bản:**
+@203
+Công ty khởi nghiệp: 3 kỹ sư, 0 người dùng
+Kiến trúc: 15 vi dịch vụ, Kubernetes, Kafka
+
+@204
+**Vấn đề:**
+@205
+Tốc độ phát triển: chậm như rùa
+@206
+Gỡ lỗi: cơn ác mộng
+@207
+Chi phí phụ vận hành: quá tải
+@208
+⟦Độ phù hợp sản phẩm – thị trường|Product-market-fit⟧: không bao giờ tìm thấy
+@209
+**Cái giá phải trả:**
+@210
+3 tháng dựng ⟦hạ tầng|infrastructure⟧
+@211
+6 tháng vật lộn với độ phức tạp
+@212
+Công ty khởi nghiệp cạn tiền
+@213
+Hết game
+@214
+**Cách tiếp cận đúng:**
+@215
+Công ty khởi nghiệp: 3 kỹ sư, 0 người dùng
+Kiến trúc: Nguyên khối, Heroku, PostgreSQL
+
+Độ phù hợp sản phẩm – thị trường: 6 tháng
+Tăng trưởng: Thêm tính năng thật nhanh
+Mở rộng: Vấn đề của sau này
+
+@216
+Phản Mẫu 2: Kubernetes Cho Mọi Thứ
+@217
+**Kịch bản:**
+@218
+Lưu lượng: 10 req/s
+Nhóm: 5 kỹ sư
+Công nghệ: Cụm Kubernetes
+
+@219
+**Vấn đề:**
+@220
+Đường cong học tập Kubernetes: rất dốc
+@221
+Độ phức tạp vận hành: cao
+@222
+Chi phí: $500+/tháng (so với $50 trên Heroku)
+@223
+Giá trị mang lại: bằng không
+@224
+**Khi nào Kubernetes hợp lý:**
+@225
+Lưu lượng trên 1000 req/s
+@226
+Nhóm có chuyên môn DevOps
+@227
+Yêu cầu triển khai phức tạp
+@228
+Chiến lược ⟦đa đám mây|multi-cloud⟧
+@229
+**Trước khi dùng Kubernetes, hãy thử:**
+@230
+Heroku/Railway/Render
+@231
+AWS Elastic Beanstalk
+@232
+Google App Engine
+@233
+Một VPS đơn giản + Docker Compose
+@234
+Phản Mẫu 3: Dùng Chung ⟦Cơ Sở Dữ Liệu|Database⟧ Giữa Các ⟦Dịch Vụ|Services⟧
+@235
+**Kịch bản:**
+@236
+Kiến trúc vi dịch vụ
+Mọi dịch vụ → Cùng một cơ sở dữ liệu
+
+@237
+**Vấn đề:**
+@238
+⟦Liên kết chặt|Tight coupling⟧ (đi ngược mục đích của vi dịch vụ)
+@239
+Thay đổi ⟦lược đồ|schema⟧ làm hỏng mọi thứ
+@240
+Không thể mở rộng từng cơ sở dữ liệu độc lập
+@241
+Độ phức tạp của ⟦giao dịch|transactions⟧
+@242
+**Cách tiếp cận đúng:**
+@243
+Mỗi dịch vụ → Cơ sở dữ liệu riêng
+Giao tiếp qua API/sự kiện
+
+@244
+**Nếu dùng chung cơ sở dữ liệu → bạn không có vi dịch vụ, mà có một ⟦hệ thống nguyên khối phân tán|distributed monolith⟧.**
+@245
+Phản Mẫu 4: ⟦Dịch Vụ Siêu Nhỏ|Nano-Services⟧
+@246
+**Kịch bản:**
+@247
+Dịch vụ User
+Dịch vụ UserAuth
+Dịch vụ UserProfile
+Dịch vụ UserSettings
+Dịch vụ UserPreferences
+
+@248
+**Quá nhiều dịch vụ tí hon.**
+@249
+**Vấn đề:**
+@250
+Chi phí phụ về mạng
+@251
+Độ phức tạp vận hành
+@252
+Khó hiểu luồng xử lý
+@253
+Triển khai là cơn ác mộng
+@254
+**Độ chi tiết hợp lý:**
+@255
+Dịch vụ User (xử lý toàn bộ logic về người dùng)
+  ↳ Xác thực
+  ↳ Hồ sơ
+  ↳ Cài đặt
+  ↳ Tuỳ chọn
+
+@256
+**Ranh giới dịch vụ = năng lực nghiệp vụ, không phải chức năng.**
+@257
+Phản Mẫu 5: Tối Ưu Sai Chỗ
+@258
+**Kịch bản:**
+@259
+Tối ưu: Phân mảnh cơ sở dữ liệu
+Vấn đề thực sự: Truy vấn chậm (thiếu chỉ mục)
+
+Tối ưu: Thêm tầng lưu đệm
+Vấn đề thực sự: Truy vấn N+1
+
+Tối ưu: Vi dịch vụ
+Vấn đề thực sự: Mã nguồn nguyên khối lộn xộn
+
+@260
+**Đo lường trước, tối ưu sau.**
+@261
+**Quy trình:**
+@262
+Xác định ⟦điểm nghẽn|bottleneck⟧ (⟦số liệu đo|metrics⟧)
+@263
+Hiểu nguyên nhân gốc (⟦phân tích hiệu năng|profiling⟧)
+@264
+Chọn giải pháp đơn giản nhất
+@265
+Đo lường mức cải thiện
+@266
+Lặp lại
+@267
+**KHÔNG bỏ qua bước 1 và 2.**
+@268
+Luồng Tư Duy ⟦Thiết Kế Hệ Thống|System Design⟧
+@269
+**Cách tiếp cận có cấu trúc cho các quyết định ⟦kiến trúc|architecture⟧.**
+@270
+flowchart TD
+    Start[Phát biểu bài toán] --> Req[1. Yêu cầu<br/>Chức năng + Phi chức năng]
+    Req --> Est[2. Ước lượng<br/>Quy mô + Lưu trữ + Băng thông]
+    Est --> Bottle[3. Xác định điểm nghẽn<br/>Lưu lượng + Dữ liệu + Xử lý]
+    Bottle --> Trade[4. Đánh đổi<br/>Nhất quán hay Sẵn sàng<br/>Chi phí hay Hiệu năng]
+    Trade --> Design[5. Thiết kế kiến trúc<br/>Bắt đầu đơn giản<br/>Thêm độ phức tạp khi cần]
+    Design --> Valid[6. Kiểm chứng<br/>Có giải quyết được bài toán?<br/>Có mở rộng được?]
+    Valid -->|Không| Trade
+    Valid -->|Có| Final[Thiết kế cuối cùng]
+@271
+Bước 1: ⟦Yêu Cầu|Requirements⟧
+@272
+**⟦Yêu cầu chức năng|Functional requirements⟧:**
+@273
+Hệ thống làm gì:
+- Người dùng có thể tải ảnh lên
+- Người dùng có thể xem bảng tin
+- Người dùng có thể theo dõi người khác
+
+@274
+**⟦Yêu cầu phi chức năng|Non-functional requirements⟧:**
+@275
+Hệ thống làm tốt đến mức nào:
+- 10 triệu người dùng hoạt động hằng ngày
+- Độ trễ p99 < 200ms
+- Tính sẵn sàng 99,9%
+- Tải ảnh lên < 5 giây
+
+@276
+Bước 2: ⟦Ước Lượng|Estimation⟧
+@277
+**Các phép ⟦ước tính nhanh|Back-of-envelope calculations⟧:**
+@278
+Lưu lượng:
+- 10 triệu DAU (người dùng hoạt động hằng ngày)
+- Mỗi người dùng: 20 yêu cầu/ngày
+- Tổng: 200 triệu yêu cầu/ngày
+- Cao điểm: 200M / 86400 * 3 = ~7000 req/s
+
+Lưu trữ:
+- 1 triệu ảnh được tải lên/ngày
+- Ảnh trung bình: 2MB
+- Lưu trữ mỗi ngày: 2TB/ngày
+- Mỗi năm: 730TB
+
+Băng thông:
+- Tải lên: 2TB/ngày = 23 MB/s
+- Tỷ lệ đọc:ghi: 10:1
+- Tải xuống: 230 MB/s
+
+@279
+**Là cơ sở cho các quyết định kiến trúc.**

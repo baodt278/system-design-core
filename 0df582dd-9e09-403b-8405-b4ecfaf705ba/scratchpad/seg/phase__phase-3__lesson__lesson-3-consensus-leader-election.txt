@@ -1,0 +1,790 @@
+@0 h1
+Consensus & Leader Election: Distributed Agreement
+@1 p
+Tôi còn nhớ lần đầu tiên debug một split brain bug.
+@2 p
+Production system với 5 servers. Network bị partition. 2 nhóm servers: Group A (3 servers) và Group B (2 servers).
+@3 p
+Cả hai groups đều nghĩ mình là leader. Cả hai đều nhận writes. Data conflict khắp nơi.
+@4 p
+Recovery mất 2 ngày. Data reconciliation mất 1 tuần.
+@5 p
+Senior architect nói: *"Em chưa hiểu consensus. Distributed systems phải AGREE trước khi ACT."*
+@6 p
+Đó là bài học đắt giá về consensus algorithms.
+@7 h2
+Tại Sao Cần Consensus?
+@8 h3
+The Fundamental Problem
+@9 p
+**Single server system: Đơn giản**
+@10 pre
+Client → Server (make decision) → Execute
+
+@11 p
+Chỉ có 1 decision maker. Không có disagreement.
+@12 p
+**Distributed system: Phức tạp**
+@13 pre
+Client → Server 1 (thinks it's leader)
+      → Server 2 (thinks it's leader)  
+      → Server 3 (thinks it's leader)
+
+Ai quyết định? Ai là leader?
+
+@14 p
+Nếu không có agreement mechanism → Chaos.
+@15 h3
+Real-World Scenarios Cần Consensus
+@16 p
+**Scenario 1: Database Master Election**
+@17 pre
+Master database chết
+→ Cần elect master mới từ replicas
+→ Tất cả replicas phải agree master mới là ai
+→ Không được có 2 masters (split brain)
+
+@18 p
+**Scenario 2: Distributed Lock**
+@19 pre
+2 services cần access cùng resource
+→ Chỉ 1 service được phép access tại 1 thời điểm
+→ Cần agree ai hold lock
+→ Không được cả 2 đều nghĩ mình có lock
+
+@20 p
+**Scenario 3: Configuration Management**
+@21 pre
+Update configuration trong cluster
+→ Tất cả nodes phải see cùng config
+→ Không được có inconsistent configs
+→ Cần consensus trên config updates
+
+@22 p
+**Key insight:** Distributed systems cần mechanism để **agree on state** trước khi act.
+@23 h2
+Distributed Agreement Problem
+@24 h3
+The Challenge
+@25 p
+Trong distributed system với network unreliability:
+@26 pre
+Problems:
+- Messages có thể lost
+- Messages có thể delayed
+- Servers có thể crash
+- Network có thể partition
+
+Question: Làm sao để tất cả servers agree?
+
+@27 h3
+Example: Coordinating 3 Servers
+@28 pre
+Goal: Decide giá trị cho variable X
+
+Server 1 proposes: X = 10
+Server 2 proposes: X = 20
+Server 3 proposes: X = 10
+
+Làm sao để tất cả agree trên 1 giá trị?
+
+@29 p
+**Naive approach (DOESN'T WORK):**
+@30 pre
+1. Server 1 broadcasts: "X = 10"
+2. Wait for responses từ tất cả servers
+3. If majority agree → Commit
+
+Problem:
+- Server 2 crashes trước khi respond
+- Server 1 doesn't know: Server 2 chết hay network slow?
+- Wait forever? Give up sau bao lâu?
+
+@31 p
+**Need consensus algorithm để solve này.**
+@32 h3
+Requirements for Consensus
+@33 p
+Một consensus algorithm phải guarantee:
+@34 pre
+1. Agreement: Tất cả correct servers decide cùng value
+
+2. Validity: Nếu server decides value V, 
+   thì V phải được proposed bởi some server
+
+3. Termination: Tất cả correct servers eventually decide
+
+4. Fault tolerance: Work even khi some servers fail
+
+@35 h2
+Raft: Consensus Algorithm Dễ Hiểu
+@36 h3
+Why Raft?
+@37 p
+Trước Raft có Paxos (1989). Paxos nổi tiếng là extremely hard to understand.
+@38 p
+Raft (2014) được design với goal: **Understandability**.
+@39 p
+Tôi recommend học Raft trước. Nó đủ để hiểu consensus fundamentals.
+@40 h3
+Raft Core Ideas
+@41 p
+Raft chia problem thành 3 sub-problems:
+@42 pre
+1. Leader Election: Chọn 1 server làm leader
+2. Log Replication: Leader replicate commands đến followers  
+3. Safety: Ensure consistency khi có failures
+
+@43 p
+Chúng ta focus vào Leader Election (quan trọng nhất).
+@44 h3
+Server States trong Raft
+@45 p
+Mỗi server có thể ở 1 trong 3 states:
+@46 pre
+stateDiagram-v2
+    [*] --> Follower
+    Follower --> Candidate: Election timeout
+    Candidate --> Leader: Receives majority votes
+    Candidate --> Follower: Discovers leader
+    Leader --> Follower: Discovers higher term
+    Follower --> Follower: Receives heartbeat
+@47 p
+*Ba states trong Raft: Follower, Candidate, và Leader*
+@48 p
+**Follower:**
+@49 li
+Passive state
+@50 li
+Receive và respond requests
+@51 li
+Không initiate requests
+@52 li
+Most servers ở state này
+@53 p
+**Candidate:**
+@54 li
+Transitional state
+@55 li
+Request votes từ other servers
+@56 li
+Try to become leader
+@57 p
+**Leader:**
+@58 li
+Handle tất cả client requests
+@59 li
+Replicate log đến followers
+@60 li
+Chỉ 1 leader tại 1 thời điểm
+@61 h2
+Leader Election: Step by Step
+@62 h3
+Normal Operation
+@63 pre
+sequenceDiagram
+    participant L as Leader
+    participant F1 as Follower 1
+    participant F2 as Follower 2
+    participant F3 as Follower 3
+    
+    L->>F1: Heartbeat
+    L->>F2: Heartbeat
+    L->>F3: Heartbeat
+    
+    Note over L,F3: Leader gửi heartbeats<br/>định kỳ để maintain authority
+@64 p
+*Leader gửi periodic heartbeats để báo "tôi còn sống"*
+@65 p
+**Process:**
+@66 pre
+1. Leader gửi heartbeat messages định kỳ (mỗi 50-100ms)
+2. Followers receive heartbeats → Reset election timer
+3. Everyone happy, system stable
+
+@67 h3
+Leader Failure & Election
+@68 pre
+sequenceDiagram
+    participant L as Leader (DEAD)
+    participant F1 as Follower 1
+    participant F2 as Follower 2
+    participant F3 as Follower 3
+    
+    Note over L: Leader crashes
+    
+    Note over F1: Timeout!<br/>Become Candidate
+    
+    F1->>F2: Request Vote
+    F1->>F3: Request Vote
+    
+    F2->>F1: Vote Granted
+    F3->>F1: Vote Granted
+    
+    Note over F1: Received majority!<br/>Become Leader
+    
+    F1->>F2: I am Leader (heartbeat)
+    F1->>F3: I am Leader (heartbeat)
+@69 p
+*Khi leader chết, election process bắt đầu*
+@70 p
+**Detailed Process:**
+@71 p
+**Step 1: Follower timeout**
+@72 pre
+Follower 1 không nhận heartbeat trong 150-300ms (random)
+→ Assumes leader dead
+→ Transition to Candidate state
+→ Increment term number (term++)
+→ Vote for self
+
+@73 p
+**Step 2: Request votes**
+@74 pre
+Candidate gửi RequestVote RPCs đến tất cả servers:
+
+RequestVote {
+    term: 5,           // Current term
+    candidateId: 1,    // My ID
+    lastLogIndex: 100, // My last log entry
+    lastLogTerm: 4     // Term của last log entry
+}
+
+@75 p
+**Step 3: Followers vote**
+@76 pre
+Follower nhận RequestVote:
+
+if request.term < my_term:
+    Reject (I know higher term)
+    
+if already_voted_this_term:
+    Reject (already gave my vote)
+    
+if my_log_is_more_updated:
+    Reject (candidate's log outdated)
+    
+else:
+    Grant vote
+    Update my_term = request.term
+
+@77 p
+**Step 4: Candidate counts votes**
+@78 pre
+Candidate collects votes:
+
+if votes_received >= (num_servers / 2) + 1:
+    Become LEADER
+    Send heartbeats to all servers
+    
+elif another_server_became_leader:
+    Become FOLLOWER
+    
+elif election_timeout:
+    Start new election (increment term, try again)
+
+@79 h3
+Election Timeout: Critical Design
+@80 p
+**Problem:** Nếu 2 candidates start election cùng lúc?
+@81 pre
+Candidate 1 và Candidate 2 cùng request votes
+→ Mỗi candidate nhận 2 votes (bao gồm self)
+→ Không ai có majority
+→ Split vote!
+
+@82 p
+**Solution: Randomized election timeouts**
+@83 p
+**Probability:**
+@84 pre
+Với randomized timeouts:
+- 90%+ elections elect leader trong 1 round
+- Split votes rare
+- System converge nhanh
+
+@85 h2
+Majority Quorum: The Magic Number
+@86 h3
+Why Majority?
+@87 p
+**Key question:** Tại sao cần majority votes? Tại sao không phải unanimous (tất cả)?
+@88 p
+**Answer:** Majority guarantees safety.
+@89 h3
+The Math
+@90 pre
+Total servers: N
+Majority: floor(N/2) + 1
+
+Examples:
+N = 3 → Majority = 2
+N = 5 → Majority = 3
+N = 7 → Majority = 4
+
+@91 h3
+Guarantee: Chỉ 1 Leader
+@92 p
+**Scenario: Network partition**
+@93 pre
+Total: 5 servers
+Partition thành 2 groups:
+
+Group A: 3 servers (majority!)
+Group B: 2 servers (minority)
+
+Group A có thể elect leader (3 votes >= 3 needed)
+Group B KHÔNG thể elect leader (2 votes < 3 needed)
+
+→ Chỉ có 1 leader!
+
+@94 pre
+graph TB
+    subgraph "Group A (3 servers)"
+        A1[Server 1]
+        A2[Server 2]
+        A3[Server 3]
+        A1 -.->|Vote| A2
+        A2 -.->|Vote| A1
+        A3 -.->|Vote| A1
+    end
+    
+    subgraph "Group B (2 servers)"
+        B1[Server 4]
+        B2[Server 5]
+        B1 -.->|Vote| B2
+        B2 -.->|Vote| B1
+    end
+    
+    style A1 fill:#51cf66
+    style B1 fill:#ff6b6b
+    style B2 fill:#ff6b6b
+@95 p
+*Group A có majority, elect được leader. Group B không đủ votes.*
+@96 h3
+Overlap Property
+@97 p
+**Critical insight:**
+@98 pre
+Bất kỳ 2 majority quorums nào cũng MUST overlap
+
+N = 5, Majority = 3
+
+Quorum 1: {Server 1, Server 2, Server 3}
+Quorum 2: {Server 2, Server 4, Server 5}
+
+Overlap: Server 2
+
+→ Không thể có 2 disjoint majorities
+→ Không thể có 2 leaders cùng term
+
+@99 p
+**Proof:**
+@100 pre
+N servers
+Majority = floor(N/2) + 1
+
+2 majorities:
+Quorum A: >= floor(N/2) + 1 servers
+Quorum B: >= floor(N/2) + 1 servers
+
+Total if disjoint:
+>= 2 * (floor(N/2) + 1)
+>= N + 2
+
+But chỉ có N servers available!
+→ Contradiction
+→ Must overlap
+
+@101 h3
+Why Odd Numbers?
+@102 pre
+Fault tolerance:
+
+3 servers: Tolerate 1 failure
+4 servers: Tolerate 1 failure (same!)
+5 servers: Tolerate 2 failures
+6 servers: Tolerate 2 failures (same!)
+
+4 servers không tốt hơn 3 servers về fault tolerance
+6 servers không tốt hơn 5 servers
+
+→ Use odd numbers (3, 5, 7)
+→ Waste less resources
+
+@103 p
+**Recommendation:**
+@104 pre
+Small cluster:     3 servers (tolerate 1 failure)
+Medium cluster:    5 servers (tolerate 2 failures)
+Large cluster:     7 servers (tolerate 3 failures)
+
+> 7 servers: Rarely needed, too much coordination overhead
+
+@105 h2
+Split Brain Problem
+@106 h3
+What is Split Brain?
+@107 p
+**Split brain = Nhiều hơn 1 server nghĩ mình là leader**
+@108 pre
+Disaster scenario:
+Leader A processes writes
+Leader B processes writes (simultaneously!)
+
+→ Data diverges
+→ Conflicts everywhere
+→ Nightmare to recover
+
+@109 h3
+How Split Brain Happens
+@110 p
+**Scenario 1: Network partition**
+@111 pre
+Before partition:
+[Server 1 (Leader)] - [Server 2] - [Server 3]
+
+Network partition:
+[Server 1 (Leader)] | [Server 2] [Server 3]
+
+Server 2 & 3 không see heartbeats từ Server 1
+→ Elect Server 2 as new leader
+→ Now have 2 leaders!
+
+@112 p
+**Scenario 2: Slow heartbeats**
+@113 pre
+Server 1 (Leader) vẫn alive nhưng slow
+→ Heartbeats delayed vì network congestion
+→ Followers timeout, elect new leader
+→ Server 1 eventually send heartbeats
+→ Temporarily have 2 leaders
+
+@114 h3
+How Raft Prevents Split Brain
+@115 p
+**Mechanism 1: Majority quorum**
+@116 pre
+Partition thành 2 groups:
+Group A: 3 servers → Can elect leader (3 >= 3)
+Group B: 2 servers → Cannot elect leader (2 < 3)
+
+→ Chỉ 1 group có leader
+→ No split brain
+
+@117 p
+**Mechanism 2: Term numbers**
+@118 pre
+Mỗi election có term number
+
+Old leader: term 5
+New leader elected: term 6
+
+Khi old leader recover:
+- Try to send commands với term 5
+- Followers reject (term 5 < current term 6)
+- Old leader discovers higher term
+- Step down to follower
+
+→ Old leader không còn act as leader
+
+@119 p
+**Mechanism 3: Leader lease**
+@120 pre
+Leader không chỉ cần majority votes
+Leader phải maintain "lease" bằng heartbeats
+
+Nếu leader không send heartbeats:
+→ Followers revoke implicit lease
+→ Leader cannot process requests anymore
+
+→ Leader tự động stop nếu isolated
+
+@121 h3
+Split Brain Recovery
+@122 p
+**Nếu somehow xảy ra split brain:**
+@123 pre
+Detection:
+- 2 leaders discover each other
+- Compare term numbers
+
+Leader với lower term:
+→ Immediately step down
+→ Become follower
+→ Accept higher term leader
+
+Data reconciliation:
+→ Leader với higher term wins
+→ Uncommitted writes từ lower term leader = lost
+→ This is by design (safety > liveness)
+
+@124 h2
+Raft Leader Election: Complete Example
+@125 h3
+Initial State
+@126 pre
+5 servers, tất cả followers
+Current term: 3
+Leader: Server 1
+
+@127 pre
+Server 1 (Leader, term 3)
+Server 2 (Follower, term 3)
+Server 3 (Follower, term 3)
+Server 4 (Follower, term 3)
+Server 5 (Follower, term 3)
+
+@128 h3
+Timeline
+@129 p
+**T=0: Leader crashes**
+@130 pre
+Server 1 DEAD
+Server 2, 3, 4, 5 đang chờ heartbeats
+
+@131 p
+**T=200ms: Server 3 timeout**
+@132 pre
+Server 3 election timeout (random 150-300ms)
+→ Become Candidate
+→ Increment term: 3 → 4
+→ Vote for self (1 vote)
+→ Send RequestVote to all
+
+@133 p
+**T=205ms: Servers respond**
+@134 pre
+Server 2 receives RequestVote:
+- Not voted yet in term 4
+- Grant vote to Server 3
+
+Server 4 receives RequestVote:
+- Not voted yet in term 4
+- Grant vote to Server 3
+
+Server 5 receives RequestVote:
+- Not voted yet in term 4
+- Grant vote to Server 3
+
+@135 p
+**T=210ms: Server 3 counts votes**
+@136 pre
+Server 3:
+- Self vote: 1
+- Server 2: 1
+- Server 4: 1
+- Server 5: 1
+
+Total: 4 votes out of 5 servers
+Majority: 3 needed
+4 >= 3 → WIN!
+
+→ Become LEADER for term 4
+
+@137 p
+**T=215ms: New leader announces**
+@138 pre
+Server 3 (Leader):
+→ Send heartbeats to all servers
+→ "I am leader for term 4"
+
+Servers 2, 4, 5:
+→ Receive heartbeat
+→ Recognize Server 3 as leader
+→ Reset election timers
+→ Continue as followers
+
+@139 p
+**T=220ms onwards: Normal operation**
+@140 pre
+Server 3 continues sending heartbeats every 50ms
+System stable với Server 3 as leader
+
+@141 h2
+Mental Model: Distributed Agreement
+@142 h3
+Core Principle
+@143 p
+**"Agree trước khi Act"**
+@144 pre
+Single-server thinking:
+See request → Execute → Done
+
+Distributed thinking:
+See request → Ask others → Get consensus → Execute
+
+@145 h3
+Design Implications
+@146 p
+**Implication 1: Latency increase**
+@147 pre
+Single server: 10ms
+Consensus (majority of 5): 50-100ms
+
+Trade-off:
+Consistency + fault tolerance vs Speed
+
+@148 p
+**Implication 2: Need odd numbers**
+@149 pre
+3, 5, 7 servers optimal
+Even numbers waste resources
+
+@150 p
+**Implication 3: Network partitions = availability loss**
+@151 pre
+Network partition: Minority partition cannot make progress
+Trade-off: Consistency over availability (CP in CAP)
+
+@152 h3
+When to Use Consensus
+@153 p
+**Use consensus algorithms khi:**
+@154 pre
+✓ Need strong consistency
+✓ Cannot tolerate split brain
+✓ Fault tolerance critical
+✓ Master election
+✓ Distributed locks
+✓ Configuration management
+
+@155 p
+**Avoid consensus khi:**
+@156 pre
+✗ Eventual consistency acceptable
+✗ Cannot tolerate latency increase
+✗ Prefer availability over consistency (AP in CAP)
+
+@157 h3
+Systems Using Consensus
+@158 p
+**etcd:**
+@159 pre
+Distributed key-value store
+Uses Raft for consensus
+Kubernetes lưu cluster state trong etcd
+
+@160 p
+**Consul:**
+@161 pre
+Service discovery and configuration
+Uses Raft for leader election và data replication
+
+@162 p
+**Zookeeper:**
+@163 pre
+Coordination service
+Uses Zab (similar to Raft/Paxos)
+Kafka, HBase rely on Zookeeper
+
+@164 p
+**CockroachDB:**
+@165 pre
+Distributed SQL database
+Uses Raft for replication và consistency
+
+@166 h2
+Common Mistakes & How to Avoid
+@167 h3
+Mistake 1: Không dùng majority quorum
+@168 pre
+Bad: Wait for ALL servers respond
+Problem: 1 server die → Cannot make progress
+
+Good: Wait for majority
+Benefit: Can tolerate minority failures
+
+@169 h3
+Mistake 2: Forget về split brain
+@170 pre
+Bad: Assume chỉ có 1 leader
+Reality: Network partitions happen
+
+Good: Design với assumption multiple leaders possible
+Use term numbers, majority writes để prevent
+
+@171 h3
+Mistake 3: Even số servers
+@172 pre
+Bad: 4 servers (tolerate 1 failure)
+Cost: 4 servers
+Benefit: Same as 3 servers
+
+Good: 3 servers (tolerate 1 failure)
+Cost: 3 servers  
+Benefit: Same fault tolerance, save 1 server
+
+@173 h3
+Mistake 4: Không hiểu consistency trade-off
+@174 pre
+Bad: Expect cả consistency và availability
+Reality: CAP theorem says pick 2
+
+Good: Consciously choose consistency (CP)
+Accept availability loss during partitions
+
+@175 h2
+Key Takeaways
+@176 p
+**Consensus algorithms solve distributed agreement:**
+@177 pre
+Problem: Multiple servers cần agree trên state
+Solution: Majority voting với term numbers
+Result: Strong consistency + fault tolerance
+
+@178 p
+**Raft fundamentals:**
+@179 pre
+1. Leader Election: 1 leader tại 1 thời điểm
+2. Majority Quorum: Prevent split brain
+3. Term Numbers: Detect stale leaders
+4. Randomized Timeouts: Avoid split votes
+
+@180 p
+**Split brain prevention:**
+@181 pre
+- Majority quorum (không có 2 disjoint majorities)
+- Term numbers (higher term wins)
+- Leader lease (heartbeat timeout)
+
+@182 p
+**Design principles:**
+@183 pre
+- Odd numbers (3, 5, 7 servers)
+- Majority = floor(N/2) + 1
+- Agree before act
+- Accept latency increase
+
+@184 p
+**Trade-offs accepted:**
+@185 pre
+Gain: Strong consistency, fault tolerance
+Cost: Latency, complexity, availability during partitions
+
+@186 p
+**Mental model:**
+@187 p
+"Distributed systems phải AGREE trước khi ACT. Consensus là mechanism để agree. Majority voting prevents split brain. Term numbers detect staleness."
+@188 p
+**Self-check questions:**
+@189 p
+Trước khi implement distributed system với consensus:
+@190 li
+*Tôi thực sự cần strong consistency không?*
+@191 li
+*Tôi có thể tolerate latency increase không?*
+@192 li
+*Tôi có thể trade availability cho consistency không?*
+@193 li
+*Tôi hiểu split brain và cách prevent chưa?*
+@194 p
+Consensus là powerful nhưng expensive. Use khi benefits outweigh costs.
+@195 p
+**Câu nói tôi hay nhắc team:**
+@196 p
+"If you don't need strong consistency, don't pay for it. But if you need it, pay the full price - implement consensus correctly."
+@197 p
+Consensus không phải là magic. Nó là carefully designed agreement mechanism với clear trade-offs.
+@198 p
+Hiểu trade-offs → Make better decisions.

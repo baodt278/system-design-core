@@ -1,0 +1,316 @@
+<article class="prose-ui"><h1 id="components-trong-một-hệ-thống-web">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<pre><code>§§SEG5§§</code></pre>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<h2 id="tại-sao-phải-học-components">§§SEG8§§</h2>
+<p>§§SEG9§§</p>
+<pre><code class="language-python">def get_user(user_id):
+    return db.query("SELECT * FROM users WHERE id = ?", user_id)
+</code></pre>
+<p>§§SEG10§§</p>
+<p>§§SEG11§§</p>
+<pre><code>§§SEG12§§</code></pre>
+<p>§§SEG13§§</p>
+<ul>
+<li>§§SEG14§§</li>
+<li>§§SEG15§§</li>
+<li>§§SEG16§§</li>
+<li>§§SEG17§§</li>
+</ul>
+<p>§§SEG18§§</p>
+<h2 id="component-1-client-browsermobile-app">§§SEG19§§</h2>
+<h3 id="vai-trò">§§SEG20§§</h3>
+<p>§§SEG21§§</p>
+<p>§§SEG22§§</p>
+<ul>
+<li>§§SEG23§§</li>
+<li>§§SEG24§§</li>
+<li>§§SEG25§§</li>
+</ul>
+<h3 id="critical-rules">§§SEG26§§</h3>
+<p>§§SEG27§§</p>
+<pre><code class="language-javascript">//  BAD: Validate price ở client only
+function checkout(items) {
+    let total = items.reduce((sum, item) =&gt; sum + item.price, 0)
+    submitOrder(total)  // Hacker có thể modify price
+}
+
+//  GOOD: Always validate server-side
+function checkout(items) {
+    submitOrder(items)  // Server recalculate price
+}
+</code></pre>
+<p>§§SEG28§§</p>
+<p>§§SEG29§§</p>
+<pre><code class="language-javascript">// Client validation: Immediate feedback (UX)
+if (!email.includes('@')) {
+    showError("Invalid email")
+}
+
+// Server PHẢI validate lại
+if (!isValidEmail(email)) {
+    return 400  // Never trust client
+}
+</code></pre>
+<h3 id="trade-offs">§§SEG30§§</h3>
+<pre><code>§§SEG31§§</code></pre>
+<h3 id="khi-nào-optimize-client">§§SEG32§§</h3>
+<p>§§SEG33§§</p>
+<ul>
+<li>§§SEG34§§</li>
+<li>§§SEG35§§</li>
+<li>§§SEG36§§</li>
+</ul>
+<p>§§SEG37§§</p>
+<ul>
+<li>§§SEG38§§</li>
+<li>§§SEG39§§</li>
+<li>§§SEG40§§</li>
+<li>§§SEG41§§</li>
+</ul>
+<h2 id="component-2-load-balancer">§§SEG42§§</h2>
+<h3 id="vai-trò-1">§§SEG43§§</h3>
+<p>§§SEG44§§</p>
+<h3 id="khi-nào-cần">§§SEG45§§</h3>
+<pre><code>§§SEG46§§</code></pre>
+<p>§§SEG47§§</p>
+<ul>
+<li>§§SEG48§§</li>
+<li>§§SEG49§§</li>
+<li>§§SEG50§§</li>
+</ul>
+<h3 id="khi-nào-không-cần">§§SEG51§§</h3>
+<pre><code>§§SEG52§§</code></pre>
+<h3 id="core-algorithms">§§SEG53§§</h3>
+<p>§§SEG54§§</p>
+<pre><code>§§SEG55§§</code></pre>
+<p>§§SEG56§§</p>
+<pre><code>§§SEG57§§</code></pre>
+<p>§§SEG58§§</p>
+<pre><code>§§SEG59§§</code></pre>
+<h3 id="trade-offs-1">§§SEG60§§</h3>
+<pre><code>§§SEG61§§</code></pre>
+<h3 id="personal-recommendation">§§SEG62§§</h3>
+<p>§§SEG63§§</p>
+<p>§§SEG64§§</p>
+<h2 id="component-3-application-server">§§SEG65§§</h2>
+<h3 id="vai-trò-2">§§SEG66§§</h3>
+<p>§§SEG67§§</p>
+<h3 id="critical-decision-stateless-vs-stateful">§§SEG68§§</h3>
+<p>§§SEG69§§</p>
+<pre><code class="language-python"># Không lưu user session trong memory
+def handle_request(request):
+    user_id = jwt.decode(request.token)  # Get from token
+    user = db.get_user(user_id)          # Get from DB
+    return process(user)
+
+# Benefit: Any server can handle any request
+</code></pre>
+<p>§§SEG70§§</p>
+<pre><code class="language-python"># Lưu session trong memory
+sessions = {}  # In-memory
+
+def handle_login(user_id):
+    sessions[user_id] = UserSession(user_id)
+
+def handle_request(user_id):
+    session = sessions[user_id]  # Must hit same server!
+    return process(session)
+</code></pre>
+<h3 id="trade-off-analysis">§§SEG71§§</h3>
+<pre><code>§§SEG72§§</code></pre>
+<h3 id="my-strong-opinion">§§SEG73§§</h3>
+<p>§§SEG74§§</p>
+<p>§§SEG75§§</p>
+<h3 id="server-configuration">§§SEG76§§</h3>
+<p>§§SEG77§§</p>
+<pre><code>§§SEG78§§</code></pre>
+<p>§§SEG79§§</p>
+<ul>
+<li>§§SEG80§§</li>
+<li>§§SEG81§§</li>
+<li>§§SEG82§§</li>
+</ul>
+<h2 id="component-4-cache-layer">§§SEG83§§</h2>
+<h3 id="vai-trò-3">§§SEG84§§</h3>
+<p>§§SEG85§§</p>
+<h3 id="the-fundamental-question">§§SEG86§§</h3>
+<p>§§SEG87§§</p>
+<p>§§SEG88§§</p>
+<pre><code>§§SEG89§§</code></pre>
+<h3 id="cache-strategies">§§SEG90§§</h3>
+<p>§§SEG91§§</p>
+<pre><code class="language-python">def get_product(product_id):
+    # 1. Check cache
+    product = cache.get(f"product:{product_id}")
+    if product:
+        return product  # Cache hit
+    
+    # 2. Cache miss → Query DB
+    product = db.query("SELECT * FROM products WHERE id = ?", product_id)
+    
+    # 3. Store in cache
+    cache.set(f"product:{product_id}", product, ttl=3600)
+    return product
+
+ Only cache what's needed
+ First request slow (cache miss)
+</code></pre>
+<p>§§SEG92§§</p>
+<pre><code class="language-python">def update_product(product_id, data):
+    # 1. Update DB
+    db.update("products", product_id, data)
+    
+    # 2. Update cache immediately
+    cache.set(f"product:{product_id}", data)
+
+ Cache always fresh
+ Every write slower (2 operations)
+</code></pre>
+<p>§§SEG93§§</p>
+<pre><code class="language-python">def update_product(product_id, data):
+    # 1. Update cache immediately
+    cache.set(f"product:{product_id}", data)
+    
+    # 2. Async write to DB
+    queue.add({"action": "update_product", "id": product_id, "data": data})
+
+ Writes very fast
+ Risk data loss if cache crashes
+</code></pre>
+<h3 id="cache-invalidation---the-hard-problem">§§SEG94§§</h3>
+<p>§§SEG95§§</p>
+<p>§§SEG96§§</p>
+<pre><code>§§SEG97§§</code></pre>
+<p>§§SEG98§§</p>
+<p>§§SEG99§§</p>
+<pre><code class="language-python">cache.set("user:123", user, ttl=300)  # Expire after 5min
+
+ Simple
+ Data stale for up to 5 minutes
+</code></pre>
+<p>§§SEG100§§</p>
+<pre><code class="language-python">def update_user(user_id, data):
+    db.update("users", user_id, data)
+    cache.delete(f"user:{user_id}")  # Delete immediately
+
+ Always fresh
+ Must remember to invalidate everywhere
+</code></pre>
+<p>§§SEG101§§</p>
+<pre><code class="language-python"># Service A updates user
+db.update("users", user_id, data)
+event_bus.publish("user.updated", user_id)
+
+# Service B listens
+@event_bus.subscribe("user.updated")
+def on_user_updated(user_id):
+    cache.delete(f"user:{user_id}")
+
+ Decoupled, scalable
+ Complex infrastructure
+</code></pre>
+<h3 id="personal-rule">§§SEG102§§</h3>
+<p>§§SEG103§§</p>
+<p>§§SEG104§§</p>
+<p>§§SEG105§§</p>
+<h3 id="when-not-to-cache">§§SEG106§§</h3>
+<pre><code>§§SEG107§§</code></pre>
+<h2 id="component-5-database">§§SEG108§§</h2>
+<h3 id="vai-trò-4">§§SEG109§§</h3>
+<p>§§SEG110§§</p>
+<h3 id="why-database-is-often-the-bottleneck">§§SEG111§§</h3>
+<pre><code>§§SEG112§§</code></pre>
+<h3 id="optimization-hierarchy">§§SEG113§§</h3>
+<p>§§SEG114§§</p>
+<pre><code class="language-sql">--  BAD: No index, full table scan
+SELECT * FROM users WHERE email = 'john@example.com';
+-- 10M rows → 5 seconds
+
+--  GOOD: Add index
+CREATE INDEX idx_users_email ON users(email);
+-- Same query → 10ms (500x faster!)
+</code></pre>
+<p>§§SEG115§§</p>
+<pre><code class="language-python">#  BAD: New connection per request
+def get_user(user_id):
+    conn = create_connection()  # Expensive!
+    user = conn.query(...)
+    conn.close()
+    return user
+
+#  GOOD: Reuse connections
+pool = ConnectionPool(min=5, max=20)
+
+def get_user(user_id):
+    with pool.get_connection() as conn:
+        return conn.query(...)
+</code></pre>
+<p>§§SEG116§§</p>
+<pre><code>§§SEG117§§</code></pre>
+<p>§§SEG118§§</p>
+<pre><code>§§SEG119§§</code></pre>
+<h3 id="trade-offs-sql-vs-nosql">§§SEG120§§</h3>
+<pre><code>§§SEG121§§</code></pre>
+<p>§§SEG122§§</p>
+<pre><code>§§SEG123§§</code></pre>
+<h3 id="my-opinion">§§SEG124§§</h3>
+<p>§§SEG125§§</p>
+<p>§§SEG126§§</p>
+<p>§§SEG127§§</p>
+<h2 id="putting-it-all-together-request-flow">§§SEG128§§</h2>
+<p>§§SEG129§§</p>
+<h3 id="example-user-loads-homepage">§§SEG130§§</h3>
+<pre><code>§§SEG131§§</code></pre>
+<h3 id="if-cache-miss">§§SEG132§§</h3>
+<pre><code>§§SEG133§§</code></pre>
+<h3 id="optimization-strategy">§§SEG134§§</h3>
+<pre><code>§§SEG135§§</code></pre>
+<h2 id="mental-model-everything-is-a-system">§§SEG136§§</h2>
+<p>§§SEG137§§</p>
+<p>§§SEG138§§</p>
+<ul>
+<li>§§SEG139§§</li>
+<li>§§SEG140§§</li>
+<li>§§SEG141§§</li>
+<li>§§SEG142§§</li>
+<li>§§SEG143§§</li>
+</ul>
+<p>§§SEG144§§</p>
+<p>§§SEG145§§</p>
+<p>§§SEG146§§</p>
+<ul>
+<li>§§SEG147§§</li>
+<li>§§SEG148§§</li>
+</ul>
+<p>§§SEG149§§</p>
+<h2 id="key-takeaways">§§SEG150§§</h2>
+<p>§§SEG151§§</p>
+<ol>
+<li>§§SEG152§§</li>
+<li>§§SEG153§§</li>
+<li>§§SEG154§§</li>
+<li>§§SEG155§§</li>
+<li>§§SEG156§§</li>
+</ol>
+<p>§§SEG157§§</p>
+<ul>
+<li>§§SEG158§§</li>
+<li>§§SEG159§§</li>
+<li>§§SEG160§§</li>
+<li>§§SEG161§§</li>
+</ul>
+<p>§§SEG162§§</p>
+<ul>
+<li>§§SEG163§§</li>
+<li>§§SEG164§§</li>
+<li>§§SEG165§§</li>
+<li>§§SEG166§§</li>
+</ul>
+<p>§§SEG167§§</p>
+<p>§§SEG168§§</p>
+<p>§§SEG169§§</p></article>

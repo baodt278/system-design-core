@@ -1,0 +1,98 @@
+@0 h2
+1) Giới thiệu Phase
+@1 p
+Hệ thống thực tế khác hệ thống trong textbook.
+@2 p
+Kiến trúc production không đứng yên: nó phải tiến hóa theo traffic, sản phẩm và giới hạn vận hành. Không có một architecture duy nhất đúng cho mọi bài toán.
+@3 p
+Phase này tập trung vào tư duy thiết kế theo ngữ cảnh: chọn pattern phù hợp, chấp nhận trade-off rõ ràng, và xây hệ thống có thể sống lâu trong production.
+@4 h2
+2) Vì sao phase này tồn tại
+@5 p
+Sau khi nắm distributed systems và scalability, bạn cần bước tiếp theo: biến kiến thức đó thành quyết định kiến trúc thực tế.
+@6 p
+Phase này tồn tại để lấp khoảng cách giữa lý thuyết và production:
+@7 li
+Từ hiểu component -> phối hợp thành architecture theo vòng đời hệ thống.
+@8 li
+Từ tối ưu cục bộ -> thiết kế theo traffic pattern thật.
+@9 li
+Từ mô hình chung -> quyết định theo domain, cost, tốc độ tăng trưởng và hành vi người dùng.
+@10 h2
+3) Learning Objectives
+@11 li
+Hiểu cách kiến trúc tiến hóa theo giai đoạn sản phẩm.
+@12 li
+Thiết kế hệ thống theo access pattern thay vì theo sở thích công nghệ.
+@13 li
+Lập luận quyết định kiến trúc theo traffic distribution thực tế.
+@14 li
+Chọn pattern phù hợp với hành vi hệ thống và ràng buộc vận hành.
+@15 li
+Áp dụng kiến thức distributed systems vào bài toán production.
+@16 li
+Thiết kế kiến trúc thực dụng, sẵn sàng cho tăng trưởng.
+@17 h2
+4) Bạn sẽ học gì trong phase này
+@18 li
+**Architecture evolution strategy:** bắt đầu đơn giản, nâng cấp có kiểm soát.
+@19 li
+**Read-heavy design thinking:** tối ưu cho workload mà reads chiếm đa số.
+@20 li
+**Fanout architecture:** pattern cốt lõi cho feed/social workloads.
+@21 li
+**Traffic-pattern driven design:** kiến trúc theo hành vi truy cập thực tế.
+@22 li
+**Production trade-offs:** cân bằng latency, cost, complexity, operability.
+@23 li
+**Real system reasoning:** ra quyết định dựa trên bối cảnh sản phẩm và dữ liệu vận hành.
+@24 h2
+5) Lessons Overview
+@25 h3
+Lesson 1 — Architecture Evolution Mindset — Start Simple, Scale Gradually
+@26 li
+**Mô tả:** học cách phát triển kiến trúc theo từng giai đoạn thay vì thiết kế quá mức ngay từ đầu.
+@27 li
+**Bạn nhận được:** tư duy tránh premature complexity và biết khi nào cần nâng cấp kiến trúc.
+@28 h3
+Lesson 2 — Read-Heavy Systems — Design Cho 99% Reads
+@29 li
+**Mô tả:** thiết kế hệ thống cho workload đọc áp đảo, nơi latency và cache strategy quyết định trải nghiệm.
+@30 li
+**Bạn nhận được:** khả năng tối ưu kiến trúc theo dominant access pattern.
+@31 h3
+Lesson 3 — Social / Feed Systems — Fanout Architecture
+@32 li
+**Mô tả:** phân tích feed architecture trong môi trường traffic lớn và cập nhật liên tục.
+@33 li
+**Bạn nhận được:** nền tảng đánh đổi giữa fanout-on-write và fanout-on-read, cùng các thách thức scale thực tế.
+@34 h2
+6) Kết quả sau khi hoàn thành Phase 5
+@35 p
+Bạn có thể:
+@36 li
+Thiết kế kiến trúc production theo bối cảnh thực tế thay vì mẫu cố định.
+@37 li
+Lập luận lộ trình tiến hóa kiến trúc theo tăng trưởng sản phẩm.
+@38 li
+Chọn kiến trúc theo workload và traffic pattern.
+@39 li
+Đánh giá trade-off thực tế giữa hiệu năng, chi phí và độ phức tạp vận hành.
+@40 li
+Áp dụng kiến thức distributed systems vào thiết kế hệ thống thật.
+@41 li
+Tư duy như một production system architect khi ra quyết định.
+@42 h2
+7) Chuẩn bị cho Phase 6
+@43 p
+Phase 5 giúp bạn chuyển từ "biết pattern" sang "ra quyết định theo bối cảnh".
+@44 p
+Sang **Phase 6 — System Design Mastery**, bạn sẽ đi từ pattern-level sang framework-level:
+@45 li
+tư duy quyết định kiến trúc ở mức nâng cao,
+@46 li
+kỹ năng system design ở mức interview chuyên sâu,
+@47 li
+architect mindset cho bài toán mở,
+@48 li
+và năng lực giải quyết vấn đề thực tế với lập luận rõ ràng.

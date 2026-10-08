@@ -1,0 +1,733 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Scale Intuition - Xây Dựng Cảm Giác Về Numbers | Phase 0 — Mental Model Shift | System Design Core</title><meta name="description" content="Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và cap"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-0/lesson/lesson-5-scale-intuition"/><meta property="og:title" content="Scale Intuition - Xây Dựng Cảm Giác Về Numbers | Phase 0 — Mental Model Shift"/><meta property="og:description" content="Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và cap"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-0/lesson/lesson-5-scale-intuition"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Scale Intuition - Xây Dựng Cảm Giác Về Numbers | Phase 0 — Mental Model Shift"/><meta name="twitter:description" content="Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và cap"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 0 — Mental Model Shift</p><p class="mt-3 text-xl font-semibold text-ink">Scale Intuition - Xây Dựng Cảm Giác Về Numbers</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và capacity planning với back-of-envelope calculations.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-1-code-first-to-problem-first"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Từ Code-First đến Problem-First - Thay Đổi Tư Duy Architect</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-2-perfect-solution-to-trade-off-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Từ Perfect Solution đến Trade-off Thinking - Nghệ Thuật Của Quyết Định Kiến Trúc</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-3-foundation-exercises"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Components và Communication - Giải Mã Kiến Trúc Hệ Thống Phân Tán</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-4-thinking-in-constraints"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Thinking in Constraints - Engineering Là Quản Lý Giới Hạn</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-0/lesson/lesson-5-scale-intuition"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Scale Intuition - Xây Dựng Cảm Giác Về Numbers</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-6-system-thinking-framework"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-7-system-question-framework"><p class="text-xs text-ink-dim">Bài <!-- -->7</p><p class="mt-1 text-sm font-medium text-ink">System Question Framework - Checklist Chuẩn Khi Design Hệ Thống</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-0/lesson/lesson-8-mental-model-recap"><p class="text-xs text-ink-dim">Bài <!-- -->8</p><p class="mt-1 text-sm font-medium text-ink">Mental Model Recap - Củng Cố Tư Duy System Design</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-0">Phase 0 — Mental Model Shift</a></li><li>/</li><li aria-current="page" class="text-ink">Scale Intuition - Xây Dựng Cảm Giác Về Numbers</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Scale Intuition - Xây Dựng Cảm Giác Về Numbers</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và capacity planning với back-of-envelope calculations.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Scale Intuition - Xây Dựng Cảm Giác Về Numbers"><article class="prose-ui"><h1 id="scale-intuition-xây-dựng-cảm-giác-về-numbers">Scale Intuition: Xây Dựng Cảm Giác Về Numbers</h1>
+<p>Tôi còn nhớ lần đầu tiên được hỏi trong interview:</p>
+<p><em>&quot;Hệ thống của em cần handle bao nhiêu requests per second?&quot;</em></p>
+<p>Tôi: <em>&quot;Uhm... nhiều ạ?&quot;</em></p>
+<p>Interviewer: <em>&quot;Nhiều là bao nhiêu? 10? 1,000? 1,000,000?&quot;</em></p>
+<p>Tôi: <em>&quot;... Em không biết ạ.&quot;</em></p>
+<p><strong>Tôi fail câu hỏi đó.</strong></p>
+<p>Không phải vì không biết code. Mà vì <strong>không có scale intuition</strong>.</p>
+<p>Senior architect ngồi bên cạnh sau đó nói: <em>&quot;Em biết không, difference giữa 1K users và 1M users không phải là 1000 lần. Nó là difference giữa một chiếc xe đạp và một chiếc Boeing 747.&quot;</em></p>
+<p>Đó là lúc tôi bắt đầu học về scale.</p>
+<h2 id="tại-sao-scale-intuition-quan-trọng">Tại Sao Scale Intuition Quan Trọng?</h2>
+<h3 id="the-problem-numbers-are-abstract">The Problem: Numbers Are Abstract</h3>
+<p>Khi bạn nghe &quot;1 million users&quot;, bạn nghĩ gì?</p>
+<p>Hầu hết developers: <em>&quot;Ồ, nhiều quá!&quot;</em></p>
+<p>Nhưng &quot;nhiều&quot; không giúp bạn design system.</p>
+<p><strong>Bạn cần biết:</strong></p>
+<ul>
+<li>1 million users = bao nhiêu requests/second?</li>
+<li>Cần bao nhiêu servers?</li>
+<li>Bao nhiêu database capacity?</li>
+<li>Bao nhiêu storage?</li>
+<li>Bao nhiêu cost?</li>
+</ul>
+<h3 id="the-solution-develop-intuition">The Solution: Develop Intuition</h3>
+<p><strong>Scale intuition = Ability to quickly estimate system requirements</strong></p>
+<pre><code>Skill: &quot;Ước chừng 1 million users cần 10 app servers, 2TB storage, cost ~$3K/tháng&quot;
+
+Not: &quot;1 million users... cần nhiều servers... uhm...&quot;
+
+Có intuition → Design với confidence
+Không có intuition → Design bằng guessing
+</code></pre>
+<p><strong>Bài này sẽ dạy bạn build intuition đó.</strong></p>
+<h2 id="the-scale-spectrum-1k-vs-1m-vs-1b-users">The Scale Spectrum: 1K vs 1M vs 1B Users</h2>
+<h3 id="visualizing-the-difference">Visualizing the Difference</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    A[1K Users&lt;br/&gt;Xe đạp] --&gt; B[10K Users&lt;br/&gt;Xe hơi]
+    B --&gt; C[100K Users&lt;br/&gt;Xe bus]
+    C --&gt; D[1M Users&lt;br/&gt;Máy bay]
+    D --&gt; E[10M Users&lt;br/&gt;Boeing 747]
+    E --&gt; F[100M+ Users&lt;br/&gt;Hạm đội máy bay]
+    
+    style A fill:#51cf66
+    style C fill:#ffd43b
+    style E fill:#ff6b6b</code></pre>
+<p><em>Mỗi bậc scale là một thế giới hoàn toàn khác nhau</em></p>
+<h3 id="1000-users-startup-mvp">1,000 Users (Startup MVP)</h3>
+<pre><code>Daily Active Users (DAU): ~500
+Concurrent users: ~50
+Requests per second: ~5-10
+
+Infrastructure:
+- 1 application server ($50/month)
+- 1 database server ($50/month)
+- No load balancer needed
+- No caching needed
+Total cost: ~$100/month
+
+Bottleneck: Probably none
+Architecture: Simple monolith
+Team: 1-2 developers can handle
+</code></pre>
+<p><strong>Real example:</strong></p>
+<pre><code>Local coffee shop app:
+- 500 customers
+- Each checks menu 2 times/day
+- 1,000 requests/day
+- 1,000 / 86,400 seconds ≈ 0.01 requests/second
+
+Can run on Raspberry Pi! 😄
+</code></pre>
+<h3 id="10000-users-growing-startup">10,000 Users (Growing Startup)</h3>
+<pre><code>Daily Active Users: ~5,000
+Concurrent users: ~500
+Requests per second: ~50-100
+
+Infrastructure:
+- 2-3 application servers ($150/month)
+- 1 database server ($100/month)
+- Load balancer ($50/month)
+- Redis cache optional ($50/month)
+Total cost: ~$350/month
+
+Bottleneck: Database queries (add indexes)
+Architecture: Monolith + cache
+Team: 2-5 developers
+</code></pre>
+<p><strong>Key difference từ 1K:</strong></p>
+<ul>
+<li>Cần load balancer (high availability)</li>
+<li>Database indexes matter</li>
+<li>Monitoring starts to be important</li>
+</ul>
+<h3 id="100000-users-established-product">100,000 Users (Established Product)</h3>
+<pre><code>Daily Active Users: ~50,000
+Concurrent users: ~5,000
+Requests per second: ~500-1,000
+
+Infrastructure:
+- 10 application servers ($500/month)
+- Database với read replicas ($500/month)
+- Load balancer ($100/month)
+- Redis cluster ($300/month)
+- CDN ($100/month)
+Total cost: ~$1,500/month
+
+Bottleneck: Database writes, cache invalidation
+Architecture: Modular monolith hoặc simple microservices
+Team: 10-20 developers
+</code></pre>
+<p><strong>Key difference từ 10K:</strong></p>
+<ul>
+<li>Database read replicas necessary</li>
+<li>Caching is critical</li>
+<li>CDN for static assets</li>
+<li>Auto-scaling starts to matter</li>
+</ul>
+<h3 id="1000000-users-large-scale">1,000,000 Users (Large Scale)</h3>
+<pre><code>Daily Active Users: ~500,000
+Concurrent users: ~50,000
+Requests per second: ~5,000-10,000
+
+Infrastructure:
+- 50+ application servers ($2,500/month)
+- Sharded database cluster ($2,000/month)
+- Multiple load balancers ($300/month)
+- Distributed cache ($1,000/month)
+- CDN ($500/month)
+- Message queues ($200/month)
+Total cost: ~$6,500/month+
+
+Bottleneck: Everything! Need distributed approach
+Architecture: Microservices likely
+Team: 50+ developers, dedicated ops team
+</code></pre>
+<p><strong>Key difference từ 100K:</strong></p>
+<ul>
+<li>Database sharding needed</li>
+<li>Distributed systems challenges</li>
+<li>Dedicated DevOps/SRE team</li>
+<li>Complex monitoring and alerting</li>
+</ul>
+<h3 id="the-pattern">The Pattern</h3>
+<pre><code>Mỗi 10x scale:
+- Cost tăng ~3-5x (not linear!)
+- Complexity tăng significantly
+- Team size tăng
+- Architecture thay đổi fundamentally
+
+1K → 10K: Add servers, basic optimization
+10K → 100K: Add caching, read replicas
+100K → 1M: Sharding, microservices, distributed systems
+1M → 10M: Geographic distribution, edge computing
+</code></pre>
+<h2 id="back-of-envelope-calculations">Back-of-Envelope Calculations</h2>
+<p><strong>Core skill: Quickly estimate system requirements</strong></p>
+<h3 id="calculation-framework">Calculation Framework</h3>
+<pre><code>1. Start với users
+2. Estimate usage patterns
+3. Calculate requests
+4. Estimate storage
+5. Calculate bandwidth
+</code></pre>
+<h3 id="exercise-1-e-commerce-website">Exercise 1: E-commerce Website</h3>
+<p><strong>Given:</strong></p>
+<ul>
+<li>1 million registered users</li>
+<li>20% active daily (200K DAU)</li>
+<li>Each user views 10 product pages/day</li>
+<li>Each user makes 1 purchase/month</li>
+</ul>
+<p><strong>Calculate:</strong></p>
+<p><strong>Requests per second:</strong></p>
+<pre><code>Page views:
+200K users × 10 pages/day = 2M page views/day
+2M / 86,400 seconds/day ≈ 23 requests/second
+
+Peak traffic (assume 3x average):
+23 × 3 = 69 requests/second
+
+API calls (assume 5 API calls per page view):
+23 × 5 = 115 requests/second
+Peak: 345 requests/second
+
+→ Need to handle ~350 req/s at peak
+</code></pre>
+<p><strong>Storage:</strong></p>
+<pre><code>Product catalog:
+100K products × 10KB each = 1GB
+
+Product images:
+100K products × 5 images × 500KB = 250GB
+
+User data:
+1M users × 1KB = 1GB
+
+Orders (1 year):
+1M users × 12 purchases/year × 5KB = 60GB
+
+Total: ~312GB
+→ Single database can handle easily
+→ Images need CDN/S3
+</code></pre>
+<p><strong>Bandwidth:</strong></p>
+<pre><code>Page views: 2M/day
+Average page size: 2MB (HTML + images + JS)
+
+Total bandwidth: 2M × 2MB = 4TB/day
+
+With CDN cache (90% cache hit rate):
+4TB × 0.1 = 400GB/day from origin
+= 16GB/hour from servers
+= Manageable with CDN
+</code></pre>
+<p><strong>Infrastructure estimate:</strong></p>
+<pre><code>Application servers:
+- 350 req/s peak
+- Each server: ~100 req/s
+- Need: 4 servers (with buffer)
+
+Database:
+- 312GB data (single server OK)
+- Read-heavy (add 2 read replicas)
+
+CDN: Essential (90% traffic)
+
+Total cost: ~$800/month
+</code></pre>
+<h3 id="exercise-2-social-media-app">Exercise 2: Social Media App</h3>
+<p><strong>Given:</strong></p>
+<ul>
+<li>10 million users</li>
+<li>1 million daily active users</li>
+<li>Each user posts 2 times/day</li>
+<li>Each user views 100 posts/day</li>
+</ul>
+<p><strong>Calculate:</strong></p>
+<p><strong>Write traffic:</strong></p>
+<pre><code>Posts created:
+1M users × 2 posts/day = 2M posts/day
+2M / 86,400 ≈ 23 writes/second
+
+Peak: 69 writes/second
+→ Single database can handle
+</code></pre>
+<p><strong>Read traffic:</strong></p>
+<pre><code>Posts viewed:
+1M users × 100 posts/day = 100M views/day
+100M / 86,400 ≈ 1,157 reads/second
+
+Peak: 3,471 reads/second
+→ Need caching!
+</code></pre>
+<p><strong>Storage growth:</strong></p>
+<pre><code>Posts per day: 2M
+Post size: 500 bytes (text + metadata)
+Daily storage: 2M × 500 bytes = 1GB/day
+
+Photos (50% of posts have 1 photo):
+1M photos/day × 2MB = 2TB/day
+
+Annual growth:
+Text: 1GB × 365 = 365GB
+Photos: 2TB × 365 = 730TB
+
+→ Need distributed storage (S3)
+→ Database: Shard after 1-2 years
+</code></pre>
+<p><strong>Read:Write ratio:</strong></p>
+<pre><code>Reads: 1,157/s
+Writes: 23/s
+Ratio: 50:1
+
+→ Heavy read optimization needed
+→ Aggressive caching strategy
+→ CDN for media
+</code></pre>
+<h2 id="requests-per-second-rps-intuition">Requests Per Second (RPS) Intuition</h2>
+<h3 id="what-different-rps-means">What Different RPS Means</h3>
+<pre><code>1-10 RPS:
+- Small internal tool
+- Single server sufficient
+- No special optimization
+
+10-100 RPS:
+- Small web app
+- 1-2 servers
+- Basic caching helps
+
+100-1,000 RPS:
+- Medium web app
+- 5-10 servers
+- Caching essential
+- Database optimization matters
+
+1,000-10,000 RPS:
+- Large web app
+- 20-50 servers
+- Distributed cache
+- Database read replicas
+- Load balancing critical
+
+10,000-100,000 RPS:
+- Very large scale
+- 100+ servers
+- Database sharding
+- Geographic distribution
+- CDN mandatory
+
+100,000+ RPS:
+- Massive scale (Google, Facebook level)
+- Thousands of servers
+- Custom infrastructure
+- Edge computing
+- Advanced optimization everywhere
+</code></pre>
+<h3 id="server-capacity-rule-of-thumb">Server Capacity Rule of Thumb</h3>
+<pre><code>Typical web server:
+- Simple queries: ~1,000 req/s
+- Medium complexity: ~500 req/s
+- Complex logic: ~100 req/s
+
+Database:
+- Simple reads: ~10,000 req/s
+- Simple writes: ~5,000 req/s
+- Complex queries: ~100 req/s
+- Transactions: ~1,000 req/s
+
+Cache (Redis):
+- Reads: ~100,000 req/s per node
+- Writes: ~50,000 req/s per node
+</code></pre>
+<p><strong>Use these to estimate:</strong></p>
+<pre><code>Need 5,000 req/s with medium complexity?
+5,000 / 500 = 10 servers minimum
+Add 50% buffer: 15 servers
+
+Database can&#x27;t keep up?
+Use caching to reduce DB load by 90%
+5,000 × 0.1 = 500 req/s to DB → Single DB OK
+</code></pre>
+<h2 id="storage-growth-intuition">Storage Growth Intuition</h2>
+<h3 id="storage-math">Storage Math</h3>
+<pre><code>Common data sizes:
+
+User record: ~1KB
+- username, email, hashed password, metadata
+
+Tweet/Post: ~500 bytes
+- text content, user_id, timestamp, metadata
+
+Photo (compressed): ~2MB
+- JPEG, optimized for web
+
+Video (1 min, 720p): ~50MB
+- H.264 compression
+
+Log entry: ~200 bytes
+- timestamp, level, message
+</code></pre>
+<h3 id="growth-calculation-example">Growth Calculation Example</h3>
+<p><strong>Scenario: Photo sharing app</strong></p>
+<pre><code>Users: 1 million
+Active daily: 200K
+Photos uploaded per active user: 2
+
+Daily uploads:
+200K × 2 = 400K photos/day
+
+Daily storage:
+400K × 2MB = 800GB/day
+
+Monthly: 800GB × 30 = 24TB/month
+Yearly: 24TB × 12 = 288TB/year
+
+Cost (AWS S3):
+$0.023/GB/month
+288TB = 288,000GB
+Cost: 288,000 × $0.023 = $6,624/month
+
+→ Significant! Need compression, CDN, storage tiers
+</code></pre>
+<p><strong>Optimization strategies:</strong></p>
+<pre><code>Original calculation: 288TB/year
+
+With optimization:
+1. Aggressive compression: -30% = 200TB
+2. Delete old/unused photos: -20% = 160TB
+3. Use storage tiers (cold storage): -40% cost
+4. Total: 160TB at $0.014/GB = $2,240/month
+
+Savings: $4,384/month (66% reduction!)
+</code></pre>
+<h2 id="read-vs-write-heavy-patterns">Read vs Write Heavy Patterns</h2>
+<h3 id="pattern-recognition">Pattern Recognition</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    subgraph Read Heavy
+        R1[Social Media Feed&lt;br/&gt;99% reads]
+        R2[News Site&lt;br/&gt;99.9% reads]
+        R3[Wikipedia&lt;br/&gt;99.99% reads]
+    end
+    
+    subgraph Balanced
+        B1[E-commerce&lt;br/&gt;80% reads]
+        B2[CRM&lt;br/&gt;70% reads]
+    end
+    
+    subgraph Write Heavy
+        W1[Analytics&lt;br/&gt;80% writes]
+        W2[Logging&lt;br/&gt;99% writes]
+        W3[IoT Data&lt;br/&gt;95% writes]
+    end
+    
+    style R1 fill:#51cf66
+    style B1 fill:#ffd43b
+    style W1 fill:#ff6b6b</code></pre>
+<p><em>Khác pattern cần khác optimization strategy</em></p>
+<h3 id="read-heavy-systems-90-reads">Read-Heavy Systems (90%+ reads)</h3>
+<pre><code>Examples: Social media, news, blogs, documentation
+
+Characteristics:
+- Many users viewing same content
+- Content doesn&#x27;t change often
+- Cache hit rate very high
+
+Optimization strategy:
+✓ Aggressive caching (Redis, Memcached)
+✓ CDN for static content
+✓ Database read replicas
+✓ Eventual consistency OK
+✗ Don&#x27;t optimize writes (not bottleneck)
+
+Infrastructure focus:
+- Cache layer (most important)
+- CDN (for media)
+- Multiple read replicas
+
+Example: Reddit
+- 1 post → 10,000 views
+- Cache post for 5 minutes
+- 99.99% cache hit rate
+- Database load minimal
+</code></pre>
+<h3 id="write-heavy-systems-50-writes">Write-Heavy Systems (50%+ writes)</h3>
+<pre><code>Examples: Analytics, logging, IoT sensors, financial trading
+
+Characteristics:
+- Constant data ingestion
+- Reads less frequent
+- Data often time-series
+
+Optimization strategy:
+✓ Write-optimized database (Cassandra, time-series DB)
+✓ Async writes (queue buffering)
+✓ Batch processing
+✓ Sharding/partitioning
+✗ Caching less effective
+
+Infrastructure focus:
+- Write throughput (database)
+- Message queues (buffer)
+- Batch processing
+
+Example: Monitoring system
+- 10K servers × 100 metrics/minute
+- 1M writes/minute = 16K/second
+- Reads: Once/day for dashboards
+- Optimize for write throughput
+</code></pre>
+<h3 id="balanced-systems-50-80-reads">Balanced Systems (50-80% reads)</h3>
+<pre><code>Examples: E-commerce, CRM, productivity tools
+
+Characteristics:
+- Mix of reading and writing
+- Need to optimize both
+- More complex trade-offs
+
+Optimization strategy:
+✓ Selective caching (hot data only)
+✓ Database optimization (indexes)
+✓ Read replicas for reports
+✓ Write optimization for transactions
+
+Infrastructure focus:
+- Balanced approach
+- Cache hot paths
+- Optimize critical queries
+</code></pre>
+<h2 id="bottleneck-mindset">Bottleneck Mindset</h2>
+<p><strong>Core principle: System is only as fast as its slowest part</strong></p>
+<h3 id="the-bottleneck-chain">The Bottleneck Chain</h3>
+<pre><code>Request flow:
+Client → (Network 50ms)
+      → Load Balancer (5ms)
+      → App Server (20ms)
+      → Database Query (500ms) ← BOTTLENECK
+      → App Server (10ms)
+      → Client (50ms)
+
+Total: 635ms
+Bottleneck: Database (79% of time)
+
+Optimization priority:
+1. Database (biggest impact)
+2. Network (if can&#x27;t fix DB)
+3. App logic (minimal impact)
+
+Don&#x27;t waste time optimizing app server from 20ms → 10ms
+when database takes 500ms!
+</code></pre>
+<h3 id="identifying-bottlenecks">Identifying Bottlenecks</h3>
+<pre><code>Ask these questions:
+
+1. What takes the most time?
+   - Measure each component
+   - Find the slowest
+
+2. What has the highest load?
+   - CPU usage
+   - Memory usage
+   - Network saturation
+   - Disk I/O
+
+3. What fails first under load?
+   - Database connections maxed?
+   - Server memory full?
+   - Network bandwidth saturated?
+
+The bottleneck is where you hit limits first.
+</code></pre>
+<h3 id="common-bottlenecks-by-scale">Common Bottlenecks by Scale</h3>
+<pre><code>1K users:
+- Bottleneck: Usually none
+- If any: Inefficient queries
+
+10K users:
+- Bottleneck: Database queries
+- Fix: Add indexes, caching
+
+100K users:
+- Bottleneck: Database writes
+- Fix: Read replicas, optimization
+
+1M users:
+- Bottleneck: Database capacity
+- Fix: Sharding, distributed cache
+
+10M+ users:
+- Bottleneck: Everything
+- Fix: Distributed architecture, CDN, edge computing
+</code></pre>
+<h2 id="practice-exercises">Practice Exercises</h2>
+<h3 id="exercise-1-estimate-youtube-like-service">Exercise 1: Estimate YouTube-like Service</h3>
+<pre><code>Given:
+- 1 billion users
+- 100 million daily active users
+- Each user watches 10 videos/day (average 5 min each)
+- 1% of users upload 1 video/day
+
+Calculate:
+1. Video views per second
+2. Upload bandwidth needed
+3. Storage growth per day
+4. Approximate infrastructure cost
+
+Try it yourself first!
+</code></pre>
+<p><strong>Answer:</strong></p>
+<pre><code>1. Video views per second:
+   100M users × 10 videos/day = 1B views/day
+   1B / 86,400 seconds ≈ 11,574 views/second
+
+2. Upload bandwidth:
+   1M uploads/day (1% of 100M)
+   Average video: 5 min × 10MB/min = 50MB
+   50MB × 1M = 50TB/day upload bandwidth
+   50TB / 86,400s ≈ 580 MB/second upload
+
+3. Storage growth:
+   1M videos/day × 50MB = 50TB/day raw
+   Multiple resolutions (360p, 720p, 1080p): ×3
+   = 150TB/day
+   = 4.5PB/month
+   
+4. Infrastructure cost (rough):
+   Storage: 4.5PB × $0.02/GB = $90,000/month
+   CDN: 1B views × 50MB = 50PB delivery
+   CDN cost: ~$500,000/month
+   Compute: ~$200,000/month
+   Total: ~$800,000/month minimum
+</code></pre>
+<h3 id="exercise-2-estimate-messaging-app">Exercise 2: Estimate Messaging App</h3>
+<pre><code>Given:
+- 500 million users
+- 200 million daily active
+- Each user sends 50 messages/day
+- Each user receives 50 messages/day
+
+Calculate:
+1. Messages per second
+2. Storage per day
+3. Database writes per second
+4. Real-time delivery challenge
+
+Your turn!
+</code></pre>
+<p><strong>Answer:</strong></p>
+<pre><code>1. Messages per second:
+   200M users × 50 messages = 10B messages/day
+   10B / 86,400 ≈ 115,740 messages/second
+
+2. Storage per day:
+   10B messages × 100 bytes = 1TB/day
+   (text messages are small)
+
+3. Database writes:
+   115,740 writes/second
+   → Need distributed database or write buffering
+   
+4. Real-time delivery:
+   115,740 messages/s to deliver
+   Each needs WebSocket push
+   → Need efficient pub/sub system
+   → Message queues essential
+</code></pre>
+<h2 id="building-your-intuition-practice-guide">Building Your Intuition: Practice Guide</h2>
+<p><strong>How to develop scale intuition:</strong></p>
+<h3 id="step-1-memorize-key-numbers">Step 1: Memorize Key Numbers</h3>
+<pre><code>Must know:
+- 1 million seconds ≈ 12 days
+- 1 billion seconds ≈ 32 years
+- 1KB = 1,000 bytes
+- 1MB = 1,000KB = 1 million bytes
+- 1GB = 1,000MB = 1 billion bytes
+- 1TB = 1,000GB
+
+Typical server:
+- 1,000 requests/second
+- 16GB RAM
+- 1TB storage
+
+Typical costs:
+- Server: $50-500/month
+- Database: $50-1,000/month
+- CDN: $10-1,000/month
+- Storage: $0.02/GB/month
+</code></pre>
+<h3 id="step-2-practice-daily-estimation">Step 2: Practice Daily Estimation</h3>
+<pre><code>Every day, estimate:
+
+Monday: &quot;Instagram has 500M DAU. How many photos uploaded/day?&quot;
+Tuesday: &quot;Twitter handles X tweets/second?&quot;
+Wednesday: &quot;Netflix bandwidth per second?&quot;
+Thursday: &quot;Google searches per second?&quot;
+Friday: &quot;Facebook storage growth per day?&quot;
+
+Practice makes perfect!
+</code></pre>
+<h3 id="step-3-verify-your-estimates">Step 3: Verify Your Estimates</h3>
+<pre><code>After estimating, research actual numbers:
+- Instagram: 95M photos/day
+- Twitter: 6,000 tweets/second
+- Netflix: 200Gbps peak bandwidth
+- Google: 40,000 searches/second
+
+Compare với your estimates
+Calibrate your intuition
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Scale intuition = Quickly estimate system requirements</strong></p>
+<pre><code>Critical skill for:
+- System design interviews
+- Architecture planning
+- Capacity planning
+- Cost estimation
+</code></pre>
+<p><strong>The scale spectrum:</strong></p>
+<pre><code>1K users: Bicycle (simple)
+10K users: Car (add structure)
+100K users: Bus (need optimization)
+1M users: Airplane (distributed systems)
+10M+ users: Fleet of airplanes (complex infrastructure)
+
+Each 10x = fundamentally different architecture
+</code></pre>
+<p><strong>Back-of-envelope calculations:</strong></p>
+<pre><code>Framework:
+1. Users → Activity → Requests
+2. Requests → Server capacity
+3. Data → Storage → Cost
+4. Identify bottlenecks
+
+Practice until automatic!
+</code></pre>
+<p><strong>Read vs Write patterns:</strong></p>
+<pre><code>Read-heavy (90%+):
+→ Caching is king
+→ CDN essential
+→ Read replicas
+
+Write-heavy (50%+):
+→ Write optimization
+→ Queue buffering
+→ Specialized databases
+
+Know your pattern → Know your strategy
+</code></pre>
+<p><strong>Bottleneck mindset:</strong></p>
+<pre><code>System speed = Slowest component speed
+
+Always ask:
+- What&#x27;s the bottleneck?
+- What hits limits first?
+- What to optimize first?
+
+Optimize bottleneck, not everything!
+</code></pre>
+<p><strong>Building intuition:</strong></p>
+<pre><code>1. Memorize key numbers
+2. Practice daily estimates
+3. Verify with real data
+4. Calibrate and improve
+
+After 100 estimates, you&#x27;ll have strong intuition
+</code></pre>
+<p><strong>Remember:</strong></p>
+<pre><code>Intuition không đến từ theory
+Intuition đến từ practice
+
+Làm calculations mỗi ngày
+Sau 1 tháng, bạn sẽ &quot;cảm&quot; được scale
+</code></pre></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-0/lesson/lesson-4-thinking-in-constraints"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Thinking in Constraints - Engineering Là Quản Lý Giới Hạn</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-0/lesson/lesson-6-system-thinking-framework">System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-0\",\"lesson\",\"lesson-5-scale-intuition\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-0\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-5-scale-intuition\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 0 — Mental Model Shift\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và capacity planning với back-of-envelope calculations.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-code-first-to-problem-first\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-1-code-first-to-problem-first\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Từ Code-First đến Problem-First - Thay Đổi Tư Duy Architect\"}]]}]}],[\"$\",\"li\",\"lesson-2-perfect-solution-to-trade-off-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-2-perfect-solution-to-trade-off-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Từ Perfect Solution đến Trade-off Thinking - Nghệ Thuật Của Quyết Định Kiến Trúc\"}]]}]}],[\"$\",\"li\",\"lesson-3-foundation-exercises\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-3-foundation-exercises\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Components và Communication - Giải Mã Kiến Trúc Hệ Thống Phân Tán\"}]]}]}],[\"$\",\"li\",\"lesson-4-thinking-in-constraints\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-4-thinking-in-constraints\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Thinking in Constraints - Engineering Là Quản Lý Giới Hạn\"}]]}]}],[\"$\",\"li\",\"lesson-5-scale-intuition\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-5-scale-intuition\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers\"}]]}]}],[\"$\",\"li\",\"lesson-6-system-thinking-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-6-system-thinking-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}],\"$L26\",\"$L27\"]}]]}],\"$L28\"]}],\"$L29\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"2a:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể\"}]\n26:[\"$\",\"li\",\"lesson-7-system-question-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-7-system-question-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",7]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"System Question Framework - Checklist Chuẩn Khi Design Hệ Thống\"}]]}]}]\n27:[\"$\",\"li\",\"lesson-8-mental-model-recap\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-8-mental-model-recap\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",8]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Mental Model Recap - Củng Cố Tư Duy System Design\"}]]}]}]\n28:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0\",\"className\":\"hover:text-ink\",\"children\":\"Phase 0 — Mental Model Shift\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và capacity planning với back-of-envelope calculations.\"}]]}],[\"$\",\"$L2a\",null,{\"path\":\"/phase/phase-0/lesson/lesson-5-scale-intuition\",\"title\":\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers\",\"description\":\"Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và capacity planning với back-of-envelope calculations.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Scale Intuition - Xây Dựng Cảm Giác Về Numbers\",\"children\":\"$L2b\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-4-thinking-in-constraints\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Thinking in Constraints - Engineering Là Quản Lý Giới Hạn\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-0/lesson/lesson-6-system-thinking-framework\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"System Thinking Framework - Nhìn Hệ Thống Như Một Tổng Thể\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2c:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"scale-intuition-xây-dựng-cảm-giác-về-numbers\",\"children\":\"Scale Intuition: Xây Dựng Cảm Giác Về Numbers\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ lần đầu tiên được hỏi trong interview:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"\\\"Hệ thống của em cần handle bao nhiêu requests per second?\\\"\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Uhm... nhiều ạ?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Interviewer: \",[\"$\",\"em\",null,{\"children\":\"\\\"Nhiều là bao nhiêu? 10? 1,000? 1,000,000?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"... Em không biết ạ.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tôi fail câu hỏi đó.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Không phải vì không biết code. Mà vì \",[\"$\",\"strong\",null,{\"children\":\"không có scale intuition\"}],\".\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior architect ngồi bên cạnh sau đó nói: \",[\"$\",\"em\",null,{\"children\":\"\\\"Em biết không, difference giữa 1K users và 1M users không phải là 1000 lần. Nó là difference giữa một chiếc xe đạp và một chiếc Boeing 747.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Đó là lúc tôi bắt đầu học về scale.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-scale-intuition-quan-trọng\",\"children\":\"Tại Sao Scale Intuition Quan Trọng?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-problem-numbers-are-abstract\",\"children\":\"The Problem: Numbers Are Abstract\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Khi bạn nghe \\\"1 million users\\\", bạn nghĩ gì?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Hầu hết developers: \",[\"$\",\"em\",null,{\"children\":\"\\\"Ồ, nhiều quá!\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Nhưng \\\"nhiều\\\" không giúp bạn design system.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bạn cần biết:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"1 million users = bao nhiêu requests/second?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cần bao nhiêu servers?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bao nhiêu database capacity?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bao nhiêu storage?\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bao nhiêu cost?\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-solution-develop-intuition\",\"children\":\"The Solution: Develop Intuition\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scale intuition = Ability to quickly estimate system requirements\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Skill: \\\"Ước chừng 1 million users cần 10 app servers, 2TB storage, cost ~$3K/tháng\\\"\\n\\nNot: \\\"1 million users... cần nhiều servers... uhm...\\\"\\n\\nCó intuition → Design với confidence\\nKhông có intuition → Design bằng guessing\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bài này sẽ dạy bạn build intuition đó.\"}]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"the-scale-spectrum-1k-vs-1m-vs-1b-users\",\"children\":\"The Scale Spectrum: 1K vs 1M vs 1B Users\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"visualizing-the-difference\",\"children\":\"Visualizing the Difference\"}],\"\\n\",[\"$\",\"$L2c\",null,{\"chart\":\"graph LR\\n    A[1K Users\u003cbr/\u003eXe đạp] --\u003e B[10K Users\u003cbr/\u003eXe hơi]\\n    B --\u003e C[100K Users\u003cbr/\u003eXe bus]\\n    C --\u003e D[1M Users\u003cbr/\u003eMáy bay]\\n    D --\u003e E[10M Users\u003cbr/\u003eBoeing 747]\\n    E --\u003e F[100M+ Users\u003cbr/\u003eHạm đội máy bay]\\n    \\n    style A fill:#51cf66\\n    style C fill:#ffd43b\\n    style E fill:#ff6b6b\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Mỗi bậc scale là một thế giới hoàn toàn khác nhau\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"1000-users-startup-mvp\",\"children\":\"1,000 Users (Startup MVP)\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Daily Active Users (DAU): ~500\\nConcurrent users: ~50\\nRequests per second: ~5-10\\n\\nInfrastructure:\\n- 1 application server ($50/month)\\n- 1 database server ($50/month)\\n- No load balancer needed\\n- No caching needed\\nTotal cost: ~$100/month\\n\\nBottleneck: Probably none\\nArchitecture: Simple monolith\\nTeam: 1-2 developers can handle\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real example:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Local coffee shop app:\\n- 500 customers\\n- Each checks menu 2 times/day\\n- 1,000 requests/day\\n- 1,000 / 86,400 seconds ≈ 0.01 requests/second\\n\\nCan run on Raspberry Pi! 😄\\n\"}]}],\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\"]}]\n"])</script><script>self.__next_f.push([1,"2d:[\"$\",\"h3\",null,{\"id\":\"10000-users-growing-startup\",\"children\":\"10,000 Users (Growing Startup)\"}]\n2e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Daily Active Users: ~5,000\\nConcurrent users: ~500\\nRequests per second: ~50-100\\n\\nInfrastructure:\\n- 2-3 application servers ($150/month)\\n- 1 database server ($100/month)\\n- Load balancer ($50/month)\\n- Redis cache optional ($50/month)\\nTotal cost: ~$350/month\\n\\nBottleneck: Database queries (add indexes)\\nArchitecture: Monolith + cache\\nTeam: 2-5 developers\\n\"}]}]\n2f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key difference từ 1K:\"}]}]\n30:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cần load balancer (high availability)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database indexes matter\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Monitoring starts to be important\"}],\"\\n\"]}]\n31:[\"$\",\"h3\",null,{\"id\":\"100000-users-established-product\",\"children\":\"100,000 Users (Established Product)\"}]\n32:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Daily Active Users: ~50,000\\nConcurrent users: ~5,000\\nRequests per second: ~500-1,000\\n\\nInfrastructure:\\n- 10 application servers ($500/month)\\n- Database với read replicas ($500/month)\\n- Load balancer ($100/month)\\n- Redis cluster ($300/month)\\n- CDN ($100/month)\\nTotal cost: ~$1,500/month\\n\\nBottleneck: Database writes, cache invalidation\\nArchitecture: Modular monolith hoặc simple microservices\\nTeam: 10-20 developers\\n\"}]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key difference từ 10K:\"}]}]\n34:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database read replicas necessary\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Caching is critical\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"CDN for static assets\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Auto-scaling starts to matter\"}],\"\\n\"]}]\n35:[\"$\",\"h3\",null,{\"id\":\"1000000-users-large-scale\",\"children\":\"1,000,000 Users (Large Scale)\"}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Daily Active Users: ~500,000\\nConcurrent users: ~50,000\\nRequests per second: ~5,000-10,000\\n\\nInfrastructure:\\n- 50+ application servers ($2,500/month)\\n- Sharded database cluster ($2,000/month)\\n- Multiple load balancers ($300/month)\\n- Distributed cache ($1,000/month)\\n- CDN ($500/month)\\n- Message queues ($200/month)\\nTotal cost: ~$6,500/month+\\n\\nBottleneck: Everything! Need distributed approach\\nArchitecture: Microservices likely\\nTeam: 50+ developers, dedicated ops team\\n\"}]}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key difference từ 100K:\"}]}]\n38:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database sharding needed\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Distributed systems challenges\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Dedicated DevOps/SRE team\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complex monitoring and alerting\"}],\"\\n\"]}]\n39:[\"$\",\"h3\",null,{\"id\":\"the-pattern\",\"children\":\"The Pattern\"}]\n3a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Mỗi 10x scale:\\n- Cost tăng ~3-5x (not linear!)\\n- Complexity tăng significantly\\n- Team size tăng\\n- Architecture thay đổi fundamentally\\n\\n1K → 10K: Add servers, basic optimization\\n10K → 100K: Add caching, read replicas\\n100K → 1M: Sharding, microservices, distributed systems\\n1M → 10M: Geographic distribution, edge computing\\n\"}]}]\n3b:[\"$\",\"h2\",null,{\"id\":\"back-of-envelope-calculations\",\"children\":\"Back-of-Envelope Calculations\"}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core skill: Quickly estimate system requirements\"}]}]\n3d:[\"$\",\"h3\",null,{\"id\":\"calculation-framework\",\"children\":\"Calculation Framework\"}]\n3e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Start với users\\n2. Estimate usage patterns\\n3. Calculate requests\\n4. Estimate storage\\n5. Calculate bandwidth\\n\"}]}]\n3f:[\"$\",\"h3\",null,{\"id\":\"exercise-1-e-commerce-website\",\"children\":\"Exercise 1: E-commerce Website\"}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Given:\"}]}]\n41:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":"])</script><script>self.__next_f.push([1,"\"1 million registered users\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"20% active daily (200K DAU)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Each user views 10 product pages/day\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Each user makes 1 purchase/month\"}],\"\\n\"]}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Calculate:\"}]}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Requests per second:\"}]}]\n44:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Page views:\\n200K users × 10 pages/day = 2M page views/day\\n2M / 86,400 seconds/day ≈ 23 requests/second\\n\\nPeak traffic (assume 3x average):\\n23 × 3 = 69 requests/second\\n\\nAPI calls (assume 5 API calls per page view):\\n23 × 5 = 115 requests/second\\nPeak: 345 requests/second\\n\\n→ Need to handle ~350 req/s at peak\\n\"}]}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Storage:\"}]}]\n46:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Product catalog:\\n100K products × 10KB each = 1GB\\n\\nProduct images:\\n100K products × 5 images × 500KB = 250GB\\n\\nUser data:\\n1M users × 1KB = 1GB\\n\\nOrders (1 year):\\n1M users × 12 purchases/year × 5KB = 60GB\\n\\nTotal: ~312GB\\n→ Single database can handle easily\\n→ Images need CDN/S3\\n\"}]}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bandwidth:\"}]}]\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Page views: 2M/day\\nAverage page size: 2MB (HTML + images + JS)\\n\\nTotal bandwidth: 2M × 2MB = 4TB/day\\n\\nWith CDN cache (90% cache hit rate):\\n4TB × 0.1 = 400GB/day from origin\\n= 16GB/hour from servers\\n= Manageable with CDN\\n\"}]}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Infrastructure estimate:\"}]}]\n4a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Application servers:\\n- 350 req/s peak\\n- Each server: ~100 req/s\\n- Need: 4 servers (with buffer)\\n\\nDatabase:\\n- 312GB data (single server OK)\\n- Read-heavy (add 2 read replicas)\\n\\nCDN: Essential (90% traffic)\\n\\nTotal cost: ~$800/month\\n\"}]}]\n4b:[\"$\",\"h3\",null,{\"id\":\"exercise-2-social-media-app\",\"children\":\"Exercise 2: Social Media App\"}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Given:\"}]}]\n4d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"10 million users\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"1 million daily active users\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Each user posts 2 times/day\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Each user views 100 posts/day\"}],\"\\n\"]}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Calculate:\"}]}]\n4f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Write traffic:\"}]}]\n50:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Posts created:\\n1M users × 2 posts/day = 2M posts/day\\n2M / 86,400 ≈ 23 writes/second\\n\\nPeak: 69 writes/second\\n→ Single database can handle\\n\"}]}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Read traffic:\"}]}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Posts viewed:\\n1M users × 100 posts/day = 100M views/day\\n100M / 86,400 ≈ 1,157 reads/second\\n\\nPeak: 3,471 reads/second\\n→ Need caching!\\n\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Storage growth:\"}]}]\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Posts per day: 2M\\nPost size: 500 bytes (text + metadata)\\nDaily storage: 2M × 500 bytes = 1GB/day\\n\\nPhotos (50% of posts have 1 photo):\\n1M photos/day × 2MB = 2TB/day\\n\\nAnnual growth:\\nText: 1GB × 365 = 365GB\\nPhotos: 2TB × 365 = 730TB\\n\\n→ Need distributed storage (S3)\\n→ Database: Shard after 1-2 years\\n\"}]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Read:Write ratio:\"}]}]\n56:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Reads: 1,157/s\\nWrites: 23/s\\nRatio: 50:1\\n\\n→ Heavy read optimization needed\\n→ Aggressive caching strategy\\n→ CDN for media\\n\"}]}]\n57:[\"$\",\"h2\",null,{\"id\":\"requests-per-second-rps-intuition\",\"children\":\"Requests Per Second (RPS) Intuition\"}]\n58:[\"$\",\"h3\",null,{\"id\":\"what-different-rps-means\",\"children\":\"What Different RPS Means\"}]\n59:[\"$\",\""])</script><script>self.__next_f.push([1,"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1-10 RPS:\\n- Small internal tool\\n- Single server sufficient\\n- No special optimization\\n\\n10-100 RPS:\\n- Small web app\\n- 1-2 servers\\n- Basic caching helps\\n\\n100-1,000 RPS:\\n- Medium web app\\n- 5-10 servers\\n- Caching essential\\n- Database optimization matters\\n\\n1,000-10,000 RPS:\\n- Large web app\\n- 20-50 servers\\n- Distributed cache\\n- Database read replicas\\n- Load balancing critical\\n\\n10,000-100,000 RPS:\\n- Very large scale\\n- 100+ servers\\n- Database sharding\\n- Geographic distribution\\n- CDN mandatory\\n\\n100,000+ RPS:\\n- Massive scale (Google, Facebook level)\\n- Thousands of servers\\n- Custom infrastructure\\n- Edge computing\\n- Advanced optimization everywhere\\n\"}]}]\n5a:[\"$\",\"h3\",null,{\"id\":\"server-capacity-rule-of-thumb\",\"children\":\"Server Capacity Rule of Thumb\"}]\n5b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Typical web server:\\n- Simple queries: ~1,000 req/s\\n- Medium complexity: ~500 req/s\\n- Complex logic: ~100 req/s\\n\\nDatabase:\\n- Simple reads: ~10,000 req/s\\n- Simple writes: ~5,000 req/s\\n- Complex queries: ~100 req/s\\n- Transactions: ~1,000 req/s\\n\\nCache (Redis):\\n- Reads: ~100,000 req/s per node\\n- Writes: ~50,000 req/s per node\\n\"}]}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use these to estimate:\"}]}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Need 5,000 req/s with medium complexity?\\n5,000 / 500 = 10 servers minimum\\nAdd 50% buffer: 15 servers\\n\\nDatabase can't keep up?\\nUse caching to reduce DB load by 90%\\n5,000 × 0.1 = 500 req/s to DB → Single DB OK\\n\"}]}]\n5e:[\"$\",\"h2\",null,{\"id\":\"storage-growth-intuition\",\"children\":\"Storage Growth Intuition\"}]\n5f:[\"$\",\"h3\",null,{\"id\":\"storage-math\",\"children\":\"Storage Math\"}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Common data sizes:\\n\\nUser record: ~1KB\\n- username, email, hashed password, metadata\\n\\nTweet/Post: ~500 bytes\\n- text content, user_id, timestamp, metadata\\n\\nPhoto (compressed): ~2MB\\n- JPEG, optimized for web\\n\\nVideo (1 min, 720p): ~50MB\\n- H.264 compression\\n\\nLog entry: ~200 bytes\\n- timestamp, level, message\\n\"}]}]\n61:[\"$\",\"h3\",null,{\"id\":\"growth-calculation-example\",\"children\":\"Growth Calculation Example\"}]\n62:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario: Photo sharing app\"}]}]\n63:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Users: 1 million\\nActive daily: 200K\\nPhotos uploaded per active user: 2\\n\\nDaily uploads:\\n200K × 2 = 400K photos/day\\n\\nDaily storage:\\n400K × 2MB = 800GB/day\\n\\nMonthly: 800GB × 30 = 24TB/month\\nYearly: 24TB × 12 = 288TB/year\\n\\nCost (AWS S3):\\n$0.023/GB/month\\n288TB = 288,000GB\\nCost: 288,000 × $0.023 = $6,624/month\\n\\n→ Significant! Need compression, CDN, storage tiers\\n\"}]}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Optimization strategies:\"}]}]\n65:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Original calculation: 288TB/year\\n\\nWith optimization:\\n1. Aggressive compression: -30% = 200TB\\n2. Delete old/unused photos: -20% = 160TB\\n3. Use storage tiers (cold storage): -40% cost\\n4. Total: 160TB at $0.014/GB = $2,240/month\\n\\nSavings: $4,384/month (66% reduction!)\\n\"}]}]\n66:[\"$\",\"h2\",null,{\"id\":\"read-vs-write-heavy-patterns\",\"children\":\"Read vs Write Heavy Patterns\"}]\n67:[\"$\",\"h3\",null,{\"id\":\"pattern-recognition\",\"children\":\"Pattern Recognition\"}]\n68:[\"$\",\"$L2c\",null,{\"chart\":\"graph TB\\n    subgraph Read Heavy\\n        R1[Social Media Feed\u003cbr/\u003e99% reads]\\n        R2[News Site\u003cbr/\u003e99.9% reads]\\n        R3[Wikipedia\u003cbr/\u003e99.99% reads]\\n    end\\n    \\n    subgraph Balanced\\n        B1[E-commerce\u003cbr/\u003e80% reads]\\n        B2[CRM\u003cbr/\u003e70% reads]\\n    end\\n    \\n    subgraph Write Heavy\\n        W1[Analytics\u003cbr/\u003e80% writes]\\n        W2[Logging\u003cbr/\u003e99% writes]\\n        W3[IoT Data\u003cbr/\u003e95% writes]\\n    end\\n    \\n    style R1 fill:#51cf66\\n    style B1 fill:#ffd43b\\n    style W1 fill:#ff6b6b\"}]\n69:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Khác pattern cần khác optimization strategy\"}]}]\n6a:[\"$\",\"h3\",null,{\"id\":\""])</script><script>self.__next_f.push([1,"read-heavy-systems-90-reads\",\"children\":\"Read-Heavy Systems (90%+ reads)\"}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Examples: Social media, news, blogs, documentation\\n\\nCharacteristics:\\n- Many users viewing same content\\n- Content doesn't change often\\n- Cache hit rate very high\\n\\nOptimization strategy:\\n✓ Aggressive caching (Redis, Memcached)\\n✓ CDN for static content\\n✓ Database read replicas\\n✓ Eventual consistency OK\\n✗ Don't optimize writes (not bottleneck)\\n\\nInfrastructure focus:\\n- Cache layer (most important)\\n- CDN (for media)\\n- Multiple read replicas\\n\\nExample: Reddit\\n- 1 post → 10,000 views\\n- Cache post for 5 minutes\\n- 99.99% cache hit rate\\n- Database load minimal\\n\"}]}]\n6c:[\"$\",\"h3\",null,{\"id\":\"write-heavy-systems-50-writes\",\"children\":\"Write-Heavy Systems (50%+ writes)\"}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Examples: Analytics, logging, IoT sensors, financial trading\\n\\nCharacteristics:\\n- Constant data ingestion\\n- Reads less frequent\\n- Data often time-series\\n\\nOptimization strategy:\\n✓ Write-optimized database (Cassandra, time-series DB)\\n✓ Async writes (queue buffering)\\n✓ Batch processing\\n✓ Sharding/partitioning\\n✗ Caching less effective\\n\\nInfrastructure focus:\\n- Write throughput (database)\\n- Message queues (buffer)\\n- Batch processing\\n\\nExample: Monitoring system\\n- 10K servers × 100 metrics/minute\\n- 1M writes/minute = 16K/second\\n- Reads: Once/day for dashboards\\n- Optimize for write throughput\\n\"}]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"balanced-systems-50-80-reads\",\"children\":\"Balanced Systems (50-80% reads)\"}]\n6f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Examples: E-commerce, CRM, productivity tools\\n\\nCharacteristics:\\n- Mix of reading and writing\\n- Need to optimize both\\n- More complex trade-offs\\n\\nOptimization strategy:\\n✓ Selective caching (hot data only)\\n✓ Database optimization (indexes)\\n✓ Read replicas for reports\\n✓ Write optimization for transactions\\n\\nInfrastructure focus:\\n- Balanced approach\\n- Cache hot paths\\n- Optimize critical queries\\n\"}]}]\n70:[\"$\",\"h2\",null,{\"id\":\"bottleneck-mindset\",\"children\":\"Bottleneck Mindset\"}]\n71:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core principle: System is only as fast as its slowest part\"}]}]\n72:[\"$\",\"h3\",null,{\"id\":\"the-bottleneck-chain\",\"children\":\"The Bottleneck Chain\"}]\n73:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Request flow:\\nClient → (Network 50ms)\\n      → Load Balancer (5ms)\\n      → App Server (20ms)\\n      → Database Query (500ms) ← BOTTLENECK\\n      → App Server (10ms)\\n      → Client (50ms)\\n\\nTotal: 635ms\\nBottleneck: Database (79% of time)\\n\\nOptimization priority:\\n1. Database (biggest impact)\\n2. Network (if can't fix DB)\\n3. App logic (minimal impact)\\n\\nDon't waste time optimizing app server from 20ms → 10ms\\nwhen database takes 500ms!\\n\"}]}]\n74:[\"$\",\"h3\",null,{\"id\":\"identifying-bottlenecks\",\"children\":\"Identifying Bottlenecks\"}]\n75:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Ask these questions:\\n\\n1. What takes the most time?\\n   - Measure each component\\n   - Find the slowest\\n\\n2. What has the highest load?\\n   - CPU usage\\n   - Memory usage\\n   - Network saturation\\n   - Disk I/O\\n\\n3. What fails first under load?\\n   - Database connections maxed?\\n   - Server memory full?\\n   - Network bandwidth saturated?\\n\\nThe bottleneck is where you hit limits first.\\n\"}]}]\n76:[\"$\",\"h3\",null,{\"id\":\"common-bottlenecks-by-scale\",\"children\":\"Common Bottlenecks by Scale\"}]\n77:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1K users:\\n- Bottleneck: Usually none\\n- If any: Inefficient queries\\n\\n10K users:\\n- Bottleneck: Database queries\\n- Fix: Add indexes, caching\\n\\n100K users:\\n- Bottleneck: Database writes\\n- Fix: Read replicas, optimization\\n\\n1M users:\\n- Bottleneck: Database capacity\\n- Fix: Sharding, distributed cache\\n\\n10M+ users:\\n- Bottleneck: Everything\\n- Fix: Distributed architecture, CDN, edge computing\\n\"}]}]\n78:[\"$\",\"h2\",null,{\"id\":\"practice-exercises\","])</script><script>self.__next_f.push([1,"\"children\":\"Practice Exercises\"}]\n79:[\"$\",\"h3\",null,{\"id\":\"exercise-1-estimate-youtube-like-service\",\"children\":\"Exercise 1: Estimate YouTube-like Service\"}]\n7a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Given:\\n- 1 billion users\\n- 100 million daily active users\\n- Each user watches 10 videos/day (average 5 min each)\\n- 1% of users upload 1 video/day\\n\\nCalculate:\\n1. Video views per second\\n2. Upload bandwidth needed\\n3. Storage growth per day\\n4. Approximate infrastructure cost\\n\\nTry it yourself first!\\n\"}]}]\n7b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Answer:\"}]}]\n7c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Video views per second:\\n   100M users × 10 videos/day = 1B views/day\\n   1B / 86,400 seconds ≈ 11,574 views/second\\n\\n2. Upload bandwidth:\\n   1M uploads/day (1% of 100M)\\n   Average video: 5 min × 10MB/min = 50MB\\n   50MB × 1M = 50TB/day upload bandwidth\\n   50TB / 86,400s ≈ 580 MB/second upload\\n\\n3. Storage growth:\\n   1M videos/day × 50MB = 50TB/day raw\\n   Multiple resolutions (360p, 720p, 1080p): ×3\\n   = 150TB/day\\n   = 4.5PB/month\\n   \\n4. Infrastructure cost (rough):\\n   Storage: 4.5PB × $0.02/GB = $90,000/month\\n   CDN: 1B views × 50MB = 50PB delivery\\n   CDN cost: ~$500,000/month\\n   Compute: ~$200,000/month\\n   Total: ~$800,000/month minimum\\n\"}]}]\n7d:[\"$\",\"h3\",null,{\"id\":\"exercise-2-estimate-messaging-app\",\"children\":\"Exercise 2: Estimate Messaging App\"}]\n7e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Given:\\n- 500 million users\\n- 200 million daily active\\n- Each user sends 50 messages/day\\n- Each user receives 50 messages/day\\n\\nCalculate:\\n1. Messages per second\\n2. Storage per day\\n3. Database writes per second\\n4. Real-time delivery challenge\\n\\nYour turn!\\n\"}]}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Answer:\"}]}]\n80:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Messages per second:\\n   200M users × 50 messages = 10B messages/day\\n   10B / 86,400 ≈ 115,740 messages/second\\n\\n2. Storage per day:\\n   10B messages × 100 bytes = 1TB/day\\n   (text messages are small)\\n\\n3. Database writes:\\n   115,740 writes/second\\n   → Need distributed database or write buffering\\n   \\n4. Real-time delivery:\\n   115,740 messages/s to deliver\\n   Each needs WebSocket push\\n   → Need efficient pub/sub system\\n   → Message queues essential\\n\"}]}]\n81:[\"$\",\"h2\",null,{\"id\":\"building-your-intuition-practice-guide\",\"children\":\"Building Your Intuition: Practice Guide\"}]\n82:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"How to develop scale intuition:\"}]}]\n83:[\"$\",\"h3\",null,{\"id\":\"step-1-memorize-key-numbers\",\"children\":\"Step 1: Memorize Key Numbers\"}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Must know:\\n- 1 million seconds ≈ 12 days\\n- 1 billion seconds ≈ 32 years\\n- 1KB = 1,000 bytes\\n- 1MB = 1,000KB = 1 million bytes\\n- 1GB = 1,000MB = 1 billion bytes\\n- 1TB = 1,000GB\\n\\nTypical server:\\n- 1,000 requests/second\\n- 16GB RAM\\n- 1TB storage\\n\\nTypical costs:\\n- Server: $50-500/month\\n- Database: $50-1,000/month\\n- CDN: $10-1,000/month\\n- Storage: $0.02/GB/month\\n\"}]}]\n85:[\"$\",\"h3\",null,{\"id\":\"step-2-practice-daily-estimation\",\"children\":\"Step 2: Practice Daily Estimation\"}]\n86:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Every day, estimate:\\n\\nMonday: \\\"Instagram has 500M DAU. How many photos uploaded/day?\\\"\\nTuesday: \\\"Twitter handles X tweets/second?\\\"\\nWednesday: \\\"Netflix bandwidth per second?\\\"\\nThursday: \\\"Google searches per second?\\\"\\nFriday: \\\"Facebook storage growth per day?\\\"\\n\\nPractice makes perfect!\\n\"}]}]\n87:[\"$\",\"h3\",null,{\"id\":\"step-3-verify-your-estimates\",\"children\":\"Step 3: Verify Your Estimates\"}]\n88:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"After estimating, research actual numbers:\\n- Instagram: 95M photos/day\\n- Twitter: 6,000 tweets/second\\n- Netflix: 200Gbps peak bandwidth\\n- Google: 40,000 searches/second\\n\\nCompare với your estimates\\nCalibrate your intuition\\n\"}]}]\n89:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"ch"])</script><script>self.__next_f.push([1,"ildren\":\"Key Takeaways\"}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scale intuition = Quickly estimate system requirements\"}]}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Critical skill for:\\n- System design interviews\\n- Architecture planning\\n- Capacity planning\\n- Cost estimation\\n\"}]}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The scale spectrum:\"}]}]\n8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1K users: Bicycle (simple)\\n10K users: Car (add structure)\\n100K users: Bus (need optimization)\\n1M users: Airplane (distributed systems)\\n10M+ users: Fleet of airplanes (complex infrastructure)\\n\\nEach 10x = fundamentally different architecture\\n\"}]}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Back-of-envelope calculations:\"}]}]\n8f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Framework:\\n1. Users → Activity → Requests\\n2. Requests → Server capacity\\n3. Data → Storage → Cost\\n4. Identify bottlenecks\\n\\nPractice until automatic!\\n\"}]}]\n90:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Read vs Write patterns:\"}]}]\n91:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Read-heavy (90%+):\\n→ Caching is king\\n→ CDN essential\\n→ Read replicas\\n\\nWrite-heavy (50%+):\\n→ Write optimization\\n→ Queue buffering\\n→ Specialized databases\\n\\nKnow your pattern → Know your strategy\\n\"}]}]\n92:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Bottleneck mindset:\"}]}]\n93:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"System speed = Slowest component speed\\n\\nAlways ask:\\n- What's the bottleneck?\\n- What hits limits first?\\n- What to optimize first?\\n\\nOptimize bottleneck, not everything!\\n\"}]}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Building intuition:\"}]}]\n95:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Memorize key numbers\\n2. Practice daily estimates\\n3. Verify with real data\\n4. Calibrate and improve\\n\\nAfter 100 estimates, you'll have strong intuition\\n\"}]}]\n96:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember:\"}]}]\n97:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Intuition không đến từ theory\\nIntuition đến từ practice\\n\\nLàm calculations mỗi ngày\\nSau 1 tháng, bạn sẽ \\\"cảm\\\" được scale\\n\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"98:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers | Phase 0 — Mental Model Shift | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và cap\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-0/lesson/lesson-5-scale-intuition\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers | Phase 0 — Mental Model Shift\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và cap\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-0/lesson/lesson-5-scale-intuition\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Scale Intuition - Xây Dựng Cảm Giác Về Numbers | Phase 0 — Mental Model Shift\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học cách ước lượng scale trong system design: 1K vs 1M users, requests per second, storage growth, read vs write patterns. Build intuition về bottlenecks và cap\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L98\",\"14\",{}]]\n"])</script></body></html>

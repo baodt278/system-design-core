@@ -1,0 +1,946 @@
+@0
+Bài Tập Tổng Hợp: Từ Lý Thuyết Đến Thực Hành
+@1
+Chúc mừng bạn đã hoàn thành tất cả các bài học trong Phần 1!
+@2
+Bạn đã học về các ⟦thành phần|components⟧, các ⟦mẫu giao tiếp|communication patterns⟧, ⟦luồng dữ liệu|data flow⟧, và các khái niệm quan trọng như ⟦độ trễ|latency⟧, ⟦thông lượng|throughput⟧, ⟦định lý CAP|CAP theorem⟧.
+@3
+Nhưng có một sự thật mà tôi phải nói thẳng: **Đọc hiểu ≠ Làm được.**
+@4
+Tôi từng có một người được tôi kèm cặp đọc xong tất cả tài liệu, nói "Em hiểu hết rồi!" Nhưng khi tôi cho một bài tập đơn giản: "Thiết kế ⟦dịch vụ rút gọn URL|URL shortener⟧", anh ta ngồi im 20 phút không biết bắt đầu từ đâu.
+@5
+**Tại sao?** Vì thiếu thực hành. Thiếu việc áp dụng các khái niệm vào những kịch bản thực tế.
+@6
+Bài học này sẽ khắc phục điều đó. Ba bài tập được thiết kế để:
+@7
+**Buộc bạn suy nghĩ như một ⟦kiến trúc sư|architect⟧** (không còn sao chép – dán lời giải)
+@8
+**Áp dụng tất cả các khái niệm đã học** (⟦thành phần|components⟧, ⟦luồng dữ liệu|data flow⟧, ⟦đánh đổi|trade-offs⟧)
+@9
+**Xây dựng sự tự tin** (sau khi làm xong, bạn sẽ thấy "Mình làm được đấy!")
+@10
+Đừng bỏ qua. Đây là phần quan trọng nhất của Phần 1.
+@12
+**Quy tắc:**
+@13
+**Không Google ngay** - Thử tự suy nghĩ 15 phút trước
+@14
+**Vẽ ra giấy/bảng trắng** - Việc vẽ buộc bạn phải nghĩ rõ ràng
+@15
+**Giải thích cho người khác** - Hoặc cho một chú vịt cao su (rubber duck)
+@16
+**So sánh với lời giải** - Sau khi làm xong
+@17
+**Lặp lại** - Làm lại với một cách tiếp cận khác
+@18
+**⟦Tư duy|Mindset⟧:**
+@19
+Không có "đúng/sai" tuyệt đối. Chỉ có "phù hợp/không phù hợp" với bối cảnh.
+@20
+Nếu bạn có lập luận tốt cho các quyết định của mình, đó là một thiết kế tốt.
+@23
+Phát triển tư duy ở cấp độ hệ thống bằng cách ⟦phân tích ngược|reverse engineer⟧ một ứng dụng bạn dùng hàng ngày.
+@25
+Chọn **1 ứng dụng** bạn hay dùng:
+@32
+Phần A: Vẽ Sơ Đồ Các ⟦Thành Phần|Components⟧
+@33
+Xác định và vẽ:
+@34
+1. Máy khách (ứng dụng web/di động)
+2. (Các) bộ cân bằng tải
+3. Các máy chủ ứng dụng
+4. (Các) tầng bộ nhớ đệm
+5. (Các) cơ sở dữ liệu
+6. CDN (nếu có)
+7. Hàng đợi thông điệp (nếu có)
+
+@35
+**Cấu trúc ví dụ:**
+@36
+flowchart TD
+    Client[Ứng dụng di động]
+    CDN[CDN tài nguyên tĩnh]
+    LB[Bộ cân bằng tải]
+    API1[Máy chủ API 1]
+    API2[Máy chủ API 2]
+    Cache[Bộ nhớ đệm Redis]
+    DB[(CSDL)]
+    Queue[Hàng đợi thông điệp]
+    Worker[Tiến trình xử lý nền]
+
+    Client --> CDN
+    Client --> LB
+    LB --> API1
+    LB --> API2
+    API1 --> Cache
+    API2 --> Cache
+    Cache --> DB
+    API1 --> Queue
+    Queue --> Worker
+    Worker --> DB
+@37
+**Mẹo:**
+@39
+**⟦Quy mô|Scale⟧** - Bao nhiêu người dùng? → Cần ⟦bộ nhớ đệm|cache⟧, ⟦bộ cân bằng tải|LB⟧, nhiều máy chủ
+@40
+**Tính năng** - Trò chuyện thời gian thực? → Máy chủ WebSocket, ⟦hàng đợi thông điệp|message queue⟧
+@41
+**⟦Hiệu năng|Performance⟧** - Tải nhanh? → CDN, ⟦lưu đệm|caching⟧ mạnh tay
+@42
+Phần B: Lần Theo ⟦Luồng Dữ Liệu|Data Flow⟧
+@43
+Chọn **1 hành động của người dùng** và lần theo từ đầu đến cuối.
+@44
+**Ví dụ:**
+@45
+**Instagram:** Người dùng đăng một bức ảnh
+@46
+**Shopee:** Người dùng đặt một đơn hàng
+@47
+**Grab:** Người dùng đặt một chuyến xe
+@48
+**Định dạng:**
+@49
+1. Hành động của người dùng: [Mô tả]
+
+2. Luồng yêu cầu:
+   Máy khách → Thành phần A → Thành phần B → Thành phần C
+
+3. Biến đổi dữ liệu:
+   - Tại thành phần A: [Điều gì xảy ra]
+   - Tại thành phần B: [Điều gì xảy ra]
+   - Tại thành phần C: [Điều gì xảy ra]
+
+4. Luồng phản hồi:
+   Thành phần C → Thành phần B → Thành phần A → Máy khách
+
+5. Các tiến trình bất đồng bộ (nếu có):
+   - Tác vụ nền X
+   - Thông báo Y
+
+@50
+**Ví dụ: Đăng ảnh trên Instagram**
+@51
+sequenceDiagram
+    participant U as User
+    participant CDN as CDN
+    participant LB as Load Balancer
+    participant API as API Server
+    participant Q as Message Queue
+    participant W as Workers
+    participant DB as Database
+    participant Cache as Redis
+
+    U->>CDN: Tải ảnh lên
+    CDN-->>U: Trả về URL của ảnh
+    U->>LB: POST /api/posts {image_url, caption}
+    LB->>API: Chuyển tiếp yêu cầu
+    API->>DB: Lưu siêu dữ liệu bài đăng
+    API->>Q: Thêm tác vụ: generate_thumbnail
+    API->>Q: Thêm tác vụ: fanout_to_followers
+    API-->>U: Thành công (200ms)
+
+    Q->>W: Worker nhận tác vụ
+    W->>CDN: Tải ảnh về
+    W->>W: Tạo ảnh thu nhỏ
+    W->>CDN: Tải ảnh thu nhỏ lên
+    W->>DB: Cập nhật bài đăng với ảnh thu nhỏ
+
+    Q->>W: Worker phân phát
+    W->>DB: Lấy ID người theo dõi
+    W->>Cache: Ghi vào bộ nhớ đệm bảng tin của từng người theo dõi
+@52
+**Phân tích:**
+@53
+Phần đồng bộ (200ms):
+- Tải ảnh lên CDN
+- Lưu siêu dữ liệu bài đăng
+- Thêm tác vụ vào hàng đợi
+- Trả về thành công
+
+Phần bất đồng bộ (1-2 phút):
+- Tạo ảnh thu nhỏ
+- Phân phát tới bảng tin của người theo dõi
+- Gửi thông báo
+
+Tại sao bất đồng bộ?
+- Người dùng không cần chờ ảnh thu nhỏ
+- Người theo dõi không cần cập nhật tức thì
+- Có thể xử lý hàng triệu người theo dõi
+
+@54
+Phần C: Dự Đoán ⟦Điểm Nghẽn|Bottlenecks⟧
+@55
+Dựa trên sơ đồ của bạn, hãy xác định:
+@56
+**1. ⟦Điểm nghẽn|Bottleneck⟧ hiện tại (ở mức tải bình thường):**
+@57
+Thành phần: [?]
+Lý do: [Tại sao nó chậm?]
+Bằng chứng: [Làm sao bạn biết?]
+
+@58
+**2. ⟦Điểm nghẽn|Bottleneck⟧ trong tương lai (ở quy mô gấp 10 lần):**
+@59
+Thành phần: [?]
+Lý do: [Cái gì sẽ hỏng trước?]
+Tác động: [Điều gì xảy ra khi nó hỏng?]
+
+@60
+**3. Giải pháp:**
+@61
+Ngắn hạn: [Sửa nhanh]
+Dài hạn: [Giải pháp bài bản]
+Đánh đổi: [Chúng ta hy sinh điều gì?]
+
+@63
+**Ví dụ: Shopee - Người Dùng Đặt Hàng**
+@64
+**Các ⟦thành phần|Components⟧:**
+@65
+Máy khách: Ứng dụng di động
+CDN: Ảnh sản phẩm, tài nguyên tĩnh
+Bộ cân bằng tải: Phân phối lưu lượng
+Máy chủ API: Xử lý đơn hàng (10+ máy chủ)
+Bộ nhớ đệm: Redis (thông tin sản phẩm, tồn kho)
+Cơ sở dữ liệu:
+  - CSDL sản phẩm (bản sao chỉ đọc)
+  - CSDL đơn hàng (master-slave)
+  - CSDL người dùng (master-slave)
+Hàng đợi thông điệp: RabbitMQ
+Worker: Xử lý thanh toán, thông báo
+
+@66
+**⟦Luồng Dữ Liệu|Data Flow⟧:**
+@67
+1. Người dùng nhấn "Đặt hàng"
+
+2. Yêu cầu:
+   Ứng dụng → LB → Máy chủ API
+
+3. Máy chủ API:
+   - Kiểm tra hợp lệ các mặt hàng trong giỏ (từ bộ nhớ đệm)
+   - Kiểm tra tồn kho (Redis)
+   - Tạo đơn hàng (CSDL đơn hàng)
+   - Giữ chỗ hàng tồn kho (giảm số lượng)
+   - Thêm vào hàng đợi thanh toán
+   - Trả về order_id
+
+4. Phản hồi:
+   API → LB → Ứng dụng (hiển thị "Đang xử lý...")
+
+5. Bất đồng bộ:
+   - Worker thanh toán trừ tiền thẻ
+   - Nếu thành công: Cập nhật trạng thái đơn hàng
+   - Nếu thất bại: Hoàn lại tồn kho, thông báo cho người dùng
+   - Worker thông báo gửi email/SMS
+
+@68
+**⟦Điểm nghẽn|Bottlenecks⟧:**
+@69
+Hiện tại:
+- Kiểm tra tồn kho (Redis)
+- Nhiều người dùng đồng thời kiểm tra cùng sản phẩm
+- Giải pháp: Khoá lạc quan (optimistic locking)
+
+Ở quy mô gấp 10 lần:
+- Ghi vào CSDL đơn hàng (điểm nghẽn ở máy chủ chính)
+- Giải pháp: Phân mảnh theo user_id hoặc order_id
+- Đánh đổi: Truy vấn xuyên mảnh khó hơn
+
+@70
+Tự Kiểm Tra
+@71
+Bạn đạt bài này khi:
+@72
+Sơ đồ có ít nhất 5 ⟦thành phần|components⟧ rõ ràng
+@73
+⟦Luồng dữ liệu|Data flow⟧ hợp lý và đầy đủ
+@74
+Các dự đoán về ⟦điểm nghẽn|bottleneck⟧ có lập luận
+@75
+Các giải pháp có phân tích ⟦đánh đổi|trade-off⟧
+@76
+Bài 2: Thiết Kế ⟦Dịch Vụ Rút Gọn URL|URL Shortener⟧ (bit.ly)
+@78
+Thiết kế một hệ thống hoàn chỉnh từ ⟦yêu cầu|requirements⟧ đến các chi tiết triển khai.
+@79
+⟦Yêu Cầu|Requirements⟧
+@80
+**Chức năng:**
+@81
+Người dùng gửi URL dài → Hệ thống trả về URL ngắn
+@82
+Người dùng nhấn vào URL ngắn → Chuyển hướng tới URL gốc
+@83
+URL ngắn tuỳ chỉnh (không bắt buộc)
+@84
+**Phi chức năng:**
+@85
+**Ghi:** 1 triệu URL được rút gọn/ngày
+@86
+**Đọc:** 100 triệu lượt chuyển hướng/ngày
+@87
+**⟦Độ trễ|Latency⟧:** < 10ms cho mỗi lượt chuyển hướng
+@88
+**⟦Tính sẵn sàng|Availability⟧:** 99,9%
+@89
+Phần A: ⟦Ước Lượng Năng Lực|Capacity Estimation⟧
+@90
+Tính toán để hiểu rõ ⟦quy mô|scale⟧.
+@91
+**Ghi (Rút gọn):**
+@92
+1M URL/ngày
+= 1M / (24 * 3600)
+≈ 12 URL/giây
+
+Cao điểm (gấp 3 lần trung bình): 36 URL/giây
+
+Kết luận: Lượng ghi nhẹ, dễ xử lý
+
+@93
+**Đọc (Chuyển hướng):**
+@94
+100M lượt chuyển hướng/ngày
+= 100M / (24 * 3600)
+≈ 1,157 yêu cầu/giây
+
+Cao điểm (gấp 3): ~3,500 yêu cầu/giây
+
+Kết luận: Thiên về đọc (tỉ lệ 100:1) → Rất hợp với bộ nhớ đệm
+
+@95
+**⟦Lưu trữ|Storage⟧:**
+@96
+1 bản ghi ánh xạ URL ≈ 500 byte
+1M URL/ngày * 365 ngày * 5 năm = 1.825B URL
+1.825B * 500 byte ≈ 912 GB ≈ 1 TB
+
+Kết luận: Lưu trữ không phải vấn đề
+
+@97
+Phần B: Thiết Kế API
+@98
+Định nghĩa các giao diện rõ ràng.
+@100
+Phần C: Bài Toán Cốt Lõi - Sinh Mã Rút Gọn
+@101
+**Thách thức:** Chuyển URL dài → mã ngắn duy nhất
+@102
+**Phương án 1: Dựa trên ⟦hàm băm|hash⟧**
+@103
+**Phân tích:**
+@104
+Tất định (cùng URL → cùng mã)
+Có thể xảy ra xung đột
+Cần kiểm tra trùng lặp trong CSDL
+Dễ đoán trước (vấn đề bảo mật)
+
+@105
+**Phương án 2: ⟦Tự tăng|Auto-increment⟧ + Mã hoá Base62**
+@106
+**Tính độ dài:**
+@107
+62^6 = 56 tỷ tổ hợp
+62^7 = 3,5 nghìn tỷ tổ hợp
+
+Với 6 ký tự: 56 tỷ URL (đủ dùng!)
+
+@108
+**Phân tích:**
+@109
+Không xung đột (ID duy nhất)
+Mã ngắn (6-7 ký tự)
+Thứ tự dễ đoán (có thể là tính năng hoặc lỗi)
+Tuần tự (có thể làm lộ khối lượng)
+
+@110
+**Khuyến nghị:** Dùng Phương án 2 (Base62) vì sự đơn giản và ⟦độ tin cậy|reliability⟧.
+@111
+Phần D: ⟦Lược Đồ|Schema⟧ Cơ Sở Dữ Liệu
+@112
+**Tại sao thiết kế như vậy:**
+@113
+**urls:** Dữ liệu cốt lõi, cần tra cứu nhanh theo short_code
+@114
+**clicks:** Dữ liệu phân tích, có thể tách riêng (không làm chậm việc chuyển hướng)
+@115
+**⟦Chỉ mục|Indexes⟧:** Cực kỳ quan trọng cho ⟦hiệu năng|performance⟧
+@116
+**click_count:** ⟦Phi chuẩn hoá|Denormalized⟧ để hiển thị nhanh
+@117
+Phần E: Thiết Kế ⟦Kiến Trúc|Architecture⟧
+@118
+flowchart TD
+    User[Người dùng]
+    DNS[DNS/CDN]
+    LB[Bộ cân bằng tải]
+    API1[Máy chủ API 1]
+    API2[Máy chủ API 2]
+    API3[Máy chủ API 3]
+    Cache[(Bộ nhớ đệm Redis)]
+    DB[(PostgreSQL)]
+    Analytics[Hàng đợi phân tích]
+    Worker[Worker phân tích]
+
+    User --> DNS
+    DNS --> LB
+    LB --> API1
+    LB --> API2
+    LB --> API3
+
+    API1 --> Cache
+    API2 --> Cache
+    API3 --> Cache
+
+    Cache -.->|Trượt bộ nhớ đệm| DB
+
+    API1 --> Analytics
+    Analytics --> Worker
+    Worker --> DB
+@119
+**Luồng: Rút gọn URL**
+@120
+1. Người dùng → POST /api/shorten
+2. Máy chủ API:
+   - Sinh ID (tự tăng)
+   - Mã hoá sang Base62
+   - Lưu vào CSDL
+   - Trả về URL ngắn
+3. Thời gian: ~50ms
+
+@121
+**Luồng: Chuyển hướng**
+@122
+1. Người dùng → GET /abc123
+2. Máy chủ API:
+   - Kiểm tra bộ nhớ đệm Redis
+   - Nếu trúng: Trả về long_url (5ms)
+   - Nếu trượt: Truy vấn CSDL → Lưu kết quả vào bộ nhớ đệm → Trả về (50ms)
+3. Ghi log sự kiện click (bất đồng bộ, không chờ)
+4. Chuyển hướng 302
+
+@123
+**Chiến lược ⟦lưu đệm|Caching⟧:**
+@124
+Phần F: Mở Rộng Lên 100 Triệu Lượt Click/Ngày
+@125
+**Vấn đề:**
+@126
+100M lượt click/ngày = 1,157 req/s (trung bình)
+Cao điểm: 3,500 req/s
+
+Thách thức:
+1. Tải đọc lên cơ sở dữ liệu
+2. Dung lượng bộ nhớ đệm
+3. Lượng ghi cho phân tích
+
+@127
+**Giải pháp:**
+@128
+**1. Đọc Cơ Sở Dữ Liệu:**
+@129
+Vấn đề: 3,500 req/s * 50ms = 175 truy vấn đồng thời
+
+Giải pháp A: Thêm bản sao chỉ đọc (3 slave)
+- Phân phối lượt đọc qua các bản sao
+- Mỗi bản sao xử lý ~1,200 req/s → Dễ dàng
+
+Giải pháp B: Lưu đệm mạnh tay (tỉ lệ trúng 99%)
+- Chỉ 1% đi tới CSDL = 35 req/s
+- Rất dễ kiểm soát
+
+@130
+**2. Chiến Lược ⟦Bộ Nhớ Đệm|Cache⟧:**
+@131
+Lưu đệm các URL "nóng":
+- Quy tắc 80/20: 20% URL nhận 80% lưu lượng
+- Lưu đệm 1 triệu URL hàng đầu
+- Bộ nhớ: 1M * 500 byte = 500 MB
+- Rẻ, nhanh
+
+Loại bỏ theo LRU:
+- Tự động xoá mục ít được dùng gần đây nhất
+- Luôn giữ lại dữ liệu "nóng"
+
+@132
+**3. Phân Tích Dữ Liệu:**
+@133
+Vấn đề: 3,500 lượt ghi/giây vào bảng clicks
+
+Giải pháp: Hàng đợi bất đồng bộ + ghi theo lô
+- Gom các lượt click vào hàng đợi
+- Worker chèn theo lô mỗi 10 giây
+- Giảm lượng ghi vào CSDL đi 10 lần
+
+Đánh đổi: Dữ liệu phân tích trễ khoảng ~10 giây (chấp nhận được)
+
+@134
+**⟦Kiến Trúc|Architecture⟧ Cuối Cùng:**
+@135
+flowchart TD
+    Users[Người dùng toàn cầu]
+    GeoDNS[GeoDNS]
+    CDN1[CDN - Khu vực Mỹ]
+    CDN2[CDN - Khu vực châu Á]
+
+    LB1[Bộ cân bằng tải Mỹ]
+    LB2[Bộ cân bằng tải châu Á]
+
+    API1[Máy chủ API Mỹ]
+    API2[Máy chủ API châu Á]
+
+    Cache1[(Redis Mỹ)]
+    Cache2[(Redis châu Á)]
+
+    DB_Master[(CSDL Master)]
+    DB_Slave1[(CSDL Slave 1)]
+    DB_Slave2[(CSDL Slave 2)]
+
+    Queue[Hàng đợi phân tích]
+    Workers[Worker xử lý theo lô]
+
+    Users --> GeoDNS
+    GeoDNS -->|Lưu lượng Mỹ| CDN1
+    GeoDNS -->|Lưu lượng châu Á| CDN2
+
+    CDN1 --> LB1
+    CDN2 --> LB2
+
+    LB1 --> API1
+    LB2 --> API2
+
+    API1 --> Cache1
+    API2 --> Cache2
+
+    Cache1 -.->|Trượt| DB_Slave1
+    Cache2 -.->|Trượt| DB_Slave2
+
+    API1 --> Queue
+    API2 --> Queue
+    Queue --> Workers
+    Workers --> DB_Master
+
+    DB_Master -.->|Nhân bản| DB_Slave1
+    DB_Master -.->|Nhân bản| DB_Slave2
+@136
+**Tại sao cách này hiệu quả:**
+@137
+**GeoDNS:** Định tuyến người dùng tới khu vực gần nhất → ⟦Độ trễ|Latency⟧ thấp
+@138
+**CDN:** Lưu đệm các lượt chuyển hướng tại ⟦điểm biên|edge⟧ → Cực nhanh
+@139
+**Nhiều khu vực:** ⟦Tính sẵn sàng cao|High availability⟧
+@140
+**⟦Bộ nhớ đệm|Cache⟧ Redis:** Tỉ lệ trúng 99% → Tải lên CSDL tối thiểu
+@141
+**⟦Bản sao chỉ đọc|Read replicas⟧:** Dễ dàng mở rộng lượng đọc
+@142
+**Phân tích ⟦bất đồng bộ|async⟧:** Không làm chậm việc chuyển hướng
+@143
+Tự Kiểm Tra
+@144
+Bạn đạt bài này khi:
+@145
+Phần ⟦ước lượng năng lực|capacity estimation⟧ có các phép tính rõ ràng
+@146
+Thiết kế API gọn gàng và theo chuẩn RESTful
+@147
+⟦Lược đồ|Schema⟧ cơ sở dữ liệu có ⟦chỉ mục|indexes⟧ đặt đúng chỗ
+@148
+⟦Kiến trúc|Architecture⟧ đáp ứng được các yêu cầu về ⟦quy mô|scale⟧
+@149
+Có giải thích các ⟦đánh đổi|trade-offs⟧ của từng quyết định
+@150
+Bài 3: Phân Tích ⟦Đánh Đổi|Trade-off⟧ - Người Dùng Tải Ảnh Đại Diện
+@152
+Thực hành so sánh các cách tiếp cận và đưa ra quyết định có cơ sở.
+@153
+Bối Cảnh
+@154
+Tính năng: Người dùng tải lên ảnh đại diện (ảnh hồ sơ)
+@155
+**Các bước xử lý cần thiết:**
+@156
+Kiểm tra hợp lệ ảnh (định dạng, kích thước)
+@157
+Thay đổi kích thước thành nhiều cỡ (thu nhỏ, vừa, lớn)
+@158
+Tải lên S3
+@159
+Cập nhật bản ghi người dùng
+@160
+Cách Tiếp Cận A: ⟦Đồng Bộ|Synchronous⟧
+@161
+sequenceDiagram
+    participant U as User
+    participant API as API Server
+    participant S3 as AWS S3
+    participant DB as Database
+
+    U->>API: Tải ảnh lên
+    API->>API: Kiểm tra hợp lệ (500ms)
+    API->>API: Đổi kích thước 3 cỡ (2s)
+    API->>S3: Tải lên bản gốc (1s)
+    API->>S3: Tải lên bản đã đổi cỡ (1s)
+    API->>DB: Cập nhật bản ghi người dùng (100ms)
+    API-->>U: Thành công (tổng 4.6s)
+@162
+**Triển khai:**
+@163
+Cách Tiếp Cận B: ⟦Bất Đồng Bộ|Asynchronous⟧
+@164
+sequenceDiagram
+    participant U as User
+    participant API as API Server
+    participant S3 as AWS S3
+    participant Q as Message Queue
+    participant W as Worker
+    participant DB as Database
+
+    U->>API: Tải ảnh lên
+    API->>API: Kiểm tra hợp lệ (500ms)
+    API->>S3: Tải lên bản gốc (1s)
+    API->>DB: Lưu URL tạm (100ms)
+    API->>Q: Thêm tác vụ đổi kích thước
+    API-->>U: Thành công (1.6s)
+
+    Note over U: Người dùng thấy tải lên thành công
+
+    Q->>W: Worker nhận tác vụ
+    W->>S3: Tải bản gốc về
+    W->>W: Đổi kích thước 3 cỡ (2s)
+    W->>S3: Tải lên bản đã đổi cỡ (1s)
+    W->>DB: Cập nhật URL cuối cùng (100ms)
+
+    Note over U: Ảnh đại diện xuất hiện sau ~5s
+@165
+**Triển khai:**
+@166
+Phần A: Phân Tích So Sánh
+@167
+**⟦Độ trễ|Latency⟧:**
+@168
+Đồng bộ:
+- Người dùng chờ: 4,6 giây
+- Tốc độ cảm nhận: Chậm
+- Rủi ro hết thời gian chờ: Cao (nếu > 30s)
+
+Bất đồng bộ:
+- Người dùng chờ: 1,6 giây (nhanh hơn 65%)
+- Tốc độ cảm nhận: Nhanh
+- Rủi ro hết thời gian chờ: Thấp
+
+@169
+**Trải Nghiệm Người Dùng:**
+@170
+Đồng bộ:
+Có kết quả ngay lập tức
+UX đơn giản (tải lên → xong)
+Thời gian chờ lâu
+Cần thanh tiến trình
+Người dùng không làm được gì khác
+
+Bất đồng bộ:
+Phản hồi nhanh
+Có thể tiếp tục dùng ứng dụng
+Kết quả đến chậm hơn
+Cần hiển thị trạng thái "đang xử lý"
+Cần xử lý việc tải lại trang (lưu giữ trạng thái)
+
+@171
+**⟦Độ Phức Tạp|Complexity⟧:**
+@172
+Đồng bộ:
+Mã đơn giản
+Dễ gỡ lỗi
+Không cần thêm hạ tầng
+Khó mở rộng (chặn luồng của máy chủ)
+
+Bất đồng bộ:
+Có khả năng mở rộng (chịu được lưu lượng tăng đột biến)
+Giải phóng luồng của máy chủ
+Mã phức tạp hơn
+Cần hạ tầng hàng đợi thông điệp
+Xử lý lỗi khó hơn (logic thử lại)
+Cần giám sát
+
+@173
+**Xử Lý Lỗi:**
+@174
+Đồng bộ:
+- Lỗi → Trả về cho người dùng ngay lập tức
+- Người dùng có thể thử lại
+- Hoàn tác đơn giản
+
+Bất đồng bộ:
+- Lỗi → Người dùng đã nhận phản hồi thành công rồi
+- Cần hệ thống thông báo
+- Logic thử lại phức tạp
+- Xử lý trạng thái dở dang
+
+@175
+Phần B: ⟦Khung Ra Quyết Định|Decision Framework⟧
+@176
+**Chọn ⟦Đồng bộ|Synchronous⟧ khi:**
+@177
+Việc xử lý nhanh (< 2 giây)
+Người dùng cần xác nhận ngay
+Tình huống sử dụng đơn giản
+Lưu lượng thấp
+Nhóm nhỏ (không duy trì nổi hạ tầng phức tạp)
+
+Ví dụ:
+- Gửi biểu mẫu
+- Các thao tác CRUD đơn giản
+- Đăng nhập người dùng
+
+@178
+**Chọn ⟦Bất đồng bộ|Asynchronous⟧ khi:**
+@179
+Việc xử lý chậm (> 3 giây)
+Người dùng có thể chờ kết quả
+Lưu lượng cao (cần chịu được các đợt tăng đột biến)
+Nhiều thao tác tốn kém
+Chấp nhận được nhất quán cuối cùng
+
+Ví dụ:
+- Tải tệp lên kèm xử lý
+- Tạo báo cáo
+- Gửi email
+- Chuyển mã video
+- Nhập/xuất dữ liệu
+
+@180
+Phần C: Cách Tiếp Cận ⟦Lai|Hybrid⟧ (Tận Dụng Ưu Điểm Của Cả Hai)
+@181
+**Chiến lược: ⟦Đồng bộ|sync⟧ nhanh + ⟦Bất đồng bộ|async⟧ chuyên sâu**
+@182
+**Tại sao đây thường là lựa chọn tốt nhất:**
+@183
+Phản hồi nhanh cho người dùng (2s)
+Có thứ để hiển thị ngay lập tức
+Chất lượng tốt hơn về sau
+Chịu được lưu lượng tăng đột biến
+Triển khai phức tạp hơn
+
+@184
+Phần D: Ví Dụ Thực Tế
+@185
+**Facebook/Instagram làm thế nào?**
+@186
+**Cách tiếp cận của Instagram:**
+@187
+1. Người dùng tải ảnh lên
+2. Tải ngay lên CDN (bản gốc)
+3. Hiển thị bản gốc ngay lập tức (có thể dung lượng lớn)
+4. Chạy nền: Xử lý bộ lọc, tạo các kích cỡ
+5. Đổi sang phiên bản đã xử lý khi sẵn sàng
+6. Người dùng thấy tiến trình: "Đang xử lý..." → Xong
+
+Tại sao?
+- Hơn 1 tỷ người dùng → Bắt buộc phải bất đồng bộ
+- Mức độ tương tác của người dùng > Chất lượng hoàn hảo
+- Không thể bắt người dùng chờ 10 giây
+
+@188
+**Điểm mấu chốt:** Trải nghiệm người dùng > Sự hoàn hảo về kỹ thuật.
+@189
+Tự Kiểm Tra
+@190
+Bạn đạt bài này khi:
+@191
+So sánh được ⟦độ trễ|latency⟧ của 2 cách tiếp cận
+@192
+Giải thích rõ ràng sự khác biệt về UX
+@193
+Hiểu các ⟦đánh đổi|trade-offs⟧ về ⟦độ phức tạp|complexity⟧
+@194
+Có ⟦khung ra quyết định|decision framework⟧ rõ ràng
+@195
+Có thể đề xuất cách tiếp cận ⟦lai|hybrid⟧
+@196
+Danh Sách Kiểm Tra Tổng Hợp Phần 1
+@198
+Hiểu Biết Cốt Lõi
+@199
+**Tôi có thể vẽ sơ đồ ⟦kiến trúc|architecture⟧** của bất kỳ ứng dụng nào tôi dùng
+@200
+Kiểm tra: Chọn ngẫu nhiên 1 ứng dụng, vẽ trong 10 phút
+@201
+**Tôi hiểu ⟦điểm nghẽn|bottleneck⟧ và cách tìm ra nó**
+@202
+Kiểm tra: Cho trước một sơ đồ, xác định ⟦điểm nghẽn|bottleneck⟧ và giải thích tại sao
+@203
+**Tôi có thể lần theo ⟦luồng dữ liệu|data flow⟧** từ máy khách đến cơ sở dữ liệu
+@204
+Kiểm tra: Giải thích luồng của 1 hành động bất kỳ của người dùng
+@205
+**Tôi hiểu các ⟦đánh đổi|trade-offs⟧ giữa ⟦đồng bộ|sync⟧ và ⟦bất đồng bộ|async⟧**
+@206
+Kiểm tra: Cho trước một tính năng, chọn cách tiếp cận và bảo vệ quyết định của mình
+@207
+Kỹ Năng Thực Hành
+@208
+**Tôi có thể ⟦ước lượng năng lực|estimate capacity⟧**
+@209
+Kiểm tra: Tính QPS, dung lượng lưu trữ cho các yêu cầu
+@210
+**Tôi có thể thiết kế API**
+@211
+Kiểm tra: Định nghĩa các ⟦điểm cuối|endpoints⟧ cho 1 tính năng
+@212
+**Tôi có thể thiết kế ⟦lược đồ|schema⟧ cơ sở dữ liệu**
+@213
+Kiểm tra: Tạo các bảng với ⟦chỉ mục|indexes⟧ phù hợp
+@214
+**Tôi biết khi nào cần ⟦bộ nhớ đệm|cache⟧**
+@215
+Kiểm tra: Xác định dữ liệu có thể lưu đệm và chiến lược TTL
+@216
+Nắm Vững Khái Niệm
+@217
+**Tôi hiểu ⟦Độ trễ|Latency⟧ và ⟦Thông lượng|Throughput⟧**
+@218
+Kiểm tra: Giải thích sự khác biệt bằng một ví dụ thực tế
+@219
+**Tôi hiểu cách tính ⟦Tính sẵn sàng|Availability⟧**
+@220
+Kiểm tra: Tính ⟦thời gian ngừng hoạt động|downtime⟧ cho 99,9% so với 99,99%
+@221
+**Tôi hiểu ⟦định lý CAP|CAP theorem⟧** ở mức cơ bản
+@222
+Kiểm tra: Cho trước một hệ thống, xác định nó là CA, CP hay AP
+@223
+**Tôi có thể phân tích các ⟦đánh đổi|trade-offs⟧**
+@224
+Kiểm tra: So sánh 2 cách tiếp cận với ưu điểm/nhược điểm
+@225
+Chấm Điểm
+@226
+Đạt 10-12 mục: Xuất sắc - Sẵn sàng cho Phần 2 ✅
+Đạt 7-9 mục: Tốt - Ôn lại phần còn yếu, rồi đi tiếp
+Đạt 4-6 mục: Cần thực hành thêm - Làm lại các bài tập
+Đạt 0-3 mục: Ôn lại nội dung Phần 1
+
+@227
+**Tự đánh giá trung thực là cực kỳ quan trọng.** Đừng vội vàng.
+@228
+Những Sai Lầm Thường Gặp & Cách Khắc Phục
+@229
+Sai Lầm 1: ⟦Thiết Kế Thừa|Over-Engineering⟧
+@230
+**Triệu chứng:**
+@231
+Bài URL shortener:
+- Cụm Kubernetes
+- Vi dịch vụ (5 dịch vụ)
+- Event sourcing
+- CQRS
+- Service mesh
+
+Cho 1 triệu URL/ngày → Quá mức cần thiết!
+
+@232
+**Cách khắc phục:** Bắt đầu đơn giản. Chứng minh nhu cầu trước khi thêm ⟦độ phức tạp|complexity⟧.
+@233
+Sai Lầm 2: Mô Tả Thiếu Cụ Thể
+@234
+**Triệu chứng:**
+@235
+"Dùng cơ sở dữ liệu"
+- SQL hay NoSQL?
+- Lược đồ như thế nào?
+- Chỉ mục ở đâu?
+
+@236
+**Cách khắc phục:** Hãy cụ thể. Giải thích lý do cho các lựa chọn.
+@237
+Sai Lầm 3: Bỏ Qua Các Con Số
+@238
+**Triệu chứng:**
+@239
+"Cần bộ nhớ đệm vì hiệu năng"
+- Không tính QPS
+- Không ước lượng tỉ lệ trúng
+- Không tính bộ nhớ cần thiết
+
+@240
+**Cách khắc phục:** Luôn tính toán. Các con số định hướng quyết định.
+@241
+Sai Lầm 4: Không Phân Tích ⟦Đánh Đổi|Trade-off⟧
+@242
+**Triệu chứng:**
+@243
+"Dùng cách tiếp cận A"
+- Không nhắc đến nhược điểm
+- Không so sánh với các phương án khác
+
+@244
+**Cách khắc phục:** Mọi quyết định đều có ⟦đánh đổi|trade-offs⟧. Hãy nêu rõ chúng.
+@245
+Bước Tiếp Theo
+@246
+**Nếu bạn đạt danh sách kiểm tra:**
+@247
+🎉 Chúc mừng! Bạn đã hoàn thành Phần 1.
+@248
+**Phần 2: Các Khối Xây Dựng Cốt Lõi** đang đợi bạn:
+@249
+Đi sâu vào các chiến lược ⟦bộ nhớ đệm|Cache⟧
+@250
+Các ⟦mẫu|patterns⟧ ⟦mở rộng|scaling⟧ cơ sở dữ liệu
+@251
+⟦Hàng đợi thông điệp|Message queues⟧
+@252
+Và nhiều hơn nữa...
+@253
+**Nếu chưa đạt:**
+@254
+Đừng vội vàng. ⟦Thiết kế hệ thống|System design⟧ không phải một cuộc đua.
+@255
+**Khuyến nghị:**
+@256
+Ôn lại các bài học của Phần 1
+@257
+Làm lại các bài tập với cách tiếp cận khác
+@258
+Giải thích các khái niệm cho người khác
+@259
+Thực hành với nhiều ứng dụng thực tế hơn
+@260
+Xem lại danh sách kiểm tra sau 1 tuần
+@261
+Những Điểm Cốt Lõi
+@262
+**Thực hành > Lý thuyết**
+@263
+Bạn có thể đọc 100 cuốn sách về ⟦thiết kế hệ thống|system design⟧, nhưng không thực hành thì vẫn không thiết kế được.
+@264
+**Hãy Tư Duy, Đừng Học Thuộc**
+@265
+Không có khuôn mẫu cố định. Mỗi hệ thống mỗi khác. Hãy học cách tư duy, chứ không phải ghi nhớ lời giải.
+@266
+**⟦Đánh Đổi|Trade-offs⟧ Ở Khắp Nơi**
+@267
+Mọi quyết định đều có ⟦đánh đổi|trade-offs⟧. Một ⟦kiến trúc sư|architect⟧ giỏi là người:
+@268
+Hiểu các ⟦đánh đổi|trade-offs⟧
+@269
+Lựa chọn dựa trên bối cảnh
+@270
+Có thể bảo vệ các quyết định của mình
+@271
+**Bắt Đầu Đơn Giản, Cải Tiến Dần**
+@272
+Những thiết kế tốt nhất thường phát triển từ những thiết kế đơn giản. Đừng ⟦thiết kế thừa|over-engineer⟧ ngay từ đầu.
+@273
+**Các Con Số Quan Trọng**
+@274
+⟦Ước lượng năng lực|Capacity estimation⟧, tính toán QPS, định cỡ ⟦lưu trữ|storage⟧ - Không phải để trang trí. Chúng định hướng những quyết định then chốt.
+@276
+Nền tảng vững = Mọi thứ phía sau đều dễ hơn.
+@277
+Chúc may mắn! 🚀

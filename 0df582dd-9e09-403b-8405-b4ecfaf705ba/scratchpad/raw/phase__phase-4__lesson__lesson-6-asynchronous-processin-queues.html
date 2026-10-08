@@ -1,0 +1,844 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency | Phase 4 — Scalability &amp; Performance | System Design Core</title><meta name="description" content="Học async processing và message queues: sync vs async trade offs, background jobs, retry strategies, dead letter queues, event driven architecture, và idempoten"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues"/><meta property="og:title" content="Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency | Phase 4 — Scalability &amp; Performance"/><meta property="og:description" content="Học async processing và message queues: sync vs async trade offs, background jobs, retry strategies, dead letter queues, event driven architecture, và idempoten"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency | Phase 4 — Scalability &amp; Performance"/><meta name="twitter:description" content="Học async processing và message queues: sync vs async trade offs, background jobs, retry strategies, dead letter queues, event driven architecture, và idempoten"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 4 — Scalability &amp; Performance</p><p class="mt-3 text-xl font-semibold text-ink">Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học async processing và message queues: sync vs async trade-offs, background jobs, retry strategies, dead letter queues, event-driven architecture, và idempotency. Hiểu cách defer work để improve user experience và system scalability.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-1-performance-bottleneck-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Performance &amp; Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-2-caching-strategy-trade-consistency-de-lay-speed"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Caching Strategy - Trade Consistency Để Lấy Speed</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">CDN &amp; Edge Computing - Distributed Cache Gần User</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-4-database-scaling-optimization"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Database Scaling &amp; Optimization - Từ Query Tuning Đến Sharding</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Rate Limiting &amp; Load Control - Protect System Khỏi Overload</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging"><p class="text-xs text-ink-dim">Bài <!-- -->7</p><p class="mt-1 text-sm font-medium text-ink">Monitoring, Observability &amp; Performance Debugging - Measure To Scale</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-4">Phase 4 — Scalability &amp; Performance</a></li><li>/</li><li aria-current="page" class="text-ink">Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học async processing và message queues: sync vs async trade-offs, background jobs, retry strategies, dead letter queues, event-driven architecture, và idempotency. Hiểu cách defer work để improve user experience và system scalability.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency"><article class="prose-ui"><h1 id="asynchronous-processing--queues---defer-work-để-giảm-latency">Asynchronous Processing &amp; Queues - Defer Work Để Giảm Latency</h1>
+<p>User click &quot;Submit Order&quot; trên e-commerce site.</p>
+<p><strong>Synchronous approach:</strong></p>
+<pre><code>1. Validate order          (100ms)
+2. Check inventory         (200ms)
+3. Process payment         (500ms)
+4. Update database         (100ms)
+5. Send confirmation email (300ms)
+6. Generate invoice PDF    (400ms)
+7. Notify warehouse        (200ms)
+8. Update analytics        (100ms)
+───────────────────────────────────
+Total: 1900ms (gần 2 giây!)
+</code></pre>
+<p>User đợi 2 giây mới thấy &quot;Order Successful&quot;. <strong>Experience tệ.</strong></p>
+<p><strong>Asynchronous approach:</strong></p>
+<pre><code>1. Validate order          (100ms)
+2. Check inventory         (200ms)
+3. Process payment         (500ms)
+4. Update database         (100ms)
+5. Queue remaining tasks   (10ms)
+───────────────────────────────────
+Return &quot;Order Successful&quot;: 910ms
+
+Background (async):
+  - Send email
+  - Generate PDF
+  - Notify warehouse
+  - Update analytics
+</code></pre>
+<p>User chỉ đợi ~1 giây. <strong>Experience tốt hơn 2x.</strong></p>
+<p><strong>Đây chính là power của async processing.</strong></p>
+<p>Lesson này dạy bạn:</p>
+<ul>
+<li>Khi nào dùng sync vs async</li>
+<li>Message queues architecture</li>
+<li>Retry strategies &amp; error handling</li>
+<li>Dead letter queues</li>
+<li>Idempotency (critical cho reliability)</li>
+<li>Event-driven thinking</li>
+</ul>
+<h2 id="sync-vs-async---trade-off-cơ-bản">Sync vs Async - Trade-off Cơ Bản</h2>
+<h3 id="synchronous-processing">Synchronous Processing</h3>
+<p><strong>Request → Process → Response. User đợi toàn bộ.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant API
+    participant DB
+    participant Email
+    
+    User-&gt;&gt;API: Submit order
+    API-&gt;&gt;DB: Save order
+    DB--&gt;&gt;API: OK
+    API-&gt;&gt;Email: Send confirmation
+    Email--&gt;&gt;API: Sent
+    API--&gt;&gt;User: Success (1500ms)</code></pre>
+<p><strong>Characteristics:</strong></p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Simple logic</li>
+<li>Immediate feedback</li>
+<li>Easy to debug</li>
+<li>Strong consistency</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>High latency (user đợi lâu)</li>
+<li>Poor user experience</li>
+<li>Wasted resources (user waiting = connection held)</li>
+<li>Cascade failures (1 slow step = entire request slow)</li>
+</ul>
+<h3 id="asynchronous-processing">Asynchronous Processing</h3>
+<p><strong>Request → Quick response → Process in background.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant API
+    participant Queue
+    participant Worker
+    participant Email
+    
+    User-&gt;&gt;API: Submit order
+    API-&gt;&gt;Queue: Enqueue email task
+    API--&gt;&gt;User: Success (100ms)
+    
+    Note over Worker: Process async
+    Worker-&gt;&gt;Queue: Dequeue task
+    Worker-&gt;&gt;Email: Send email</code></pre>
+<p><strong>Characteristics:</strong></p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Low latency (user không đợi)</li>
+<li>Better user experience</li>
+<li>Resilient (failures don&#x27;t block user)</li>
+<li>Scalable (process at own pace)</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Eventual consistency</li>
+<li>Complex error handling</li>
+<li>Hard to debug</li>
+<li>Need queue infrastructure</li>
+</ul>
+<h3 id="decision-framework">Decision Framework</h3>
+<p><strong>Dùng SYNC khi:</strong></p>
+<p><strong>1. User needs immediate result</strong></p>
+<pre><code class="language-python"># Login - must know if success/fail
+def login(username, password):
+    user = authenticate(username, password)  # Must wait
+    return user
+</code></pre>
+<p><strong>2. Business logic requires</strong></p>
+<pre><code class="language-python"># Payment - must confirm before proceeding
+def checkout(cart):
+    payment_result = charge_card(cart.total)  # Must wait
+    if payment_result.success:
+        create_order()
+</code></pre>
+<p><strong>3. Simple, fast operations</strong></p>
+<pre><code class="language-python"># Get user profile - fast query
+def get_profile(user_id):
+    return db.get_user(user_id)  # 10ms, không cần async
+</code></pre>
+<p><strong>Dùng ASYNC khi:</strong></p>
+<p><strong>1. Non-critical operations</strong></p>
+<pre><code class="language-python"># Send email - user doesn&#x27;t need to wait
+def register(email):
+    user = create_user(email)
+    send_welcome_email.delay(email)  # Async
+    return user
+</code></pre>
+<p><strong>2. Heavy/slow operations</strong></p>
+<pre><code class="language-python"># Video processing - can take minutes
+def upload_video(file):
+    video = save_video(file)
+    process_video.delay(video.id)  # Async
+    return video
+</code></pre>
+<p><strong>3. External service calls</strong></p>
+<pre><code class="language-python"># 3rd party APIs - unpredictable latency
+def create_order(order):
+    save_order(order)
+    notify_warehouse.delay(order.id)  # Async
+    update_analytics.delay(order)     # Async
+    return order
+</code></pre>
+<p><strong>4. Fan-out operations</strong></p>
+<pre><code class="language-python"># Notify many users - can be slow
+def post_update(post):
+    save_post(post)
+    notify_followers.delay(post.id)  # Async (may be 10k users)
+    return post
+</code></pre>
+<h2 id="message-queues---async-processing-infrastructure">Message Queues - Async Processing Infrastructure</h2>
+<p><strong>Message queue = buffer giữa producer và consumer.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    subgraph Producers
+        API1[API Server 1]
+        API2[API Server 2]
+    end
+    
+    Queue[(Message Queue)]
+    
+    subgraph Consumers
+        W1[Worker 1]
+        W2[Worker 2]
+        W3[Worker 3]
+    end
+    
+    API1 --&gt;|Enqueue| Queue
+    API2 --&gt;|Enqueue| Queue
+    
+    Queue --&gt;|Dequeue| W1
+    Queue --&gt;|Dequeue| W2
+    Queue --&gt;|Dequeue| W3</code></pre>
+<h3 id="core-concepts">Core Concepts</h3>
+<p><strong>Producer:</strong></p>
+<ul>
+<li>Application tạo tasks</li>
+<li>Enqueue messages vào queue</li>
+</ul>
+<p><strong>Queue:</strong></p>
+<ul>
+<li>Store messages</li>
+<li>Guarantee delivery</li>
+<li>Handle distribution</li>
+</ul>
+<p><strong>Consumer/Worker:</strong></p>
+<ul>
+<li>Dequeue messages</li>
+<li>Process tasks</li>
+<li>Acknowledge completion</li>
+</ul>
+<h3 id="popular-queue-systems">Popular Queue Systems</h3>
+<p><strong>RabbitMQ:</strong></p>
+<ul>
+<li>Full-featured message broker</li>
+<li>AMQP protocol</li>
+<li>Complex routing, exchanges</li>
+<li>Good for complex workflows</li>
+</ul>
+<p><strong>Redis (with Sidekiq/Bull):</strong></p>
+<ul>
+<li>Simple, fast</li>
+<li>In-memory (persistence optional)</li>
+<li>Good for high-throughput simple jobs</li>
+</ul>
+<p><strong>AWS SQS:</strong></p>
+<ul>
+<li>Managed service</li>
+<li>Fully scalable</li>
+<li>Pay-per-use</li>
+<li>Good for AWS ecosystem</li>
+</ul>
+<p><strong>Kafka:</strong></p>
+<ul>
+<li>Distributed streaming platform</li>
+<li>High throughput (millions msg/s)</li>
+<li>Event sourcing, logs</li>
+<li>Good for event-driven architecture</li>
+</ul>
+<p><strong>Comparison:</strong></p>
+<table><thead><tr><th>Feature</th><th>RabbitMQ</th><th>Redis</th><th>SQS</th><th>Kafka</th></tr></thead><tbody><tr><td>Throughput</td><td>High</td><td>Very High</td><td>High</td><td>Extreme</td></tr><tr><td>Latency</td><td>Low</td><td>Very Low</td><td>Medium</td><td>Low</td></tr><tr><td>Persistence</td><td>Yes</td><td>Optional</td><td>Yes</td><td>Yes</td></tr><tr><td>Ordering</td><td>Yes</td><td>Limited</td><td>FIFO queue</td><td>Yes</td></tr><tr><td>Complexity</td><td>Medium</td><td>Low</td><td>Low</td><td>High</td></tr><tr><td>Use Case</td><td>Task queues</td><td>Simple jobs</td><td>AWS apps</td><td>Event streams</td></tr></tbody></table>
+<h3 id="basic-queue-operations">Basic Queue Operations</h3>
+<p><strong>Enqueue (Producer):</strong></p>
+<pre><code class="language-python"># Python with Celery + Redis
+from celery import Celery
+
+app = Celery(&#x27;tasks&#x27;, broker=&#x27;redis://localhost:6379&#x27;)
+
+@app.task
+def send_email(to, subject, body):
+    # Email sending logic
+    smtp.send(to, subject, body)
+
+# Enqueue task
+send_email.delay(&#x27;user@example.com&#x27;, &#x27;Welcome&#x27;, &#x27;Hello!&#x27;)
+</code></pre>
+<p><strong>Dequeue (Consumer):</strong></p>
+<pre><code class="language-python"># Worker processes tasks automatically
+# Start worker:
+# celery -A tasks worker --loglevel=info
+
+# Celery handles:
+# - Dequeue messages
+# - Call task function
+# - Retry on failure
+# - Acknowledge on success
+</code></pre>
+<p><strong>Manual dequeue (Redis example):</strong></p>
+<pre><code class="language-python">import redis
+
+r = redis.Redis()
+
+while True:
+    # Blocking pop (wait for messages)
+    task = r.brpop(&#x27;email_queue&#x27;, timeout=5)
+    
+    if task:
+        queue_name, message = task
+        process_email(message)
+</code></pre>
+<h2 id="background-jobs---common-patterns">Background Jobs - Common Patterns</h2>
+<h3 id="pattern-1-deferred-execution">Pattern 1: Deferred Execution</h3>
+<p><strong>Execute task sau một khoảng thời gian.</strong></p>
+<pre><code class="language-python"># Send reminder email after 24 hours
+send_reminder_email.apply_async(
+    args=[user.id],
+    countdown=86400  # 24 hours in seconds
+)
+</code></pre>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Reminder notifications</li>
+<li>Trial expiration warnings</li>
+<li>Subscription renewals</li>
+</ul>
+<h3 id="pattern-2-scheduled-jobs-cron">Pattern 2: Scheduled Jobs (Cron)</h3>
+<p><strong>Execute task theo schedule định kỳ.</strong></p>
+<pre><code class="language-python"># Celery beat - periodic tasks
+from celery.schedules import crontab
+
+app.conf.beat_schedule = {
+    &#x27;cleanup-old-data&#x27;: {
+        &#x27;task&#x27;: &#x27;tasks.cleanup_old_data&#x27;,
+        &#x27;schedule&#x27;: crontab(hour=2, minute=0),  # 2 AM daily
+    },
+    &#x27;send-daily-report&#x27;: {
+        &#x27;task&#x27;: &#x27;tasks.send_daily_report&#x27;,
+        &#x27;schedule&#x27;: crontab(hour=9, minute=0, day_of_week=1),  # Monday 9 AM
+    },
+}
+</code></pre>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Daily reports</li>
+<li>Data cleanup</li>
+<li>Cache warming</li>
+<li>Backup jobs</li>
+</ul>
+<h3 id="pattern-3-batch-processing">Pattern 3: Batch Processing</h3>
+<p><strong>Process nhiều items cùng lúc.</strong></p>
+<pre><code class="language-python"># Process batch of emails
+@app.task
+def send_batch_emails(email_ids):
+    emails = Email.objects.filter(id__in=email_ids)
+    for email in emails:
+        send_email(email)
+
+# Split into batches
+email_ids = [1, 2, 3, ..., 10000]
+batch_size = 100
+
+for i in range(0, len(email_ids), batch_size):
+    batch = email_ids[i:i+batch_size]
+    send_batch_emails.delay(batch)
+</code></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Efficient resource usage</li>
+<li>Better throughput</li>
+<li>Database query optimization</li>
+</ul>
+<h3 id="pattern-4-pipelinechain">Pattern 4: Pipeline/Chain</h3>
+<p><strong>Tasks execute in sequence.</strong></p>
+<pre><code class="language-python">from celery import chain
+
+# Task chain
+workflow = chain(
+    resize_image.s(image_id),
+    apply_watermark.s(),
+    upload_to_cdn.s(),
+    update_database.s()
+)
+
+workflow.apply_async()
+</code></pre>
+<p><strong>Each task output = next task input.</strong></p>
+<h3 id="pattern-5-fan-outfan-in">Pattern 5: Fan-out/Fan-in</h3>
+<p><strong>Parallel execution, then aggregate.</strong></p>
+<pre><code class="language-python">from celery import group, chord
+
+# Process multiple images in parallel
+job = chord(
+    group(process_image.s(img_id) for img_id in image_ids),
+    aggregate_results.s()  # Called after all finish
+)
+
+job.apply_async()
+</code></pre>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Multi-file processing</li>
+<li>Parallel API calls</li>
+<li>Map-reduce operations</li>
+</ul>
+<h2 id="retry-strategies---handle-failures-gracefully">Retry Strategies - Handle Failures Gracefully</h2>
+<p><strong>Failures happen. Network timeout, service down, rate limits.</strong></p>
+<h3 id="automatic-retry">Automatic Retry</h3>
+<pre><code class="language-python">@app.task(
+    bind=True,
+    max_retries=3,
+    default_retry_delay=60  # 60 seconds
+)
+def send_email(self, to, subject, body):
+    try:
+        smtp.send(to, subject, body)
+    except SMTPException as exc:
+        # Retry with exponential backoff
+        raise self.retry(exc=exc, countdown=2 ** self.request.retries)
+</code></pre>
+<p><strong>Exponential backoff:</strong></p>
+<pre><code>Retry 1: wait 2^1 = 2 seconds
+Retry 2: wait 2^2 = 4 seconds
+Retry 3: wait 2^3 = 8 seconds
+</code></pre>
+<p>Prevents overwhelming failing service.</p>
+<h3 id="conditional-retry">Conditional Retry</h3>
+<p><strong>Retry chỉ với specific errors.</strong></p>
+<pre><code class="language-python">@app.task(bind=True, max_retries=5)
+def call_external_api(self, url):
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except requests.Timeout as exc:
+        # Retry on timeout
+        raise self.retry(exc=exc, countdown=30)
+    except requests.HTTPError as exc:
+        if exc.response.status_code == 429:  # Rate limited
+            raise self.retry(exc=exc, countdown=120)
+        elif exc.response.status_code &gt;= 500:  # Server error
+            raise self.retry(exc=exc)
+        else:
+            # 4xx errors - don&#x27;t retry
+            raise
+</code></pre>
+<p><strong>Logic:</strong></p>
+<ul>
+<li>Timeout → retry (transient)</li>
+<li>429 Rate limit → retry with longer delay</li>
+<li>5xx Server error → retry (may recover)</li>
+<li>4xx Client error → don&#x27;t retry (won&#x27;t succeed)</li>
+</ul>
+<h3 id="retry-limits">Retry Limits</h3>
+<p><strong>Don&#x27;t retry forever.</strong></p>
+<pre><code class="language-python">@app.task(
+    max_retries=10,
+    retry_backoff=True,
+    retry_backoff_max=600,  # Max 10 minutes
+    retry_jitter=True        # Add randomness
+)
+def risky_task():
+    # Task logic
+    pass
+</code></pre>
+<p><strong>After max retries → task fails → moves to DLQ.</strong></p>
+<h2 id="dead-letter-queue-dlq---handle-permanent-failures">Dead Letter Queue (DLQ) - Handle Permanent Failures</h2>
+<p><strong>DLQ = queue for messages that failed permanently.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    Producer[Producer] --&gt;|Enqueue| MainQueue[Main Queue]
+    MainQueue --&gt; Worker[Worker]
+    
+    Worker --&gt;|Success| Done[Complete]
+    Worker --&gt;|Retry| MainQueue
+    Worker --&gt;|Max retries exceeded| DLQ[Dead Letter Queue]
+    
+    DLQ --&gt; Manual[Manual Investigation]
+    DLQ --&gt; Replay[Replay to Main Queue]</code></pre>
+<h3 id="why-dlq-important">Why DLQ Important</h3>
+<p><strong>1. Don&#x27;t lose messages</strong></p>
+<p>Failed tasks không biến mất. Store in DLQ for investigation.</p>
+<p><strong>2. Prevent queue blocking</strong></p>
+<p>Failing message không block queue. Other messages process normally.</p>
+<p><strong>3. Enable debugging</strong></p>
+<p>Analyze failed messages, understand patterns, fix bugs.</p>
+<p><strong>4. Manual intervention</strong></p>
+<p>Admin có thể replay messages sau khi fix issue.</p>
+<h3 id="implementing-dlq">Implementing DLQ</h3>
+<p><strong>Celery + RabbitMQ:</strong></p>
+<pre><code class="language-python">from celery import Celery
+
+app = Celery(&#x27;tasks&#x27;)
+
+app.conf.task_reject_on_worker_lost = True
+app.conf.task_acks_late = True
+
+@app.task(
+    bind=True,
+    max_retries=3,
+    dead_letter_exchange=&#x27;dlx&#x27;,
+    dead_letter_routing_key=&#x27;dlq&#x27;
+)
+def problematic_task(self):
+    # Task logic
+    pass
+</code></pre>
+<p><strong>AWS SQS:</strong></p>
+<pre><code class="language-python">import boto3
+
+sqs = boto3.client(&#x27;sqs&#x27;)
+
+# Create main queue with DLQ
+response = sqs.create_queue(
+    QueueName=&#x27;main-queue&#x27;,
+    Attributes={
+        &#x27;RedrivePolicy&#x27;: json.dumps({
+            &#x27;deadLetterTargetArn&#x27;: dlq_arn,
+            &#x27;maxReceiveCount&#x27;: &#x27;3&#x27;  # After 3 attempts → DLQ
+        })
+    }
+)
+</code></pre>
+<h3 id="monitoring-dlq">Monitoring DLQ</h3>
+<p><strong>Track metrics:</strong></p>
+<pre><code>- DLQ size (messages count)
+- DLQ message age
+- Failure reasons distribution
+- Failure rate trends
+</code></pre>
+<p><strong>Alert when:</strong></p>
+<ul>
+<li>DLQ size &gt; threshold</li>
+<li>Sudden spike in failures</li>
+<li>Messages aging in DLQ</li>
+</ul>
+<p><strong>Periodic review:</strong></p>
+<pre><code class="language-python">def review_dlq():
+    messages = dlq.get_messages(limit=100)
+    
+    for msg in messages:
+        # Analyze failure reason
+        if is_fixable(msg):
+            fix_and_replay(msg)
+        else:
+            log_permanent_failure(msg)
+</code></pre>
+<h2 id="idempotency---critical-for-reliability">Idempotency - Critical For Reliability</h2>
+<p><strong>Idempotent = executing multiple times produces same result as executing once.</strong></p>
+<h3 id="the-problem">The Problem</h3>
+<p><strong>Scenario:</strong></p>
+<pre><code>1. User submits order
+2. API enqueues &quot;charge_payment&quot; task
+3. Worker processes task, charges card
+4. Network timeout before ack
+5. Queue redelivers task
+6. Worker processes again → charges card TWICE! 💸
+</code></pre>
+<p><strong>User charged 2x. Very bad.</strong></p>
+<h3 id="solution-idempotent-operations">Solution: Idempotent Operations</h3>
+<p><strong>Method 1: Idempotency Keys</strong></p>
+<pre><code class="language-python">@app.task
+def charge_payment(order_id, amount, idempotency_key):
+    # Check if already processed
+    if Payment.objects.filter(idempotency_key=idempotency_key).exists():
+        print(&quot;Already processed, skipping&quot;)
+        return
+    
+    # Process payment
+    result = stripe.charge(amount, idempotency_key=idempotency_key)
+    
+    # Save with idempotency key
+    Payment.objects.create(
+        order_id=order_id,
+        amount=amount,
+        idempotency_key=idempotency_key,
+        transaction_id=result.id
+    )
+</code></pre>
+<p><strong>Stripe API cũng support idempotency keys - double protection.</strong></p>
+<p><strong>Method 2: Database Constraints</strong></p>
+<pre><code class="language-python"># Unique constraint on database
+class Payment(models.Model):
+    order_id = models.IntegerField()
+    transaction_id = models.CharField(max_length=100, unique=True)
+
+@app.task
+def charge_payment(order_id):
+    try:
+        result = stripe.charge(...)
+        Payment.objects.create(
+            order_id=order_id,
+            transaction_id=result.id  # Unique - prevents duplicates
+        )
+    except IntegrityError:
+        # Duplicate transaction - already processed
+        print(&quot;Already processed&quot;)
+</code></pre>
+<p><strong>Method 3: Atomic Operations</strong></p>
+<pre><code class="language-python"># Use database atomic operations
+@app.task
+def increment_view_count(post_id):
+    # Idempotent - can run multiple times safely
+    Post.objects.filter(id=post_id).update(
+        view_count=F(&#x27;view_count&#x27;) + 1
+    )
+</code></pre>
+<p><strong>Method 4: State Machines</strong></p>
+<pre><code class="language-python">class Order(models.Model):
+    status = models.CharField(
+        choices=[
+            (&#x27;pending&#x27;, &#x27;Pending&#x27;),
+            (&#x27;processing&#x27;, &#x27;Processing&#x27;),
+            (&#x27;completed&#x27;, &#x27;Completed&#x27;),
+        ]
+    )
+
+@app.task
+def process_order(order_id):
+    order = Order.objects.get(id=order_id)
+    
+    # Only process if pending
+    if order.status != &#x27;pending&#x27;:
+        print(&quot;Already processed&quot;)
+        return
+    
+    # Update status atomically
+    updated = Order.objects.filter(
+        id=order_id,
+        status=&#x27;pending&#x27;
+    ).update(status=&#x27;processing&#x27;)
+    
+    if updated == 0:
+        print(&quot;Another worker already processing&quot;)
+        return
+    
+    # Process order...
+    
+    order.status = &#x27;completed&#x27;
+    order.save()
+</code></pre>
+<p><strong>State transitions enforce idempotency.</strong></p>
+<h3 id="best-practices">Best Practices</h3>
+<p><strong>1. Always use idempotency keys for financial operations</strong></p>
+<pre><code class="language-python">import uuid
+
+idempotency_key = str(uuid.uuid4())
+charge_payment.delay(order_id, amount, idempotency_key)
+</code></pre>
+<p><strong>2. Generate idempotency key at producer, not consumer</strong></p>
+<p>Producer ensures same key for retries.</p>
+<p><strong>3. Store processed keys with TTL</strong></p>
+<pre><code class="language-python"># Redis
+redis.setex(f&quot;processed:{idempotency_key}&quot;, 86400, &quot;1&quot;)  # 24h TTL
+</code></pre>
+<p><strong>4. Make all external API calls idempotent</strong></p>
+<p>Stripe, payment gateways, email services all support idempotency keys.</p>
+<h2 id="event-driven-architecture-intro">Event-Driven Architecture Intro</h2>
+<p><strong>Async processing naturally leads to event-driven thinking.</strong></p>
+<h3 id="from-request-driven-to-event-driven">From Request-Driven To Event-Driven</h3>
+<p><strong>Request-driven (traditional):</strong></p>
+<pre><code class="language-python">def create_order(order_data):
+    order = save_order(order_data)
+    charge_payment(order)
+    send_confirmation(order)
+    notify_warehouse(order)
+    update_analytics(order)
+    return order
+</code></pre>
+<p>Tight coupling. Order creation knows về all downstream systems.</p>
+<p><strong>Event-driven:</strong></p>
+<pre><code class="language-python">def create_order(order_data):
+    order = save_order(order_data)
+    
+    # Publish event
+    publish_event(&#x27;order.created&#x27;, {
+        &#x27;order_id&#x27;: order.id,
+        &#x27;user_id&#x27;: order.user_id,
+        &#x27;total&#x27;: order.total
+    })
+    
+    return order
+
+# Separate subscribers
+@subscribe(&#x27;order.created&#x27;)
+def handle_payment(event):
+    charge_payment(event[&#x27;order_id&#x27;])
+
+@subscribe(&#x27;order.created&#x27;)
+def send_email(event):
+    send_confirmation(event[&#x27;order_id&#x27;])
+
+@subscribe(&#x27;order.created&#x27;)
+def notify_warehouse(event):
+    notify_warehouse(event[&#x27;order_id&#x27;])
+</code></pre>
+<p><strong>Benefits:</strong></p>
+<p><strong>1. Decoupling</strong></p>
+<p>Order service không biết về email service, warehouse service.</p>
+<p><strong>2. Scalability</strong></p>
+<p>Mỗi subscriber scale independently.</p>
+<p><strong>3. Flexibility</strong></p>
+<p>Add new subscribers without changing order service.</p>
+<p><strong>4. Resilience</strong></p>
+<p>1 subscriber fail không affect others.</p>
+<h3 id="event-structure">Event Structure</h3>
+<pre><code class="language-python">{
+    &quot;event_id&quot;: &quot;evt_abc123&quot;,
+    &quot;event_type&quot;: &quot;order.created&quot;,
+    &quot;timestamp&quot;: &quot;2025-02-15T10:00:00Z&quot;,
+    &quot;version&quot;: &quot;1.0&quot;,
+    &quot;data&quot;: {
+        &quot;order_id&quot;: 12345,
+        &quot;user_id&quot;: 789,
+        &quot;total&quot;: 99.99
+    }
+}
+</code></pre>
+<p><strong>Include:</strong></p>
+<ul>
+<li>Unique event ID (idempotency)</li>
+<li>Event type (routing)</li>
+<li>Timestamp (ordering)</li>
+<li>Version (schema evolution)</li>
+<li>Data payload</li>
+</ul>
+<h3 id="event-patterns">Event Patterns</h3>
+<p><strong>1. Event Notification</strong></p>
+<p>Thông báo something happened. Subscribers fetch details nếu cần.</p>
+<pre><code class="language-python">publish_event(&#x27;user.registered&#x27;, {&#x27;user_id&#x27;: 123})
+</code></pre>
+<p><strong>2. Event-Carried State Transfer</strong></p>
+<p>Event chứa all data subscribers cần.</p>
+<pre><code class="language-python">publish_event(&#x27;user.registered&#x27;, {
+    &#x27;user_id&#x27;: 123,
+    &#x27;email&#x27;: &#x27;user@example.com&#x27;,
+    &#x27;name&#x27;: &#x27;John Doe&#x27;,
+    &#x27;signup_date&#x27;: &#x27;2025-02-15&#x27;
+})
+</code></pre>
+<p><strong>3. Event Sourcing</strong></p>
+<p>Store all events as source of truth. Current state = replay events.</p>
+<pre><code class="language-python">events = [
+    {&#x27;type&#x27;: &#x27;account.created&#x27;, &#x27;balance&#x27;: 1000},
+    {&#x27;type&#x27;: &#x27;transaction.deposit&#x27;, &#x27;amount&#x27;: 500},
+    {&#x27;type&#x27;: &#x27;transaction.withdraw&#x27;, &#x27;amount&#x27;: 200},
+]
+
+# Current balance = 1000 + 500 - 200 = 1300
+</code></pre>
+<h2 id="practical-recommendations">Practical Recommendations</h2>
+<h3 id="1-start-simple">1. Start Simple</h3>
+<p><strong>Don&#x27;t over-engineer. Begin with basic background jobs.</strong></p>
+<pre><code class="language-python"># Simple Celery task
+@app.task
+def send_email(to, subject, body):
+    smtp.send(to, subject, body)
+
+# Usage
+send_email.delay(&#x27;user@example.com&#x27;, &#x27;Welcome&#x27;, &#x27;Hello!&#x27;)
+</code></pre>
+<p><strong>Add complexity only khi cần:</strong></p>
+<ul>
+<li>Retries → when external dependencies</li>
+<li>DLQ → when monitoring failures</li>
+<li>Idempotency → when critical operations</li>
+</ul>
+<h3 id="2-monitor-queue-health">2. Monitor Queue Health</h3>
+<p><strong>Track metrics:</strong></p>
+<pre><code class="language-python"># Queue depth
+queue_size = celery.control.inspect().stats()
+
+# Task success/failure rate
+from celery.events import EventReceiver
+
+def monitor_events():
+    receiver = EventReceiver(app.connection())
+    
+    for event in receiver.events():
+        if event[&#x27;type&#x27;] == &#x27;task-succeeded&#x27;:
+            metrics.increment(&#x27;task.success&#x27;)
+        elif event[&#x27;type&#x27;] == &#x27;task-failed&#x27;:
+            metrics.increment(&#x27;task.failure&#x27;)
+</code></pre>
+<p><strong>Alert when:</strong></p>
+<ul>
+<li>Queue depth &gt; threshold (workers can&#x27;t keep up)</li>
+<li>High failure rate (systemic issues)</li>
+<li>Processing time &gt; SLA</li>
+</ul>
+<h3 id="3-design-for-failure">3. Design For Failure</h3>
+<p><strong>Assume tasks will fail. Plan accordingly.</strong></p>
+<pre><code class="language-python">@app.task(
+    bind=True,
+    max_retries=3,
+    default_retry_delay=60
+)
+def resilient_task(self, data):
+    try:
+        # Task logic with timeout
+        result = process_with_timeout(data, timeout=30)
+        return result
+    except TimeoutError as exc:
+        # Retry on timeout
+        raise self.retry(exc=exc)
+    except Exception as exc:
+        # Log error for investigation
+        logger.error(f&quot;Task failed: {exc}&quot;, extra={&#x27;data&#x27;: data})
+        raise
+</code></pre>
+<h3 id="4-test-async-flows">4. Test Async Flows</h3>
+<p><strong>Testing async code harder than sync.</strong></p>
+<pre><code class="language-python"># Test with eager mode (synchronous for testing)
+app.conf.task_always_eager = True
+
+def test_order_creation():
+    order = create_order(order_data)
+    
+    # Tasks execute synchronously in tests
+    assert email_was_sent(order.user.email)
+    assert payment_was_charged(order.id)
+</code></pre>
+<p><strong>Integration tests:</strong></p>
+<pre><code class="language-python">def test_queue_integration():
+    # Send task to real queue
+    result = send_email.delay(&#x27;test@example.com&#x27;, &#x27;Test&#x27;, &#x27;Body&#x27;)
+    
+    # Wait for completion
+    assert result.get(timeout=10) == &#x27;sent&#x27;
+</code></pre>
+<h3 id="5-graceful-degradation">5. Graceful Degradation</h3>
+<p><strong>Queue down không nên crash toàn bộ system.</strong></p>
+<pre><code class="language-python">def create_order(order_data):
+    order = save_order(order_data)
+    
+    try:
+        send_confirmation.delay(order.id)
+    except ConnectionError:
+        # Queue unavailable - fallback to sync
+        logger.warning(&quot;Queue unavailable, sending email synchronously&quot;)
+        send_confirmation_sync(order.id)
+    
+    return order
+</code></pre>
+<h2 id="mental-model-latency-giảm-bằng-cách-defer-work">Mental Model: Latency Giảm Bằng Cách Defer Work</h2>
+<p><strong>Core insight:</strong></p>
+<p><strong>User không cần đợi work không critical. Defer nó để improve experience.</strong></p>
+<pre><code>Sync mindset:
+  Complete everything before responding
+  User experience = slow
+
+Async mindset:
+  Complete critical work only
+  Defer rest to background
+  User experience = fast
+</code></pre>
+<p><strong>Decision tree:</strong></p>
+<pre><code>Does user need result immediately?
+  YES → Sync (e.g., login validation)
+  NO → Can defer?
+    YES → Async (e.g., send email)
+    NO → Sync (e.g., payment validation)
+</code></pre>
+<p><strong>Architect thinking:</strong></p>
+<ol>
+<li>Identify critical path (what user actually needs)</li>
+<li>Defer everything else (emails, analytics, etc.)</li>
+<li>Use queues for reliability (retry, DLQ)</li>
+<li>Design for idempotency (safety)</li>
+<li>Monitor queue health (operational excellence)</li>
+</ol>
+<p><strong>Great systems respond fast, work happens later.</strong></p>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>1. Async processing reduces user-facing latency</strong></p>
+<p>User gets response fast, work happens in background.</p>
+<p><strong>2. Message queues decouple producers from consumers</strong></p>
+<p>Scale independently, handle spikes, improve resilience.</p>
+<p><strong>3. Choose queue system based on requirements</strong></p>
+<p>Redis = simple/fast, RabbitMQ = feature-rich, SQS = managed, Kafka = streaming.</p>
+<p><strong>4. Retry strategies handle transient failures</strong></p>
+<p>Exponential backoff, conditional retry, max retries.</p>
+<p><strong>5. DLQ captures permanent failures</strong></p>
+<p>Don&#x27;t lose messages, enable investigation, allow replay.</p>
+<p><strong>6. Idempotency critical for reliability</strong></p>
+<p>Use idempotency keys, database constraints, atomic operations.</p>
+<p><strong>7. Event-driven architecture = extreme decoupling</strong></p>
+<p>Services communicate via events, not direct calls.</p>
+<p><strong>8. Monitor queue health continuously</strong></p>
+<p>Queue depth, task success rate, processing time.</p>
+<p><strong>9. Design for failure</strong></p>
+<p>Tasks will fail. Have retry logic, DLQ, fallbacks.</p>
+<p><strong>10. Test async flows thoroughly</strong></p>
+<p>Use eager mode for unit tests, real queue for integration.</p>
+<p><strong>Remember: The best user experience is fast response. Defer non-critical work to background. Users don&#x27;t need to wait for emails to be sent or analytics to be updated - they need to see &quot;Order Successful&quot; immediately.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Rate Limiting &amp; Load Control - Protect System Khỏi Overload</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging">Monitoring, Observability &amp; Performance Debugging - Measure To Scale<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-4\",\"lesson\",\"lesson-6-asynchronous-processin-queues\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-4\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-6-asynchronous-processin-queues\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học async processing và message queues: sync vs async trade-offs, background jobs, retry strategies, dead letter queues, event-driven architecture, và idempotency. Hiểu cách defer work để improve user experience và system scalability.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-performance-bottleneck-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-1-performance-bottleneck-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Performance \u0026 Bottleneck Thinking - Tư Duy Tìm Và Giải Quyết Điểm Nghẽn\"}]]}]}],[\"$\",\"li\",\"lesson-2-caching-strategy-trade-consistency-de-lay-speed\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-2-caching-strategy-trade-consistency-de-lay-speed\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Caching Strategy - Trade Consistency Để Lấy Speed\"}]]}]}],[\"$\",\"li\",\"lesson-3-cdn-and-edge-computing-distributed-cache-gan-user\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-3-cdn-and-edge-computing-distributed-cache-gan-user\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"CDN \u0026 Edge Computing - Distributed Cache Gần User\"}]]}]}],[\"$\",\"li\",\"lesson-4-database-scaling-optimization\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-4-database-scaling-optimization\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Database Scaling \u0026 Optimization - Từ Query Tuning Đến Sharding\"}]]}]}],[\"$\",\"li\",\"lesson-5-rate-limiting-and-load-control\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\"}]]}]}],[\"$\",\"li\",\"lesson-6-asynchronous-processin-queues\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[\"$L24\",\"$L25\"]}]}],\"$L26\"]}]]}],\"$L27\"]}],\"$L28\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"29:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\"}]\n26:[\"$\",\"li\",\"lesson-7-monitoring-observability-performance-debugging\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",7]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\"}]]}]}]\n27:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4\",\"className\":\"hover:text-ink\",\"children\":\"Phase 4 — Scalability \u0026 Performance\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học async processing và message queues: sync vs async trade-offs, background jobs, retry strategies, dead letter queues, event-driven architecture, và idempotency. Hiểu cách defer work để improve user experience và system scalability.\"}]]}],[\"$\",\"$L29\",null,{\"path\":\"/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues\",\"title\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\",\"description\":\"Học async processing và message queues: sync vs async trade-offs, background jobs, retry strategies, dead letter queues, event-driven architecture, và idempotency. Hiểu cách defer work để improve user experience và system scalability.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\",\"children\":\"$L2a\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-5-rate-limiting-and-load-control\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Rate Limiting \u0026 Load Control - Protect System Khỏi Overload\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-4/lesson/lesson-7-monitoring-observability-performance-debugging\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Monitoring, Observability \u0026 Performance Debugging - Measure To Scale\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2b:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"2a:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"asynchronous-processing--queues---defer-work-để-giảm-latency\",\"children\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"User click \\\"Submit Order\\\" trên e-commerce site.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Synchronous approach:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Validate order          (100ms)\\n2. Check inventory         (200ms)\\n3. Process payment         (500ms)\\n4. Update database         (100ms)\\n5. Send confirmation email (300ms)\\n6. Generate invoice PDF    (400ms)\\n7. Notify warehouse        (200ms)\\n8. Update analytics        (100ms)\\n───────────────────────────────────\\nTotal: 1900ms (gần 2 giây!)\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"User đợi 2 giây mới thấy \\\"Order Successful\\\". \",[\"$\",\"strong\",null,{\"children\":\"Experience tệ.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Asynchronous approach:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Validate order          (100ms)\\n2. Check inventory         (200ms)\\n3. Process payment         (500ms)\\n4. Update database         (100ms)\\n5. Queue remaining tasks   (10ms)\\n───────────────────────────────────\\nReturn \\\"Order Successful\\\": 910ms\\n\\nBackground (async):\\n  - Send email\\n  - Generate PDF\\n  - Notify warehouse\\n  - Update analytics\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"User chỉ đợi ~1 giây. \",[\"$\",\"strong\",null,{\"children\":\"Experience tốt hơn 2x.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Đây chính là power của async processing.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Lesson này dạy bạn:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Khi nào dùng sync vs async\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Message queues architecture\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Retry strategies \u0026 error handling\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Dead letter queues\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Idempotency (critical cho reliability)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Event-driven thinking\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"sync-vs-async---trade-off-cơ-bản\",\"children\":\"Sync vs Async - Trade-off Cơ Bản\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"synchronous-processing\",\"children\":\"Synchronous Processing\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Request → Process → Response. User đợi toàn bộ.\"}]}],\"\\n\",[\"$\",\"$L2b\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant API\\n    participant DB\\n    participant Email\\n    \\n    User-\u003e\u003eAPI: Submit order\\n    API-\u003e\u003eDB: Save order\\n    DB--\u003e\u003eAPI: OK\\n    API-\u003e\u003eEmail: Send confirmation\\n    Email--\u003e\u003eAPI: Sent\\n    API--\u003e\u003eUser: Success (1500ms)\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Characteristics:\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple logic\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Immediate feedback\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Easy to debug\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Strong consistency\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"High latency (user đợi lâu)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Poor user experience\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Wasted resources (user waiting = connection held)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cascade failures (1 slow step = entire request slow)\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"asynchronous-processing\",\"children\":\"Asynchronous Processing\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Request → Quick response → Process in background.\"}]}],\"\\n\",[\"$\",\"$L2b\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant API\\n    participant Queue\\n    participant Worker\\n    participant Email\\n    \\n    User-\u003e\u003eAPI: Submit order\\n    API-\u003e\u003eQueue: Enqueue email task\\n    API--\u003e\u003eUser: Success (100ms)\\n    \\n    Note over Worker: Process async\\n    Worker-\u003e\u003eQueue: Dequeue task\\n    Worker-\u003e\u003eEmail: Send email\"}],\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\",\"\\n\",\"$Lc9\",\"\\n\",\"$Lca\",\"\\n\",\"$Lcb\",\"\\n\",\"$Lcc\",\"\\n\",\"$Lcd\",\"\\n\",\"$Lce\",\"\\n\",\"$Lcf\",\"\\n\",\"$Ld0\",\"\\n\",\"$Ld1\",\"\\n\",\"$Ld2\",\"\\n\",\"$Ld3\",\"\\n\",\"$Ld4\",\"\\n\",\"$Ld5\",\"\\n\",\"$Ld6\",\"\\n\",\"$Ld7\",\"\\n\",\"$Ld8\",\"\\n\",\"$Ld9\",\"\\n\",\"$Lda\",\"\\n\",\"$Ldb\",\"\\n\",\"$Ldc\",\"\\n\",\"$Ldd\",\"\\n\",\"$Lde\",\"\\n\",\"$Ldf\",\"\\n\",\"$Le0\",\"\\n\",\"$Le1\",\"\\n\",\"$Le2\",\"\\n\",\"$Le3\",\"\\n\",\"$Le4\",\"\\n\",\"$Le5\",\"\\n\",\"$Le6\",\"\\n\",\"$Le7\",\"\\n\",\"$Le8\",\"\\n\",\"$Le9\",\"\\n\",\"$Lea\",\"\\n\",\"$Leb\",\"\\n\",\"$Lec\",\"\\n\",\"$Led\",\"\\n\",\"$Lee\",\"\\n\",\"$Lef\",\"\\n\",\"$Lf0\",\"\\n\",\"$Lf1\",\"\\n\",\"$Lf2\",\"\\n\",\"$Lf3\",\"\\n\",\"$Lf4\",\"\\n\",\"$Lf5\",\"\\n\",\"$Lf6\",\"\\n\",\"$Lf7\",\"\\n\",\"$Lf8\",\"\\n\",\"$Lf9\",\"\\n\",\"$Lfa\",\"\\n\",\"$Lfb\",\"\\n\",\"$Lfc\",\"\\n\",\"$Lfd\",\"\\n\",\"$Lfe\",\"\\n\",\"$Lff\",\"\\n\",\"$L100\",\"\\n\",\"$L101\",\"\\n\",\"$L102\",\"\\n\",\"$L103\",\"\\n\",\"$L104\",\"\\n\",\"$L105\",\"\\n\",\"$L106\",\"\\n\",\"$L107\",\"\\n\",\"$L108\",\"\\n\",\"$L109\",\"\\n\",\"$L10a\",\"\\n\",\"$L10b\",\"\\n\",\"$L10c\"]}]\n"])</script><script>self.__next_f.push([1,"2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Characteristics:\"}]}]\n2d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pros:\"}]}]\n2e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Low latency (user không đợi)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Better user experience\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Resilient (failures don't block user)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Scalable (process at own pace)\"}],\"\\n\"]}]\n2f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cons:\"}]}]\n30:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Eventual consistency\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complex error handling\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Hard to debug\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Need queue infrastructure\"}],\"\\n\"]}]\n31:[\"$\",\"h3\",null,{\"id\":\"decision-framework\",\"children\":\"Decision Framework\"}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Dùng SYNC khi:\"}]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. User needs immediate result\"}]}]\n34:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Login - must know if success/fail\\ndef login(username, password):\\n    user = authenticate(username, password)  # Must wait\\n    return user\\n\"}]}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Business logic requires\"}]}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Payment - must confirm before proceeding\\ndef checkout(cart):\\n    payment_result = charge_card(cart.total)  # Must wait\\n    if payment_result.success:\\n        create_order()\\n\"}]}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Simple, fast operations\"}]}]\n38:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Get user profile - fast query\\ndef get_profile(user_id):\\n    return db.get_user(user_id)  # 10ms, không cần async\\n\"}]}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Dùng ASYNC khi:\"}]}]\n3a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Non-critical operations\"}]}]\n3b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Send email - user doesn't need to wait\\ndef register(email):\\n    user = create_user(email)\\n    send_welcome_email.delay(email)  # Async\\n    return user\\n\"}]}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Heavy/slow operations\"}]}]\n3d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Video processing - can take minutes\\ndef upload_video(file):\\n    video = save_video(file)\\n    process_video.delay(video.id)  # Async\\n    return video\\n\"}]}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. External service calls\"}]}]\n3f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# 3rd party APIs - unpredictable latency\\ndef create_order(order):\\n    save_order(order)\\n    notify_warehouse.delay(order.id)  # Async\\n    update_analytics.delay(order)     # Async\\n    return order\\n\"}]}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Fan-out operations\"}]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Notify many users - can be slow\\ndef post_update(post):\\n    save_post(post)\\n    notify_followers.delay(post.id)  # Async (may be 10k users)\\n    return post\\n\"}]}]\n42:[\"$\",\"h2\",null,{\"id\":\"message-queues---async-processing-infrastructure\",\"children\":\"Message Queues - Async Processing Infrastructure\"}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Message queue = buffer giữa producer và consumer.\"}]}]\n44:[\"$\",\"$L2b\",null,{\"chart\":\"flowchart LR\\n    subgraph Producers\\n        API1[API Server 1]\\n        API2[API Server 2]\\n    end\\n    \\n    Queue[(Message Queue)]\\n    \\n    subgraph Consumers\\n        W1[Worker 1]\\n        W2[Worker 2]\\n        W3[Worker 3]\\n    end\\n    \\n    API1 --\u003e|Enqueue| Queue\\n    API2 --\u003e|Enqueue| Queue\\n    \\n"])</script><script>self.__next_f.push([1,"    Queue --\u003e|Dequeue| W1\\n    Queue --\u003e|Dequeue| W2\\n    Queue --\u003e|Dequeue| W3\"}]\n45:[\"$\",\"h3\",null,{\"id\":\"core-concepts\",\"children\":\"Core Concepts\"}]\n46:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Producer:\"}]}]\n47:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Application tạo tasks\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Enqueue messages vào queue\"}],\"\\n\"]}]\n48:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Queue:\"}]}]\n49:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Store messages\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Guarantee delivery\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Handle distribution\"}],\"\\n\"]}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Consumer/Worker:\"}]}]\n4b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Dequeue messages\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Process tasks\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Acknowledge completion\"}],\"\\n\"]}]\n4c:[\"$\",\"h3\",null,{\"id\":\"popular-queue-systems\",\"children\":\"Popular Queue Systems\"}]\n4d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"RabbitMQ:\"}]}]\n4e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Full-featured message broker\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"AMQP protocol\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Complex routing, exchanges\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Good for complex workflows\"}],\"\\n\"]}]\n4f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Redis (with Sidekiq/Bull):\"}]}]\n50:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple, fast\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"In-memory (persistence optional)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Good for high-throughput simple jobs\"}],\"\\n\"]}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"AWS SQS:\"}]}]\n52:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Managed service\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fully scalable\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Pay-per-use\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Good for AWS ecosystem\"}],\"\\n\"]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Kafka:\"}]}]\n54:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Distributed streaming platform\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"High throughput (millions msg/s)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Event sourcing, logs\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Good for event-driven architecture\"}],\"\\n\"]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Comparison:\"}]}]\n"])</script><script>self.__next_f.push([1,"56:[\"$\",\"table\",null,{\"children\":[[\"$\",\"thead\",null,{\"children\":[\"$\",\"tr\",null,{\"children\":[[\"$\",\"th\",null,{\"children\":\"Feature\"}],[\"$\",\"th\",null,{\"children\":\"RabbitMQ\"}],[\"$\",\"th\",null,{\"children\":\"Redis\"}],[\"$\",\"th\",null,{\"children\":\"SQS\"}],[\"$\",\"th\",null,{\"children\":\"Kafka\"}]]}]}],[\"$\",\"tbody\",null,{\"children\":[[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Throughput\"}],[\"$\",\"td\",null,{\"children\":\"High\"}],[\"$\",\"td\",null,{\"children\":\"Very High\"}],[\"$\",\"td\",null,{\"children\":\"High\"}],[\"$\",\"td\",null,{\"children\":\"Extreme\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Latency\"}],[\"$\",\"td\",null,{\"children\":\"Low\"}],[\"$\",\"td\",null,{\"children\":\"Very Low\"}],[\"$\",\"td\",null,{\"children\":\"Medium\"}],[\"$\",\"td\",null,{\"children\":\"Low\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Persistence\"}],[\"$\",\"td\",null,{\"children\":\"Yes\"}],[\"$\",\"td\",null,{\"children\":\"Optional\"}],[\"$\",\"td\",null,{\"children\":\"Yes\"}],[\"$\",\"td\",null,{\"children\":\"Yes\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Ordering\"}],[\"$\",\"td\",null,{\"children\":\"Yes\"}],[\"$\",\"td\",null,{\"children\":\"Limited\"}],[\"$\",\"td\",null,{\"children\":\"FIFO queue\"}],[\"$\",\"td\",null,{\"children\":\"Yes\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Complexity\"}],[\"$\",\"td\",null,{\"children\":\"Medium\"}],[\"$\",\"td\",null,{\"children\":\"Low\"}],[\"$\",\"td\",null,{\"children\":\"Low\"}],[\"$\",\"td\",null,{\"children\":\"High\"}]]}],[\"$\",\"tr\",null,{\"children\":[[\"$\",\"td\",null,{\"children\":\"Use Case\"}],[\"$\",\"td\",null,{\"children\":\"Task queues\"}],[\"$\",\"td\",null,{\"children\":\"Simple jobs\"}],[\"$\",\"td\",null,{\"children\":\"AWS apps\"}],[\"$\",\"td\",null,{\"children\":\"Event streams\"}]]}]]}]]}]\n"])</script><script>self.__next_f.push([1,"57:[\"$\",\"h3\",null,{\"id\":\"basic-queue-operations\",\"children\":\"Basic Queue Operations\"}]\n58:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Enqueue (Producer):\"}]}]\n59:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Python with Celery + Redis\\nfrom celery import Celery\\n\\napp = Celery('tasks', broker='redis://localhost:6379')\\n\\n@app.task\\ndef send_email(to, subject, body):\\n    # Email sending logic\\n    smtp.send(to, subject, body)\\n\\n# Enqueue task\\nsend_email.delay('user@example.com', 'Welcome', 'Hello!')\\n\"}]}]\n5a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Dequeue (Consumer):\"}]}]\n5b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Worker processes tasks automatically\\n# Start worker:\\n# celery -A tasks worker --loglevel=info\\n\\n# Celery handles:\\n# - Dequeue messages\\n# - Call task function\\n# - Retry on failure\\n# - Acknowledge on success\\n\"}]}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Manual dequeue (Redis example):\"}]}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import redis\\n\\nr = redis.Redis()\\n\\nwhile True:\\n    # Blocking pop (wait for messages)\\n    task = r.brpop('email_queue', timeout=5)\\n    \\n    if task:\\n        queue_name, message = task\\n        process_email(message)\\n\"}]}]\n5e:[\"$\",\"h2\",null,{\"id\":\"background-jobs---common-patterns\",\"children\":\"Background Jobs - Common Patterns\"}]\n5f:[\"$\",\"h3\",null,{\"id\":\"pattern-1-deferred-execution\",\"children\":\"Pattern 1: Deferred Execution\"}]\n60:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Execute task sau một khoảng thời gian.\"}]}]\n61:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Send reminder email after 24 hours\\nsend_reminder_email.apply_async(\\n    args=[user.id],\\n    countdown=86400  # 24 hours in seconds\\n)\\n\"}]}]\n62:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use cases:\"}]}]\n63:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Reminder notifications\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Trial expiration warnings\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Subscription renewals\"}],\"\\n\"]}]\n64:[\"$\",\"h3\",null,{\"id\":\"pattern-2-scheduled-jobs-cron\",\"children\":\"Pattern 2: Scheduled Jobs (Cron)\"}]\n65:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Execute task theo schedule định kỳ.\"}]}]\n66:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Celery beat - periodic tasks\\nfrom celery.schedules import crontab\\n\\napp.conf.beat_schedule = {\\n    'cleanup-old-data': {\\n        'task': 'tasks.cleanup_old_data',\\n        'schedule': crontab(hour=2, minute=0),  # 2 AM daily\\n    },\\n    'send-daily-report': {\\n        'task': 'tasks.send_daily_report',\\n        'schedule': crontab(hour=9, minute=0, day_of_week=1),  # Monday 9 AM\\n    },\\n}\\n\"}]}]\n67:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use cases:\"}]}]\n68:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Daily reports\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Data cleanup\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cache warming\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Backup jobs\"}],\"\\n\"]}]\n69:[\"$\",\"h3\",null,{\"id\":\"pattern-3-batch-processing\",\"children\":\"Pattern 3: Batch Processing\"}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Process nhiều items cùng lúc.\"}]}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Process batch of emails\\n@app.task\\ndef send_batch_emails(email_ids):\\n    emails = Email.objects.filter(id__in=email_ids)\\n    for email in emails:\\n        send_email(email)\\n\\n# Split into batches\\nemail_ids = [1, 2, 3, ..., 10000]\\nbatch_size = 100\\n\\nfor i in range(0, len(email_ids), batch_size):\\n    batch = email_ids[i:i+batch_size]\\n    send_batch_emails.delay(batch)\\n\"}]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\n6d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Efficient resource"])</script><script>self.__next_f.push([1," usage\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Better throughput\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database query optimization\"}],\"\\n\"]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"pattern-4-pipelinechain\",\"children\":\"Pattern 4: Pipeline/Chain\"}]\n6f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tasks execute in sequence.\"}]}]\n70:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from celery import chain\\n\\n# Task chain\\nworkflow = chain(\\n    resize_image.s(image_id),\\n    apply_watermark.s(),\\n    upload_to_cdn.s(),\\n    update_database.s()\\n)\\n\\nworkflow.apply_async()\\n\"}]}]\n71:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Each task output = next task input.\"}]}]\n72:[\"$\",\"h3\",null,{\"id\":\"pattern-5-fan-outfan-in\",\"children\":\"Pattern 5: Fan-out/Fan-in\"}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Parallel execution, then aggregate.\"}]}]\n74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from celery import group, chord\\n\\n# Process multiple images in parallel\\njob = chord(\\n    group(process_image.s(img_id) for img_id in image_ids),\\n    aggregate_results.s()  # Called after all finish\\n)\\n\\njob.apply_async()\\n\"}]}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use cases:\"}]}]\n76:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Multi-file processing\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Parallel API calls\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Map-reduce operations\"}],\"\\n\"]}]\n77:[\"$\",\"h2\",null,{\"id\":\"retry-strategies---handle-failures-gracefully\",\"children\":\"Retry Strategies - Handle Failures Gracefully\"}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Failures happen. Network timeout, service down, rate limits.\"}]}]\n79:[\"$\",\"h3\",null,{\"id\":\"automatic-retry\",\"children\":\"Automatic Retry\"}]\n7a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.task(\\n    bind=True,\\n    max_retries=3,\\n    default_retry_delay=60  # 60 seconds\\n)\\ndef send_email(self, to, subject, body):\\n    try:\\n        smtp.send(to, subject, body)\\n    except SMTPException as exc:\\n        # Retry with exponential backoff\\n        raise self.retry(exc=exc, countdown=2 ** self.request.retries)\\n\"}]}]\n7b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Exponential backoff:\"}]}]\n7c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Retry 1: wait 2^1 = 2 seconds\\nRetry 2: wait 2^2 = 4 seconds\\nRetry 3: wait 2^3 = 8 seconds\\n\"}]}]\n7d:[\"$\",\"p\",null,{\"children\":\"Prevents overwhelming failing service.\"}]\n7e:[\"$\",\"h3\",null,{\"id\":\"conditional-retry\",\"children\":\"Conditional Retry\"}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Retry chỉ với specific errors.\"}]}]\n80:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.task(bind=True, max_retries=5)\\ndef call_external_api(self, url):\\n    try:\\n        response = requests.get(url, timeout=10)\\n        response.raise_for_status()\\n        return response.json()\\n    except requests.Timeout as exc:\\n        # Retry on timeout\\n        raise self.retry(exc=exc, countdown=30)\\n    except requests.HTTPError as exc:\\n        if exc.response.status_code == 429:  # Rate limited\\n            raise self.retry(exc=exc, countdown=120)\\n        elif exc.response.status_code \u003e= 500:  # Server error\\n            raise self.retry(exc=exc)\\n        else:\\n            # 4xx errors - don't retry\\n            raise\\n\"}]}]\n81:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Logic:\"}]}]\n82:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Timeout → retry (transient)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"429 Rate limit → retry with longer delay\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"5xx Server error → retry (may recover)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"4xx Client error → don't retry (won't succeed)\"}],\"\\n\"]}]\n83:[\"$\",\"h3\",null,{\"id\":\"retry-limits\",\"children\":\"Retry Limits\"}]\n84:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't retry forever.\"}]}]\n85:["])</script><script>self.__next_f.push([1,"\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.task(\\n    max_retries=10,\\n    retry_backoff=True,\\n    retry_backoff_max=600,  # Max 10 minutes\\n    retry_jitter=True        # Add randomness\\n)\\ndef risky_task():\\n    # Task logic\\n    pass\\n\"}]}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"After max retries → task fails → moves to DLQ.\"}]}]\n87:[\"$\",\"h2\",null,{\"id\":\"dead-letter-queue-dlq---handle-permanent-failures\",\"children\":\"Dead Letter Queue (DLQ) - Handle Permanent Failures\"}]\n88:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"DLQ = queue for messages that failed permanently.\"}]}]\n89:[\"$\",\"$L2b\",null,{\"chart\":\"flowchart TD\\n    Producer[Producer] --\u003e|Enqueue| MainQueue[Main Queue]\\n    MainQueue --\u003e Worker[Worker]\\n    \\n    Worker --\u003e|Success| Done[Complete]\\n    Worker --\u003e|Retry| MainQueue\\n    Worker --\u003e|Max retries exceeded| DLQ[Dead Letter Queue]\\n    \\n    DLQ --\u003e Manual[Manual Investigation]\\n    DLQ --\u003e Replay[Replay to Main Queue]\"}]\n8a:[\"$\",\"h3\",null,{\"id\":\"why-dlq-important\",\"children\":\"Why DLQ Important\"}]\n8b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Don't lose messages\"}]}]\n8c:[\"$\",\"p\",null,{\"children\":\"Failed tasks không biến mất. Store in DLQ for investigation.\"}]\n8d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Prevent queue blocking\"}]}]\n8e:[\"$\",\"p\",null,{\"children\":\"Failing message không block queue. Other messages process normally.\"}]\n8f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Enable debugging\"}]}]\n90:[\"$\",\"p\",null,{\"children\":\"Analyze failed messages, understand patterns, fix bugs.\"}]\n91:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Manual intervention\"}]}]\n92:[\"$\",\"p\",null,{\"children\":\"Admin có thể replay messages sau khi fix issue.\"}]\n93:[\"$\",\"h3\",null,{\"id\":\"implementing-dlq\",\"children\":\"Implementing DLQ\"}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Celery + RabbitMQ:\"}]}]\n95:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from celery import Celery\\n\\napp = Celery('tasks')\\n\\napp.conf.task_reject_on_worker_lost = True\\napp.conf.task_acks_late = True\\n\\n@app.task(\\n    bind=True,\\n    max_retries=3,\\n    dead_letter_exchange='dlx',\\n    dead_letter_routing_key='dlq'\\n)\\ndef problematic_task(self):\\n    # Task logic\\n    pass\\n\"}]}]\n96:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"AWS SQS:\"}]}]\n97:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import boto3\\n\\nsqs = boto3.client('sqs')\\n\\n# Create main queue with DLQ\\nresponse = sqs.create_queue(\\n    QueueName='main-queue',\\n    Attributes={\\n        'RedrivePolicy': json.dumps({\\n            'deadLetterTargetArn': dlq_arn,\\n            'maxReceiveCount': '3'  # After 3 attempts → DLQ\\n        })\\n    }\\n)\\n\"}]}]\n98:[\"$\",\"h3\",null,{\"id\":\"monitoring-dlq\",\"children\":\"Monitoring DLQ\"}]\n99:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track metrics:\"}]}]\n9a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- DLQ size (messages count)\\n- DLQ message age\\n- Failure reasons distribution\\n- Failure rate trends\\n\"}]}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Alert when:\"}]}]\n9c:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"DLQ size \u003e threshold\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Sudden spike in failures\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Messages aging in DLQ\"}],\"\\n\"]}]\n9d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Periodic review:\"}]}]\n9e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def review_dlq():\\n    messages = dlq.get_messages(limit=100)\\n    \\n    for msg in messages:\\n        # Analyze failure reason\\n        if is_fixable(msg):\\n            fix_and_replay(msg)\\n        else:\\n            log_permanent_failure(msg)\\n\"}]}]\n9f:[\"$\",\"h2\",null,{\"id\":\"idempotency---critical-for-reliability\",\"children\":\"Idempotency - Critical For Reliability\"}]\na0:[\"$\",\"p\",null,{\"children\":[\""])</script><script>self.__next_f.push([1,"$\",\"strong\",null,{\"children\":\"Idempotent = executing multiple times produces same result as executing once.\"}]}]\na1:[\"$\",\"h3\",null,{\"id\":\"the-problem\",\"children\":\"The Problem\"}]\na2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario:\"}]}]\na3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. User submits order\\n2. API enqueues \\\"charge_payment\\\" task\\n3. Worker processes task, charges card\\n4. Network timeout before ack\\n5. Queue redelivers task\\n6. Worker processes again → charges card TWICE! 💸\\n\"}]}]\na4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"User charged 2x. Very bad.\"}]}]\na5:[\"$\",\"h3\",null,{\"id\":\"solution-idempotent-operations\",\"children\":\"Solution: Idempotent Operations\"}]\na6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Method 1: Idempotency Keys\"}]}]\na7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.task\\ndef charge_payment(order_id, amount, idempotency_key):\\n    # Check if already processed\\n    if Payment.objects.filter(idempotency_key=idempotency_key).exists():\\n        print(\\\"Already processed, skipping\\\")\\n        return\\n    \\n    # Process payment\\n    result = stripe.charge(amount, idempotency_key=idempotency_key)\\n    \\n    # Save with idempotency key\\n    Payment.objects.create(\\n        order_id=order_id,\\n        amount=amount,\\n        idempotency_key=idempotency_key,\\n        transaction_id=result.id\\n    )\\n\"}]}]\na8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Stripe API cũng support idempotency keys - double protection.\"}]}]\na9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Method 2: Database Constraints\"}]}]\naa:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Unique constraint on database\\nclass Payment(models.Model):\\n    order_id = models.IntegerField()\\n    transaction_id = models.CharField(max_length=100, unique=True)\\n\\n@app.task\\ndef charge_payment(order_id):\\n    try:\\n        result = stripe.charge(...)\\n        Payment.objects.create(\\n            order_id=order_id,\\n            transaction_id=result.id  # Unique - prevents duplicates\\n        )\\n    except IntegrityError:\\n        # Duplicate transaction - already processed\\n        print(\\\"Already processed\\\")\\n\"}]}]\nab:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Method 3: Atomic Operations\"}]}]\nac:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Use database atomic operations\\n@app.task\\ndef increment_view_count(post_id):\\n    # Idempotent - can run multiple times safely\\n    Post.objects.filter(id=post_id).update(\\n        view_count=F('view_count') + 1\\n    )\\n\"}]}]\nad:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Method 4: State Machines\"}]}]\nae:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class Order(models.Model):\\n    status = models.CharField(\\n        choices=[\\n            ('pending', 'Pending'),\\n            ('processing', 'Processing'),\\n            ('completed', 'Completed'),\\n        ]\\n    )\\n\\n@app.task\\ndef process_order(order_id):\\n    order = Order.objects.get(id=order_id)\\n    \\n    # Only process if pending\\n    if order.status != 'pending':\\n        print(\\\"Already processed\\\")\\n        return\\n    \\n    # Update status atomically\\n    updated = Order.objects.filter(\\n        id=order_id,\\n        status='pending'\\n    ).update(status='processing')\\n    \\n    if updated == 0:\\n        print(\\\"Another worker already processing\\\")\\n        return\\n    \\n    # Process order...\\n    \\n    order.status = 'completed'\\n    order.save()\\n\"}]}]\naf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"State transitions enforce idempotency.\"}]}]\nb0:[\"$\",\"h3\",null,{\"id\":\"best-practices\",\"children\":\"Best Practices\"}]\nb1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Always use idempotency keys for financial operations\"}]}]\nb2:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import uuid\\n\\nidem"])</script><script>self.__next_f.push([1,"potency_key = str(uuid.uuid4())\\ncharge_payment.delay(order_id, amount, idempotency_key)\\n\"}]}]\nb3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Generate idempotency key at producer, not consumer\"}]}]\nb4:[\"$\",\"p\",null,{\"children\":\"Producer ensures same key for retries.\"}]\nb5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Store processed keys with TTL\"}]}]\nb6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Redis\\nredis.setex(f\\\"processed:{idempotency_key}\\\", 86400, \\\"1\\\")  # 24h TTL\\n\"}]}]\nb7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Make all external API calls idempotent\"}]}]\nb8:[\"$\",\"p\",null,{\"children\":\"Stripe, payment gateways, email services all support idempotency keys.\"}]\nb9:[\"$\",\"h2\",null,{\"id\":\"event-driven-architecture-intro\",\"children\":\"Event-Driven Architecture Intro\"}]\nba:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Async processing naturally leads to event-driven thinking.\"}]}]\nbb:[\"$\",\"h3\",null,{\"id\":\"from-request-driven-to-event-driven\",\"children\":\"From Request-Driven To Event-Driven\"}]\nbc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Request-driven (traditional):\"}]}]\nbd:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def create_order(order_data):\\n    order = save_order(order_data)\\n    charge_payment(order)\\n    send_confirmation(order)\\n    notify_warehouse(order)\\n    update_analytics(order)\\n    return order\\n\"}]}]\nbe:[\"$\",\"p\",null,{\"children\":\"Tight coupling. Order creation knows về all downstream systems.\"}]\nbf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Event-driven:\"}]}]\nc0:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def create_order(order_data):\\n    order = save_order(order_data)\\n    \\n    # Publish event\\n    publish_event('order.created', {\\n        'order_id': order.id,\\n        'user_id': order.user_id,\\n        'total': order.total\\n    })\\n    \\n    return order\\n\\n# Separate subscribers\\n@subscribe('order.created')\\ndef handle_payment(event):\\n    charge_payment(event['order_id'])\\n\\n@subscribe('order.created')\\ndef send_email(event):\\n    send_confirmation(event['order_id'])\\n\\n@subscribe('order.created')\\ndef notify_warehouse(event):\\n    notify_warehouse(event['order_id'])\\n\"}]}]\nc1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\nc2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Decoupling\"}]}]\nc3:[\"$\",\"p\",null,{\"children\":\"Order service không biết về email service, warehouse service.\"}]\nc4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Scalability\"}]}]\nc5:[\"$\",\"p\",null,{\"children\":\"Mỗi subscriber scale independently.\"}]\nc6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Flexibility\"}]}]\nc7:[\"$\",\"p\",null,{\"children\":\"Add new subscribers without changing order service.\"}]\nc8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Resilience\"}]}]\nc9:[\"$\",\"p\",null,{\"children\":\"1 subscriber fail không affect others.\"}]\nca:[\"$\",\"h3\",null,{\"id\":\"event-structure\",\"children\":\"Event Structure\"}]\ncb:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"{\\n    \\\"event_id\\\": \\\"evt_abc123\\\",\\n    \\\"event_type\\\": \\\"order.created\\\",\\n    \\\"timestamp\\\": \\\"2025-02-15T10:00:00Z\\\",\\n    \\\"version\\\": \\\"1.0\\\",\\n    \\\"data\\\": {\\n        \\\"order_id\\\": 12345,\\n        \\\"user_id\\\": 789,\\n        \\\"total\\\": 99.99\\n    }\\n}\\n\"}]}]\ncc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Include:\"}]}]\ncd:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Unique event ID (idempotency)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Event type (routing)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Timestamp (ordering)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Version (schema evolution)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Data payload\"}],\"\\n\"]}]\nce:[\"$\",\"h3\",null,{\"id\":\"event-patterns\",\"children\":\"Event Patterns\"}]\ncf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Event Notification\"}]}]\nd0:"])</script><script>self.__next_f.push([1,"[\"$\",\"p\",null,{\"children\":\"Thông báo something happened. Subscribers fetch details nếu cần.\"}]\nd1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"publish_event('user.registered', {'user_id': 123})\\n\"}]}]\nd2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Event-Carried State Transfer\"}]}]\nd3:[\"$\",\"p\",null,{\"children\":\"Event chứa all data subscribers cần.\"}]\nd4:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"publish_event('user.registered', {\\n    'user_id': 123,\\n    'email': 'user@example.com',\\n    'name': 'John Doe',\\n    'signup_date': '2025-02-15'\\n})\\n\"}]}]\nd5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Event Sourcing\"}]}]\nd6:[\"$\",\"p\",null,{\"children\":\"Store all events as source of truth. Current state = replay events.\"}]\nd7:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"events = [\\n    {'type': 'account.created', 'balance': 1000},\\n    {'type': 'transaction.deposit', 'amount': 500},\\n    {'type': 'transaction.withdraw', 'amount': 200},\\n]\\n\\n# Current balance = 1000 + 500 - 200 = 1300\\n\"}]}]\nd8:[\"$\",\"h2\",null,{\"id\":\"practical-recommendations\",\"children\":\"Practical Recommendations\"}]\nd9:[\"$\",\"h3\",null,{\"id\":\"1-start-simple\",\"children\":\"1. Start Simple\"}]\nda:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Don't over-engineer. Begin with basic background jobs.\"}]}]\ndb:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Simple Celery task\\n@app.task\\ndef send_email(to, subject, body):\\n    smtp.send(to, subject, body)\\n\\n# Usage\\nsend_email.delay('user@example.com', 'Welcome', 'Hello!')\\n\"}]}]\ndc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Add complexity only khi cần:\"}]}]\ndd:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Retries → when external dependencies\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"DLQ → when monitoring failures\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Idempotency → when critical operations\"}],\"\\n\"]}]\nde:[\"$\",\"h3\",null,{\"id\":\"2-monitor-queue-health\",\"children\":\"2. Monitor Queue Health\"}]\ndf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Track metrics:\"}]}]\ne0:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Queue depth\\nqueue_size = celery.control.inspect().stats()\\n\\n# Task success/failure rate\\nfrom celery.events import EventReceiver\\n\\ndef monitor_events():\\n    receiver = EventReceiver(app.connection())\\n    \\n    for event in receiver.events():\\n        if event['type'] == 'task-succeeded':\\n            metrics.increment('task.success')\\n        elif event['type'] == 'task-failed':\\n            metrics.increment('task.failure')\\n\"}]}]\ne1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Alert when:\"}]}]\ne2:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Queue depth \u003e threshold (workers can't keep up)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"High failure rate (systemic issues)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Processing time \u003e SLA\"}],\"\\n\"]}]\ne3:[\"$\",\"h3\",null,{\"id\":\"3-design-for-failure\",\"children\":\"3. Design For Failure\"}]\ne4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Assume tasks will fail. Plan accordingly.\"}]}]\ne5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@app.task(\\n    bind=True,\\n    max_retries=3,\\n    default_retry_delay=60\\n)\\ndef resilient_task(self, data):\\n    try:\\n        # Task logic with timeout\\n        result = process_with_timeout(data, timeout=30)\\n        return result\\n    except TimeoutError as exc:\\n        # Retry on timeout\\n        raise self.retry(exc=exc)\\n    except Exception as exc:\\n        # Log error for investigation\\n        logger.error(f\\\"Task failed: {exc}\\\", extra={'data': data})\\n        raise\\n\"}]}]\ne6:[\"$\",\"h3\",null,{\"id\":\"4-test-async-flows\",\"children\":\"4. Test Async Flows\"}]\ne7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Testing async code harder than sync.\"}]}]\ne8:[\"$\",\"pre\",nul"])</script><script>self.__next_f.push([1,"l,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Test with eager mode (synchronous for testing)\\napp.conf.task_always_eager = True\\n\\ndef test_order_creation():\\n    order = create_order(order_data)\\n    \\n    # Tasks execute synchronously in tests\\n    assert email_was_sent(order.user.email)\\n    assert payment_was_charged(order.id)\\n\"}]}]\ne9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Integration tests:\"}]}]\nea:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def test_queue_integration():\\n    # Send task to real queue\\n    result = send_email.delay('test@example.com', 'Test', 'Body')\\n    \\n    # Wait for completion\\n    assert result.get(timeout=10) == 'sent'\\n\"}]}]\neb:[\"$\",\"h3\",null,{\"id\":\"5-graceful-degradation\",\"children\":\"5. Graceful Degradation\"}]\nec:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Queue down không nên crash toàn bộ system.\"}]}]\ned:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def create_order(order_data):\\n    order = save_order(order_data)\\n    \\n    try:\\n        send_confirmation.delay(order.id)\\n    except ConnectionError:\\n        # Queue unavailable - fallback to sync\\n        logger.warning(\\\"Queue unavailable, sending email synchronously\\\")\\n        send_confirmation_sync(order.id)\\n    \\n    return order\\n\"}]}]\nee:[\"$\",\"h2\",null,{\"id\":\"mental-model-latency-giảm-bằng-cách-defer-work\",\"children\":\"Mental Model: Latency Giảm Bằng Cách Defer Work\"}]\nef:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core insight:\"}]}]\nf0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"User không cần đợi work không critical. Defer nó để improve experience.\"}]}]\nf1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Sync mindset:\\n  Complete everything before responding\\n  User experience = slow\\n\\nAsync mindset:\\n  Complete critical work only\\n  Defer rest to background\\n  User experience = fast\\n\"}]}]\nf2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision tree:\"}]}]\nf3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Does user need result immediately?\\n  YES → Sync (e.g., login validation)\\n  NO → Can defer?\\n    YES → Async (e.g., send email)\\n    NO → Sync (e.g., payment validation)\\n\"}]}]\nf4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architect thinking:\"}]}]\nf5:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Identify critical path (what user actually needs)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Defer everything else (emails, analytics, etc.)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Use queues for reliability (retry, DLQ)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Design for idempotency (safety)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Monitor queue health (operational excellence)\"}],\"\\n\"]}]\nf6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Great systems respond fast, work happens later.\"}]}]\nf7:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\nf8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Async processing reduces user-facing latency\"}]}]\nf9:[\"$\",\"p\",null,{\"children\":\"User gets response fast, work happens in background.\"}]\nfa:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Message queues decouple producers from consumers\"}]}]\nfb:[\"$\",\"p\",null,{\"children\":\"Scale independently, handle spikes, improve resilience.\"}]\nfc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Choose queue system based on requirements\"}]}]\nfd:[\"$\",\"p\",null,{\"children\":\"Redis = simple/fast, RabbitMQ = feature-rich, SQS = managed, Kafka = streaming.\"}]\nfe:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Retry strategies handle transient failures\"}]}]\nff:[\"$\",\"p\",null,{\"children\":\"Exponential backoff, conditional retry, max retries.\"}]\n100:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. DLQ captures permanent failures\"}]}]\n101:[\"$\",\"p\",null,{\"children\":\"Don't lose messages, enable investigation, allow replay.\"}]\n102:[\"$\",\"p\""])</script><script>self.__next_f.push([1,",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"6. Idempotency critical for reliability\"}]}]\n103:[\"$\",\"p\",null,{\"children\":\"Use idempotency keys, database constraints, atomic operations.\"}]\n104:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"7. Event-driven architecture = extreme decoupling\"}]}]\n105:[\"$\",\"p\",null,{\"children\":\"Services communicate via events, not direct calls.\"}]\n106:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"8. Monitor queue health continuously\"}]}]\n107:[\"$\",\"p\",null,{\"children\":\"Queue depth, task success rate, processing time.\"}]\n108:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"9. Design for failure\"}]}]\n109:[\"$\",\"p\",null,{\"children\":\"Tasks will fail. Have retry logic, DLQ, fallbacks.\"}]\n10a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"10. Test async flows thoroughly\"}]}]\n10b:[\"$\",\"p\",null,{\"children\":\"Use eager mode for unit tests, real queue for integration.\"}]\n10c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Remember: The best user experience is fast response. Defer non-critical work to background. Users don't need to wait for emails to be sent or analytics to be updated - they need to see \\\"Order Successful\\\" immediately.\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"10d:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency | Phase 4 — Scalability \u0026 Performance | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học async processing và message queues: sync vs async trade offs, background jobs, retry strategies, dead letter queues, event driven architecture, và idempoten\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency | Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học async processing và message queues: sync vs async trade offs, background jobs, retry strategies, dead letter queues, event driven architecture, và idempoten\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-4/lesson/lesson-6-asynchronous-processin-queues\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Asynchronous Processing \u0026 Queues - Defer Work Để Giảm Latency | Phase 4 — Scalability \u0026 Performance\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học async processing và message queues: sync vs async trade offs, background jobs, retry strategies, dead letter queues, event driven architecture, và idempoten\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L10d\",\"14\",{}]]\n"])</script></body></html>

@@ -1,0 +1,730 @@
+@0 h1
+System Design Thinking Framework: Từ Biết Pattern Đến Biết Tư Duy
+@1 p
+Chào mừng đến Phase 6 - System Design Mastery.
+@2 p
+Bạn đã đi qua 5 phases, học về components, distributed systems, scalability patterns, real-world architectures. Bạn biết rất nhiều patterns.
+@3 p
+Nhưng có một sự thật tôi phải nói thẳng:
+@4 p
+**Biết patterns không đồng nghĩa với giỏi system design.**
+@5 p
+Tôi từng interview một candidate rất giỏi. Anh ta thuộc lòng tất cả patterns: CAP theorem, consistent hashing, CQRS, event sourcing...
+@6 p
+Tôi hỏi: *"Thiết kế URL shortener."*
+@7 p
+Anh ta ngay lập tức: *"Em sẽ dùng NoSQL, Redis cache, CDN, microservices, event-driven architecture..."*
+@8 p
+Tôi: *"Tại sao?"*
+@9 p
+Anh ta: *"Vì... đó là best practices ạ?"*
+@10 p
+**Anh ta fail interview.**
+@11 p
+Không phải vì thiếu kiến thức. Mà vì **thiếu system design thinking**.
+@12 p
+Lesson này sẽ dạy bạn cái quan trọng nhất: **Cách tư duy khi approach một problem.**
+@13 h2
+System Design Thinking Là Gì?
+@14 h3
+Định Nghĩa
+@15 p
+**System design thinking = Mental framework để approach và solve architecture problems**
+@16 p
+Không phải là:
+@17 li
+Thuộc patterns
+@18 li
+Biết technologies
+@19 li
+Copy solutions
+@20 p
+Mà là:
+@21 li
+Understand problems deeply
+@22 li
+Reason từ first principles
+@23 li
+Make trade-off decisions
+@24 li
+Justify mọi choice
+@25 h3
+Ví Dụ So Sánh
+@26 p
+**Pattern thinking (Bad):**
+@27 pre
+Problem: Build social network
+Approach:
+1. Social network = need feed
+2. Feed = need fanout
+3. Use fanout on write pattern
+4. Done!
+
+Result: Over-engineered cho startup với 100 users
+
+@28 p
+**System design thinking (Good):**
+@29 pre
+Problem: Build social network
+
+Questions:
+1. Scale? (100 users hay 100M users?)
+2. Traffic pattern? (read-heavy hay write-heavy?)
+3. Consistency requirements? (real-time hay eventual OK?)
+4. Team size? (2 devs hay 50 devs?)
+5. Timeline? (MVP trong 1 tháng hay 1 năm?)
+6. Budget? (limited hay unlimited?)
+
+Với 100 users, 2 devs, 1 tháng timeline:
+→ Simple SQL database
+→ Query followees' posts on demand
+→ Basic chronological sort
+→ No caching needed yet
+
+Scale later when proven needed.
+
+Result: Shipped on time, iterated fast
+
+@30 p
+Thấy sự khác biệt chưa?
+@31 p
+Pattern thinking = Apply solutions
+@32 p
+System design thinking = **Understand problem → Choose appropriate solution**
+@33 h2
+The Mental Shift: Từ "What Tech" Sang "What Problem"
+@34 h3
+Old Mindset (What Tech to Use)
+@35 pre
+Senior: "Thiết kế notification system"
+
+Junior thinks:
+- "Dùng tech gì nhỉ?"
+- "Kafka hay RabbitMQ?"
+- "WebSocket hay Server-Sent Events?"
+- "PostgreSQL hay MongoDB?"
+
+→ Technology-first thinking
+→ Solution shopping
+
+@36 p
+**Vấn đề:**
+@37 pre
+Chưa hiểu problem
+Không biết constraints
+Không justify trade-offs
+Có thể over-engineer
+Có thể under-engineer
+
+@38 h3
+New Mindset (What Problem to Solve)
+@39 pre
+Senior: "Thiết kế notification system"
+
+Senior thinks:
+- "Problem gì đang giải quyết?"
+- "Scale bao nhiêu? (1K hay 1B notifications/day?)"
+- "Latency requirement? (real-time hay eventual OK?)"
+- "Delivery guarantee? (at-least-once hay exactly-once?)"
+- "Types of notifications? (push, email, SMS?)"
+- "User preferences? (mute, frequency?)"
+
+→ Problem-first thinking
+→ Requirement-driven design
+
+@40 p
+**Framework:**
+@41 pre
+graph TB
+    START[System Design Problem]
+    
+    START --> Q1[Clarify Requirements]
+    Q1 --> Q2[Identify Constraints]
+    Q2 --> Q3[List Trade-offs]
+    Q3 --> Q4[Choose Approach]
+    Q4 --> Q5[Justify Decisions]
+    Q5 --> Q6[Iterate]
+    
+    style START fill:#ffd43b
+    style Q4 fill:#51cf66
+    style Q5 fill:#ff6b6b
+@42 p
+*System design thinking process: Requirements → Constraints → Trade-offs → Decision → Justification*
+@43 h2
+Requirement-Driven Design
+@44 p
+**Bắt đầu mọi design bằng requirements. Always.**
+@45 h3
+Functional Requirements
+@46 p
+**Định nghĩa:** System phải làm gì?
+@47 p
+**Kỹ thuật clarify:**
+@48 pre
+Interviewer: "Design URL shortener"
+
+You: "Let me clarify functional requirements:
+1. Do we support custom short URLs?
+2. Do we need analytics (click tracking)?
+3. Do URLs expire?
+4. Do we need user accounts?
+5. Can users edit/delete their URLs?
+6. Do we need API rate limiting?"
+
+Each answer changes design significantly!
+
+@49 h3
+Non-Functional Requirements (Critical!)
+@50 p
+**Định nghĩa:** System phải perform như thế nào?
+@51 p
+**Back-of-envelope calculations:**
+@52 p
+**Why calculations matter:**
+@53 pre
+Without calculations:
+"Need to handle millions of users!"
+→ Over-engineer với microservices, Kafka, sharding
+
+With calculations:
+"40 writes/s, 4K reads/s, 3TB data"
+→ Single server + Redis cache is enough
+→ Ship in 2 weeks, not 6 months
+
+@54 h2
+Constraint-First Thinking
+@55 p
+**Constraints shape design. Identify constraints TRƯỚC KHI design.**
+@56 h3
+Types of Constraints
+@57 p
+**1. Technical Constraints**
+@58 p
+**2. Business Constraints**
+@59 p
+**3. Scale Constraints**
+@60 h3
+Constraint Analysis Framework
+@61 p
+**Real-world example:**
+@62 pre
+Startup scenario:
+- Budget: $2000/month
+- Team: 3 developers (Python)
+- Timeline: 2 months to MVP
+- Scale: Expect 5K users initially
+
+Constraints dictate:
+Don't use: Kubernetes, Kafka, Cassandra
+   → Too expensive, complex, overkill
+
+Do use:
+   - Heroku or AWS Elastic Beanstalk (managed)
+   - PostgreSQL (familiar, powerful enough)
+   - Redis (simple caching)
+   - Monolith (fast development)
+
+Decision justified by constraints, not by "best practices"
+
+@63 h2
+Top-Down vs Bottom-Up Design
+@64 p
+Có 2 approaches để design systems. Biết khi nào dùng cái nào.
+@65 h3
+Top-Down Design (Recommended for Interviews)
+@66 p
+**Approach: Start từ high-level, drill down details**
+@67 pre
+graph TB
+    A[High-Level Architecture] --> B[Core Components]
+    B --> C[Component Interactions]
+    C --> D[Data Flow]
+    D --> E[API Design]
+    E --> F[Data Models]
+    F --> G[Deep Dive Specific Parts]
+    
+    style A fill:#ffd43b
+    style G fill:#51cf66
+@68 p
+*Top-down: Từ tổng quan đến chi tiết*
+@69 p
+**Process:**
+@70 p
+**Ưu điểm:**
+@71 pre
+Comprehensive view early
+Spot architecture issues fast
+Easy to communicate
+Good for interviews (shows thinking process)
+Can adjust before deep implementation
+
+@72 p
+**Nhược điểm:**
+@73 pre
+Có thể miss details
+Assumptions có thể sai
+Harder nếu chưa có experience
+
+@74 h3
+Bottom-Up Design (Good for Implementation)
+@75 p
+**Approach: Start từ core problem, build up**
+@76 pre
+graph BT
+    G[Data Model] --> F[Core Logic]
+    F --> E[API Layer]
+    E --> D[Caching Layer]
+    D --> C[Load Balancing]
+    C --> B[Monitoring]
+    B --> A[Complete System]
+    
+    style G fill:#ffd43b
+    style A fill:#51cf66
+@77 p
+*Bottom-up: Từ foundation build lên*
+@78 p
+**Process:**
+@79 p
+**Ưu điểm:**
+@80 pre
+Solid foundation
+Less rework
+Details không bị miss
+Good khi implementing
+
+@81 p
+**Nhược điểm:**
+@82 pre
+Không thấy big picture early
+Có thể over-optimize details
+Harder to pivot
+Less effective trong interviews
+
+@83 h3
+Khi Nào Dùng Approach Nào?
+@84 pre
+Top-Down:
+✓ System design interviews
+✓ Architecture planning meetings
+✓ New greenfield projects
+✓ Communication với stakeholders
+✓ Khi cần quick proof of concept
+
+Bottom-Up:
+✓ Implementation phase
+✓ Refactoring existing systems
+✓ When details matter (security, compliance)
+✓ Complex algorithmic problems
+✓ Database schema design
+
+@85 p
+**Hybrid approach (Best in practice):**
+@86 pre
+1. Top-down: Draw high-level architecture
+2. Identify critical components
+3. Bottom-up: Detail critical parts
+4. Top-down: Validate fits together
+5. Iterate
+
+@87 h2
+Scalability Mindset
+@88 p
+**Scalability thinking ≠ "Make it handle millions"**
+@89 p
+**Scalability thinking = Design để có thể scale khi cần, without rewrite**
+@90 h3
+The Scalability Spectrum
+@91 pre
+Over-engineered ←→ Right-sized ←→ Under-engineered
+
+[Microservices]   [Modular     [Spaghetti
+[Kubernetes]      Monolith]    code]
+[Kafka]           [PostgreSQL] [No DB
+[Sharding]        [Redis]      indexes]
+
+Left: Premature optimization
+Middle: Goldilocks zone ✓
+Right: Technical debt
+
+@92 p
+**Find the Goldilocks zone:**
+@93 h3
+Design for Scalability Without Over-Engineering
+@94 p
+**Principles:**
+@95 p
+**1. Stateless application servers**
+@96 p
+**2. Database indexes from day 1**
+@97 p
+**3. Monitoring from day 1**
+@98 p
+**4. Async where appropriate**
+@99 p
+**5. Modular code structure**
+@100 h2
+Design vs Implementation Thinking
+@101 p
+**Critical distinction: Designing ≠ Implementing**
+@102 h3
+Design Thinking (Interviews, Planning)
+@103 p
+**Focus: Architecture decisions, trade-offs, justification**
+@104 pre
+Questions to answer:
+- What components do we need?
+- How do they interact?
+- What are the bottlenecks?
+- What can fail and how to handle?
+- What are trade-offs of each choice?
+- How does it scale?
+
+Output:
+- Architecture diagram
+- Component responsibilities
+- API contracts
+- Data models (high-level)
+- Trade-off analysis
+
+@105 p
+**Example dialogue:**
+@106 pre
+Interviewer: "Design Twitter"
+
+You (Design thinking):
+"Let me start with requirements...
+- 500M daily users
+- 200M tweets per day
+- Read-heavy (95% reads)
+
+Architecture:
+- Fanout service for tweet distribution
+- Timeline cache in Redis
+- CDN for media
+- Sharded PostgreSQL for persistence
+
+Key trade-off: Fanout on write vs fanout on read
+- For normal users: Fanout on write (pre-compute timelines)
+- For celebrities: Fanout on read (too many followers)
+- Hybrid approach balances write and read performance
+
+Bottlenecks:
+- Timeline generation during fanout
+- Media delivery
+- Hot celebrity problem
+
+Failure handling:
+- Queue for fanout (if service down, retry)
+- Async processing (eventual consistency OK)
+- Circuit breakers for external services
+"
+
+@107 h3
+Implementation Thinking (Building)
+@108 p
+**Focus: Code, algorithms, specific technologies**
+@109 pre
+Questions to answer:
+- What framework to use?
+- How to structure code?
+- What libraries to use?
+- How to handle edge cases?
+- How to test?
+- How to deploy?
+
+Output:
+- Working code
+- Unit tests
+- Integration tests
+- Deployment scripts
+- Documentation
+
+@110 p
+**Example:**
+@111 h3
+Balance Both
+@112 p
+**Good engineers balance design và implementation thinking:**
+@113 pre
+Design phase:
+- Think high-level
+- Focus on architecture
+- Justify trade-offs
+- Don't get stuck in implementation details
+
+Implementation phase:
+- Think low-level
+- Focus on code quality
+- Handle edge cases
+- Maintain architecture vision
+
+Don't mix phases:
+Design interview: "I'll use FastAPI with async/await..."
+   → Too implementation-focused
+
+Coding: "Let me redesign the entire architecture..."
+   → Wrong time for that
+
+Design: Focus on what and why
+Implement: Focus on how
+
+@114 h2
+The Complete Framework: Putting It All Together
+@115 p
+**Khi approach một system design problem:**
+@116 h3
+Step-by-Step Framework
+@117 pre
+1. CLARIFY (5 minutes)
+   ├─ Functional requirements
+   ├─ Non-functional requirements
+   ├─ Scale (users, traffic, data)
+   └─ Constraints (budget, timeline, team)
+
+2. ESTIMATE (5 minutes)
+   ├─ Back-of-envelope calculations
+   ├─ Read/write ratio
+   ├─ Storage needs
+   └─ Bandwidth needs
+
+3. HIGH-LEVEL DESIGN (10 minutes)
+   ├─ Draw main components
+   ├─ Show data flow
+   ├─ Identify critical path
+   └─ Call out key decisions
+
+4. DEEP DIVE (15 minutes)
+   ├─ API design
+   ├─ Data model
+   ├─ Algorithm details
+   ├─ Caching strategy
+   └─ Scaling approach
+
+5. TRADE-OFFS (10 minutes)
+   ├─ Discuss alternatives
+   ├─ Justify choices
+   ├─ Mention trade-offs
+   └─ Address edge cases
+
+6. WRAP UP (5 minutes)
+   ├─ Bottlenecks & solutions
+   ├─ Failure scenarios
+   ├─ Monitoring strategy
+   └─ Future improvements
+
+@118 h3
+Mental Checklist
+@119 p
+**Trước khi finalize design, verify:**
+@120 pre
+☑ Requirements clear?
+☑ Constraints identified?
+☑ Scale calculated?
+☑ Read/write ratio known?
+☑ Bottlenecks identified?
+☑ Failure modes considered?
+☑ Trade-offs justified?
+☑ Scalability path clear?
+☑ Monitoring plan exists?
+☑ Cost estimated?
+
+@121 h3
+Common Mistakes to Avoid
+@122 pre
+Jump to solution immediately
+   → Clarify requirements first
+
+Over-engineer for unknown future
+   → Design for 2x scale, not 100x
+
+Ignore constraints
+   → Budget, timeline, team affect design
+
+Copy Big Tech architecture
+   → Their scale ≠ your scale
+
+Neglect failure scenarios
+   → System will fail, plan for it
+
+Ignore monitoring
+   → Can't improve what you don't measure
+
+Perfect vs shipped
+   → MVP first, iterate later
+
+@123 h2
+Real-World Application
+@124 p
+**Example: Design Instagram-like app**
+@125 h3
+Apply Framework
+@126 p
+**1. Clarify Requirements:**
+@127 pre
+Functional:
+- Upload photos
+- Follow users
+- View feed (photos from following)
+- Like, comment
+- Search users
+
+Non-functional:
+- 100M users
+- 50M daily active users
+- 10M photos uploaded/day
+- Read-heavy (view:upload = 100:1)
+- Latency: Feed < 500ms
+- Availability: 99.9%
+
+@128 p
+**2. Estimate:**
+@129 pre
+Storage:
+- 10M photos/day × 2MB average = 20TB/day
+- 20TB × 365 = 7.3PB/year
+→ Need object storage (S3)
+
+Traffic:
+- Uploads: 10M/day / 86400s ≈ 115 uploads/s
+- Views: 115 × 100 = 11,500 views/s
+→ Read-heavy, caching critical
+
+Database:
+- 100M users × 500 bytes = 50GB (users table)
+- 3.6B photos/year × 200 bytes metadata = 720GB/year
+→ Manageable với SQL, shard after 2-3 years
+
+@130 p
+**3. High-Level Design:**
+@131 pre
+[Mobile/Web] 
+    ↓
+[CDN] (images)
+    ↓
+[Load Balancer]
+    ↓
+[API Servers] (stateless)
+    ↓
+[Redis Cache] ← Feed timelines
+    ↓
+[PostgreSQL] ← Metadata
+    ↓
+[S3] ← Photo storage
+
+@132 p
+**4. Key Decisions:**
+@133 pre
+Photo storage: S3
+- Durable, scalable
+- CDN integration
+- Trade-off: Cost vs reliability
+
+Feed generation: Fanout on write
+- Pre-compute feeds
+- Fast reads (< 50ms from cache)
+- Trade-off: Write amplification
+
+Caching: Redis timelines
+- Store 1000 recent posts per user
+- TTL: No expiry (explicit invalidation)
+- Trade-off: Memory cost vs read performance
+
+Database: PostgreSQL with sharding
+- Strong consistency for critical data
+- Shard by user_id after 2 years
+- Trade-off: Complexity vs scale
+
+@134 p
+**5. Trade-offs Discussed:**
+@135 pre
+Fanout on write vs read:
+- Chose write because read-heavy
+- Celebrity problem: Switch to pull for > 10K followers
+
+SQL vs NoSQL:
+- Chose SQL for consistency, relationships
+- Can add read replicas, then shard
+
+Sync vs async:
+- Photo upload: Sync (user waits)
+- Feed fanout: Async (eventual consistency OK)
+
+@136 p
+**6. Wrap Up:**
+@137 pre
+Bottlenecks:
+- Feed generation (solved by async fanout)
+- Photo delivery (solved by CDN)
+- Database reads (solved by caching)
+
+Monitoring:
+- Upload success rate
+- Feed load latency
+- Cache hit rate
+- Fanout lag
+
+Future improvements:
+- ML ranking for feeds
+- Stories feature
+- Live video
+- Recommendations
+
+@138 h2
+Key Takeaways
+@139 p
+**System design thinking ≠ Knowing patterns**
+@140 pre
+Patterns are tools.
+Thinking is knowing when to use which tool.
+
+@141 p
+**Mental shift:**
+@142 pre
+From: "What tech to use?"
+To:   "What problem to solve?"
+
+From: "Best practices"
+To:   "Best fit for context"
+
+From: "Copy Big Tech"
+To:   "Design for my scale"
+
+@143 p
+**Framework:**
+@144 pre
+1. Requirements first (always)
+2. Constraints shape design
+3. Calculate scale (math matters)
+4. Top-down for planning
+5. Design for 2x, not 100x
+6. Justify every decision
+7. Trade-offs over perfection
+
+@145 p
+**The ultimate test:**
+@146 pre
+Good design thinking = Có thể explain "WHY" cho mọi decision
+
+If you can't explain why:
+- Why this database?
+- Why this caching strategy?
+- Why this architecture?
+
+→ You don't understand your own design
+→ Go back and think deeper
+
+@147 p
+**Remember:**
+@148 pre
+Junior: Knows patterns
+Mid: Applies patterns
+Senior: Knows when NOT to apply patterns
+
+System design mastery = Thinking, not memorization
+
+@149 p
+Bạn đã học đủ patterns qua 5 phases. Phase 6 về refining thinking process.
+@150 p
+**Practice thinking framework, không chỉ memorize patterns.**
+@151 p
+Đó là điều phân biệt Senior Engineer với Junior Engineer.

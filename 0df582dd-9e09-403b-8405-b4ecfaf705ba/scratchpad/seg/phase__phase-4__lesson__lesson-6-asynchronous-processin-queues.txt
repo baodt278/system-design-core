@@ -1,0 +1,705 @@
+@0 h1
+Asynchronous Processing & Queues - Defer Work Để Giảm Latency
+@1 p
+User click "Submit Order" trên e-commerce site.
+@2 p
+**Synchronous approach:**
+@3 pre
+1. Validate order          (100ms)
+2. Check inventory         (200ms)
+3. Process payment         (500ms)
+4. Update database         (100ms)
+5. Send confirmation email (300ms)
+6. Generate invoice PDF    (400ms)
+7. Notify warehouse        (200ms)
+8. Update analytics        (100ms)
+───────────────────────────────────
+Total: 1900ms (gần 2 giây!)
+
+@4 p
+User đợi 2 giây mới thấy "Order Successful". **Experience tệ.**
+@5 p
+**Asynchronous approach:**
+@6 pre
+1. Validate order          (100ms)
+2. Check inventory         (200ms)
+3. Process payment         (500ms)
+4. Update database         (100ms)
+5. Queue remaining tasks   (10ms)
+───────────────────────────────────
+Return "Order Successful": 910ms
+
+Background (async):
+  - Send email
+  - Generate PDF
+  - Notify warehouse
+  - Update analytics
+
+@7 p
+User chỉ đợi ~1 giây. **Experience tốt hơn 2x.**
+@8 p
+**Đây chính là power của async processing.**
+@9 p
+Lesson này dạy bạn:
+@10 li
+Khi nào dùng sync vs async
+@11 li
+Message queues architecture
+@12 li
+Retry strategies & error handling
+@13 li
+Dead letter queues
+@14 li
+Idempotency (critical cho reliability)
+@15 li
+Event-driven thinking
+@16 h2
+Sync vs Async - Trade-off Cơ Bản
+@17 h3
+Synchronous Processing
+@18 p
+**Request → Process → Response. User đợi toàn bộ.**
+@19 pre
+sequenceDiagram
+    participant User
+    participant API
+    participant DB
+    participant Email
+    
+    User->>API: Submit order
+    API->>DB: Save order
+    DB-->>API: OK
+    API->>Email: Send confirmation
+    Email-->>API: Sent
+    API-->>User: Success (1500ms)
+@20 p
+**Characteristics:**
+@21 p
+**Pros:**
+@22 li
+Simple logic
+@23 li
+Immediate feedback
+@24 li
+Easy to debug
+@25 li
+Strong consistency
+@26 p
+**Cons:**
+@27 li
+High latency (user đợi lâu)
+@28 li
+Poor user experience
+@29 li
+Wasted resources (user waiting = connection held)
+@30 li
+Cascade failures (1 slow step = entire request slow)
+@31 h3
+Asynchronous Processing
+@32 p
+**Request → Quick response → Process in background.**
+@33 pre
+sequenceDiagram
+    participant User
+    participant API
+    participant Queue
+    participant Worker
+    participant Email
+    
+    User->>API: Submit order
+    API->>Queue: Enqueue email task
+    API-->>User: Success (100ms)
+    
+    Note over Worker: Process async
+    Worker->>Queue: Dequeue task
+    Worker->>Email: Send email
+@34 p
+**Characteristics:**
+@35 p
+**Pros:**
+@36 li
+Low latency (user không đợi)
+@37 li
+Better user experience
+@38 li
+Resilient (failures don't block user)
+@39 li
+Scalable (process at own pace)
+@40 p
+**Cons:**
+@41 li
+Eventual consistency
+@42 li
+Complex error handling
+@43 li
+Hard to debug
+@44 li
+Need queue infrastructure
+@45 h3
+Decision Framework
+@46 p
+**Dùng SYNC khi:**
+@47 p
+**1. User needs immediate result**
+@48 p
+**2. Business logic requires**
+@49 p
+**3. Simple, fast operations**
+@50 p
+**Dùng ASYNC khi:**
+@51 p
+**1. Non-critical operations**
+@52 p
+**2. Heavy/slow operations**
+@53 p
+**3. External service calls**
+@54 p
+**4. Fan-out operations**
+@55 h2
+Message Queues - Async Processing Infrastructure
+@56 p
+**Message queue = buffer giữa producer và consumer.**
+@57 pre
+flowchart LR
+    subgraph Producers
+        API1[API Server 1]
+        API2[API Server 2]
+    end
+    
+    Queue[(Message Queue)]
+    
+    subgraph Consumers
+        W1[Worker 1]
+        W2[Worker 2]
+        W3[Worker 3]
+    end
+    
+    API1 -->|Enqueue| Queue
+    API2 -->|Enqueue| Queue
+    
+    Queue -->|Dequeue| W1
+    Queue -->|Dequeue| W2
+    Queue -->|Dequeue| W3
+@58 h3
+Core Concepts
+@59 p
+**Producer:**
+@60 li
+Application tạo tasks
+@61 li
+Enqueue messages vào queue
+@62 p
+**Queue:**
+@63 li
+Store messages
+@64 li
+Guarantee delivery
+@65 li
+Handle distribution
+@66 p
+**Consumer/Worker:**
+@67 li
+Dequeue messages
+@68 li
+Process tasks
+@69 li
+Acknowledge completion
+@70 h3
+Popular Queue Systems
+@71 p
+**RabbitMQ:**
+@72 li
+Full-featured message broker
+@73 li
+AMQP protocol
+@74 li
+Complex routing, exchanges
+@75 li
+Good for complex workflows
+@76 p
+**Redis (with Sidekiq/Bull):**
+@77 li
+Simple, fast
+@78 li
+In-memory (persistence optional)
+@79 li
+Good for high-throughput simple jobs
+@80 p
+**AWS SQS:**
+@81 li
+Managed service
+@82 li
+Fully scalable
+@83 li
+Pay-per-use
+@84 li
+Good for AWS ecosystem
+@85 p
+**Kafka:**
+@86 li
+Distributed streaming platform
+@87 li
+High throughput (millions msg/s)
+@88 li
+Event sourcing, logs
+@89 li
+Good for event-driven architecture
+@90 p
+**Comparison:**
+@91 th
+Feature
+@92 th
+RabbitMQ
+@93 th
+Redis
+@94 th
+SQS
+@95 th
+Kafka
+@96 td
+Throughput
+@97 td
+High
+@98 td
+Very High
+@99 td
+High
+@100 td
+Extreme
+@101 td
+Latency
+@102 td
+Low
+@103 td
+Very Low
+@104 td
+Medium
+@105 td
+Low
+@106 td
+Persistence
+@107 td
+Yes
+@108 td
+Optional
+@109 td
+Yes
+@110 td
+Yes
+@111 td
+Ordering
+@112 td
+Yes
+@113 td
+Limited
+@114 td
+FIFO queue
+@115 td
+Yes
+@116 td
+Complexity
+@117 td
+Medium
+@118 td
+Low
+@119 td
+Low
+@120 td
+High
+@121 td
+Use Case
+@122 td
+Task queues
+@123 td
+Simple jobs
+@124 td
+AWS apps
+@125 td
+Event streams
+@126 h3
+Basic Queue Operations
+@127 p
+**Enqueue (Producer):**
+@128 p
+**Dequeue (Consumer):**
+@129 p
+**Manual dequeue (Redis example):**
+@130 h2
+Background Jobs - Common Patterns
+@131 h3
+Pattern 1: Deferred Execution
+@132 p
+**Execute task sau một khoảng thời gian.**
+@133 p
+**Use cases:**
+@134 li
+Reminder notifications
+@135 li
+Trial expiration warnings
+@136 li
+Subscription renewals
+@137 h3
+Pattern 2: Scheduled Jobs (Cron)
+@138 p
+**Execute task theo schedule định kỳ.**
+@139 p
+**Use cases:**
+@140 li
+Daily reports
+@141 li
+Data cleanup
+@142 li
+Cache warming
+@143 li
+Backup jobs
+@144 h3
+Pattern 3: Batch Processing
+@145 p
+**Process nhiều items cùng lúc.**
+@146 p
+**Benefits:**
+@147 li
+Efficient resource usage
+@148 li
+Better throughput
+@149 li
+Database query optimization
+@150 h3
+Pattern 4: Pipeline/Chain
+@151 p
+**Tasks execute in sequence.**
+@152 p
+**Each task output = next task input.**
+@153 h3
+Pattern 5: Fan-out/Fan-in
+@154 p
+**Parallel execution, then aggregate.**
+@155 p
+**Use cases:**
+@156 li
+Multi-file processing
+@157 li
+Parallel API calls
+@158 li
+Map-reduce operations
+@159 h2
+Retry Strategies - Handle Failures Gracefully
+@160 p
+**Failures happen. Network timeout, service down, rate limits.**
+@161 h3
+Automatic Retry
+@162 p
+**Exponential backoff:**
+@163 pre
+Retry 1: wait 2^1 = 2 seconds
+Retry 2: wait 2^2 = 4 seconds
+Retry 3: wait 2^3 = 8 seconds
+
+@164 p
+Prevents overwhelming failing service.
+@165 h3
+Conditional Retry
+@166 p
+**Retry chỉ với specific errors.**
+@167 p
+**Logic:**
+@168 li
+Timeout → retry (transient)
+@169 li
+429 Rate limit → retry with longer delay
+@170 li
+5xx Server error → retry (may recover)
+@171 li
+4xx Client error → don't retry (won't succeed)
+@172 h3
+Retry Limits
+@173 p
+**Don't retry forever.**
+@174 p
+**After max retries → task fails → moves to DLQ.**
+@175 h2
+Dead Letter Queue (DLQ) - Handle Permanent Failures
+@176 p
+**DLQ = queue for messages that failed permanently.**
+@177 pre
+flowchart TD
+    Producer[Producer] -->|Enqueue| MainQueue[Main Queue]
+    MainQueue --> Worker[Worker]
+    
+    Worker -->|Success| Done[Complete]
+    Worker -->|Retry| MainQueue
+    Worker -->|Max retries exceeded| DLQ[Dead Letter Queue]
+    
+    DLQ --> Manual[Manual Investigation]
+    DLQ --> Replay[Replay to Main Queue]
+@178 h3
+Why DLQ Important
+@179 p
+**1. Don't lose messages**
+@180 p
+Failed tasks không biến mất. Store in DLQ for investigation.
+@181 p
+**2. Prevent queue blocking**
+@182 p
+Failing message không block queue. Other messages process normally.
+@183 p
+**3. Enable debugging**
+@184 p
+Analyze failed messages, understand patterns, fix bugs.
+@185 p
+**4. Manual intervention**
+@186 p
+Admin có thể replay messages sau khi fix issue.
+@187 h3
+Implementing DLQ
+@188 p
+**Celery + RabbitMQ:**
+@189 p
+**AWS SQS:**
+@190 h3
+Monitoring DLQ
+@191 p
+**Track metrics:**
+@192 pre
+- DLQ size (messages count)
+- DLQ message age
+- Failure reasons distribution
+- Failure rate trends
+
+@193 p
+**Alert when:**
+@194 li
+DLQ size > threshold
+@195 li
+Sudden spike in failures
+@196 li
+Messages aging in DLQ
+@197 p
+**Periodic review:**
+@198 h2
+Idempotency - Critical For Reliability
+@199 p
+**Idempotent = executing multiple times produces same result as executing once.**
+@200 h3
+The Problem
+@201 p
+**Scenario:**
+@202 pre
+1. User submits order
+2. API enqueues "charge_payment" task
+3. Worker processes task, charges card
+4. Network timeout before ack
+5. Queue redelivers task
+6. Worker processes again → charges card TWICE! 💸
+
+@203 p
+**User charged 2x. Very bad.**
+@204 h3
+Solution: Idempotent Operations
+@205 p
+**Method 1: Idempotency Keys**
+@206 p
+**Stripe API cũng support idempotency keys - double protection.**
+@207 p
+**Method 2: Database Constraints**
+@208 p
+**Method 3: Atomic Operations**
+@209 p
+**Method 4: State Machines**
+@210 p
+**State transitions enforce idempotency.**
+@211 h3
+Best Practices
+@212 p
+**1. Always use idempotency keys for financial operations**
+@213 p
+**2. Generate idempotency key at producer, not consumer**
+@214 p
+Producer ensures same key for retries.
+@215 p
+**3. Store processed keys with TTL**
+@216 p
+**4. Make all external API calls idempotent**
+@217 p
+Stripe, payment gateways, email services all support idempotency keys.
+@218 h2
+Event-Driven Architecture Intro
+@219 p
+**Async processing naturally leads to event-driven thinking.**
+@220 h3
+From Request-Driven To Event-Driven
+@221 p
+**Request-driven (traditional):**
+@222 p
+Tight coupling. Order creation knows về all downstream systems.
+@223 p
+**Event-driven:**
+@224 p
+**Benefits:**
+@225 p
+**1. Decoupling**
+@226 p
+Order service không biết về email service, warehouse service.
+@227 p
+**2. Scalability**
+@228 p
+Mỗi subscriber scale independently.
+@229 p
+**3. Flexibility**
+@230 p
+Add new subscribers without changing order service.
+@231 p
+**4. Resilience**
+@232 p
+1 subscriber fail không affect others.
+@233 h3
+Event Structure
+@234 p
+**Include:**
+@235 li
+Unique event ID (idempotency)
+@236 li
+Event type (routing)
+@237 li
+Timestamp (ordering)
+@238 li
+Version (schema evolution)
+@239 li
+Data payload
+@240 h3
+Event Patterns
+@241 p
+**1. Event Notification**
+@242 p
+Thông báo something happened. Subscribers fetch details nếu cần.
+@243 p
+**2. Event-Carried State Transfer**
+@244 p
+Event chứa all data subscribers cần.
+@245 p
+**3. Event Sourcing**
+@246 p
+Store all events as source of truth. Current state = replay events.
+@247 h2
+Practical Recommendations
+@248 h3
+1. Start Simple
+@249 p
+**Don't over-engineer. Begin with basic background jobs.**
+@250 p
+**Add complexity only khi cần:**
+@251 li
+Retries → when external dependencies
+@252 li
+DLQ → when monitoring failures
+@253 li
+Idempotency → when critical operations
+@254 h3
+2. Monitor Queue Health
+@255 p
+**Track metrics:**
+@256 p
+**Alert when:**
+@257 li
+Queue depth > threshold (workers can't keep up)
+@258 li
+High failure rate (systemic issues)
+@259 li
+Processing time > SLA
+@260 h3
+3. Design For Failure
+@261 p
+**Assume tasks will fail. Plan accordingly.**
+@262 h3
+4. Test Async Flows
+@263 p
+**Testing async code harder than sync.**
+@264 p
+**Integration tests:**
+@265 h3
+5. Graceful Degradation
+@266 p
+**Queue down không nên crash toàn bộ system.**
+@267 h2
+Mental Model: Latency Giảm Bằng Cách Defer Work
+@268 p
+**Core insight:**
+@269 p
+**User không cần đợi work không critical. Defer nó để improve experience.**
+@270 pre
+Sync mindset:
+  Complete everything before responding
+  User experience = slow
+
+Async mindset:
+  Complete critical work only
+  Defer rest to background
+  User experience = fast
+
+@271 p
+**Decision tree:**
+@272 pre
+Does user need result immediately?
+  YES → Sync (e.g., login validation)
+  NO → Can defer?
+    YES → Async (e.g., send email)
+    NO → Sync (e.g., payment validation)
+
+@273 p
+**Architect thinking:**
+@274 li
+Identify critical path (what user actually needs)
+@275 li
+Defer everything else (emails, analytics, etc.)
+@276 li
+Use queues for reliability (retry, DLQ)
+@277 li
+Design for idempotency (safety)
+@278 li
+Monitor queue health (operational excellence)
+@279 p
+**Great systems respond fast, work happens later.**
+@280 h2
+Key Takeaways
+@281 p
+**1. Async processing reduces user-facing latency**
+@282 p
+User gets response fast, work happens in background.
+@283 p
+**2. Message queues decouple producers from consumers**
+@284 p
+Scale independently, handle spikes, improve resilience.
+@285 p
+**3. Choose queue system based on requirements**
+@286 p
+Redis = simple/fast, RabbitMQ = feature-rich, SQS = managed, Kafka = streaming.
+@287 p
+**4. Retry strategies handle transient failures**
+@288 p
+Exponential backoff, conditional retry, max retries.
+@289 p
+**5. DLQ captures permanent failures**
+@290 p
+Don't lose messages, enable investigation, allow replay.
+@291 p
+**6. Idempotency critical for reliability**
+@292 p
+Use idempotency keys, database constraints, atomic operations.
+@293 p
+**7. Event-driven architecture = extreme decoupling**
+@294 p
+Services communicate via events, not direct calls.
+@295 p
+**8. Monitor queue health continuously**
+@296 p
+Queue depth, task success rate, processing time.
+@297 p
+**9. Design for failure**
+@298 p
+Tasks will fail. Have retry logic, DLQ, fallbacks.
+@299 p
+**10. Test async flows thoroughly**
+@300 p
+Use eager mode for unit tests, real queue for integration.
+@301 p
+**Remember: The best user experience is fast response. Defer non-critical work to background. Users don't need to wait for emails to be sent or analytics to be updated - they need to see "Order Successful" immediately.**

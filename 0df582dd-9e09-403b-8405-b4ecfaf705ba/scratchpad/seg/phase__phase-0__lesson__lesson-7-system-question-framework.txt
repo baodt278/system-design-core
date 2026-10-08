@@ -1,0 +1,352 @@
+@0 h1
+System Question Framework - Checklist Chuẩn Khi Design Hệ Thống
+@1 p
+Khi bắt đầu design một hệ thống, nhiều engineer mới thường nhảy thẳng vào giải pháp mà quên mất một bước cực kỳ quan trọng: **đặt câu hỏi đúng**.
+@2 p
+Tôi từng mắc lỗi này. Design một hệ thống chat, tôi nghĩ ngay đến WebSocket, Redis Pub/Sub, horizontal scaling... rồi giữa chừng mới phát hiện: khách hàng chỉ cần 100 users online đồng thời. Tôi đã over-engineer một cách thảm hại.
+@3 p
+Vấn đề không phải là thiếu kiến thức kỹ thuật. Vấn đề là tôi không hỏi đủ câu hỏi trước khi design.
+@4 h2
+Tại Sao Cần Framework Câu Hỏi?
+@5 p
+Khi thiết kế hệ thống, có hàng trăm thứ cần cân nhắc. Không ai có thể nhớ hết. Bạn cần một **checklist** để đảm bảo không bỏ sót điểm quan trọng nào.
+@6 p
+Think về nó như pilot checklist trước khi cất cánh. Dù đã bay 10,000 giờ, pilot vẫn phải check từng bước một. Tại sao? Vì checklist đảm bảo consistency và an toàn.
+@7 p
+System design cũng vậy. Framework câu hỏi là safeguard của bạn.
+@8 h2
+7 Câu Hỏi Cốt Lõi
+@9 p
+Đây là 7 câu hỏi tôi luôn hỏi khi bắt đầu design bất kỳ hệ thống nào. Order có ý nghĩa — nó đi từ context tổng thể đến chi tiết kỹ thuật.
+@10 h3
+1. Scale: Hệ Thống Sẽ Lớn Đến Đâu?
+@11 p
+Đây là câu hỏi đầu tiên vì lý do đơn giản: **architecture cho 1,000 users hoàn toàn khác architecture cho 10 triệu users**.
+@12 p
+Questions cụ thể:
+@13 li
+Bao nhiêu users hiện tại?
+@14 li
+Expected growth trong 1-2 năm?
+@15 li
+Peak concurrent users?
+@16 li
+Số lượng transactions/requests per day?
+@17 p
+**Tại sao quan trọng:** Scale quyết định technology choices. Với 1,000 users, một monolith + MySQL là quá đủ. Với 10 triệu users, bạn cần microservices, caching layers, database sharding.
+@18 p
+Ví dụ thực tế: Một startup với 5,000 users không cần Kubernetes và distributed cache. Nhưng nếu họ expect growth 50x trong năm tới, bạn cần design với headroom.
+@19 h3
+2. Traffic Pattern: Người Dùng Hoạt Động Như Thế Nào?
+@20 p
+Scale chỉ cho bạn con số. Traffic pattern cho bạn **behavior**.
+@21 p
+Questions cụ thể:
+@22 li
+Traffic đều hay có spike?
+@23 li
+Peak hours nào trong ngày?
+@24 li
+Seasonal patterns? (Black Friday, Tết)
+@25 li
+Read-heavy hay write-heavy?
+@26 li
+Ratio giữa reads và writes?
+@27 p
+**Tại sao quan trọng:** Pattern ảnh hưởng đến caching strategy, auto-scaling policies, và database design.
+@28 pre
+graph TB
+    A[Steady Traffic] --> B[Simpler Architecture]
+    A --> C[Predictable Capacity]
+    
+    D[Spike Traffic] --> E[Auto-scaling Required]
+    D --> F[Caching Critical]
+    D --> G[Queue-based Processing]
+@29 p
+Ví dụ: Một hệ thống e-commerce có spike traffic vào 12h trưa và 8h tối. Bạn không thể provision cho peak load 24/7 — quá tốn kém. Bạn cần auto-scaling + aggressive caching.
+@30 p
+Ngược lại, một internal tool với steady traffic có thể dùng fixed capacity đơn giản hơn.
+@31 h3
+3. Data Size: Bao Nhiêu Data Và Tốc Độ Tăng?
+@32 p
+Đây là câu hỏi về storage và data lifecycle.
+@33 p
+Questions cụ thể:
+@34 li
+Tổng data size hiện tại?
+@35 li
+Data growth rate? (GB/day, TB/month)
+@36 li
+Average size mỗi record?
+@37 li
+Data retention policy? (giữ mãi hay xóa sau X tháng?)
+@38 li
+Hot data vs cold data ratio?
+@39 p
+**Tại sao quan trọng:** Data size quyết định database choice, storage strategy, và archival policies.
+@40 p
+Real example: Một analytics platform sinh ra 100GB logs mỗi ngày. Sau 1 năm là 36TB. Bạn không thể query directly trên 36TB. Bạn cần:
+@41 li
+Hot storage cho 30 ngày gần nhất (fast SSD)
+@42 li
+Cold storage cho historical data (S3/Glacier)
+@43 li
+Data aggregation và sampling
+@44 h3
+4. Availability: Downtime Có Chấp Nhận Được Không?
+@45 p
+Availability là về **acceptable downtime**.
+@46 p
+Questions cụ thể:
+@47 li
+System có thể down không?
+@48 li
+Acceptable downtime: phút, giờ, hay giây?
+@49 li
+Cần 99.9% hay 99.99% uptime?
+@50 li
+Impact của downtime? (mất revenue, ảnh hưởng users)
+@51 li
+Maintenance window có acceptable không?
+@52 p
+**Tại sao quan trọng:** Availability requirements drive architecture complexity và cost.
+@53 pre
+99.9% uptime   = ~8.7 hours downtime/year  → single server OK
+99.99% uptime  = ~52 minutes downtime/year → need redundancy
+99.999% uptime = ~5 minutes downtime/year  → multi-region + complex failover
+
+@54 p
+Ví dụ: Internal tool có thể down maintenance 2-3 giờ đêm khuya? Design đơn giản. Payment system không được down 1 giây? Cần multi-region active-active.
+@55 p
+Trade-off: Mỗi "9" thêm vào availability tăng complexity và cost exponentially.
+@56 h3
+5. Consistency: Dữ Liệu Phải Đúng Ngay Lập Tức?
+@57 p
+Đây là câu hỏi về **data correctness và synchronization**.
+@58 p
+Questions cụ thể:
+@59 li
+Strong consistency cần thiết không?
+@60 li
+Eventual consistency có chấp nhận được?
+@61 li
+Stale data trong vài giây có OK?
+@62 li
+Conflict resolution strategy?
+@63 li
+Transaction guarantees cần đến đâu?
+@64 p
+**Tại sao quan trọng:** Consistency requirement ảnh hưởng database choice và architecture patterns.
+@65 p
+Examples:
+@66 li
+**Strong consistency cần thiết:** Banking transactions, inventory systems
+@67 li
+**Eventual consistency OK:** Social media feeds, analytics dashboards, view counts
+@68 p
+Trade-off class: Bạn không thể có cả strong consistency VÀ high availability VÀ partition tolerance (CAP theorem). Phải chọn.
+@69 h3
+6. Latency: Nhanh Đến Mức Nào?
+@70 p
+Latency là về **user experience và response time**.
+@71 p
+Questions cụ thể:
+@72 li
+Acceptable response time? (ms, seconds)
+@73 li
+P50, P95, P99 latency requirements?
+@74 li
+User experience expectations?
+@75 li
+Real-time hay batch processing OK?
+@76 li
+Geographic distribution của users?
+@77 p
+**Tại sao quan trọng:** Latency requirements drive caching strategy, database indexing, và CDN usage.
+@78 pre
+flowchart LR
+    A[User Request] -->|Target: &lt;100ms| B[CDN Cache]
+    B -->|Cache Miss| C[Application Cache]
+    C -->|Cache Miss| D[Database]
+    
+    style B fill:#90EE90
+    style C fill:#FFD700
+    style D fill:#FF6B6B
+@79 p
+Ví dụ:
+@80 li
+Search engine: <100ms critical cho UX
+@81 li
+Batch report generation: vài phút OK
+@82 li
+Real-time chat: <500ms expected
+@83 li
+Analytics dashboard: 2-3 seconds acceptable
+@84 p
+P99 latency quan trọng hơn average. Nếu 99% requests nhanh nhưng 1% slow, user experience vẫn tệ.
+@85 h3
+7. Cost: Budget Và Constraints Gì?
+@86 p
+Cuối cùng nhưng cực kỳ quan trọng: **cost constraints**.
+@87 p
+Questions cụ thể:
+@88 li
+Monthly infrastructure budget?
+@89 li
+Cost per user acceptable?
+@90 li
+Build vs buy trade-offs?
+@91 li
+Team size và expertise?
+@92 li
+Operational cost (maintenance, monitoring)?
+@93 p
+**Tại sao quan trọng:** Best technical solution không có ý nghĩa nếu vượt budget hoặc team không maintain được.
+@94 p
+Real scenarios:
+@95 li
+Startup với limited budget: optimize for cost, dùng managed services
+@96 li
+Enterprise với compliance: có thể spend more cho security và reliability
+@97 li
+High-growth company: optimize for speed to market, cost secondary
+@98 p
+Cost không chỉ là infrastructure. Gồm:
+@99 li
+Engineering time (build và maintain)
+@100 li
+Third-party services
+@101 li
+Infrastructure (servers, databases, storage)
+@102 li
+Operational overhead (monitoring, on-call)
+@103 h2
+Framework Trong Thực Tế
+@104 p
+Khi design một hệ thống, tôi follow flow này:
+@105 pre
+graph TD
+    A[Nhận Requirements] --> B[Ask Scale & Traffic]
+    B --> C[Estimate Data Size]
+    C --> D[Define Availability Target]
+    D --> E[Clarify Consistency Needs]
+    E --> F[Set Latency Requirements]
+    F --> G[Check Cost Constraints]
+    G --> H[Design Solution]
+    
+    H --> I{Trade-offs Clear?}
+    I -->|No| B
+    I -->|Yes| J[Document Decisions]
+@106 p
+**Quy trình cụ thể:**
+@107 li
+**Listen first** — nghe requirement ban đầu
+@108 li
+**Ask systematically** — đi qua 7 câu hỏi theo thứ tự
+@109 li
+**Clarify ambiguity** — không assume, hỏi rõ
+@110 li
+**Document answers** — viết ra, không rely on memory
+@111 li
+**Identify conflicts** — spot contradictions sớm
+@112 li
+**Discuss trade-offs** — transparent về limitations
+@113 h2
+Common Mistakes Khi Hỏi
+@114 p
+Qua kinh nghiệm, đây là những lỗi phổ biến:
+@115 p
+**1. Hỏi không đủ deep**
+@116 p
+❌ "Scale bao nhiêu?" — quá vague
+✅ "Bao nhiêu concurrent users peak hour? Growth rate expected?"
+@117 p
+**2. Accept câu trả lời mơ hồ**
+@118 p
+❌ User: "Cần highly available"
+✅ Follow-up: "Highly available nghĩa là bao nhiêu downtime acceptable? 1 hour/year hay 1 minute/year?"
+@119 p
+**3. Không challenge unrealistic requirements**
+@120 p
+Nếu user muốn: strong consistency + 99.999% availability + <10ms latency + $100/month budget → không realistic. Bạn phải point out và discuss trade-offs.
+@121 p
+**4. Quên hỏi về constraints**
+@122 p
+Đừng chỉ hỏi về goals. Hỏi về limitations: budget, team size, compliance requirements, legacy systems.
+@123 h2
+Practical Example: Design URL Shortener
+@124 p
+Áp dụng framework:
+@125 p
+**Scale:**
+@126 li
+100M URLs created/month
+@127 li
+1B clicks/month (10:1 read-write ratio)
+@128 p
+**Traffic Pattern:**
+@129 li
+Steady traffic, slight spike business hours
+@130 li
+Read-heavy (clicks >> creates)
+@131 p
+**Data Size:**
+@132 li
+~10 bytes/shortened URL
+@133 li
+100M × 10 bytes = 1GB/month
+@134 li
+Negligible growth
+@135 p
+**Availability:**
+@136 li
+99.9% OK (short downtime acceptable)
+@137 li
+Not mission-critical
+@138 p
+**Consistency:**
+@139 li
+Eventual consistency OK for analytics
+@140 li
+Strong consistency for URL creation (no duplicates)
+@141 p
+**Latency:**
+@142 li
+Redirects: <100ms critical
+@143 li
+Creation: <500ms OK
+@144 p
+**Cost:**
+@145 li
+Startup budget: optimize for cost
+@146 li
+Managed services preferred
+@147 p
+**Decisions dựa trên answers:**
+@148 li
+Single database OK (1GB data size nhỏ)
+@149 li
+Aggressive caching cho reads (10:1 ratio)
+@150 li
+Simple architecture (99.9% availability enough)
+@151 li
+Use managed database (cost-optimize, small team)
+@152 h2
+Key Takeaways
+@153 p
+System Question Framework không phải magic formula. Nó là **thinking tool** giúp bạn structure conversation và không miss important factors.
+@154 p
+**Remember:**
+@155 p
+**Always start with questions** — đừng jump vào solution ngay
+**Ask systematically** — follow checklist để không miss gì
+**Clarify vague answers** — push for specific numbers
+**Document everything** — write down để reference sau
+**Identify trade-offs early** — conflicts thường emerge từ answers
+**Be pragmatic** — perfect solution không tồn tại, chỉ có good-enough solution given constraints
+@156 p
+Framework này không guarantee perfect design. Nhưng nó guarantee bạn **asked the right questions** trước khi design — và đó là điểm khởi đầu quan trọng nhất.
+@157 p
+Next time bạn design system, pull out checklist này. Đi qua từng câu hỏi một. Bạn sẽ surprised về bao nhiêu assumption bạn đã tránh được và bao nhiêu trade-off bạn identify sớm.
+@158 p
+That's the power of good questions.

@@ -1,0 +1,384 @@
+@101
+Tại Sao Lại Là Số Lẻ?
+@102
+Khả năng chịu lỗi:
+
+3 máy chủ: Chịu được 1 sự cố
+4 máy chủ: Chịu được 1 sự cố (như nhau!)
+5 máy chủ: Chịu được 2 sự cố
+6 máy chủ: Chịu được 2 sự cố (như nhau!)
+
+4 máy chủ không tốt hơn 3 máy chủ về khả năng chịu lỗi
+6 máy chủ không tốt hơn 5 máy chủ
+
+→ Dùng số lẻ (3, 5, 7)
+→ Ít lãng phí tài nguyên hơn
+
+@103
+**Khuyến nghị:**
+@104
+Cụm nhỏ:           3 máy chủ (chịu được 1 sự cố)
+Cụm vừa:           5 máy chủ (chịu được 2 sự cố)
+Cụm lớn:           7 máy chủ (chịu được 3 sự cố)
+
+> 7 máy chủ: Hiếm khi cần, chi phí phụ cho việc điều phối quá lớn
+
+@105
+Vấn Đề ⟦Não Phân Đôi|Split Brain⟧
+@106
+⟦Não Phân Đôi|Split Brain⟧ Là Gì?
+@107
+**⟦Não phân đôi|Split brain⟧ = Nhiều hơn 1 ⟦máy chủ|server⟧ nghĩ mình là ⟦nút chủ|leader⟧**
+@108
+Kịch bản thảm họa:
+Nút chủ A xử lý thao tác ghi
+Nút chủ B xử lý thao tác ghi (cùng lúc!)
+
+→ Dữ liệu phân kỳ
+→ Xung đột khắp nơi
+→ Khôi phục là một cơn ác mộng
+
+@109
+⟦Não Phân Đôi|Split Brain⟧ Xảy Ra Như Thế Nào
+@110
+**Kịch bản 1: ⟦Phân vùng mạng|Network partition⟧**
+@111
+Trước khi phân vùng:
+[Máy chủ 1 (Nút chủ)] - [Máy chủ 2] - [Máy chủ 3]
+
+Phân vùng mạng:
+[Máy chủ 1 (Nút chủ)] | [Máy chủ 2] [Máy chủ 3]
+
+Máy chủ 2 & 3 không thấy heartbeat từ Máy chủ 1
+→ Bầu Máy chủ 2 làm nút chủ mới
+→ Giờ có 2 nút chủ!
+
+@112
+**Kịch bản 2: ⟦Tín hiệu nhịp tim|Heartbeats⟧ chậm**
+@113
+Máy chủ 1 (Nút chủ) vẫn còn sống nhưng chậm
+→ Heartbeat bị trễ do nghẽn mạng
+→ Các nút theo hết thời gian chờ, bầu nút chủ mới
+→ Cuối cùng Máy chủ 1 vẫn gửi heartbeat đi
+→ Tạm thời có 2 nút chủ
+
+@114
+Raft Ngăn Chặn ⟦Não Phân Đôi|Split Brain⟧ Như Thế Nào
+@115
+**Cơ chế 1: ⟦Túc số đa số|Majority quorum⟧**
+@116
+Phân vùng thành 2 nhóm:
+Nhóm A: 3 máy chủ → Có thể bầu nút chủ (3 >= 3)
+Nhóm B: 2 máy chủ → Không thể bầu nút chủ (2 < 3)
+
+→ Chỉ 1 nhóm có nút chủ
+→ Không có não phân đôi
+
+@117
+**Cơ chế 2: ⟦Số nhiệm kỳ|Term numbers⟧**
+@118
+Mỗi cuộc bầu chọn có một số nhiệm kỳ (term number)
+
+Nút chủ cũ: nhiệm kỳ 5
+Nút chủ mới được bầu: nhiệm kỳ 6
+
+Khi nút chủ cũ hồi phục:
+- Cố gửi lệnh với nhiệm kỳ 5
+- Các nút theo từ chối (nhiệm kỳ 5 < nhiệm kỳ hiện tại 6)
+- Nút chủ cũ phát hiện nhiệm kỳ cao hơn
+- Lùi xuống làm nút theo
+
+→ Nút chủ cũ không còn hành động như nút chủ
+
+@119
+**Cơ chế 3: ⟦Hợp đồng thuê quyền nút chủ|Leader lease⟧**
+@120
+Nút chủ không chỉ cần đa số phiếu
+Nút chủ phải duy trì "hợp đồng thuê" (lease) bằng heartbeat
+
+Nếu nút chủ không gửi heartbeat:
+→ Các nút theo thu hồi hợp đồng thuê ngầm định
+→ Nút chủ không thể xử lý yêu cầu nữa
+
+→ Nút chủ tự động dừng nếu bị cô lập
+
+@121
+Khôi Phục Sau ⟦Não Phân Đôi|Split Brain⟧
+@122
+**Nếu vì lý do nào đó xảy ra ⟦não phân đôi|split brain⟧:**
+@123
+Phát hiện:
+- 2 nút chủ phát hiện ra nhau
+- So sánh số nhiệm kỳ
+
+Nút chủ có nhiệm kỳ thấp hơn:
+→ Lập tức lùi xuống
+→ Trở thành nút theo
+→ Chấp nhận nút chủ có nhiệm kỳ cao hơn
+
+Đối soát dữ liệu:
+→ Nút chủ có nhiệm kỳ cao hơn thắng
+→ Các thao tác ghi chưa commit từ nút chủ nhiệm kỳ thấp hơn = mất
+→ Đây là chủ ý thiết kế (an toàn > tính sống - safety > liveness)
+
+@124
+Bầu Chọn ⟦Nút Chủ|Leader⟧ Trong Raft: Ví Dụ Đầy Đủ
+@125
+⟦Trạng Thái|State⟧ Ban Đầu
+@126
+5 máy chủ, tất cả đều là nút theo
+Nhiệm kỳ hiện tại: 3
+Nút chủ: Máy chủ 1
+
+@127
+Máy chủ 1 (Nút chủ, nhiệm kỳ 3)
+Máy chủ 2 (Nút theo, nhiệm kỳ 3)
+Máy chủ 3 (Nút theo, nhiệm kỳ 3)
+Máy chủ 4 (Nút theo, nhiệm kỳ 3)
+Máy chủ 5 (Nút theo, nhiệm kỳ 3)
+
+@128
+⟦Dòng Thời Gian|Timeline⟧
+@129
+**T=0: ⟦Nút chủ|Leader⟧ sập**
+@130
+Máy chủ 1 ĐÃ CHẾT
+Máy chủ 2, 3, 4, 5 đang chờ heartbeat
+
+@131
+**T=200ms: Máy chủ 3 ⟦hết thời gian chờ|timeout⟧**
+@132
+Máy chủ 3 hết thời gian chờ bầu chọn (ngẫu nhiên 150-300ms)
+→ Trở thành Ứng viên (Candidate)
+→ Tăng nhiệm kỳ: 3 → 4
+→ Tự bỏ phiếu cho mình (1 phiếu)
+→ Gửi RequestVote đến tất cả
+
+@133
+**T=205ms: Các máy chủ phản hồi**
+@134
+Máy chủ 2 nhận RequestVote:
+- Chưa bỏ phiếu trong nhiệm kỳ 4
+- Bỏ phiếu cho Máy chủ 3
+
+Máy chủ 4 nhận RequestVote:
+- Chưa bỏ phiếu trong nhiệm kỳ 4
+- Bỏ phiếu cho Máy chủ 3
+
+Máy chủ 5 nhận RequestVote:
+- Chưa bỏ phiếu trong nhiệm kỳ 4
+- Bỏ phiếu cho Máy chủ 3
+
+@135
+**T=210ms: Máy chủ 3 đếm phiếu**
+@136
+Máy chủ 3:
+- Phiếu của chính mình: 1
+- Máy chủ 2: 1
+- Máy chủ 4: 1
+- Máy chủ 5: 1
+
+Tổng: 4 phiếu trên 5 máy chủ
+Đa số: cần 3
+4 >= 3 → THẮNG!
+
+→ Trở thành NÚT CHỦ cho nhiệm kỳ 4
+
+@137
+**T=215ms: ⟦Nút chủ|Leader⟧ mới thông báo**
+@138
+Máy chủ 3 (Nút chủ):
+→ Gửi heartbeat đến tất cả máy chủ
+→ "Tôi là nút chủ của nhiệm kỳ 4"
+
+Máy chủ 2, 4, 5:
+→ Nhận heartbeat
+→ Công nhận Máy chủ 3 là nút chủ
+→ Đặt lại bộ đếm thời gian bầu chọn
+→ Tiếp tục làm nút theo
+
+@139
+**T=220ms trở đi: Hoạt động bình thường**
+@140
+Máy chủ 3 tiếp tục gửi heartbeat mỗi 50ms
+Hệ thống ổn định với Máy chủ 3 là nút chủ
+
+@141
+⟦Mô Hình Tư Duy|Mental Model⟧: Thỏa Thuận Phân Tán
+@142
+Nguyên Tắc Cốt Lõi
+@143
+**"Thống nhất trước khi Hành động"**
+@144
+Tư duy một máy chủ:
+Thấy yêu cầu → Thực thi → Xong
+
+Tư duy phân tán:
+Thấy yêu cầu → Hỏi các nút khác → Đạt đồng thuận → Thực thi
+
+@145
+Hệ Quả Đối Với Thiết Kế
+@146
+**Hệ quả 1: ⟦Độ trễ|Latency⟧ tăng**
+@147
+Một máy chủ: 10ms
+Đồng thuận (đa số trong 5): 50-100ms
+
+Đánh đổi:
+Tính nhất quán + khả năng chịu lỗi vs Tốc độ
+
+@148
+**Hệ quả 2: Cần số lẻ**
+@149
+3, 5, 7 máy chủ là tối ưu
+Số chẵn lãng phí tài nguyên
+
+@150
+**Hệ quả 3: ⟦Phân vùng mạng|Network partitions⟧ = mất ⟦tính sẵn sàng|availability⟧**
+@151
+Phân vùng mạng: Phân vùng thiểu số không thể tiếp tục xử lý
+Đánh đổi: Ưu tiên tính nhất quán hơn tính sẵn sàng (CP trong CAP)
+
+@152
+Khi Nào Nên Dùng ⟦Đồng Thuận|Consensus⟧
+@153
+**Dùng ⟦thuật toán đồng thuận|consensus algorithms⟧ khi:**
+@154
+✓ Cần nhất quán mạnh
+✓ Không thể chấp nhận não phân đôi
+✓ Khả năng chịu lỗi là then chốt
+✓ Bầu chọn máy chủ chính (master)
+✓ Khóa phân tán
+✓ Quản lý cấu hình
+
+@155
+**Tránh dùng ⟦đồng thuận|consensus⟧ khi:**
+@156
+✗ Nhất quán cuối cùng là chấp nhận được
+✗ Không thể chấp nhận độ trễ tăng
+✗ Ưu tiên tính sẵn sàng hơn tính nhất quán (AP trong CAP)
+
+@157
+Các Hệ Thống Sử Dụng ⟦Đồng Thuận|Consensus⟧
+@159
+Kho lưu trữ khóa-giá trị (key-value) phân tán
+Dùng Raft để đạt đồng thuận
+Kubernetes lưu trạng thái cụm trong etcd
+
+@161
+Khám phá dịch vụ (service discovery) và cấu hình
+Dùng Raft cho bầu chọn nút chủ và nhân bản dữ liệu
+
+@163
+Dịch vụ điều phối
+Dùng Zab (tương tự Raft/Paxos)
+Kafka, HBase phụ thuộc vào Zookeeper
+
+@165
+Cơ sở dữ liệu SQL phân tán
+Dùng Raft cho nhân bản và tính nhất quán
+
+@166
+Những Sai Lầm Phổ Biến & Cách Tránh
+@167
+Sai Lầm 1: Không Dùng ⟦Túc Số Đa Số|Majority Quorum⟧
+@168
+Tệ: Chờ TẤT CẢ máy chủ phản hồi
+Vấn đề: 1 máy chủ chết → Không thể tiếp tục xử lý
+
+Tốt: Chờ đa số
+Lợi ích: Chịu được sự cố ở phần thiểu số
+
+@169
+Sai Lầm 2: Quên Mất ⟦Não Phân Đôi|Split Brain⟧
+@170
+Tệ: Giả định chỉ có 1 nút chủ
+Thực tế: Phân vùng mạng vẫn xảy ra
+
+Tốt: Thiết kế với giả định có thể có nhiều nút chủ
+Dùng số nhiệm kỳ, ghi theo đa số để ngăn chặn
+
+@171
+Sai Lầm 3: Số ⟦Máy Chủ|Servers⟧ Chẵn
+@172
+Tệ: 4 máy chủ (chịu được 1 sự cố)
+Chi phí: 4 máy chủ
+Lợi ích: Như 3 máy chủ
+
+Tốt: 3 máy chủ (chịu được 1 sự cố)
+Chi phí: 3 máy chủ
+Lợi ích: Cùng khả năng chịu lỗi, tiết kiệm 1 máy chủ
+
+@173
+Sai Lầm 4: Không Hiểu ⟦Sự Đánh Đổi|Trade-off⟧ Về ⟦Tính Nhất Quán|Consistency⟧
+@174
+Tệ: Kỳ vọng có cả tính nhất quán lẫn tính sẵn sàng
+Thực tế: Định lý CAP nói chỉ chọn được 2
+
+Tốt: Chủ động chọn tính nhất quán (CP)
+Chấp nhận mất tính sẵn sàng khi có phân vùng
+
+@175
+Những Điểm Cốt Lõi
+@176
+**⟦Thuật toán đồng thuận|Consensus algorithms⟧ giải quyết bài toán ⟦thỏa thuận phân tán|distributed agreement⟧:**
+@177
+Vấn đề: Nhiều máy chủ cần thống nhất về trạng thái
+Giải pháp: Bỏ phiếu theo đa số với số nhiệm kỳ
+Kết quả: Nhất quán mạnh + khả năng chịu lỗi
+
+@178
+**Nền tảng của Raft:**
+@179
+1. Bầu chọn nút chủ: 1 nút chủ tại 1 thời điểm
+2. Túc số đa số: Ngăn não phân đôi
+3. Số nhiệm kỳ: Phát hiện nút chủ lỗi thời
+4. Thời gian chờ ngẫu nhiên: Tránh chia phiếu
+
+@180
+**Ngăn chặn ⟦não phân đôi|split brain⟧:**
+@181
+- Túc số đa số (không có 2 nhóm đa số tách rời)
+- Số nhiệm kỳ (nhiệm kỳ cao hơn thắng)
+- Hợp đồng thuê quyền nút chủ (hết thời gian chờ heartbeat)
+
+@182
+**Nguyên tắc thiết kế:**
+@183
+- Số lẻ (3, 5, 7 máy chủ)
+- Đa số = floor(N/2) + 1
+- Thống nhất trước khi hành động
+- Chấp nhận độ trễ tăng
+
+@184
+**Những ⟦sự đánh đổi|trade-offs⟧ được chấp nhận:**
+@185
+Được: Nhất quán mạnh, khả năng chịu lỗi
+Mất: Độ trễ, độ phức tạp, tính sẵn sàng khi có phân vùng
+
+@186
+**⟦Mô hình tư duy|Mental model⟧:**
+@187
+"⟦Hệ thống phân tán|Distributed systems⟧ phải THỐNG NHẤT trước khi HÀNH ĐỘNG. ⟦Đồng thuận|Consensus⟧ là cơ chế để thống nhất. Bỏ phiếu theo đa số ngăn chặn ⟦não phân đôi|split brain⟧. ⟦Số nhiệm kỳ|Term numbers⟧ giúp phát hiện sự lỗi thời."
+@188
+**Câu hỏi tự kiểm tra:**
+@189
+Trước khi triển khai ⟦hệ thống phân tán|distributed system⟧ với ⟦đồng thuận|consensus⟧:
+@190
+*Tôi có thực sự cần ⟦nhất quán mạnh|strong consistency⟧ không?*
+@191
+*Tôi có thể chấp nhận ⟦độ trễ|latency⟧ tăng không?*
+@192
+*Tôi có thể đánh đổi ⟦tính sẵn sàng|availability⟧ lấy ⟦tính nhất quán|consistency⟧ không?*
+@193
+*Tôi đã hiểu ⟦não phân đôi|split brain⟧ và cách ngăn chặn nó chưa?*
+@194
+⟦Đồng thuận|Consensus⟧ rất mạnh mẽ nhưng đắt đỏ. Hãy dùng khi lợi ích vượt trội chi phí.
+@195
+**Câu nói tôi hay nhắc ⟦nhóm|team⟧:**
+@196
+"Nếu bạn không cần ⟦nhất quán mạnh|strong consistency⟧, đừng trả giá cho nó. Nhưng nếu bạn cần, hãy trả đủ giá - triển khai ⟦đồng thuận|consensus⟧ cho đúng."
+@197
+⟦Đồng thuận|Consensus⟧ không phải phép màu. Nó là một ⟦cơ chế thỏa thuận|agreement mechanism⟧ được thiết kế cẩn thận với những ⟦sự đánh đổi|trade-offs⟧ rõ ràng.
+@198
+Hiểu ⟦sự đánh đổi|trade-offs⟧ → Ra quyết định tốt hơn.

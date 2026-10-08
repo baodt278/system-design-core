@@ -1,0 +1,526 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Components Trong Hệ Thống Web - Hiểu Từng Building Block | Phase 1 — Foundation: Thinking in Systems | System Design Core</title><meta name="description" content="Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade offs và khi nào nên dùng"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web"/><meta property="og:title" content="Components Trong Hệ Thống Web - Hiểu Từng Building Block | Phase 1 — Foundation: Thinking in Systems"/><meta property="og:description" content="Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade offs và khi nào nên dùng"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Components Trong Hệ Thống Web - Hiểu Từng Building Block | Phase 1 — Foundation: Thinking in Systems"/><meta name="twitter:description" content="Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade offs và khi nào nên dùng"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 1 — Foundation: Thinking in Systems</p><p class="mt-3 text-xl font-semibold text-ink">Components Trong Hệ Thống Web - Hiểu Từng Building Block</p><p class="mt-3 text-sm leading-7 text-ink-dim">Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade-offs và khi nào nên dùng từng component trong kiến trúc phân tán.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Components Trong Hệ Thống Web - Hiểu Từng Building Block</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-2-communication-patterns"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Communication Patterns - Sync vs Async trong Distributed Systems</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Data Flow &amp; Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-1">Phase 1 — Foundation: Thinking in Systems</a></li><li>/</li><li aria-current="page" class="text-ink">Components Trong Hệ Thống Web - Hiểu Từng Building Block</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Components Trong Hệ Thống Web - Hiểu Từng Building Block</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade-offs và khi nào nên dùng từng component trong kiến trúc phân tán.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Components Trong Hệ Thống Web - Hiểu Từng Building Block"><article class="prose-ui"><h1 id="components-trong-một-hệ-thống-web">Components Trong Một Hệ Thống Web</h1>
+<p>Chào mừng đến Phase 1 - Foundation: Thinking in Systems.</p>
+<p>Sau Phase 0, bạn đã thay đổi mindset. Giờ là lúc build foundation thực sự: <strong>Hiểu các building blocks của mọi hệ thống.</strong></p>
+<p>Tôi còn nhớ lần đầu debug production issue. API chậm. Nhưng chậm ở đâu?</p>
+<p>Senior architect vẽ diagram:</p>
+<pre><code>Client → Load Balancer → App Server → Cache → Database
+</code></pre>
+<p>Rồi hỏi: <em>&quot;Request đi qua bao nhiêu bước? Mỗi bước mất bao lâu?&quot;</em></p>
+<p>Đó là lần đầu tôi hiểu: <strong>Hệ thống là tập hợp components tương tác.</strong> Hiểu từng component = hiểu cả hệ thống.</p>
+<h2 id="tại-sao-phải-học-components">Tại Sao Phải Học Components?</h2>
+<p><strong>Code-level view:</strong></p>
+<pre><code class="language-python">def get_user(user_id):
+    return db.query(&quot;SELECT * FROM users WHERE id = ?&quot;, user_id)
+</code></pre>
+<p>Bạn thấy function. Nhưng architect thấy:</p>
+<p><strong>System-level view:</strong></p>
+<pre><code>Client (50ms)
+  ↓
+Load Balancer (10ms)
+  ↓
+Application Server (20ms)
+  ↓
+Database Query (500ms) ← BOTTLENECK
+  ↓
+Total: 580ms
+</code></pre>
+<p>System-level thinking giúp bạn:</p>
+<ul>
+<li><strong>Identify bottlenecks</strong> nhanh chóng</li>
+<li><strong>Design for scale</strong> từ đầu</li>
+<li><strong>Debug production</strong> hiệu quả</li>
+<li><strong>Communicate</strong> rõ ràng với team</li>
+</ul>
+<p>Bạn không thể optimize cái bạn không hiểu.</p>
+<h2 id="component-1-client-browsermobile-app">Component 1: Client (Browser/Mobile App)</h2>
+<h3 id="vai-trò">Vai Trò</h3>
+<p>Client là presentation layer. Nơi user tương tác với hệ thống.</p>
+<p><strong>Đặc điểm:</strong></p>
+<ul>
+<li>Không đáng tin (user có thể modify code)</li>
+<li>Không kiểm soát được environment (device, network)</li>
+<li>Stateful (có thể lưu data locally)</li>
+</ul>
+<h3 id="critical-rules">Critical Rules</h3>
+<p><strong>Rule 1: NEVER trust client</strong></p>
+<pre><code class="language-javascript">//  BAD: Validate price ở client only
+function checkout(items) {
+    let total = items.reduce((sum, item) =&gt; sum + item.price, 0)
+    submitOrder(total)  // Hacker có thể modify price
+}
+
+//  GOOD: Always validate server-side
+function checkout(items) {
+    submitOrder(items)  // Server recalculate price
+}
+</code></pre>
+<p><strong>Why?</strong> Tôi từng thấy hacker modify JavaScript, đổi giá từ $100 → $1, submit. Server tin client → Company mất tiền.</p>
+<p><strong>Rule 2: Client validation chỉ là UX enhancement</strong></p>
+<pre><code class="language-javascript">// Client validation: Immediate feedback (UX)
+if (!email.includes(&#x27;@&#x27;)) {
+    showError(&quot;Invalid email&quot;)
+}
+
+// Server PHẢI validate lại
+if (!isValidEmail(email)) {
+    return 400  // Never trust client
+}
+</code></pre>
+<h3 id="trade-offs">Trade-offs</h3>
+<pre><code> Advantages:
+- Rich interactions
+- Offline capability
+- Reduce server load (client-side rendering)
+
+ Disadvantages:
+- Security risk
+- Inconsistent environments
+- Hard to update (users don&#x27;t refresh)
+</code></pre>
+<h3 id="khi-nào-optimize-client">Khi Nào Optimize Client?</h3>
+<p><strong>Optimize khi:</strong></p>
+<ul>
+<li>Bundle size lớn (&gt; 1MB)</li>
+<li>First paint chậm (&gt; 3s)</li>
+<li>User có slow devices/networks</li>
+</ul>
+<p><strong>Techniques:</strong></p>
+<ul>
+<li>Code splitting</li>
+<li>Lazy loading</li>
+<li>Service workers (caching)</li>
+<li>CDN cho static assets</li>
+</ul>
+<h2 id="component-2-load-balancer">Component 2: Load Balancer</h2>
+<h3 id="vai-trò-1">Vai Trò</h3>
+<p>Phân phối traffic đều giữa multiple servers.</p>
+<h3 id="khi-nào-cần">Khi Nào Cần?</h3>
+<pre><code>Scenario 1: Single Server
+1 server handles 1,000 req/s
+Traffic grows to 5,000 req/s
+→ Server overload → Slow/crashes
+
+Scenario 2: Multiple Servers + Load Balancer
+5 servers, each handles 1,000 req/s
+Load Balancer distributes evenly
+→ System handles 5,000 req/s smoothly
+</code></pre>
+<p><strong>Cần load balancer khi:</strong></p>
+<ul>
+<li>1 server không đủ capacity</li>
+<li>Cần high availability (1 server dies, others take over)</li>
+<li>Rolling deployments (update servers từng cái)</li>
+</ul>
+<h3 id="khi-nào-không-cần">Khi Nào KHÔNG Cần?</h3>
+<pre><code> Don&#x27;t need khi:
+- &lt; 1,000 users
+- Internal tools
+- MVP/Prototypes
+- Budget constraints
+
+Start simple. Add LB when proven necessary.
+</code></pre>
+<h3 id="core-algorithms">Core Algorithms</h3>
+<p><strong>Round Robin:</strong></p>
+<pre><code>Request 1 → Server A
+Request 2 → Server B
+Request 3 → Server C
+Request 4 → Server A (repeat)
+
+ Simple, even distribution
+ Doesn&#x27;t consider server load
+</code></pre>
+<p><strong>Least Connections:</strong></p>
+<pre><code>Server A: 50 connections
+Server B: 20 connections ← Choose this
+Server C: 35 connections
+
+ Better load balancing
+ More complex, need to track state
+</code></pre>
+<p><strong>Weighted Round Robin:</strong></p>
+<pre><code>Server A (16GB RAM): weight 2
+Server B (8GB RAM): weight 1
+
+A gets 2 requests for every 1 to B
+
+ Utilize powerful servers more
+ Need to configure weights
+</code></pre>
+<h3 id="trade-offs-1">Trade-offs</h3>
+<pre><code> Gains:
+- Increased capacity
+- High availability
+- Zero-downtime deployments
+
+ Costs:
+- Additional complexity
+- Potential single point of failure (LB itself)
+- Network latency (+10-50ms)
+</code></pre>
+<h3 id="personal-recommendation">Personal Recommendation</h3>
+<p>Start với Round Robin. Simple và works cho 80% cases.</p>
+<p>Chỉ dùng Least Connections khi requests có execution time rất khác nhau (WebSocket, file uploads).</p>
+<h2 id="component-3-application-server">Component 3: Application Server</h2>
+<h3 id="vai-trò-2">Vai Trò</h3>
+<p>Business logic layer. Process requests, orchestrate data flow.</p>
+<h3 id="critical-decision-stateless-vs-stateful">Critical Decision: Stateless vs Stateful</h3>
+<p><strong>Stateless Server:</strong></p>
+<pre><code class="language-python"># Không lưu user session trong memory
+def handle_request(request):
+    user_id = jwt.decode(request.token)  # Get from token
+    user = db.get_user(user_id)          # Get from DB
+    return process(user)
+
+# Benefit: Any server can handle any request
+</code></pre>
+<p><strong>Stateful Server:</strong></p>
+<pre><code class="language-python"># Lưu session trong memory
+sessions = {}  # In-memory
+
+def handle_login(user_id):
+    sessions[user_id] = UserSession(user_id)
+
+def handle_request(user_id):
+    session = sessions[user_id]  # Must hit same server!
+    return process(session)
+</code></pre>
+<h3 id="trade-off-analysis">Trade-off Analysis</h3>
+<pre><code>Stateless:
+ Easy horizontal scaling
+ Any server handles any request
+ Cloud-friendly (servers can die)
+ Extra DB call for user data
+
+Stateful:
+ Low latency (no DB roundtrip)
+ Can cache user-specific data
+ Hard to scale (need sticky sessions)
+ Lose sessions khi server restart
+</code></pre>
+<h3 id="my-strong-opinion">My Strong Opinion</h3>
+<p><strong>Default to stateless.</strong> Stateful chỉ khi có lý do rất tốt (WebSocket connections, gaming servers).</p>
+<p>Modern systems với microservices? Stateless là must.</p>
+<h3 id="server-configuration">Server Configuration</h3>
+<p><strong>Concurrency model matters:</strong></p>
+<pre><code>Thread-based (Java, traditional):
+- 1 thread per request
+- Limited by thread pool size
+- Good: Familiar model
+- Bad: Memory overhead
+
+Event-loop (Node.js, Python asyncio):
+- 1 thread handles many requests
+- Non-blocking I/O
+- Good: High concurrency
+- Bad: CPU-heavy tasks block everything
+
+Worker-based (Gunicorn, uWSGI):
+- Pre-fork workers
+- Each worker handles requests
+- Good: Isolate failures
+- Bad: More memory
+</code></pre>
+<p><strong>Choose based on workload:</strong></p>
+<ul>
+<li>I/O heavy (API calls, DB queries) → Event-loop</li>
+<li>CPU heavy (image processing) → Worker-based</li>
+<li>Mixed → Worker-based với async inside</li>
+</ul>
+<h2 id="component-4-cache-layer">Component 4: Cache Layer</h2>
+<h3 id="vai-trò-3">Vai Trò</h3>
+<p>Store frequently accessed data in-memory để giảm DB load.</p>
+<h3 id="the-fundamental-question">The Fundamental Question</h3>
+<p><strong>Có nên cache không?</strong></p>
+<p>Answer bằng flowchart:</p>
+<pre><code>Is it read-heavy? (read:write &gt; 10:1)
+  ↓ YES
+Data thay đổi thường xuyên không?
+  ↓ NO
+Query expensive? (&gt; 100ms)
+  ↓ YES
+→ USE CACHE
+
+Any NO → Consider carefully
+</code></pre>
+<h3 id="cache-strategies">Cache Strategies</h3>
+<p><strong>Strategy 1: Cache-Aside (Lazy Loading)</strong></p>
+<pre><code class="language-python">def get_product(product_id):
+    # 1. Check cache
+    product = cache.get(f&quot;product:{product_id}&quot;)
+    if product:
+        return product  # Cache hit
+    
+    # 2. Cache miss → Query DB
+    product = db.query(&quot;SELECT * FROM products WHERE id = ?&quot;, product_id)
+    
+    # 3. Store in cache
+    cache.set(f&quot;product:{product_id}&quot;, product, ttl=3600)
+    return product
+
+ Only cache what&#x27;s needed
+ First request slow (cache miss)
+</code></pre>
+<p><strong>Strategy 2: Write-Through</strong></p>
+<pre><code class="language-python">def update_product(product_id, data):
+    # 1. Update DB
+    db.update(&quot;products&quot;, product_id, data)
+    
+    # 2. Update cache immediately
+    cache.set(f&quot;product:{product_id}&quot;, data)
+
+ Cache always fresh
+ Every write slower (2 operations)
+</code></pre>
+<p><strong>Strategy 3: Write-Behind</strong></p>
+<pre><code class="language-python">def update_product(product_id, data):
+    # 1. Update cache immediately
+    cache.set(f&quot;product:{product_id}&quot;, data)
+    
+    # 2. Async write to DB
+    queue.add({&quot;action&quot;: &quot;update_product&quot;, &quot;id&quot;: product_id, &quot;data&quot;: data})
+
+ Writes very fast
+ Risk data loss if cache crashes
+</code></pre>
+<h3 id="cache-invalidation---the-hard-problem">Cache Invalidation - The Hard Problem</h3>
+<p>Phil Karlton: <em>&quot;There are only two hard things in Computer Science: cache invalidation and naming things.&quot;</em></p>
+<p><strong>Problem:</strong></p>
+<pre><code>1. User updates profile → DB updated
+2. Cache still has old data
+3. User refresh → Sees old data (cache hit)
+4. User confused
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<p><strong>Option 1: TTL (Time To Live)</strong></p>
+<pre><code class="language-python">cache.set(&quot;user:123&quot;, user, ttl=300)  # Expire after 5min
+
+ Simple
+ Data stale for up to 5 minutes
+</code></pre>
+<p><strong>Option 2: Active Invalidation</strong></p>
+<pre><code class="language-python">def update_user(user_id, data):
+    db.update(&quot;users&quot;, user_id, data)
+    cache.delete(f&quot;user:{user_id}&quot;)  # Delete immediately
+
+ Always fresh
+ Must remember to invalidate everywhere
+</code></pre>
+<p><strong>Option 3: Event-Driven</strong></p>
+<pre><code class="language-python"># Service A updates user
+db.update(&quot;users&quot;, user_id, data)
+event_bus.publish(&quot;user.updated&quot;, user_id)
+
+# Service B listens
+@event_bus.subscribe(&quot;user.updated&quot;)
+def on_user_updated(user_id):
+    cache.delete(f&quot;user:{user_id}&quot;)
+
+ Decoupled, scalable
+ Complex infrastructure
+</code></pre>
+<h3 id="personal-rule">Personal Rule</h3>
+<p>Start với TTL. Simple và works.</p>
+<p>Add active invalidation khi data freshness critical.</p>
+<p>Event-driven chỉ khi có nhiều services cần react.</p>
+<h3 id="when-not-to-cache">When NOT to Cache</h3>
+<pre><code> Don&#x27;t cache:
+- Write-heavy data (inventory counts thay đổi liên tục)
+- Real-time data (stock prices)
+- Personalized data (different per user, low hit rate)
+- Small datasets (&lt; 1000 records, DB fast enough)
+</code></pre>
+<h2 id="component-5-database">Component 5: Database</h2>
+<h3 id="vai-trò-4">Vai Trò</h3>
+<p>Persistent storage. Source of truth.</p>
+<h3 id="why-database-is-often-the-bottleneck">Why Database is Often the Bottleneck</h3>
+<pre><code>Memory read:  100 nanoseconds
+SSD read:     150 microseconds  (1,500x slower)
+HDD read:     10 milliseconds   (100,000x slower)
+
+Database phải:
+- Read from disk
+- Parse query
+- Execute plan
+- Return results
+
+→ Inherently slow compared to memory
+</code></pre>
+<h3 id="optimization-hierarchy">Optimization Hierarchy</h3>
+<p><strong>Level 1: Query Optimization (Do this first)</strong></p>
+<pre><code class="language-sql">--  BAD: No index, full table scan
+SELECT * FROM users WHERE email = &#x27;john@example.com&#x27;;
+-- 10M rows → 5 seconds
+
+--  GOOD: Add index
+CREATE INDEX idx_users_email ON users(email);
+-- Same query → 10ms (500x faster!)
+</code></pre>
+<p><strong>Level 2: Connection Pooling</strong></p>
+<pre><code class="language-python">#  BAD: New connection per request
+def get_user(user_id):
+    conn = create_connection()  # Expensive!
+    user = conn.query(...)
+    conn.close()
+    return user
+
+#  GOOD: Reuse connections
+pool = ConnectionPool(min=5, max=20)
+
+def get_user(user_id):
+    with pool.get_connection() as conn:
+        return conn.query(...)
+</code></pre>
+<p><strong>Level 3: Read Replicas</strong></p>
+<pre><code>Master (Write)
+  ↓ replicate
+Slave 1, Slave 2, Slave 3 (Read)
+
+Writes → Master
+Reads → Load balance across Slaves
+
+ Scale reads easily
+ Eventual consistency (replication lag)
+</code></pre>
+<p><strong>Level 4: Sharding (Last resort)</strong></p>
+<pre><code>Only khi:
+- Single DB can&#x27;t handle load
+- Vertical scaling maxed out
+- Data too large for 1 machine
+
+Cost:
+- Very complex
+- Cross-shard queries hard
+- Resharding nightmare
+</code></pre>
+<h3 id="trade-offs-sql-vs-nosql">Trade-offs: SQL vs NoSQL</h3>
+<pre><code>SQL (PostgreSQL, MySQL):
+ ACID transactions
+ Rich queries (JOIN, aggregations)
+ Data integrity
+ Harder to scale horizontally
+ Schema changes expensive
+
+NoSQL (MongoDB, DynamoDB):
+ Easy horizontal scaling
+ Flexible schema
+ High write throughput
+ No JOIN (application-level)
+ Eventual consistency
+ Less query power
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code>Choose SQL khi:
+- Need transactions (banking, e-commerce)
+- Complex relationships
+- Ad-hoc queries
+- Data integrity critical
+
+Choose NoSQL khi:
+- Need massive scale
+- Write-heavy workload
+- Flexible schema
+- Simple queries (key-value lookups)
+</code></pre>
+<h3 id="my-opinion">My Opinion</h3>
+<p><strong>Start với SQL (PostgreSQL).</strong></p>
+<p>Nó handle được 99% use cases. JSONB column cho flexibility. Scale vertically first, add read replicas second.</p>
+<p>Chỉ switch sang NoSQL khi proven SQL can&#x27;t handle load.</p>
+<h2 id="putting-it-all-together-request-flow">Putting It All Together: Request Flow</h2>
+<p>Hãy trace một request từ đầu đến cuối:</p>
+<h3 id="example-user-loads-homepage">Example: User loads homepage</h3>
+<pre><code>1. Browser → DNS lookup
+   Time: 20ms
+
+2. Browser → HTTPS to Load Balancer
+   Time: 50ms (TCP + TLS)
+
+3. Load Balancer → Choose App Server (Round Robin)
+   Time: 5ms
+
+4. App Server → Check Cache for homepage data
+   Time: 2ms
+   Result: Cache HIT
+
+5. App Server → Return HTML to LB
+   Time: 5ms
+
+6. LB → Return to Browser
+   Time: 10ms
+
+7. Browser → Parse and render
+   Time: 200ms
+
+Total: ~292ms
+Bottleneck: Browser rendering (200ms)
+</code></pre>
+<h3 id="if-cache-miss">If Cache MISS:</h3>
+<pre><code>4. App Server → Check Cache
+   Result: MISS
+
+5. App Server → Query Database
+   Time: 300ms ← NEW BOTTLENECK
+
+6. App Server → Store in Cache
+   Time: 2ms
+
+7. App Server → Return HTML
+   Time: 5ms
+
+Total: ~594ms (2x slower)
+</code></pre>
+<h3 id="optimization-strategy">Optimization Strategy</h3>
+<pre><code>Current bottleneck: Database (300ms)
+
+Options:
+A. Add indexes → 300ms → 50ms (6x faster, low effort)
+B. Query optimization → 50ms → 20ms (2.5x, medium effort)
+C. Add more caching → Reduce DB hits to near zero
+
+Action: Do A first (high ROI), then monitor.
+</code></pre>
+<h2 id="mental-model-everything-is-a-system">Mental Model: Everything Is A System</h2>
+<p>Apply component thinking everywhere:</p>
+<p><strong>Restaurant:</strong></p>
+<ul>
+<li>Client: Customer</li>
+<li>Load Balancer: Host</li>
+<li>Servers: Waiters</li>
+<li>Cache: Menu knowledge</li>
+<li>Database: Kitchen</li>
+</ul>
+<p><strong>Bottleneck?</strong> Kitchen (20 min prepare time)</p>
+<p><strong>Solution?</strong> Add more chefs (horizontal scaling) or better equipment (vertical scaling).</p>
+<p><strong>Coffee shop:</strong></p>
+<ul>
+<li>Bottleneck: 1 barista, 10 customers</li>
+<li>Solution: Add baristas hoặc self-service kiosks</li>
+</ul>
+<p>Khi bạn see patterns này, bạn understand systems deeply.</p>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Mọi web system có 5 components cơ bản:</strong></p>
+<ol>
+<li><strong>Client</strong> - Presentation, không tin cậy</li>
+<li><strong>Load Balancer</strong> - Distribute traffic</li>
+<li><strong>Application Server</strong> - Business logic, stateless preferred</li>
+<li><strong>Cache</strong> - Fast reads, invalidation is hard</li>
+<li><strong>Database</strong> - Source of truth, often bottleneck</li>
+</ol>
+<p><strong>Design principles:</strong></p>
+<ul>
+<li><strong>Start simple</strong> - Don&#x27;t over-engineer</li>
+<li><strong>Measure first</strong> - Find real bottlenecks</li>
+<li><strong>Optimize bottlenecks</strong> - Not everything</li>
+<li><strong>Scale gradually</strong> - Vertical → Horizontal</li>
+</ul>
+<p><strong>Trade-off awareness:</strong></p>
+<ul>
+<li>Stateless vs Stateful servers</li>
+<li>Cache complexity vs Performance</li>
+<li>SQL consistency vs NoSQL scale</li>
+<li>Simple monolith vs Complex distributed</li>
+</ul>
+<p><strong>Next steps:</strong></p>
+<p>Practice với real system. Trace requests. Identify components. Measure latency. Find bottlenecks.</p>
+<p>Component thinking là foundation. Master này trước khi học patterns phức tạp hơn.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-1/lesson/lesson-2-communication-patterns">Communication Patterns - Sync vs Async trong Distributed Systems<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-1\",\"lesson\",\"lesson-1-components-trong-he-thong-web\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-1\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-1-components-trong-he-thong-web\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 1 — Foundation: Thinking in Systems\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade-offs và khi nào nên dùng từng component trong kiến trúc phân tán.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-components-trong-he-thong-web\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block\"}]]}]}],[\"$\",\"li\",\"lesson-2-communication-patterns\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-2-communication-patterns\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Communication Patterns - Sync vs Async trong Distributed Systems\"}]]}]}],[\"$\",\"li\",\"lesson-3-data-flow-and-bottlenecks\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-3-data-flow-and-bottlenecks\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Data Flow \u0026 Bottlenecks - Tìm Và Tối Ưu Điểm Nghẽn Hệ Thống\"}]]}]}],[\"$\",\"li\",\"lesson-4-cac-khai-niem-quan-trong\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-4-cac-khai-niem-quan-trong\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Khái Niệm Quan Trọng - Latency, Throughput, Availability và CAP Theorem\"}]]}]}],[\"$\",\"li\",\"lesson-5-bai-tap-tong-hop\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-5-bai-tap-tong-hop\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Bài Tập Tổng Hợp - Áp Dụng Foundation Vào Thực Tế\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[\"$L24\",\"Tổng quan phase\"]}]]}],\"$L25\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"26:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"25:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1\",\"className\":\"hover:text-ink\",\"children\":\"Phase 1 — Foundation: Thinking in Systems\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade-offs và khi nào nên dùng từng component trong kiến trúc phân tán.\"}]]}],[\"$\",\"$L26\",null,{\"path\":\"/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web\",\"title\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block\",\"description\":\"Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade-offs và khi nào nên dùng từng component trong kiến trúc phân tán.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Components Trong Hệ Thống Web - Hiểu Từng Building Block\",\"children\":\"$L27\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[null,[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-1/lesson/lesson-2-communication-patterns\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Communication Patterns - Sync vs Async trong Distributed Systems\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"components-trong-một-hệ-thống-web\",\"children\":\"Components Trong Một Hệ Thống Web\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Chào mừng đến Phase 1 - Foundation: Thinking in Systems.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Sau Phase 0, bạn đã thay đổi mindset. Giờ là lúc build foundation thực sự: \",[\"$\",\"strong\",null,{\"children\":\"Hiểu các building blocks của mọi hệ thống.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ lần đầu debug production issue. API chậm. Nhưng chậm ở đâu?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Senior architect vẽ diagram:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Client → Load Balancer → App Server → Cache → Database\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Rồi hỏi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Request đi qua bao nhiêu bước? Mỗi bước mất bao lâu?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Đó là lần đầu tôi hiểu: \",[\"$\",\"strong\",null,{\"children\":\"Hệ thống là tập hợp components tương tác.\"}],\" Hiểu từng component = hiểu cả hệ thống.\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-phải-học-components\",\"children\":\"Tại Sao Phải Học Components?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Code-level view:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_user(user_id):\\n    return db.query(\\\"SELECT * FROM users WHERE id = ?\\\", user_id)\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Bạn thấy function. Nhưng architect thấy:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"System-level view:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Client (50ms)\\n  ↓\\nLoad Balancer (10ms)\\n  ↓\\nApplication Server (20ms)\\n  ↓\\nDatabase Query (500ms) ← BOTTLENECK\\n  ↓\\nTotal: 580ms\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"System-level thinking giúp bạn:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Identify bottlenecks\"}],\" nhanh chóng\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Design for scale\"}],\" từ đầu\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Debug production\"}],\" hiệu quả\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Communicate\"}],\" rõ ràng với team\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Bạn không thể optimize cái bạn không hiểu.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"component-1-client-browsermobile-app\",\"children\":\"Component 1: Client (Browser/Mobile App)\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"vai-trò\",\"children\":\"Vai Trò\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Client là presentation layer. Nơi user tương tác với hệ thống.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Đặc điểm:\"}]}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Không đáng tin (user có thể modify code)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Không kiểm soát được environment (device, network)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Stateful (có thể lưu data locally)\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"critical-rules\",\"children\":\"Critical Rules\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rule 1: NEVER trust client\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"//  BAD: Validate price ở client only\\nfunction checkout(items) {\\n    let total = items.reduce((sum, item) =\u003e sum + item.price, 0)\\n    submitOrder(total)  // Hacker có thể modify price\\n}\\n\\n//  GOOD: Always validate server-side\\nfunction checkout(items) {\\n    submitOrder(items)  // Server recalculate price\\n}\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Why?\"}],\" Tôi từng thấy hacker modify JavaScript, đổi giá từ $100 → $1, submit. Server tin client → Company mất tiền.\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rule 2: Client validation chỉ là UX enhancement\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Client validation: Immediate feedback (UX)\\nif (!email.includes('@')) {\\n    showError(\\\"Invalid email\\\")\\n}\\n\\n// Server PHẢI validate lại\\nif (!isValidEmail(email)) {\\n    return 400  // Never trust client\\n}\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"trade-offs\",\"children\":\"Trade-offs\"}],\"\\n\",\"$L28\",\"\\n\",\"$L29\",\"\\n\",\"$L2a\",\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\"]}]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Advantages:\\n- Rich interactions\\n- Offline capability\\n- Reduce server load (client-side rendering)\\n\\n Disadvantages:\\n- Security risk\\n- Inconsistent environments\\n- Hard to update (users don't refresh)\\n\"}]}]\n29:[\"$\",\"h3\",null,{\"id\":\"khi-nào-optimize-client\",\"children\":\"Khi Nào Optimize Client?\"}]\n2a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Optimize khi:\"}]}]\n2b:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bundle size lớn (\u003e 1MB)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"First paint chậm (\u003e 3s)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"User có slow devices/networks\"}],\"\\n\"]}]\n2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Techniques:\"}]}]\n2d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Code splitting\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Lazy loading\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Service workers (caching)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"CDN cho static assets\"}],\"\\n\"]}]\n2e:[\"$\",\"h2\",null,{\"id\":\"component-2-load-balancer\",\"children\":\"Component 2: Load Balancer\"}]\n2f:[\"$\",\"h3\",null,{\"id\":\"vai-trò-1\",\"children\":\"Vai Trò\"}]\n30:[\"$\",\"p\",null,{\"children\":\"Phân phối traffic đều giữa multiple servers.\"}]\n31:[\"$\",\"h3\",null,{\"id\":\"khi-nào-cần\",\"children\":\"Khi Nào Cần?\"}]\n32:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario 1: Single Server\\n1 server handles 1,000 req/s\\nTraffic grows to 5,000 req/s\\n→ Server overload → Slow/crashes\\n\\nScenario 2: Multiple Servers + Load Balancer\\n5 servers, each handles 1,000 req/s\\nLoad Balancer distributes evenly\\n→ System handles 5,000 req/s smoothly\\n\"}]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cần load balancer khi:\"}]}]\n34:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"1 server không đủ capacity\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cần high availability (1 server dies, others take over)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Rolling deployments (update servers từng cái)\"}],\"\\n\"]}]\n35:[\"$\",\"h3\",null,{\"id\":\"khi-nào-không-cần\",\"children\":\"Khi Nào KHÔNG Cần?\"}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Don't need khi:\\n- \u003c 1,000 users\\n- Internal tools\\n- MVP/Prototypes\\n- Budget constraints\\n\\nStart simple. Add LB when proven necessary.\\n\"}]}]\n37:[\"$\",\"h3\",null,{\"id\":\"core-algorithms\",\"children\":\"Core Algorithms\"}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Round Robin:\"}]}]\n39:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Request 1 → Server A\\nRequest 2 → Server B\\nRequest 3 → Server C\\nRequest 4 → Server A (repeat)\\n\\n Simple, even distribution\\n Doesn't consider server load\\n\"}]}]\n3a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Least Connections:\"}]}]\n3b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server A: 50 connections\\nServer B: 20 connections ← Choose this\\nServer C: 35 connections\\n\\n Better load balancing\\n More complex, need to track state\\n\"}]}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Weighted Round Robin:\"}]}]\n3d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server A (16GB RAM): weight 2\\nServer B (8GB RAM): weight 1\\n\\nA gets 2 requests for every 1 to B\\n\\n Utilize powerful servers more\\n Need to configure weights\\n\"}]}]\n3e:[\"$\",\"h3\",null,{\"id\":\"trade-offs-1\",\"children\":\"Trade-offs\"}]\n3f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Gains:\\n- Increased capacity\\n- High availability\\n- Zero-downtime deployments\\n\\n Costs:\\n- Additional complexity\\n- Potential single point of failure (LB itself)\\n- Network latency (+10-50ms)\\n\"}]}]\n40:[\"$\",\"h3\",null,{\"id\":\"personal-recommendation\",\"children\":\"Personal Recommendation\"}]\n41:[\"$\",\"p\",null,{\"children\":\"Start với Round Robin. Simple và works cho 80% cases.\"}]\n42:[\"$\",\"p\",null,{\"children\":\"Chỉ dùng Least Connections khi requests có execution time rất khác nhau (WebSocket, file uploads).\"}]\n43:[\"$\",\"h2\",null,{\"id\":\"component-3-application-server\",\"children\":\"Component 3: Application"])</script><script>self.__next_f.push([1," Server\"}]\n44:[\"$\",\"h3\",null,{\"id\":\"vai-trò-2\",\"children\":\"Vai Trò\"}]\n45:[\"$\",\"p\",null,{\"children\":\"Business logic layer. Process requests, orchestrate data flow.\"}]\n46:[\"$\",\"h3\",null,{\"id\":\"critical-decision-stateless-vs-stateful\",\"children\":\"Critical Decision: Stateless vs Stateful\"}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Stateless Server:\"}]}]\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Không lưu user session trong memory\\ndef handle_request(request):\\n    user_id = jwt.decode(request.token)  # Get from token\\n    user = db.get_user(user_id)          # Get from DB\\n    return process(user)\\n\\n# Benefit: Any server can handle any request\\n\"}]}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Stateful Server:\"}]}]\n4a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Lưu session trong memory\\nsessions = {}  # In-memory\\n\\ndef handle_login(user_id):\\n    sessions[user_id] = UserSession(user_id)\\n\\ndef handle_request(user_id):\\n    session = sessions[user_id]  # Must hit same server!\\n    return process(session)\\n\"}]}]\n4b:[\"$\",\"h3\",null,{\"id\":\"trade-off-analysis\",\"children\":\"Trade-off Analysis\"}]\n4c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Stateless:\\n Easy horizontal scaling\\n Any server handles any request\\n Cloud-friendly (servers can die)\\n Extra DB call for user data\\n\\nStateful:\\n Low latency (no DB roundtrip)\\n Can cache user-specific data\\n Hard to scale (need sticky sessions)\\n Lose sessions khi server restart\\n\"}]}]\n4d:[\"$\",\"h3\",null,{\"id\":\"my-strong-opinion\",\"children\":\"My Strong Opinion\"}]\n4e:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Default to stateless.\"}],\" Stateful chỉ khi có lý do rất tốt (WebSocket connections, gaming servers).\"]}]\n4f:[\"$\",\"p\",null,{\"children\":\"Modern systems với microservices? Stateless là must.\"}]\n50:[\"$\",\"h3\",null,{\"id\":\"server-configuration\",\"children\":\"Server Configuration\"}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Concurrency model matters:\"}]}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Thread-based (Java, traditional):\\n- 1 thread per request\\n- Limited by thread pool size\\n- Good: Familiar model\\n- Bad: Memory overhead\\n\\nEvent-loop (Node.js, Python asyncio):\\n- 1 thread handles many requests\\n- Non-blocking I/O\\n- Good: High concurrency\\n- Bad: CPU-heavy tasks block everything\\n\\nWorker-based (Gunicorn, uWSGI):\\n- Pre-fork workers\\n- Each worker handles requests\\n- Good: Isolate failures\\n- Bad: More memory\\n\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Choose based on workload:\"}]}]\n54:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"I/O heavy (API calls, DB queries) → Event-loop\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"CPU heavy (image processing) → Worker-based\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Mixed → Worker-based với async inside\"}],\"\\n\"]}]\n55:[\"$\",\"h2\",null,{\"id\":\"component-4-cache-layer\",\"children\":\"Component 4: Cache Layer\"}]\n56:[\"$\",\"h3\",null,{\"id\":\"vai-trò-3\",\"children\":\"Vai Trò\"}]\n57:[\"$\",\"p\",null,{\"children\":\"Store frequently accessed data in-memory để giảm DB load.\"}]\n58:[\"$\",\"h3\",null,{\"id\":\"the-fundamental-question\",\"children\":\"The Fundamental Question\"}]\n59:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Có nên cache không?\"}]}]\n5a:[\"$\",\"p\",null,{\"children\":\"Answer bằng flowchart:\"}]\n5b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Is it read-heavy? (read:write \u003e 10:1)\\n  ↓ YES\\nData thay đổi thường xuyên không?\\n  ↓ NO\\nQuery expensive? (\u003e 100ms)\\n  ↓ YES\\n→ USE CACHE\\n\\nAny NO → Consider carefully\\n\"}]}]\n5c:[\"$\",\"h3\",null,{\"id\":\"cache-strategies\",\"children\":\"Cache Strategies\"}]\n5d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy 1: Cache-Aside (Lazy Loading)\"}]}]\n5e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_product(product_id):\\n    # 1. Check cache\\n    product = cache.get(f\\\"product:{produc"])</script><script>self.__next_f.push([1,"t_id}\\\")\\n    if product:\\n        return product  # Cache hit\\n    \\n    # 2. Cache miss → Query DB\\n    product = db.query(\\\"SELECT * FROM products WHERE id = ?\\\", product_id)\\n    \\n    # 3. Store in cache\\n    cache.set(f\\\"product:{product_id}\\\", product, ttl=3600)\\n    return product\\n\\n Only cache what's needed\\n First request slow (cache miss)\\n\"}]}]\n5f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy 2: Write-Through\"}]}]\n60:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def update_product(product_id, data):\\n    # 1. Update DB\\n    db.update(\\\"products\\\", product_id, data)\\n    \\n    # 2. Update cache immediately\\n    cache.set(f\\\"product:{product_id}\\\", data)\\n\\n Cache always fresh\\n Every write slower (2 operations)\\n\"}]}]\n61:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategy 3: Write-Behind\"}]}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def update_product(product_id, data):\\n    # 1. Update cache immediately\\n    cache.set(f\\\"product:{product_id}\\\", data)\\n    \\n    # 2. Async write to DB\\n    queue.add({\\\"action\\\": \\\"update_product\\\", \\\"id\\\": product_id, \\\"data\\\": data})\\n\\n Writes very fast\\n Risk data loss if cache crashes\\n\"}]}]\n63:[\"$\",\"h3\",null,{\"id\":\"cache-invalidation---the-hard-problem\",\"children\":\"Cache Invalidation - The Hard Problem\"}]\n64:[\"$\",\"p\",null,{\"children\":[\"Phil Karlton: \",[\"$\",\"em\",null,{\"children\":\"\\\"There are only two hard things in Computer Science: cache invalidation and naming things.\\\"\"}]]}]\n65:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\n66:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. User updates profile → DB updated\\n2. Cache still has old data\\n3. User refresh → Sees old data (cache hit)\\n4. User confused\\n\"}]}]\n67:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option 1: TTL (Time To Live)\"}]}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"cache.set(\\\"user:123\\\", user, ttl=300)  # Expire after 5min\\n\\n Simple\\n Data stale for up to 5 minutes\\n\"}]}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option 2: Active Invalidation\"}]}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def update_user(user_id, data):\\n    db.update(\\\"users\\\", user_id, data)\\n    cache.delete(f\\\"user:{user_id}\\\")  # Delete immediately\\n\\n Always fresh\\n Must remember to invalidate everywhere\\n\"}]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Option 3: Event-Driven\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Service A updates user\\ndb.update(\\\"users\\\", user_id, data)\\nevent_bus.publish(\\\"user.updated\\\", user_id)\\n\\n# Service B listens\\n@event_bus.subscribe(\\\"user.updated\\\")\\ndef on_user_updated(user_id):\\n    cache.delete(f\\\"user:{user_id}\\\")\\n\\n Decoupled, scalable\\n Complex infrastructure\\n\"}]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"personal-rule\",\"children\":\"Personal Rule\"}]\n6f:[\"$\",\"p\",null,{\"children\":\"Start với TTL. Simple và works.\"}]\n70:[\"$\",\"p\",null,{\"children\":\"Add active invalidation khi data freshness critical.\"}]\n71:[\"$\",\"p\",null,{\"children\":\"Event-driven chỉ khi có nhiều services cần react.\"}]\n72:[\"$\",\"h3\",null,{\"id\":\"when-not-to-cache\",\"children\":\"When NOT to Cache\"}]\n73:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\" Don't cache:\\n- Write-heavy data (inventory counts thay đổi liên tục)\\n- Real-time data (stock prices)\\n- Personalized data (different per user, low hit rate)\\n- Small datasets (\u003c 1000 records, DB fast enough)\\n\"}]}]\n74:[\"$\",\"h2\",null,{\"id\":\"component-5-database\",\"children\":\"Component 5: Database\"}]\n75:[\"$\",\"h3\",null,{\"id\":\"vai-trò-4\",\"children\":\"Vai Trò\"}]\n76:[\"$\",\"p\",null,{\"children\":\"Persistent storage. Source of truth.\"}]\n77:[\"$\",\"h3\",null,{\"id\":\"why-database-is-often-the-bottleneck\",\"children\":\"Why Database is Often the Bottleneck\""])</script><script>self.__next_f.push([1,"}]\n78:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Memory read:  100 nanoseconds\\nSSD read:     150 microseconds  (1,500x slower)\\nHDD read:     10 milliseconds   (100,000x slower)\\n\\nDatabase phải:\\n- Read from disk\\n- Parse query\\n- Execute plan\\n- Return results\\n\\n→ Inherently slow compared to memory\\n\"}]}]\n79:[\"$\",\"h3\",null,{\"id\":\"optimization-hierarchy\",\"children\":\"Optimization Hierarchy\"}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Level 1: Query Optimization (Do this first)\"}]}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"--  BAD: No index, full table scan\\nSELECT * FROM users WHERE email = 'john@example.com';\\n-- 10M rows → 5 seconds\\n\\n--  GOOD: Add index\\nCREATE INDEX idx_users_email ON users(email);\\n-- Same query → 10ms (500x faster!)\\n\"}]}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Level 2: Connection Pooling\"}]}]\n7d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: New connection per request\\ndef get_user(user_id):\\n    conn = create_connection()  # Expensive!\\n    user = conn.query(...)\\n    conn.close()\\n    return user\\n\\n#  GOOD: Reuse connections\\npool = ConnectionPool(min=5, max=20)\\n\\ndef get_user(user_id):\\n    with pool.get_connection() as conn:\\n        return conn.query(...)\\n\"}]}]\n7e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Level 3: Read Replicas\"}]}]\n7f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Master (Write)\\n  ↓ replicate\\nSlave 1, Slave 2, Slave 3 (Read)\\n\\nWrites → Master\\nReads → Load balance across Slaves\\n\\n Scale reads easily\\n Eventual consistency (replication lag)\\n\"}]}]\n80:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Level 4: Sharding (Last resort)\"}]}]\n81:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Only khi:\\n- Single DB can't handle load\\n- Vertical scaling maxed out\\n- Data too large for 1 machine\\n\\nCost:\\n- Very complex\\n- Cross-shard queries hard\\n- Resharding nightmare\\n\"}]}]\n82:[\"$\",\"h3\",null,{\"id\":\"trade-offs-sql-vs-nosql\",\"children\":\"Trade-offs: SQL vs NoSQL\"}]\n83:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"SQL (PostgreSQL, MySQL):\\n ACID transactions\\n Rich queries (JOIN, aggregations)\\n Data integrity\\n Harder to scale horizontally\\n Schema changes expensive\\n\\nNoSQL (MongoDB, DynamoDB):\\n Easy horizontal scaling\\n Flexible schema\\n High write throughput\\n No JOIN (application-level)\\n Eventual consistency\\n Less query power\\n\"}]}]\n84:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\n85:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Choose SQL khi:\\n- Need transactions (banking, e-commerce)\\n- Complex relationships\\n- Ad-hoc queries\\n- Data integrity critical\\n\\nChoose NoSQL khi:\\n- Need massive scale\\n- Write-heavy workload\\n- Flexible schema\\n- Simple queries (key-value lookups)\\n\"}]}]\n86:[\"$\",\"h3\",null,{\"id\":\"my-opinion\",\"children\":\"My Opinion\"}]\n87:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Start với SQL (PostgreSQL).\"}]}]\n88:[\"$\",\"p\",null,{\"children\":\"Nó handle được 99% use cases. JSONB column cho flexibility. Scale vertically first, add read replicas second.\"}]\n89:[\"$\",\"p\",null,{\"children\":\"Chỉ switch sang NoSQL khi proven SQL can't handle load.\"}]\n8a:[\"$\",\"h2\",null,{\"id\":\"putting-it-all-together-request-flow\",\"children\":\"Putting It All Together: Request Flow\"}]\n8b:[\"$\",\"p\",null,{\"children\":\"Hãy trace một request từ đầu đến cuối:\"}]\n8c:[\"$\",\"h3\",null,{\"id\":\"example-user-loads-homepage\",\"children\":\"Example: User loads homepage\"}]\n8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Browser → DNS lookup\\n   Time: 20ms\\n\\n2. Browser → HTTPS to Load Balancer\\n   Time: 50ms (TCP + TLS)\\n\\n3. Load Balancer → Choose App Server (Round Robin)\\n   Time: 5ms\\n\\n4. App Server → Check Cache for homepage data\\n   Time: 2ms\\n   Result: Cache HIT\\n\\n5. App Server → Return HTML to LB\\n   Time: 5ms\\n\\n6. LB → Return to Browser\\n   Time: 10ms\\n\\n7. Browser "])</script><script>self.__next_f.push([1,"→ Parse and render\\n   Time: 200ms\\n\\nTotal: ~292ms\\nBottleneck: Browser rendering (200ms)\\n\"}]}]\n8e:[\"$\",\"h3\",null,{\"id\":\"if-cache-miss\",\"children\":\"If Cache MISS:\"}]\n8f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"4. App Server → Check Cache\\n   Result: MISS\\n\\n5. App Server → Query Database\\n   Time: 300ms ← NEW BOTTLENECK\\n\\n6. App Server → Store in Cache\\n   Time: 2ms\\n\\n7. App Server → Return HTML\\n   Time: 5ms\\n\\nTotal: ~594ms (2x slower)\\n\"}]}]\n90:[\"$\",\"h3\",null,{\"id\":\"optimization-strategy\",\"children\":\"Optimization Strategy\"}]\n91:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Current bottleneck: Database (300ms)\\n\\nOptions:\\nA. Add indexes → 300ms → 50ms (6x faster, low effort)\\nB. Query optimization → 50ms → 20ms (2.5x, medium effort)\\nC. Add more caching → Reduce DB hits to near zero\\n\\nAction: Do A first (high ROI), then monitor.\\n\"}]}]\n92:[\"$\",\"h2\",null,{\"id\":\"mental-model-everything-is-a-system\",\"children\":\"Mental Model: Everything Is A System\"}]\n93:[\"$\",\"p\",null,{\"children\":\"Apply component thinking everywhere:\"}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Restaurant:\"}]}]\n95:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Client: Customer\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Load Balancer: Host\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Servers: Waiters\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cache: Menu knowledge\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database: Kitchen\"}],\"\\n\"]}]\n96:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Bottleneck?\"}],\" Kitchen (20 min prepare time)\"]}]\n97:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Solution?\"}],\" Add more chefs (horizontal scaling) or better equipment (vertical scaling).\"]}]\n98:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Coffee shop:\"}]}]\n99:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bottleneck: 1 barista, 10 customers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Solution: Add baristas hoặc self-service kiosks\"}],\"\\n\"]}]\n9a:[\"$\",\"p\",null,{\"children\":\"Khi bạn see patterns này, bạn understand systems deeply.\"}]\n9b:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n9c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Mọi web system có 5 components cơ bản:\"}]}]\n9d:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Client\"}],\" - Presentation, không tin cậy\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Load Balancer\"}],\" - Distribute traffic\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Application Server\"}],\" - Business logic, stateless preferred\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Cache\"}],\" - Fast reads, invalidation is hard\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Database\"}],\" - Source of truth, often bottleneck\"]}],\"\\n\"]}]\n9e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Design principles:\"}]}]\n9f:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Start simple\"}],\" - Don't over-engineer\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Measure first\"}],\" - Find real bottlenecks\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Optimize bottlenecks\"}],\" - Not everything\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Scale gradually\"}],\" - Vertical → Horizontal\"]}],\"\\n\"]}]\na0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off awareness:\"}]}]\na1:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Stateless vs Stateful servers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cache complexity vs Performance\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"SQL consistency vs NoSQL scale\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple monolith vs Complex distributed\"}],\"\\n\"]}]\na2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Next steps:\"}]}]\na3:[\"$\",\"p\",null,{\"children\":\"Practice với real system. Trace requests. Identify components. Measure latency. F"])</script><script>self.__next_f.push([1,"ind bottlenecks.\"}]\na4:[\"$\",\"p\",null,{\"children\":\"Component thinking là foundation. Master này trước khi học patterns phức tạp hơn.\"}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"a5:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block | Phase 1 — Foundation: Thinking in Systems | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade offs và khi nào nên dùng\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block | Phase 1 — Foundation: Thinking in Systems\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade offs và khi nào nên dùng\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-1/lesson/lesson-1-components-trong-he-thong-web\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Components Trong Hệ Thống Web - Hiểu Từng Building Block | Phase 1 — Foundation: Thinking in Systems\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Phân tích chi tiết các components cơ bản của web system: Client, Load Balancer, Application Server, Cache, Database. Học vai trò, trade offs và khi nào nên dùng\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$La5\",\"14\",{}]]\n"])</script></body></html>

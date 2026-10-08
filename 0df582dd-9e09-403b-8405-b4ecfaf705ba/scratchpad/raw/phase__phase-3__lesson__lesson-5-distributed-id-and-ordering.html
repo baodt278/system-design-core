@@ -1,0 +1,825 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán | Phase 3 — Distributed Systems Fundamentals | System Design Core</title><meta name="description" content="Hiểu tại sao auto increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade offs. Giải quyết event ordering"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering"/><meta property="og:title" content="Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán | Phase 3 — Distributed Systems Fundamentals"/><meta property="og:description" content="Hiểu tại sao auto increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade offs. Giải quyết event ordering"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán | Phase 3 — Distributed Systems Fundamentals"/><meta name="twitter:description" content="Hiểu tại sao auto increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade offs. Giải quyết event ordering"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 3 — Distributed Systems Fundamentals</p><p class="mt-3 text-xl font-semibold text-ink">Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán</p><p class="mt-3 text-sm leading-7 text-ink-dim">Hiểu tại sao auto-increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade-offs. Giải quyết event ordering problems trong kiến trúc phân tán.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Reality of Distributed Systems - Failure Models &amp; CAP Thinking</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Consistency Models - Strong vs Eventual Consistency</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-3-consensus-leader-election"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Consensus &amp; Leader Election - Distributed Agreement</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Time &amp; Event Ordering - Clock Problem Trong Distributed Systems</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-3">Phase 3 — Distributed Systems Fundamentals</a></li><li>/</li><li aria-current="page" class="text-ink">Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Hiểu tại sao auto-increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade-offs. Giải quyết event ordering problems trong kiến trúc phân tán.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Distributed ID &amp; Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán"><article class="prose-ui"><h1 id="distributed-id--ordering-vấn-đề-định-danh-trong-hệ-thống-phân-tán">Distributed ID &amp; Ordering: Vấn Đề Định Danh Trong Hệ Thống Phân Tán</h1>
+<p>Tôi còn nhớ bug đầu tiên khiến tôi thức đêm vì distributed systems.</p>
+<p>Chúng tôi vừa migrate từ monolith sang microservices. Everything worked locally. Deploy lên production... chaos.</p>
+<p>Orders có duplicate IDs. Users complain &quot;tôi order 1 món nhưng thấy 2 orders&quot;. Database constraints fail liên tục.</p>
+<p>Root cause? Auto-increment IDs.</p>
+<p>Senior architect nhìn tôi: <em>&quot;Em biết tại sao auto-increment không work trong distributed systems chưa?&quot;</em></p>
+<p>Tôi: <em>&quot;... Chưa ạ.&quot;</em></p>
+<p>Đó là đêm tôi học về distributed ID generation. Và đó là một trong những problems subtle nhất nhưng critical nhất trong distributed systems.</p>
+<h2 id="tại-sao-auto-increment-breaks">Tại Sao Auto-Increment Breaks?</h2>
+<h3 id="monolith-auto-increment-works-perfectly">Monolith: Auto-Increment Works Perfectly</h3>
+<pre><code class="language-sql">-- Single database
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,  -- Auto-increment
+    user_id INT,
+    amount DECIMAL
+);
+
+-- Insert order 1 → id = 1
+-- Insert order 2 → id = 2
+-- Insert order 3 → id = 3
+
+Perfect! Đơn giản, sequential, unique.
+</code></pre>
+<p><strong>Why it works:</strong></p>
+<pre><code>Single database = Single source of truth
+Database engine guarantees uniqueness
+Lock mechanism prevents duplicates
+Simple++
+</code></pre>
+<h3 id="distributed-auto-increment-breaks">Distributed: Auto-Increment Breaks</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    APP1[Order Service 1] --&gt; DB1[Database Shard 1]
+    APP2[Order Service 2] --&gt; DB2[Database Shard 2]
+    APP3[Order Service 3] --&gt; DB3[Database Shard 3]
+    
+    DB1 --&gt;|id = 1, 2, 3| CONFLICT[ID Conflicts!]
+    DB2 --&gt;|id = 1, 2, 3| CONFLICT
+    DB3 --&gt;|id = 1, 2, 3| CONFLICT
+    
+    style CONFLICT fill:#ff6b6b</code></pre>
+<p><em>Ba database shards độc lập, mỗi cái generate auto-increment IDs riêng → Conflict!</em></p>
+<p><strong>Problem:</strong></p>
+<pre><code>Database Shard 1: id = 1, 2, 3, 4, ...
+Database Shard 2: id = 1, 2, 3, 4, ...  (DUPLICATE!)
+Database Shard 3: id = 1, 2, 3, 4, ...  (DUPLICATE!)
+
+→ Same ID trên different shards
+→ Merge data = disaster
+→ Foreign keys break
+→ Cache keys conflict
+</code></pre>
+<p><strong>Real-world impact:</strong></p>
+<p>Tôi từng thấy một e-commerce site với bug này:</p>
+<ul>
+<li>User A order product X → id = 123 (shard 1)</li>
+<li>User B order product Y → id = 123 (shard 2)</li>
+<li>System merge orders → Conflict</li>
+<li>User A nhận product của User B</li>
+<li>Disaster!</li>
+</ul>
+<p><strong>Lesson learned:</strong> Auto-increment chỉ work với single database. Distributed systems cần approach khác.</p>
+<h2 id="requirements-cho-distributed-ids">Requirements Cho Distributed IDs</h2>
+<p>Trước khi đi vào solutions, hãy hiểu requirements.</p>
+<p><strong>Must have:</strong></p>
+<pre><code>1. Global uniqueness
+   - ID phải unique across TẤT CẢ services/shards
+   - Không conflict dù generate ở đâu
+
+2. High availability
+   - Generate ID không cần coordination
+   - Không có single point of failure
+   - Work khi network partition
+
+3. High performance
+   - Generate nhanh (&lt; 1ms)
+   - Không block
+   - Million IDs/second
+</code></pre>
+<p><strong>Nice to have:</strong></p>
+<pre><code>4. Roughly time-ordered
+   - IDs mới &gt; IDs cũ
+   - Useful cho sorting, debugging
+   - Không cần perfect ordering
+
+5. Compact
+   - 64-bit thay vì 128-bit
+   - Save storage, memory
+   - Faster comparison
+
+6. Human-readable
+   - Có thể debug
+   - Extract metadata (timestamp, machine ID)
+</code></pre>
+<p><strong>Trade-off reality:</strong></p>
+<p>Không có solution nào satisfy tất cả. Phải choose based on priorities.</p>
+<h2 id="solution-1-uuid-universally-unique-identifier">Solution 1: UUID (Universally Unique Identifier)</h2>
+<h3 id="concept">Concept</h3>
+<p><strong>UUID = 128-bit random number, guaranteed globally unique</strong></p>
+<pre><code>Format: 8-4-4-4-12 hexadecimal digits
+Example: 550e8400-e29b-41d4-a716-446655440000
+
+Total possible UUIDs: 2^128 ≈ 3.4 × 10^38
+(Nhiều hơn số nguyên tử trong universe!)
+</code></pre>
+<p><strong>Versions:</strong></p>
+<pre><code>UUID v1: Timestamp + MAC address
+UUID v4: Random (most common)
+UUID v7: Timestamp-ordered (newest, best for databases)
+</code></pre>
+<h3 id="implementation">Implementation</h3>
+<pre><code class="language-python">import uuid
+
+# Generate UUID v4 (random)
+id = uuid.uuid4()
+print(id)  # 550e8400-e29b-41d4-a716-446655440000
+
+# In database
+CREATE TABLE orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id INT,
+    amount DECIMAL
+);
+
+# Application code
+def create_order(user_id, amount):
+    order_id = uuid.uuid4()
+    db.execute(&quot;&quot;&quot;
+        INSERT INTO orders (id, user_id, amount)
+        VALUES (?, ?, ?)
+    &quot;&quot;&quot;, [order_id, user_id, amount])
+    return order_id
+</code></pre>
+<p><strong>No coordination needed:</strong></p>
+<pre><code>Service 1 generates: 550e8400-e29b-41d4-a716-446655440000
+Service 2 generates: 7c9e6679-7425-40de-944b-e07fc1f90ae7
+Service 3 generates: 9e107d9d-372b-4d16-a86a-3a0f8e4f0c3d
+
+All unique, no conflicts!
+</code></pre>
+<h3 id="trade-offs">Trade-offs</h3>
+<pre><code>Advantages:
+- Extremely simple to implement
+- No coordination needed
+- Truly globally unique
+- Work offline
+- Industry standard
+
+Disadvantages:
+- 128-bit (2x larger than 64-bit)
+- Not sortable (random order)
+- Poor database performance (random inserts)
+- Not human-readable
+- Hard to debug
+</code></pre>
+<h3 id="database-performance-impact">Database Performance Impact</h3>
+<p><strong>Problem với random UUIDs:</strong></p>
+<pre><code>B-tree index structure:
+       [middle]
+      /        \
+  [left]      [right]
+
+Sequential inserts (auto-increment):
+→ Always insert at rightmost leaf
+→ No page splits
+→ Fast!
+
+Random UUIDs:
+→ Insert randomly throughout tree
+→ Frequent page splits
+→ Fragmentation
+→ 2-3x slower inserts
+</code></pre>
+<p><strong>Benchmark (PostgreSQL):</strong></p>
+<pre><code>Auto-increment INT:  100,000 inserts = 2.3 seconds
+UUID v4:            100,000 inserts = 7.1 seconds  (3x slower)
+UUID v7:            100,000 inserts = 2.8 seconds  (close to INT!)
+</code></pre>
+<p><strong>Solution:</strong> UUID v7 (timestamp-ordered)</p>
+<pre><code class="language-python"># UUID v7: Time-ordered, better for databases
+import uuid_utils as uuid
+
+id = uuid.uuid7()
+# 018e8e7a-0000-7000-8000-000000000000
+# ^^^^^^^^ - timestamp (sortable!)
+</code></pre>
+<h3 id="khi-nào-dùng-uuid">Khi Nào Dùng UUID?</h3>
+<pre><code>Sử dụng UUID khi:
+✓ Simplicity quan trọng nhất
+✓ Không cần sorting by ID
+✓ Storage/memory không phải constraint
+✓ Muốn industry standard
+✓ Need truly random IDs (security)
+
+Tránh UUID khi:
+✗ Database performance critical
+✗ Need time-ordered IDs
+✗ Storage constraints (mobile, IoT)
+✗ Need human-readable IDs
+</code></pre>
+<p><strong>Personal take:</strong></p>
+<p>UUID là safe default. Khi không chắc nên dùng gì, dùng UUID (preferably v7).</p>
+<p>Chỉ optimize khác khi có specific requirements.</p>
+<h2 id="solution-2-twitter-snowflake">Solution 2: Twitter Snowflake</h2>
+<h3 id="concept-1">Concept</h3>
+<p><strong>Snowflake = 64-bit ID, time-ordered, globally unique</strong></p>
+<pre><code>64-bit structure:
+┌─────────────────────────────────────────────────┐
+│ 1 │      41 bits     │ 10 bits │    12 bits    │
+│   │    timestamp     │ machine │   sequence    │
+│ 0 │  milliseconds    │   ID    │   counter     │
+└─────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Breakdown:</strong></p>
+<pre><code>Bit 0 (1 bit):
+- Always 0 (reserved, sign bit)
+
+Bits 1-41 (41 bits): Timestamp
+- Milliseconds since epoch (custom epoch)
+- 2^41 ms ≈ 69 years
+- Sortable by time!
+
+Bits 42-51 (10 bits): Machine ID
+- Identifies which machine generated ID
+- Support 2^10 = 1,024 machines
+- Configured at startup
+
+Bits 52-63 (12 bits): Sequence number
+- Counter within same millisecond
+- 2^12 = 4,096 IDs per millisecond per machine
+- Reset mỗi millisecond mới
+</code></pre>
+<p><strong>Capacity calculation:</strong></p>
+<pre><code>Per machine:
+- 4,096 IDs/millisecond
+- 4,096,000 IDs/second
+- ~350 billion IDs/day
+
+1,024 machines:
+- 4.2 million IDs/second globally
+- 360 trillion IDs/day
+
+More than enough!
+</code></pre>
+<h3 id="implementation-1">Implementation</h3>
+<pre><code class="language-python">import time
+import threading
+
+class SnowflakeGenerator:
+    def __init__(self, machine_id, datacenter_id=0):
+        # Custom epoch (Jan 1, 2020)
+        self.epoch = 1577836800000  # milliseconds
+        
+        # Bit lengths
+        self.machine_id_bits = 5
+        self.datacenter_id_bits = 5
+        self.sequence_bits = 12
+        
+        # Max values
+        self.max_machine_id = (1 &lt;&lt; self.machine_id_bits) - 1
+        self.max_datacenter_id = (1 &lt;&lt; self.datacenter_id_bits) - 1
+        self.max_sequence = (1 &lt;&lt; self.sequence_bits) - 1
+        
+        # Current state
+        self.machine_id = machine_id
+        self.datacenter_id = datacenter_id
+        self.sequence = 0
+        self.last_timestamp = -1
+        
+        # Thread safety
+        self.lock = threading.Lock()
+        
+        # Validate
+        if machine_id &gt; self.max_machine_id or machine_id &lt; 0:
+            raise ValueError(f&quot;machine_id must be 0-{self.max_machine_id}&quot;)
+    
+    def _current_millis(self):
+        return int(time.time() * 1000)
+    
+    def _wait_next_millis(self, last_timestamp):
+        timestamp = self._current_millis()
+        while timestamp &lt;= last_timestamp:
+            timestamp = self._current_millis()
+        return timestamp
+    
+    def generate_id(self):
+        with self.lock:
+            timestamp = self._current_millis()
+            
+            # Same millisecond
+            if timestamp == self.last_timestamp:
+                self.sequence = (self.sequence + 1) &amp; self.max_sequence
+                
+                # Sequence overflow, wait next millisecond
+                if self.sequence == 0:
+                    timestamp = self._wait_next_millis(self.last_timestamp)
+            else:
+                # New millisecond, reset sequence
+                self.sequence = 0
+            
+            # Clock moved backwards (rare but possible)
+            if timestamp &lt; self.last_timestamp:
+                raise Exception(f&quot;Clock moved backwards. Refusing to generate id&quot;)
+            
+            self.last_timestamp = timestamp
+            
+            # Combine all parts
+            id = ((timestamp - self.epoch) &lt;&lt; (self.datacenter_id_bits + 
+                                               self.machine_id_bits + 
+                                               self.sequence_bits))
+            id |= (self.datacenter_id &lt;&lt; (self.machine_id_bits + self.sequence_bits))
+            id |= (self.machine_id &lt;&lt; self.sequence_bits)
+            id |= self.sequence
+            
+            return id
+
+# Usage
+generator = SnowflakeGenerator(machine_id=1, datacenter_id=1)
+
+id1 = generator.generate_id()  # 1234567890123456789
+id2 = generator.generate_id()  # 1234567890123456790
+id3 = generator.generate_id()  # 1234567890123456791
+
+# Properties
+print(id1 &lt; id2 &lt; id3)  # True - sortable!
+print(len(str(id1)))    # 19 digits (64-bit)
+</code></pre>
+<h3 id="extracting-metadata">Extracting Metadata</h3>
+<pre><code class="language-python">def parse_snowflake(id):
+    &quot;&quot;&quot;Extract timestamp, machine_id, sequence từ Snowflake ID&quot;&quot;&quot;
+    
+    # Constants
+    epoch = 1577836800000
+    sequence_bits = 12
+    machine_id_bits = 10
+    
+    # Extract sequence
+    sequence = id &amp; ((1 &lt;&lt; sequence_bits) - 1)
+    
+    # Extract machine ID
+    id &gt;&gt;= sequence_bits
+    machine_id = id &amp; ((1 &lt;&lt; machine_id_bits) - 1)
+    
+    # Extract timestamp
+    id &gt;&gt;= machine_id_bits
+    timestamp_ms = id + epoch
+    
+    return {
+        &#x27;timestamp&#x27;: timestamp_ms,
+        &#x27;datetime&#x27;: datetime.fromtimestamp(timestamp_ms / 1000),
+        &#x27;machine_id&#x27;: machine_id,
+        &#x27;sequence&#x27;: sequence
+    }
+
+# Parse ID
+info = parse_snowflake(1234567890123456789)
+print(info)
+# {
+#     &#x27;timestamp&#x27;: 1709567890123,
+#     &#x27;datetime&#x27;: &#x27;2024-03-04 12:34:50&#x27;,
+#     &#x27;machine_id&#x27;: 1,
+#     &#x27;sequence&#x27;: 789
+# }
+</code></pre>
+<h3 id="trade-offs-1">Trade-offs</h3>
+<pre><code>Advantages:
+- 64-bit (compact, efficient)
+- Time-ordered (sortable, good for DB)
+- High performance (no coordination)
+- Decentralized (no single point of failure)
+- Human-debuggable (extract timestamp)
+- Industry proven (Twitter, Discord, Instagram)
+
+Disadvantages:
+- Machine ID management (configuration needed)
+- Clock synchronization required (NTP)
+- 69 year limit (need to reset epoch)
+- Sequence exhaustion trong same millisecond (rare)
+</code></pre>
+<h3 id="clock-skew-problem">Clock Skew Problem</h3>
+<p><strong>Problem:</strong></p>
+<pre><code>Machine A clock: 10:00:00.000
+Machine B clock: 10:00:05.000 (5 seconds ahead)
+
+Machine B generates: ID = 1000005000...
+Machine A generates: ID = 1000000000... (smaller!)
+
+ID từ Machine A &lt; ID từ Machine B về giá trị
+nhưng generated SAU về thời gian!
+
+→ Ordering broken
+</code></pre>
+<p><strong>Solutions:</strong></p>
+<pre><code>1. NTP synchronization (recommended)
+   - Keep clocks synchronized (&lt; 100ms drift)
+   - Monitor clock skew
+   - Alert nếu drift &gt; threshold
+
+2. Refuse generation if clock goes backwards
+   - Check: current_time &lt; last_time
+   - Throw error hoặc wait
+   - Tradeoff: Availability giảm
+
+3. Use logical clocks (Lamport, Vector)
+   - Không depend vào wall clock
+   - Complex implementation
+</code></pre>
+<h3 id="khi-nào-dùng-snowflake">Khi Nào Dùng Snowflake?</h3>
+<pre><code>Sử dụng Snowflake khi:
+✓ Need time-ordered IDs
+✓ Database performance critical
+✓ Need compact 64-bit IDs
+✓ Need human-debuggable IDs
+✓ High throughput (millions IDs/sec)
+✓ Can manage machine IDs
+
+Tránh Snowflake khi:
+✗ Cannot sync clocks (NTP unreliable)
+✗ Simplicity &gt; Performance
+✗ Không muốn manage machine IDs
+✗ Need truly random IDs
+</code></pre>
+<p><strong>Personal experience:</strong></p>
+<p>Snowflake là go-to choice cho high-scale systems. Twitter, Discord, Instagram đều dùng.</p>
+<p>Tôi recommend Snowflake cho:</p>
+<ul>
+<li>High-traffic APIs</li>
+<li>Time-series data</li>
+<li>Logging systems</li>
+<li>Event sourcing</li>
+</ul>
+<h2 id="comparison-uuid-vs-snowflake">Comparison: UUID vs Snowflake</h2>
+<pre><code>┌─────────────────┬──────────────┬──────────────┐
+│                 │     UUID     │  Snowflake   │
+├─────────────────┼──────────────┼──────────────┤
+│ Size            │   128-bit    │    64-bit    │
+│ Uniqueness      │  Guaranteed  │  Guaranteed  │
+│ Sortable        │      No      │     Yes      │
+│ DB Performance  │    Medium    │     High     │
+│ Implementation  │     Easy     │    Medium    │
+│ Configuration   │     None     │  Machine ID  │
+│ Dependencies    │     None     │   NTP sync   │
+│ Readability     │     Poor     │     Good     │
+│ Industry usage  │   Very high  │     High     │
+└─────────────────┴──────────────┴──────────────┘
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code class="language-python">def choose_id_strategy(requirements):
+    if requirements.simplicity_critical:
+        return &quot;UUID&quot;
+    
+    if requirements.need_ordering:
+        return &quot;Snowflake&quot;
+    
+    if requirements.db_performance_critical:
+        return &quot;Snowflake&quot;
+    
+    if requirements.cannot_manage_machine_ids:
+        return &quot;UUID&quot;
+    
+    if requirements.cannot_sync_clocks:
+        return &quot;UUID&quot;
+    
+    # Default
+    return &quot;UUID&quot;  # Safest choice
+</code></pre>
+<h2 id="the-event-ordering-problem">The Event Ordering Problem</h2>
+<p>ID generation solve uniqueness. Nhưng còn ordering?</p>
+<h3 id="problem-statement">Problem Statement</h3>
+<pre><code>Service A (Machine 1):
+- Event 1 happens at 10:00:00.000 → Generate ID = 100
+- Event 2 happens at 10:00:00.001 → Generate ID = 101
+
+Service B (Machine 2, clock ahead 5ms):
+- Event 3 happens at 10:00:00.003 → Generate ID = 108
+
+Timeline:
+Event 1 (10:00:00.000) → ID = 100
+Event 2 (10:00:00.001) → ID = 101
+Event 3 (10:00:00.003) → ID = 108
+
+Sort by ID:
+100 &lt; 101 &lt; 108 ✓ Correct order
+
+But if Machine 2 clock ahead:
+Event 1 (10:00:00.000) → ID = 100
+Event 3 (10:00:00.003) → ID = 95  (Machine 2 clock behind!)
+Event 2 (10:00:00.001) → ID = 101
+
+Sort by ID:
+95 &lt; 100 &lt; 101 ✗ Wrong order! (Event 3 should be last)
+</code></pre>
+<h3 id="why-ordering-matters">Why Ordering Matters</h3>
+<p><strong>Example 1: Bank transactions</strong></p>
+<pre><code>Event 1: Deposit $100  (balance = $100)
+Event 2: Withdraw $50  (balance = $50)
+Event 3: Withdraw $40  (balance = $10)
+
+Correct order: $0 → $100 → $50 → $10 ✓
+
+Wrong order:
+Event 2 first → Insufficient funds! ✗
+Event 3 first → Insufficient funds! ✗
+</code></pre>
+<p><strong>Example 2: Social media</strong></p>
+<pre><code>User posts:
+Post 1: &quot;Giới thiệu dự án&quot;
+Post 2: &quot;Update tiến độ&quot;
+Post 3: &quot;Kết quả cuối cùng&quot;
+
+Correct order: Logical flow ✓
+
+Wrong order: &quot;Kết quả&quot; appear trước &quot;Giới thiệu&quot; ✗
+→ Confused readers
+</code></pre>
+<h3 id="solutions-to-ordering">Solutions to Ordering</h3>
+<p><strong>Solution 1: Lamport Timestamps</strong></p>
+<pre><code class="language-python">class LamportClock:
+    def __init__(self):
+        self.time = 0
+        self.lock = threading.Lock()
+    
+    def tick(self):
+        &quot;&quot;&quot;Increment trước mỗi event&quot;&quot;&quot;
+        with self.lock:
+            self.time += 1
+            return self.time
+    
+    def update(self, received_time):
+        &quot;&quot;&quot;Update khi nhận message từ process khác&quot;&quot;&quot;
+        with self.lock:
+            self.time = max(self.time, received_time) + 1
+            return self.time
+
+# Process A
+clock_a = LamportClock()
+time_1 = clock_a.tick()  # 1
+time_2 = clock_a.tick()  # 2
+
+# Process B nhận message từ A với time = 2
+clock_b = LamportClock()
+time_3 = clock_b.update(2)  # max(0, 2) + 1 = 3
+time_4 = clock_b.tick()     # 4
+
+# Guarantee: time_1 &lt; time_2 &lt; time_3 &lt; time_4
+</code></pre>
+<p><strong>Properties:</strong></p>
+<pre><code>Happened-before relationship preserved
+No need wall clock
+Simple algorithm
+
+Không biết absolute time
+Không detect concurrent events
+Need message passing
+</code></pre>
+<p><strong>Solution 2: Vector Clocks</strong></p>
+<pre><code class="language-python">class VectorClock:
+    def __init__(self, process_id, num_processes):
+        self.process_id = process_id
+        self.clock = [0] * num_processes
+        self.lock = threading.Lock()
+    
+    def tick(self):
+        &quot;&quot;&quot;Increment own counter&quot;&quot;&quot;
+        with self.lock:
+            self.clock[self.process_id] += 1
+            return self.clock.copy()
+    
+    def update(self, received_clock):
+        &quot;&quot;&quot;Merge với received vector clock&quot;&quot;&quot;
+        with self.lock:
+            for i in range(len(self.clock)):
+                self.clock[i] = max(self.clock[i], received_clock[i])
+            self.clock[self.process_id] += 1
+            return self.clock.copy()
+    
+    def compare(self, other_clock):
+        &quot;&quot;&quot;So sánh 2 vector clocks&quot;&quot;&quot;
+        less = all(self.clock[i] &lt;= other_clock[i] for i in range(len(self.clock)))
+        greater = all(self.clock[i] &gt;= other_clock[i] for i in range(len(self.clock)))
+        
+        if less and not greater:
+            return &quot;BEFORE&quot;  # self happened before other
+        elif greater and not less:
+            return &quot;AFTER&quot;   # self happened after other
+        elif self.clock == other_clock:
+            return &quot;EQUAL&quot;
+        else:
+            return &quot;CONCURRENT&quot;  # Cannot determine order
+
+# 3 processes
+clock_a = VectorClock(0, 3)  # Process A
+clock_b = VectorClock(1, 3)  # Process B
+clock_c = VectorClock(2, 3)  # Process C
+
+# Process A events
+event_1 = clock_a.tick()  # [1, 0, 0]
+event_2 = clock_a.tick()  # [2, 0, 0]
+
+# Process B nhận message từ A
+event_3 = clock_b.update(event_2)  # [2, 1, 0]
+
+# Process C độc lập
+event_4 = clock_c.tick()  # [0, 0, 1]
+
+# Compare
+clock_b.compare(event_4)  # &quot;CONCURRENT&quot; - cannot order!
+</code></pre>
+<p><strong>Solution 3: Hybrid Logical Clocks (HLC)</strong></p>
+<p>Best of both worlds: Physical time + Logical counter</p>
+<pre><code class="language-python">class HybridLogicalClock:
+    def __init__(self):
+        self.pt = 0  # Physical time
+        self.lc = 0  # Logical counter
+        self.lock = threading.Lock()
+    
+    def now(self):
+        &quot;&quot;&quot;Generate timestamp cho event&quot;&quot;&quot;
+        with self.lock:
+            pt_new = self._physical_time()
+            
+            if pt_new &gt; self.pt:
+                self.pt = pt_new
+                self.lc = 0
+            else:
+                self.lc += 1
+            
+            return (self.pt, self.lc)
+    
+    def update(self, received_pt, received_lc):
+        &quot;&quot;&quot;Update khi nhận message&quot;&quot;&quot;
+        with self.lock:
+            pt_new = self._physical_time()
+            
+            if received_pt &gt; self.pt and received_pt &gt; pt_new:
+                self.pt = received_pt
+                self.lc = received_lc + 1
+            elif received_pt == pt_new and received_pt == self.pt:
+                self.lc = max(self.lc, received_lc) + 1
+            elif pt_new &gt; self.pt and pt_new &gt; received_pt:
+                self.pt = pt_new
+                self.lc = 0
+            else:
+                self.lc += 1
+            
+            return (self.pt, self.lc)
+    
+    def _physical_time(self):
+        return int(time.time() * 1000)  # milliseconds
+
+# Usage
+hlc = HybridLogicalClock()
+
+event_1 = hlc.now()  # (1709567890123, 0)
+event_2 = hlc.now()  # (1709567890124, 0)
+event_3 = hlc.now()  # (1709567890124, 1) - same ms, increment lc
+
+# Compare
+event_1 &lt; event_2 &lt; event_3  # ✓ Total order preserved
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<pre><code>Lamport:
+Simple
+Partial order
+Cannot detect concurrency
+
+Vector:
+Detect concurrency
+Full causality
+O(N) storage (N = num processes)
+Complex
+
+HLC:
+Close to physical time
+Total order
+Compact (2 numbers)
+Still need clock sync (loosely)
+</code></pre>
+<h2 id="ordering-vs-uniqueness-trade-off">Ordering vs Uniqueness Trade-off</h2>
+<p><strong>The fundamental tension:</strong></p>
+<pre><code>Uniqueness: IDs không conflict
+Ordering:   IDs reflect true chronological order
+
+Cannot have perfect both với decentralized generation
+</code></pre>
+<p><strong>Options:</strong></p>
+<pre><code>1. Perfect uniqueness, no ordering
+   → UUID v4
+   → Completely random
+   → No coordination
+
+2. Good uniqueness, approximate ordering
+   → Snowflake
+   → Time-ordered (với clock sync)
+   → Machine ID prevents conflicts
+
+3. Perfect ordering, coordination required
+   → Central ID server
+   → Single point of failure
+   → Bottleneck
+   → Not scalable
+
+Choose based on priorities
+</code></pre>
+<h2 id="practical-recommendations">Practical Recommendations</h2>
+<h3 id="for-most-applications">For Most Applications</h3>
+<p><strong>Start with UUID v7</strong> (timestamp-ordered UUID)</p>
+<pre><code class="language-python">import uuid
+
+# UUID v7: Time-ordered, globally unique
+id = uuid.uuid7()
+
+Simple as UUID v4
+Time-ordered like Snowflake
+No configuration needed
+Standard library support
+Good database performance
+</code></pre>
+<h3 id="for-high-scale-systems">For High-Scale Systems</h3>
+<p><strong>Use Snowflake</strong> if:</p>
+<pre><code>✓ Generating &gt; 100K IDs/second
+✓ Can manage machine IDs
+✓ Can synchronize clocks (NTP)
+✓ Need 64-bit compact IDs
+✓ Need extract metadata (timestamp, machine)
+</code></pre>
+<h3 id="for-strict-ordering-requirements">For Strict Ordering Requirements</h3>
+<p><strong>Use Hybrid Logical Clocks</strong> if:</p>
+<pre><code>✓ Ordering critical (financial, audit logs)
+✓ Can tolerate complexity
+✓ Need detect causality
+✓ Distributed events across services
+</code></pre>
+<h3 id="anti-patterns-to-avoid">Anti-Patterns to Avoid</h3>
+<pre><code>DON&#x27;T use auto-increment trong distributed systems
+DON&#x27;T rely on wall clocks for ordering
+DON&#x27;T generate IDs centrally (bottleneck)
+DON&#x27;T ignore clock skew problems
+DON&#x27;T use timestamp alone as ID (not unique)
+</code></pre>
+<h2 id="real-world-examples">Real-World Examples</h2>
+<p><strong>Twitter:</strong></p>
+<pre><code>Uses Snowflake for tweet IDs
+- 64-bit
+- Time-ordered
+- 200,000+ tweets/second
+- Can extract timestamp from ID
+</code></pre>
+<p><strong>Instagram:</strong></p>
+<pre><code>Modified Snowflake
+- 41 bits: timestamp
+- 13 bits: shard ID
+- 10 bits: sequence
+- Store photos across 1000+ shards
+</code></pre>
+<p><strong>Discord:</strong></p>
+<pre><code>Snowflake-based
+- 64-bit
+- Extract timestamp for &quot;X minutes ago&quot;
+- Debug performance by ID ranges
+</code></pre>
+<p><strong>MongoDB:</strong></p>
+<pre><code>ObjectID (96-bit)
+- 4 bytes: timestamp
+- 5 bytes: random value
+- 3 bytes: counter
+- Similar concept to Snowflake
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Auto-increment breaks trong distributed systems:</strong></p>
+<pre><code>Single database: ✓ Works
+Multiple databases: ✗ Conflicts
+Multiple services: ✗ Conflicts
+
+Need distributed ID generation strategy
+</code></pre>
+<p><strong>ID generation strategies:</strong></p>
+<pre><code>UUID:
+- Simplest
+- 128-bit
+- Random
+- No ordering
+- Default choice
+
+Snowflake:
+- 64-bit
+- Time-ordered
+- Machine ID needed
+- High performance
+- Industry standard
+
+HLC:
+- Best ordering
+- Causality tracking
+- Most complex
+- Specialized use cases
+</code></pre>
+<p><strong>Ordering trade-offs:</strong></p>
+<pre><code>No coordination:   Approximate ordering
+Some coordination: Good ordering
+Full coordination: Perfect ordering (không scalable)
+
+Choose based on requirements
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code>if simple_is_priority:
+    use UUID_v7
+elif high_scale and need_ordering:
+    use Snowflake
+elif strict_ordering_required:
+    use HLC
+else:
+    use UUID_v7  # Safe default
+</code></pre>
+<p><strong>Golden rules:</strong></p>
+<ol>
+<li><strong>Never use auto-increment trong distributed systems</strong></li>
+<li><strong>UUID v7 là safe default cho most cases</strong></li>
+<li><strong>Snowflake cho high-scale, time-ordered needs</strong></li>
+<li><strong>Perfect ordering requires coordination (không free)</strong></li>
+<li><strong>Always test clock skew scenarios</strong></li>
+</ol>
+<p>Distributed ID generation là one of those problems looks simple nhưng subtle complexity.</p>
+<p>Hiểu trade-offs. Choose appropriately. Test thoroughly.</p>
+<p><strong>IDs là foundation của hệ thống. Get it wrong = pain later.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Distributed Transactions &amp; Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems">Time &amp; Event Ordering - Clock Problem Trong Distributed Systems<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-3\",\"lesson\",\"lesson-5-distributed-id-and-ordering\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-3\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-5-distributed-id-and-ordering\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Hiểu tại sao auto-increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade-offs. Giải quyết event ordering problems trong kiến trúc phân tán.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-reality-of-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-1-reality-of-distributed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Reality of Distributed Systems - Failure Models \u0026 CAP Thinking\"}]]}]}],[\"$\",\"li\",\"lesson-2-consistency-models-strong-and-eventual-consistency\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-2-consistency-models-strong-and-eventual-consistency\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consistency Models - Strong vs Eventual Consistency\"}]]}]}],[\"$\",\"li\",\"lesson-3-consensus-leader-election\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-3-consensus-leader-election\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Consensus \u0026 Leader Election - Distributed Agreement\"}]]}]}],[\"$\",\"li\",\"lesson-4-distributed-transactions-data-integrity\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\"}]]}]}],[\"$\",\"li\",\"lesson-5-distributed-id-and-ordering\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\"}]]}]}],[\"$\",\"li\",\"lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}]]}]]}],\"$L26\"]}],\"$L27\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Time \u0026 Event Ordering - Clock Problem Trong Distributed Systems\"}]\n26:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3\",\"className\":\"hover:text-ink\",\"children\":\"Phase 3 — Distributed Systems Fundamentals\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Hiểu tại sao auto-increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade-offs. Giải quyết event ordering problems trong kiến trúc phân tán.\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering\",\"title\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\",\"description\":\"Hiểu tại sao auto-increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade-offs. Giải quyết event ordering problems trong kiến trúc phân tán.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán\",\"children\":\"$L29\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-4-distributed-transactions-data-integrity\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Distributed Transactions \u0026 Data Integrity - Đảm Bảo Tính Nhất Quán Dữ Liệu\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-3/lesson/lesson-6-time-event-ordering-clock-problem-trong-distributed-systems\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Time \u0026 Event Ordering - Clock Problem Trong Distributed Systems\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"2a:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"distributed-id--ordering-vấn-đề-định-danh-trong-hệ-thống-phân-tán\",\"children\":\"Distributed ID \u0026 Ordering: Vấn Đề Định Danh Trong Hệ Thống Phân Tán\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ bug đầu tiên khiến tôi thức đêm vì distributed systems.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Chúng tôi vừa migrate từ monolith sang microservices. Everything worked locally. Deploy lên production... chaos.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Orders có duplicate IDs. Users complain \\\"tôi order 1 món nhưng thấy 2 orders\\\". Database constraints fail liên tục.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Root cause? Auto-increment IDs.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior architect nhìn tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Em biết tại sao auto-increment không work trong distributed systems chưa?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"... Chưa ạ.\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Đó là đêm tôi học về distributed ID generation. Và đó là một trong những problems subtle nhất nhưng critical nhất trong distributed systems.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-auto-increment-breaks\",\"children\":\"Tại Sao Auto-Increment Breaks?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"monolith-auto-increment-works-perfectly\",\"children\":\"Monolith: Auto-Increment Works Perfectly\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-sql\",\"children\":\"-- Single database\\nCREATE TABLE orders (\\n    id SERIAL PRIMARY KEY,  -- Auto-increment\\n    user_id INT,\\n    amount DECIMAL\\n);\\n\\n-- Insert order 1 → id = 1\\n-- Insert order 2 → id = 2\\n-- Insert order 3 → id = 3\\n\\nPerfect! Đơn giản, sequential, unique.\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why it works:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Single database = Single source of truth\\nDatabase engine guarantees uniqueness\\nLock mechanism prevents duplicates\\nSimple++\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"distributed-auto-increment-breaks\",\"children\":\"Distributed: Auto-Increment Breaks\"}],\"\\n\",[\"$\",\"$L2a\",null,{\"chart\":\"graph TB\\n    APP1[Order Service 1] --\u003e DB1[Database Shard 1]\\n    APP2[Order Service 2] --\u003e DB2[Database Shard 2]\\n    APP3[Order Service 3] --\u003e DB3[Database Shard 3]\\n    \\n    DB1 --\u003e|id = 1, 2, 3| CONFLICT[ID Conflicts!]\\n    DB2 --\u003e|id = 1, 2, 3| CONFLICT\\n    DB3 --\u003e|id = 1, 2, 3| CONFLICT\\n    \\n    style CONFLICT fill:#ff6b6b\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Ba database shards độc lập, mỗi cái generate auto-increment IDs riêng → Conflict!\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Database Shard 1: id = 1, 2, 3, 4, ...\\nDatabase Shard 2: id = 1, 2, 3, 4, ...  (DUPLICATE!)\\nDatabase Shard 3: id = 1, 2, 3, 4, ...  (DUPLICATE!)\\n\\n→ Same ID trên different shards\\n→ Merge data = disaster\\n→ Foreign keys break\\n→ Cache keys conflict\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Real-world impact:\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi từng thấy một e-commerce site với bug này:\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"User A order product X → id = 123 (shard 1)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"User B order product Y → id = 123 (shard 2)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"System merge orders → Conflict\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"User A nhận product của User B\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Disaster!\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Lesson learned:\"}],\" Auto-increment chỉ work với single database. Distributed systems cần approach khác.\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"requirements-cho-distributed-ids\",\"children\":\"Requirements Cho Distributed IDs\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Trước khi đi vào solutions, hãy hiểu requirements.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Must have:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":\"$L2b\"}],\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\"]}]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"code\",null,{\"children\":\"1. Global uniqueness\\n   - ID phải unique across TẤT CẢ services/shards\\n   - Không conflict dù generate ở đâu\\n\\n2. High availability\\n   - Generate ID không cần coordination\\n   - Không có single point of failure\\n   - Work khi network partition\\n\\n3. High performance\\n   - Generate nhanh (\u003c 1ms)\\n   - Không block\\n   - Million IDs/second\\n\"}]\n2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nice to have:\"}]}]\n2d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"4. Roughly time-ordered\\n   - IDs mới \u003e IDs cũ\\n   - Useful cho sorting, debugging\\n   - Không cần perfect ordering\\n\\n5. Compact\\n   - 64-bit thay vì 128-bit\\n   - Save storage, memory\\n   - Faster comparison\\n\\n6. Human-readable\\n   - Có thể debug\\n   - Extract metadata (timestamp, machine ID)\\n\"}]}]\n2e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-off reality:\"}]}]\n2f:[\"$\",\"p\",null,{\"children\":\"Không có solution nào satisfy tất cả. Phải choose based on priorities.\"}]\n30:[\"$\",\"h2\",null,{\"id\":\"solution-1-uuid-universally-unique-identifier\",\"children\":\"Solution 1: UUID (Universally Unique Identifier)\"}]\n31:[\"$\",\"h3\",null,{\"id\":\"concept\",\"children\":\"Concept\"}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"UUID = 128-bit random number, guaranteed globally unique\"}]}]\n33:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Format: 8-4-4-4-12 hexadecimal digits\\nExample: 550e8400-e29b-41d4-a716-446655440000\\n\\nTotal possible UUIDs: 2^128 ≈ 3.4 × 10^38\\n(Nhiều hơn số nguyên tử trong universe!)\\n\"}]}]\n34:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Versions:\"}]}]\n35:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"UUID v1: Timestamp + MAC address\\nUUID v4: Random (most common)\\nUUID v7: Timestamp-ordered (newest, best for databases)\\n\"}]}]\n36:[\"$\",\"h3\",null,{\"id\":\"implementation\",\"children\":\"Implementation\"}]\n37:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import uuid\\n\\n# Generate UUID v4 (random)\\nid = uuid.uuid4()\\nprint(id)  # 550e8400-e29b-41d4-a716-446655440000\\n\\n# In database\\nCREATE TABLE orders (\\n    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\\n    user_id INT,\\n    amount DECIMAL\\n);\\n\\n# Application code\\ndef create_order(user_id, amount):\\n    order_id = uuid.uuid4()\\n    db.execute(\\\"\\\"\\\"\\n        INSERT INTO orders (id, user_id, amount)\\n        VALUES (?, ?, ?)\\n    \\\"\\\"\\\", [order_id, user_id, amount])\\n    return order_id\\n\"}]}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"No coordination needed:\"}]}]\n39:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Service 1 generates: 550e8400-e29b-41d4-a716-446655440000\\nService 2 generates: 7c9e6679-7425-40de-944b-e07fc1f90ae7\\nService 3 generates: 9e107d9d-372b-4d16-a86a-3a0f8e4f0c3d\\n\\nAll unique, no conflicts!\\n\"}]}]\n3a:[\"$\",\"h3\",null,{\"id\":\"trade-offs\",\"children\":\"Trade-offs\"}]\n3b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Advantages:\\n- Extremely simple to implement\\n- No coordination needed\\n- Truly globally unique\\n- Work offline\\n- Industry standard\\n\\nDisadvantages:\\n- 128-bit (2x larger than 64-bit)\\n- Not sortable (random order)\\n- Poor database performance (random inserts)\\n- Not human-readable\\n- Hard to debug\\n\"}]}]\n3c:[\"$\",\"h3\",null,{\"id\":\"database-performance-impact\",\"children\":\"Database Performance Impact\"}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem với random UUIDs:\"}]}]\n3e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"B-tree index structure:\\n       [middle]\\n      /        \\\\\\n  [left]      [right]\\n\\nSequential inserts (auto-increment):\\n→ Always insert at rightmost leaf\\n→ No page splits\\n→ Fast!\\n\\nRandom UUIDs:\\n→ Insert randomly throughout tree\\n→ Frequent page splits\\n→ Fragmentation\\n→ 2-3x slower inserts\\n\"}]}]\n3f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benchmark (PostgreSQL):\"}]}]\n40:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Auto-increment INT:  100,0"])</script><script>self.__next_f.push([1,"00 inserts = 2.3 seconds\\nUUID v4:            100,000 inserts = 7.1 seconds  (3x slower)\\nUUID v7:            100,000 inserts = 2.8 seconds  (close to INT!)\\n\"}]}]\n41:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Solution:\"}],\" UUID v7 (timestamp-ordered)\"]}]\n42:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# UUID v7: Time-ordered, better for databases\\nimport uuid_utils as uuid\\n\\nid = uuid.uuid7()\\n# 018e8e7a-0000-7000-8000-000000000000\\n# ^^^^^^^^ - timestamp (sortable!)\\n\"}]}]\n43:[\"$\",\"h3\",null,{\"id\":\"khi-nào-dùng-uuid\",\"children\":\"Khi Nào Dùng UUID?\"}]\n44:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Sử dụng UUID khi:\\n✓ Simplicity quan trọng nhất\\n✓ Không cần sorting by ID\\n✓ Storage/memory không phải constraint\\n✓ Muốn industry standard\\n✓ Need truly random IDs (security)\\n\\nTránh UUID khi:\\n✗ Database performance critical\\n✗ Need time-ordered IDs\\n✗ Storage constraints (mobile, IoT)\\n✗ Need human-readable IDs\\n\"}]}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Personal take:\"}]}]\n46:[\"$\",\"p\",null,{\"children\":\"UUID là safe default. Khi không chắc nên dùng gì, dùng UUID (preferably v7).\"}]\n47:[\"$\",\"p\",null,{\"children\":\"Chỉ optimize khác khi có specific requirements.\"}]\n48:[\"$\",\"h2\",null,{\"id\":\"solution-2-twitter-snowflake\",\"children\":\"Solution 2: Twitter Snowflake\"}]\n49:[\"$\",\"h3\",null,{\"id\":\"concept-1\",\"children\":\"Concept\"}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Snowflake = 64-bit ID, time-ordered, globally unique\"}]}]\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"64-bit structure:\\n┌─────────────────────────────────────────────────┐\\n│ 1 │      41 bits     │ 10 bits │    12 bits    │\\n│   │    timestamp     │ machine │   sequence    │\\n│ 0 │  milliseconds    │   ID    │   counter     │\\n└─────────────────────────────────────────────────┘\\n\"}]}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Breakdown:\"}]}]\n4d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bit 0 (1 bit):\\n- Always 0 (reserved, sign bit)\\n\\nBits 1-41 (41 bits): Timestamp\\n- Milliseconds since epoch (custom epoch)\\n- 2^41 ms ≈ 69 years\\n- Sortable by time!\\n\\nBits 42-51 (10 bits): Machine ID\\n- Identifies which machine generated ID\\n- Support 2^10 = 1,024 machines\\n- Configured at startup\\n\\nBits 52-63 (12 bits): Sequence number\\n- Counter within same millisecond\\n- 2^12 = 4,096 IDs per millisecond per machine\\n- Reset mỗi millisecond mới\\n\"}]}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Capacity calculation:\"}]}]\n4f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Per machine:\\n- 4,096 IDs/millisecond\\n- 4,096,000 IDs/second\\n- ~350 billion IDs/day\\n\\n1,024 machines:\\n- 4.2 million IDs/second globally\\n- 360 trillion IDs/day\\n\\nMore than enough!\\n\"}]}]\n50:[\"$\",\"h3\",null,{\"id\":\"implementation-1\",\"children\":\"Implementation\"}]\na2:Tb2f,"])</script><script>self.__next_f.push([1,"import time\nimport threading\n\nclass SnowflakeGenerator:\n    def __init__(self, machine_id, datacenter_id=0):\n        # Custom epoch (Jan 1, 2020)\n        self.epoch = 1577836800000  # milliseconds\n        \n        # Bit lengths\n        self.machine_id_bits = 5\n        self.datacenter_id_bits = 5\n        self.sequence_bits = 12\n        \n        # Max values\n        self.max_machine_id = (1 \u003c\u003c self.machine_id_bits) - 1\n        self.max_datacenter_id = (1 \u003c\u003c self.datacenter_id_bits) - 1\n        self.max_sequence = (1 \u003c\u003c self.sequence_bits) - 1\n        \n        # Current state\n        self.machine_id = machine_id\n        self.datacenter_id = datacenter_id\n        self.sequence = 0\n        self.last_timestamp = -1\n        \n        # Thread safety\n        self.lock = threading.Lock()\n        \n        # Validate\n        if machine_id \u003e self.max_machine_id or machine_id \u003c 0:\n            raise ValueError(f\"machine_id must be 0-{self.max_machine_id}\")\n    \n    def _current_millis(self):\n        return int(time.time() * 1000)\n    \n    def _wait_next_millis(self, last_timestamp):\n        timestamp = self._current_millis()\n        while timestamp \u003c= last_timestamp:\n            timestamp = self._current_millis()\n        return timestamp\n    \n    def generate_id(self):\n        with self.lock:\n            timestamp = self._current_millis()\n            \n            # Same millisecond\n            if timestamp == self.last_timestamp:\n                self.sequence = (self.sequence + 1) \u0026 self.max_sequence\n                \n                # Sequence overflow, wait next millisecond\n                if self.sequence == 0:\n                    timestamp = self._wait_next_millis(self.last_timestamp)\n            else:\n                # New millisecond, reset sequence\n                self.sequence = 0\n            \n            # Clock moved backwards (rare but possible)\n            if timestamp \u003c self.last_timestamp:\n                raise Exception(f\"Clock moved backwards. Refusing to generate id\")\n            \n            self.last_timestamp = timestamp\n            \n            # Combine all parts\n            id = ((timestamp - self.epoch) \u003c\u003c (self.datacenter_id_bits + \n                                               self.machine_id_bits + \n                                               self.sequence_bits))\n            id |= (self.datacenter_id \u003c\u003c (self.machine_id_bits + self.sequence_bits))\n            id |= (self.machine_id \u003c\u003c self.sequence_bits)\n            id |= self.sequence\n            \n            return id\n\n# Usage\ngenerator = SnowflakeGenerator(machine_id=1, datacenter_id=1)\n\nid1 = generator.generate_id()  # 1234567890123456789\nid2 = generator.generate_id()  # 1234567890123456790\nid3 = generator.generate_id()  # 1234567890123456791\n\n# Properties\nprint(id1 \u003c id2 \u003c id3)  # True - sortable!\nprint(len(str(id1)))    # 19 digits (64-bit)\n"])</script><script>self.__next_f.push([1,"51:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a2\"}]}]\n52:[\"$\",\"h3\",null,{\"id\":\"extracting-metadata\",\"children\":\"Extracting Metadata\"}]\n53:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def parse_snowflake(id):\\n    \\\"\\\"\\\"Extract timestamp, machine_id, sequence từ Snowflake ID\\\"\\\"\\\"\\n    \\n    # Constants\\n    epoch = 1577836800000\\n    sequence_bits = 12\\n    machine_id_bits = 10\\n    \\n    # Extract sequence\\n    sequence = id \u0026 ((1 \u003c\u003c sequence_bits) - 1)\\n    \\n    # Extract machine ID\\n    id \u003e\u003e= sequence_bits\\n    machine_id = id \u0026 ((1 \u003c\u003c machine_id_bits) - 1)\\n    \\n    # Extract timestamp\\n    id \u003e\u003e= machine_id_bits\\n    timestamp_ms = id + epoch\\n    \\n    return {\\n        'timestamp': timestamp_ms,\\n        'datetime': datetime.fromtimestamp(timestamp_ms / 1000),\\n        'machine_id': machine_id,\\n        'sequence': sequence\\n    }\\n\\n# Parse ID\\ninfo = parse_snowflake(1234567890123456789)\\nprint(info)\\n# {\\n#     'timestamp': 1709567890123,\\n#     'datetime': '2024-03-04 12:34:50',\\n#     'machine_id': 1,\\n#     'sequence': 789\\n# }\\n\"}]}]\n54:[\"$\",\"h3\",null,{\"id\":\"trade-offs-1\",\"children\":\"Trade-offs\"}]\n55:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Advantages:\\n- 64-bit (compact, efficient)\\n- Time-ordered (sortable, good for DB)\\n- High performance (no coordination)\\n- Decentralized (no single point of failure)\\n- Human-debuggable (extract timestamp)\\n- Industry proven (Twitter, Discord, Instagram)\\n\\nDisadvantages:\\n- Machine ID management (configuration needed)\\n- Clock synchronization required (NTP)\\n- 69 year limit (need to reset epoch)\\n- Sequence exhaustion trong same millisecond (rare)\\n\"}]}]\n56:[\"$\",\"h3\",null,{\"id\":\"clock-skew-problem\",\"children\":\"Clock Skew Problem\"}]\n57:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\n58:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Machine A clock: 10:00:00.000\\nMachine B clock: 10:00:05.000 (5 seconds ahead)\\n\\nMachine B generates: ID = 1000005000...\\nMachine A generates: ID = 1000000000... (smaller!)\\n\\nID từ Machine A \u003c ID từ Machine B về giá trị\\nnhưng generated SAU về thời gian!\\n\\n→ Ordering broken\\n\"}]}]\n59:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solutions:\"}]}]\n5a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. NTP synchronization (recommended)\\n   - Keep clocks synchronized (\u003c 100ms drift)\\n   - Monitor clock skew\\n   - Alert nếu drift \u003e threshold\\n\\n2. Refuse generation if clock goes backwards\\n   - Check: current_time \u003c last_time\\n   - Throw error hoặc wait\\n   - Tradeoff: Availability giảm\\n\\n3. Use logical clocks (Lamport, Vector)\\n   - Không depend vào wall clock\\n   - Complex implementation\\n\"}]}]\n5b:[\"$\",\"h3\",null,{\"id\":\"khi-nào-dùng-snowflake\",\"children\":\"Khi Nào Dùng Snowflake?\"}]\n5c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Sử dụng Snowflake khi:\\n✓ Need time-ordered IDs\\n✓ Database performance critical\\n✓ Need compact 64-bit IDs\\n✓ Need human-debuggable IDs\\n✓ High throughput (millions IDs/sec)\\n✓ Can manage machine IDs\\n\\nTránh Snowflake khi:\\n✗ Cannot sync clocks (NTP unreliable)\\n✗ Simplicity \u003e Performance\\n✗ Không muốn manage machine IDs\\n✗ Need truly random IDs\\n\"}]}]\n5d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Personal experience:\"}]}]\n5e:[\"$\",\"p\",null,{\"children\":\"Snowflake là go-to choice cho high-scale systems. Twitter, Discord, Instagram đều dùng.\"}]\n5f:[\"$\",\"p\",null,{\"children\":\"Tôi recommend Snowflake cho:\"}]\n60:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"High-traffic APIs\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Time-series data\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Logging systems\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Event sourcing\"}],\"\\n\"]}]\n61:[\"$\",\"h2\",null,{\"id\":\"comparison-uuid-vs-snowflake\",\"children\":\"Comparison: UUID vs Snowflake\"}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"┌─────────────────┬─"])</script><script>self.__next_f.push([1,"─────────────┬──────────────┐\\n│                 │     UUID     │  Snowflake   │\\n├─────────────────┼──────────────┼──────────────┤\\n│ Size            │   128-bit    │    64-bit    │\\n│ Uniqueness      │  Guaranteed  │  Guaranteed  │\\n│ Sortable        │      No      │     Yes      │\\n│ DB Performance  │    Medium    │     High     │\\n│ Implementation  │     Easy     │    Medium    │\\n│ Configuration   │     None     │  Machine ID  │\\n│ Dependencies    │     None     │   NTP sync   │\\n│ Readability     │     Poor     │     Good     │\\n│ Industry usage  │   Very high  │     High     │\\n└─────────────────┴──────────────┴──────────────┘\\n\"}]}]\n63:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\n64:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def choose_id_strategy(requirements):\\n    if requirements.simplicity_critical:\\n        return \\\"UUID\\\"\\n    \\n    if requirements.need_ordering:\\n        return \\\"Snowflake\\\"\\n    \\n    if requirements.db_performance_critical:\\n        return \\\"Snowflake\\\"\\n    \\n    if requirements.cannot_manage_machine_ids:\\n        return \\\"UUID\\\"\\n    \\n    if requirements.cannot_sync_clocks:\\n        return \\\"UUID\\\"\\n    \\n    # Default\\n    return \\\"UUID\\\"  # Safest choice\\n\"}]}]\n65:[\"$\",\"h2\",null,{\"id\":\"the-event-ordering-problem\",\"children\":\"The Event Ordering Problem\"}]\n66:[\"$\",\"p\",null,{\"children\":\"ID generation solve uniqueness. Nhưng còn ordering?\"}]\n67:[\"$\",\"h3\",null,{\"id\":\"problem-statement\",\"children\":\"Problem Statement\"}]\n68:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Service A (Machine 1):\\n- Event 1 happens at 10:00:00.000 → Generate ID = 100\\n- Event 2 happens at 10:00:00.001 → Generate ID = 101\\n\\nService B (Machine 2, clock ahead 5ms):\\n- Event 3 happens at 10:00:00.003 → Generate ID = 108\\n\\nTimeline:\\nEvent 1 (10:00:00.000) → ID = 100\\nEvent 2 (10:00:00.001) → ID = 101\\nEvent 3 (10:00:00.003) → ID = 108\\n\\nSort by ID:\\n100 \u003c 101 \u003c 108 ✓ Correct order\\n\\nBut if Machine 2 clock ahead:\\nEvent 1 (10:00:00.000) → ID = 100\\nEvent 3 (10:00:00.003) → ID = 95  (Machine 2 clock behind!)\\nEvent 2 (10:00:00.001) → ID = 101\\n\\nSort by ID:\\n95 \u003c 100 \u003c 101 ✗ Wrong order! (Event 3 should be last)\\n\"}]}]\n69:[\"$\",\"h3\",null,{\"id\":\"why-ordering-matters\",\"children\":\"Why Ordering Matters\"}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example 1: Bank transactions\"}]}]\n6b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Event 1: Deposit $100  (balance = $100)\\nEvent 2: Withdraw $50  (balance = $50)\\nEvent 3: Withdraw $40  (balance = $10)\\n\\nCorrect order: $0 → $100 → $50 → $10 ✓\\n\\nWrong order:\\nEvent 2 first → Insufficient funds! ✗\\nEvent 3 first → Insufficient funds! ✗\\n\"}]}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example 2: Social media\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User posts:\\nPost 1: \\\"Giới thiệu dự án\\\"\\nPost 2: \\\"Update tiến độ\\\"\\nPost 3: \\\"Kết quả cuối cùng\\\"\\n\\nCorrect order: Logical flow ✓\\n\\nWrong order: \\\"Kết quả\\\" appear trước \\\"Giới thiệu\\\" ✗\\n→ Confused readers\\n\"}]}]\n6e:[\"$\",\"h3\",null,{\"id\":\"solutions-to-ordering\",\"children\":\"Solutions to Ordering\"}]\n6f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution 1: Lamport Timestamps\"}]}]\n70:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class LamportClock:\\n    def __init__(self):\\n        self.time = 0\\n        self.lock = threading.Lock()\\n    \\n    def tick(self):\\n        \\\"\\\"\\\"Increment trước mỗi event\\\"\\\"\\\"\\n        with self.lock:\\n            self.time += 1\\n            return self.time\\n    \\n    def"])</script><script>self.__next_f.push([1," update(self, received_time):\\n        \\\"\\\"\\\"Update khi nhận message từ process khác\\\"\\\"\\\"\\n        with self.lock:\\n            self.time = max(self.time, received_time) + 1\\n            return self.time\\n\\n# Process A\\nclock_a = LamportClock()\\ntime_1 = clock_a.tick()  # 1\\ntime_2 = clock_a.tick()  # 2\\n\\n# Process B nhận message từ A với time = 2\\nclock_b = LamportClock()\\ntime_3 = clock_b.update(2)  # max(0, 2) + 1 = 3\\ntime_4 = clock_b.tick()     # 4\\n\\n# Guarantee: time_1 \u003c time_2 \u003c time_3 \u003c time_4\\n\"}]}]\n71:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Properties:\"}]}]\n72:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Happened-before relationship preserved\\nNo need wall clock\\nSimple algorithm\\n\\nKhông biết absolute time\\nKhông detect concurrent events\\nNeed message passing\\n\"}]}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution 2: Vector Clocks\"}]}]\na3:T69e,"])</script><script>self.__next_f.push([1,"class VectorClock:\n    def __init__(self, process_id, num_processes):\n        self.process_id = process_id\n        self.clock = [0] * num_processes\n        self.lock = threading.Lock()\n    \n    def tick(self):\n        \"\"\"Increment own counter\"\"\"\n        with self.lock:\n            self.clock[self.process_id] += 1\n            return self.clock.copy()\n    \n    def update(self, received_clock):\n        \"\"\"Merge với received vector clock\"\"\"\n        with self.lock:\n            for i in range(len(self.clock)):\n                self.clock[i] = max(self.clock[i], received_clock[i])\n            self.clock[self.process_id] += 1\n            return self.clock.copy()\n    \n    def compare(self, other_clock):\n        \"\"\"So sánh 2 vector clocks\"\"\"\n        less = all(self.clock[i] \u003c= other_clock[i] for i in range(len(self.clock)))\n        greater = all(self.clock[i] \u003e= other_clock[i] for i in range(len(self.clock)))\n        \n        if less and not greater:\n            return \"BEFORE\"  # self happened before other\n        elif greater and not less:\n            return \"AFTER\"   # self happened after other\n        elif self.clock == other_clock:\n            return \"EQUAL\"\n        else:\n            return \"CONCURRENT\"  # Cannot determine order\n\n# 3 processes\nclock_a = VectorClock(0, 3)  # Process A\nclock_b = VectorClock(1, 3)  # Process B\nclock_c = VectorClock(2, 3)  # Process C\n\n# Process A events\nevent_1 = clock_a.tick()  # [1, 0, 0]\nevent_2 = clock_a.tick()  # [2, 0, 0]\n\n# Process B nhận message từ A\nevent_3 = clock_b.update(event_2)  # [2, 1, 0]\n\n# Process C độc lập\nevent_4 = clock_c.tick()  # [0, 0, 1]\n\n# Compare\nclock_b.compare(event_4)  # \"CONCURRENT\" - cannot order!\n"])</script><script>self.__next_f.push([1,"74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a3\"}]}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution 3: Hybrid Logical Clocks (HLC)\"}]}]\n76:[\"$\",\"p\",null,{\"children\":\"Best of both worlds: Physical time + Logical counter\"}]\na4:T5e1,"])</script><script>self.__next_f.push([1,"class HybridLogicalClock:\n    def __init__(self):\n        self.pt = 0  # Physical time\n        self.lc = 0  # Logical counter\n        self.lock = threading.Lock()\n    \n    def now(self):\n        \"\"\"Generate timestamp cho event\"\"\"\n        with self.lock:\n            pt_new = self._physical_time()\n            \n            if pt_new \u003e self.pt:\n                self.pt = pt_new\n                self.lc = 0\n            else:\n                self.lc += 1\n            \n            return (self.pt, self.lc)\n    \n    def update(self, received_pt, received_lc):\n        \"\"\"Update khi nhận message\"\"\"\n        with self.lock:\n            pt_new = self._physical_time()\n            \n            if received_pt \u003e self.pt and received_pt \u003e pt_new:\n                self.pt = received_pt\n                self.lc = received_lc + 1\n            elif received_pt == pt_new and received_pt == self.pt:\n                self.lc = max(self.lc, received_lc) + 1\n            elif pt_new \u003e self.pt and pt_new \u003e received_pt:\n                self.pt = pt_new\n                self.lc = 0\n            else:\n                self.lc += 1\n            \n            return (self.pt, self.lc)\n    \n    def _physical_time(self):\n        return int(time.time() * 1000)  # milliseconds\n\n# Usage\nhlc = HybridLogicalClock()\n\nevent_1 = hlc.now()  # (1709567890123, 0)\nevent_2 = hlc.now()  # (1709567890124, 0)\nevent_3 = hlc.now()  # (1709567890124, 1) - same ms, increment lc\n\n# Compare\nevent_1 \u003c event_2 \u003c event_3  # ✓ Total order preserved\n"])</script><script>self.__next_f.push([1,"77:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a4\"}]}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Trade-offs:\"}]}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Lamport:\\nSimple\\nPartial order\\nCannot detect concurrency\\n\\nVector:\\nDetect concurrency\\nFull causality\\nO(N) storage (N = num processes)\\nComplex\\n\\nHLC:\\nClose to physical time\\nTotal order\\nCompact (2 numbers)\\nStill need clock sync (loosely)\\n\"}]}]\n7a:[\"$\",\"h2\",null,{\"id\":\"ordering-vs-uniqueness-trade-off\",\"children\":\"Ordering vs Uniqueness Trade-off\"}]\n7b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The fundamental tension:\"}]}]\n7c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Uniqueness: IDs không conflict\\nOrdering:   IDs reflect true chronological order\\n\\nCannot have perfect both với decentralized generation\\n\"}]}]\n7d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Options:\"}]}]\n7e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Perfect uniqueness, no ordering\\n   → UUID v4\\n   → Completely random\\n   → No coordination\\n\\n2. Good uniqueness, approximate ordering\\n   → Snowflake\\n   → Time-ordered (với clock sync)\\n   → Machine ID prevents conflicts\\n\\n3. Perfect ordering, coordination required\\n   → Central ID server\\n   → Single point of failure\\n   → Bottleneck\\n   → Not scalable\\n\\nChoose based on priorities\\n\"}]}]\n7f:[\"$\",\"h2\",null,{\"id\":\"practical-recommendations\",\"children\":\"Practical Recommendations\"}]\n80:[\"$\",\"h3\",null,{\"id\":\"for-most-applications\",\"children\":\"For Most Applications\"}]\n81:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Start with UUID v7\"}],\" (timestamp-ordered UUID)\"]}]\n82:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"import uuid\\n\\n# UUID v7: Time-ordered, globally unique\\nid = uuid.uuid7()\\n\\nSimple as UUID v4\\nTime-ordered like Snowflake\\nNo configuration needed\\nStandard library support\\nGood database performance\\n\"}]}]\n83:[\"$\",\"h3\",null,{\"id\":\"for-high-scale-systems\",\"children\":\"For High-Scale Systems\"}]\n84:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Use Snowflake\"}],\" if:\"]}]\n85:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Generating \u003e 100K IDs/second\\n✓ Can manage machine IDs\\n✓ Can synchronize clocks (NTP)\\n✓ Need 64-bit compact IDs\\n✓ Need extract metadata (timestamp, machine)\\n\"}]}]\n86:[\"$\",\"h3\",null,{\"id\":\"for-strict-ordering-requirements\",\"children\":\"For Strict Ordering Requirements\"}]\n87:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Use Hybrid Logical Clocks\"}],\" if:\"]}]\n88:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Ordering critical (financial, audit logs)\\n✓ Can tolerate complexity\\n✓ Need detect causality\\n✓ Distributed events across services\\n\"}]}]\n89:[\"$\",\"h3\",null,{\"id\":\"anti-patterns-to-avoid\",\"children\":\"Anti-Patterns to Avoid\"}]\n8a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"DON'T use auto-increment trong distributed systems\\nDON'T rely on wall clocks for ordering\\nDON'T generate IDs centrally (bottleneck)\\nDON'T ignore clock skew problems\\nDON'T use timestamp alone as ID (not unique)\\n\"}]}]\n8b:[\"$\",\"h2\",null,{\"id\":\"real-world-examples\",\"children\":\"Real-World Examples\"}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Twitter:\"}]}]\n8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Uses Snowflake for tweet IDs\\n- 64-bit\\n- Time-ordered\\n- 200,000+ tweets/second\\n- Can extract timestamp from ID\\n\"}]}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Instagram:\"}]}]\n8f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Modified Snowflake\\n- 41 bits: timestamp\\n- 13 bits: shard ID\\n- 10 bits: sequence\\n- Store photos across 1000+ shards\\n\"}]}]\n90:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Discord:\"}]}]\n91:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Snowflake-based\\n- 64-bit\\n- Extract timestamp for \\\"X minutes ago\\\"\\n- Debug performance by ID ranges"])</script><script>self.__next_f.push([1,"\\n\"}]}]\n92:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"MongoDB:\"}]}]\n93:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"ObjectID (96-bit)\\n- 4 bytes: timestamp\\n- 5 bytes: random value\\n- 3 bytes: counter\\n- Similar concept to Snowflake\\n\"}]}]\n94:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n95:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Auto-increment breaks trong distributed systems:\"}]}]\n96:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Single database: ✓ Works\\nMultiple databases: ✗ Conflicts\\nMultiple services: ✗ Conflicts\\n\\nNeed distributed ID generation strategy\\n\"}]}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"ID generation strategies:\"}]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"UUID:\\n- Simplest\\n- 128-bit\\n- Random\\n- No ordering\\n- Default choice\\n\\nSnowflake:\\n- 64-bit\\n- Time-ordered\\n- Machine ID needed\\n- High performance\\n- Industry standard\\n\\nHLC:\\n- Best ordering\\n- Causality tracking\\n- Most complex\\n- Specialized use cases\\n\"}]}]\n99:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ordering trade-offs:\"}]}]\n9a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"No coordination:   Approximate ordering\\nSome coordination: Good ordering\\nFull coordination: Perfect ordering (không scalable)\\n\\nChoose based on requirements\\n\"}]}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\n9c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"if simple_is_priority:\\n    use UUID_v7\\nelif high_scale and need_ordering:\\n    use Snowflake\\nelif strict_ordering_required:\\n    use HLC\\nelse:\\n    use UUID_v7  # Safe default\\n\"}]}]\n9d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Golden rules:\"}]}]\n9e:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Never use auto-increment trong distributed systems\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"UUID v7 là safe default cho most cases\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Snowflake cho high-scale, time-ordered needs\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Perfect ordering requires coordination (không free)\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Always test clock skew scenarios\"}]}],\"\\n\"]}]\n9f:[\"$\",\"p\",null,{\"children\":\"Distributed ID generation là one of those problems looks simple nhưng subtle complexity.\"}]\na0:[\"$\",\"p\",null,{\"children\":\"Hiểu trade-offs. Choose appropriately. Test thoroughly.\"}]\na1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"IDs là foundation của hệ thống. Get it wrong = pain later.\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"a5:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán | Phase 3 — Distributed Systems Fundamentals | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Hiểu tại sao auto increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade offs. Giải quyết event ordering\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Hiểu tại sao auto increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade offs. Giải quyết event ordering\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-3/lesson/lesson-5-distributed-id-and-ordering\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Distributed ID \u0026 Ordering - Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán | Phase 3 — Distributed Systems Fundamentals\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Hiểu tại sao auto increment breaks trong distributed systems. Master ID generation strategies: UUID, Twitter Snowflake, và trade offs. Giải quyết event ordering\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$La5\",\"14\",{}]]\n"])</script></body></html>

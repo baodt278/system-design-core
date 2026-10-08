@@ -1,0 +1,15 @@
+@82
+┌─────────────────┬──────────────┬──────────────┐
+│                 │     UUID     │  Snowflake   │
+├─────────────────┼──────────────┼──────────────┤
+│ Kích thước      │   128-bit    │    64-bit    │
+│ Tính duy nhất   │   Đảm bảo    │   Đảm bảo    │
+│ Sắp xếp được    │    Không     │      Có      │
+│ Hiệu năng CSDL  │  Trung bình  │     Cao      │
+│ Triển khai      │      Dễ      │  Trung bình  │
+│ Cấu hình        │  Không cần   │  Machine ID  │
+│ Phụ thuộc       │   Không có   │ Đồng bộ NTP  │
+│ Dễ đọc          │     Kém      │     Tốt      │
+│ Mức phổ biến    │   Rất cao    │     Cao      │
+└─────────────────┴──────────────┴──────────────┘
+

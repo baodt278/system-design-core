@@ -1,0 +1,532 @@
+@0 h1
+Reality of Distributed Systems: Failure Models & CAP Thinking
+@1 p
+Tôi còn nhớ lần đầu tiên production system của tôi bị network partition.
+@2 p
+2 giờ sáng. Monitoring alert nổ inh ỏi. Một phần users ở US không login được. Một phần users ở EU login bình thường. Database vẫn healthy. Application servers vẫn running.
+@3 p
+Tôi hoang mang total. Kiểm tra logs, không thấy errors. Kiểm tra CPU, memory, tất cả normal.
+@4 p
+Senior architect online: *"Check network connectivity giữa US và EU datacenters."*
+@5 p
+Bingo. AWS có network issue. US datacenter không connect được EU datacenter. Hệ thống đang ở trạng thái **network partition**.
+@6 p
+Đó là lúc tôi học bài học đắt giá nhất: **Distributed systems thì luôn luôn fail. Không phải "if", mà là "when".**
+@7 h2
+Tại Sao Distributed Systems Khác Biệt?
+@8 h3
+Single Machine vs Distributed: Assumptions Bị Phá Vỡ
+@9 p
+**Single machine (local code):**
+@10 p
+**Distributed system (network call):**
+@11 p
+**Key insight:** Khi move từ single machine sang distributed, mọi assumption bạn từng biết đều sai.
+@12 h3
+The Fallacies of Distributed Computing
+@13 p
+Peter Deutsch và James Gosling đã tổng kết 8 giả định sai lầm mà developers thường mắc phải:
+@14 pre
+1. The network is reliable
+   → Reality: Packets drop, connections fail
+
+2. Latency is zero  
+   → Reality: Network calls take 10-1000ms
+
+3. Bandwidth is infinite
+   → Reality: Network có giới hạn throughput
+
+4. The network is secure
+   → Reality: Data có thể bị intercept
+
+5. Topology doesn't change
+   → Reality: Servers die, networks reconfigure
+
+6. There is one administrator
+   → Reality: Multiple teams, multiple configs
+
+7. Transport cost is zero
+   → Reality: Serialization, network transfer cost
+
+8. The network is homogeneous
+   → Reality: Different protocols, versions
+
+@15 p
+**Lesson:** Thiết kế distributed system = Thiết kế cho failure.
+@16 h2
+Murphy's Law in Distributed Systems
+@17 p
+**Murphy's Law:** *"Anything that can go wrong, will go wrong."*
+@18 p
+Trong distributed systems, law này được amplified:
+@19 p
+**"Everything that can go wrong, WILL go wrong. Simultaneously. At 3am. On Black Friday."**
+@20 h3
+Real Production Failures Tôi Đã Trải Qua
+@21 p
+**Failure 1: The Silent Data Corruption**
+@22 pre
+Scenario:
+- Database replicate Master → Slave
+- Network packet corruption (1 in 10 million)
+- Slave nhận corrupted data
+- Application read từ Slave
+- Return sai data cho users (subtle bugs)
+
+Impact: 3 days để detect, 1 week để fix
+
+@23 p
+**Failure 2: The Cascading Timeout**
+@24 pre
+Scenario:
+- Service A call Service B (timeout 30s)
+- Service B bị slow (disk issue)
+- Service A đợi 30s per request
+- Requests queue up
+- Service A memory exhausted
+- Service A crashes
+- Services depend on A also fail
+
+Impact: Entire system down 2 hours
+
+@25 p
+**Failure 3: The Clock Skew**
+@26 pre
+Scenario:  
+- Server 1 clock: 10:00:00
+- Server 2 clock: 09:59:30 (30s behind)
+- Event A happens on Server 1 at 10:00:00
+- Event B happens on Server 2 at 09:59:45
+- System thinks B happened before A (wrong!)
+
+Impact: Transaction ordering corrupted
+
+@27 p
+**Takeaway:** Không có failure scenario nào "too weird". Tất cả đều xảy ra trong production.
+@28 h2
+Types of Failures in Distributed Systems
+@29 h3
+Failure Type 1: Network Partition
+@30 p
+**Định nghĩa:** Một phần hệ thống không communicate được với phần khác, nhưng cả hai vẫn running.
+@31 pre
+graph TB
+    subgraph "US Datacenter"
+        US1[Server US-1]
+        US2[Server US-2]
+    end
+    
+    subgraph "EU Datacenter"
+        EU1[Server EU-1]
+        EU2[Server EU-2]
+    end
+    
+    US1 <--> US2
+    EU1 <--> EU2
+    US1 -.X Network Partition X.-> EU1
+    US2 -.X Network Partition X.-> EU2
+    
+    style US1 fill:#51cf66
+    style US2 fill:#51cf66
+    style EU1 fill:#51cf66
+    style EU2 fill:#51cf66
+@32 p
+*Network partition: US và EU datacenters không connect được nhau, nhưng servers trong mỗi datacenter vẫn hoạt động bình thường*
+@33 p
+**Scenario thực tế:**
+@34 pre
+Timeline:
+10:00:00 - Network partition xảy ra
+10:00:01 - User A (US) updates profile
+10:00:02 - User B (EU) reads profile → Sees old data
+10:00:30 - Network heals
+10:00:31 - EU datacenter receives update
+10:00:32 - User B reads again → Sees new data
+
+Problem: 30 giây inconsistency
+
+@35 p
+**Tại sao partition xảy ra?**
+@36 pre
+Common causes:
+- Network equipment failure (switch, router)
+- Fiber optic cable cut
+- AWS/GCP regional issues
+- DDoS attacks
+- Misconfiguration
+- Too much traffic (congestion)
+
+@37 p
+**Không thể prevent, chỉ có thể handle:**
+@38 h3
+Failure Type 2: High Latency
+@39 p
+**Định nghĩa:** Network call chậm hơn expected, nhưng eventually complete.
+@40 p
+**Problem:** Slow ≠ Down. System vẫn hoạt động nhưng UX terrible.
+@41 pre
+Normal latency: 50ms
+High latency:   5000ms (100x slower)
+
+User experience:
+- Click button
+- Wait 5 seconds
+- Still loading...
+- Click again (duplicate request!)
+- Wait more...
+- Give up, close tab
+
+@42 p
+**Cascading effect:**
+@43 pre
+sequenceDiagram
+    participant User
+    participant API
+    participant Service
+    participant DB
+    
+    User->>API: Request (timeout 10s)
+    API->>Service: Call service (timeout 8s)
+    Service->>DB: Query (slow, takes 9s)
+    
+    Note over Service,DB: DB slow due to load
+    Note over API,Service: Service timeout!
+    Service--xAPI: Timeout error
+    API--xUser: 500 error
+    
+    Note over User: User retries
+    User->>API: Retry request
+    Note over API,DB: More load, slower
+@44 p
+*High latency gây timeout, timeout gây retry, retry gây more load, more load gây slower → Death spiral*
+@45 p
+**Solutions:**
+@46 h3
+Failure Type 3: Packet Loss
+@47 p
+**Định nghĩa:** Network packets không đến destination.
+@48 pre
+Send:     [Packet 1] [Packet 2] [Packet 3] [Packet 4]
+Receive:  [Packet 1] [        ] [Packet 3] [Packet 4]
+                     ↑ Lost!
+
+@49 p
+**Typical packet loss rates:**
+@50 pre
+LAN (local network):    0.01% - 0.1%
+WiFi:                   1% - 5%
+Internet (good):        0.1% - 1%
+Internet (poor):        5% - 20%
+
+@51 p
+**Impact:**
+@52 p
+**Application-level handling:**
+@53 h3
+Failure Type 4: Message Duplication
+@54 p
+**Định nghĩa:** Same message delivered multiple times.
+@55 p
+**Scenario:**
+@56 pre
+sequenceDiagram
+    participant Client
+    participant Server
+    participant DB
+    
+    Client->>Server: Create order
+    Server->>DB: INSERT order
+    DB-->>Server: Success
+    
+    Note over Server,Client: Response packet lost!
+    Server--xClient: (no response received)
+    
+    Note over Client: Client timeout, retry
+    Client->>Server: Create order (again)
+    Server->>DB: INSERT order (duplicate!)
+    DB-->>Server: Success
+    Server-->>Client: Success
+    
+    Note over DB: Now have 2 orders!
+@57 p
+*Network packet loss gây duplicate messages khi client retry*
+@58 p
+**Real-world impact:**
+@59 pre
+Scenario: Payment processing
+1. User click "Pay $100"
+2. Request timeout
+3. User click again
+4. Both requests succeed
+5. User charged $200!
+
+💸 Company lawsuit, refunds, bad press
+
+@60 p
+**Solutions:**
+@61 h3
+Failure Type 5: Partial Failure
+@62 p
+**Định nghĩa:** Một phần hệ thống fail, phần khác vẫn hoạt động.
+@63 p
+**Đây là failure type nguy hiểm nhất.**
+@64 pre
+Scenario: E-commerce checkout
+
+Step 1: Charge credit card     → Success
+Step 2: Create order in DB     → Success  
+Step 3: Send confirmation email → Email service down
+Step 4: Update inventory        → Inventory service slow, timeout
+
+Result:
+- User charged
+- Order created
+- No email (user confused)
+- Inventory not updated (oversell risk)
+
+Partial success = Inconsistent state
+
+@65 pre
+graph LR
+    A[Checkout Request] --> B[Payment Service]
+    B --> C[Order Service]
+    C --> D[Email Service]
+    C --> E[Inventory Service]
+    
+    B -.Success.-> B
+    C -.Success.-> C
+    D -.Failed X.-> D
+    E -.Timeout X.-> E
+    
+    style B fill:#51cf66
+    style C fill:#51cf66
+    style D fill:#ff6b6b
+    style E fill:#ff6b6b
+@66 p
+*Partial failure: Một số services succeed, một số fail, dẫn đến inconsistent state*
+@67 p
+**Solutions:**
+@68 h2
+CAP Theorem: The Fundamental Trade-off
+@69 h3
+Định Nghĩa CAP
+@70 p
+Trong distributed database với network partition, chỉ có thể chọn 2 trong 3:
+@71 pre
+C (Consistency):
+    Mọi read nhận được latest write
+    Mọi node thấy cùng data cùng lúc
+
+A (Availability):  
+    Mọi request nhận được response (non-error)
+    System luôn hoạt động
+
+P (Partition Tolerance):
+    System tiếp tục hoạt động khi có network partition
+    Nodes không communicate được nhau
+
+@72 p
+**Reality:** Network partition LUÔN xảy ra (P là mandatory).
+@73 p
+→ **Phải chọn giữa C hoặc A.**
+@74 h3
+CAP Intuition Qua Ví Dụ Thực Tế
+@75 p
+**Scenario: Banking App với 2 Datacenters**
+@76 pre
+graph LR
+    subgraph "US Datacenter"
+        US_DB[(Database<br/>Balance: $100)]
+    end
+    
+    subgraph "EU Datacenter"
+        EU_DB[(Database<br/>Balance: $100)]
+    end
+    
+    US_DB -.X Network Partition.-> EU_DB
+    
+    USER_A[User A<br/>US] --> US_DB
+    USER_B[User B<br/>EU] --> EU_DB
+@77 p
+**Network partition happens. What to do?**
+@78 h3
+Choice 1: CP (Consistency + Partition Tolerance)
+@79 p
+**Strategy:** Sacrifice availability để đảm bảo consistency.
+@80 p
+**Trade-offs:**
+@81 pre
+Data luôn consistent
+No risk of conflicting updates
+Good cho: Banking, payments, inventory
+
+System down khi partition
+Bad UX
+Lost transactions
+
+@82 h3
+Choice 2: AP (Availability + Partition Tolerance)
+@83 p
+**Strategy:** Sacrifice consistency để đảm bảo availability.
+@84 p
+**Conflict resolution strategies:**
+@85 p
+**Trade-offs:**
+@86 pre
+System luôn available
+Good UX
+Good cho: Social media, recommendations, analytics
+
+Data có thể inconsistent
+Need conflict resolution
+Eventual consistency (not immediate)
+
+@87 h3
+So Sánh CP vs AP
+@88 pre
+Banking App:
+Choice: CP
+Why? Data accuracy > Availability
+User có thể đợi, không thể accept wrong balance
+
+Social Media Feed:
+Choice: AP  
+Why? Availability > Strict consistency
+User see slightly stale likes là OK
+
+E-commerce Inventory:
+Choice: CP
+Why? Cannot oversell products
+Better show "unavailable" than sell đã hết
+
+@89 h2
+Trade-off Thinking Framework
+@90 h3
+Step 1: Identify Requirements
+@91 pre
+Tự hỏi:
+1. Consistency critical không?
+   - Wrong data = big problem? (Banking: YES)
+   - Stale data acceptable? (Social feed: YES)
+
+2. Availability critical không?
+   - Downtime acceptable? (Internal tool: YES)
+   - Must always work? (Public API: YES)
+
+3. Partition frequency?
+   - Single datacenter: Rare
+   - Multi-region: Common
+
+@92 h3
+Step 2: Analyze Trade-offs
+@93 pre
+CP System:
+When: Financial transactions, inventory, bookings
+Accept: Downtime during partitions
+Gain: Data accuracy
+
+AP System:
+When: Social features, analytics, recommendations  
+Accept: Eventual consistency
+Gain: Always available
+
+CA System:
+Impossible in distributed systems
+   (Network partition luôn happen)
+
+@94 h3
+Step 3: Hybrid Approaches
+@95 p
+**Reality:** Không phải all-or-nothing. Có thể mix.
+@96 h2
+Practical Design Principles
+@97 h3
+Principle 1: Design for Failure
+@98 p
+**Assume everything fails.**
+@99 h3
+Principle 2: Fail Fast
+@100 p
+**Don't wait forever. Fail quickly và retry.**
+@101 h3
+Principle 3: Idempotency
+@102 p
+**Operations phải safe để retry.**
+@103 h3
+Principle 4: Eventual Consistency Là OK
+@104 p
+**Không phải mọi thứ cần immediate consistency.**
+@105 h2
+Key Takeaways
+@106 p
+**Distributed systems failures:**
+@107 pre
+1. Network partition: Nodes không communicate
+2. High latency: Slow ≠ Down  
+3. Packet loss: Messages disappear
+4. Message duplication: Same message nhiều lần
+5. Partial failure: Some succeed, some fail
+
+@108 p
+**CAP theorem:**
+@109 pre
+Cannot have all 3: Consistency, Availability, Partition Tolerance
+
+Partition tolerance là mandatory (network luôn fail)
+
+→ Choose CP (consistency) or AP (availability)
+
+CP: Banking, payments, inventory
+AP: Social media, analytics, recommendations
+
+@110 p
+**Design principles:**
+@111 pre
+1. Design for failure (assume everything fails)
+2. Fail fast (short timeouts, quick retries)
+3. Idempotency (safe to retry)
+4. Eventual consistency (acceptable cho nhiều cases)
+
+@112 p
+**Trade-off thinking:**
+@113 pre
+No perfect solution.
+
+Every choice sacrifices something:
+- CP sacrifices availability
+- AP sacrifices consistency
+- Idempotency sacrifices simplicity
+- Retries sacrifice latency
+
+Choose based on business requirements, không phải technical preference.
+
+@114 p
+**Murphy's Law is real:**
+@115 pre
+"If it can fail, it will fail."
+
+Trong distributed systems:
+"Everything will fail. Simultaneously. At worst time."
+
+Design accordingly.
+
+@116 p
+**Câu hỏi tự kiểm tra:**
+@117 p
+Khi design distributed system, tự hỏi:
+@118 li
+*Feature này cần consistency hay availability hơn?*
+@119 li
+*Operations có idempotent không?*
+@120 li
+*Timeout values có reasonable không?*
+@121 li
+*System handle network partition thế nào?*
+@122 li
+*Có fallback cho mọi external call không?*
+@123 p
+Nếu không trả lời được → Chưa ready cho production.
+@124 p
+Distributed systems khó. Nhưng với đúng mindset (design for failure) và đúng patterns (timeouts, retries, idempotency), bạn có thể build systems resilient và reliable.
+@125 p
+**Fail gracefully > Never fail.**

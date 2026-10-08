@@ -1,0 +1,577 @@
+@0 h1
+Distributed Transactions & Data Integrity
+@1 p
+Tôi còn nhớ ngày hệ thống payment đầu tiên tôi thiết kế bị bug nghiêm trọng.
+@2 p
+User charge thẻ thành công. Nhưng order không được tạo. Tiền mất, không có order.
+@3 p
+User complain. Finance team panic. CEO gọi họp khẩn cấp.
+@4 p
+Lúc đó tôi nghĩ: *"Sao transaction không work? Tôi đã dùng BEGIN TRANSACTION mà!"*
+@5 p
+Senior architect nhìn code, lắc đầu: *"Em đang làm distributed system. ACID transactions không work nữa."*
+@6 p
+Đó là ngày tôi học bài học đắt giá nhất về distributed transactions.
+@7 h2
+Tại Sao ACID Breaks Trong Distributed Systems?
+@8 h3
+ACID Trong Single Database
+@9 p
+Trong monolithic application với single database, ACID transactions work perfectly:
+@10 p
+**ACID guarantees:**
+@11 pre
+Atomicity:   All or nothing (cả 2 updates hoặc không update gì)
+Consistency: Data valid (không thể âm balance)
+Isolation:   Transactions không thấy partial changes
+Durability:  Committed data persistent
+
+@12 h3
+ACID Breaks Trong Distributed Systems
+@13 p
+Giờ chuyển sang microservices:
+@14 pre
+sequenceDiagram
+    participant Client
+    participant OrderService
+    participant PaymentService
+    participant InventoryService
+    
+    Client->>OrderService: Create Order
+    OrderService->>PaymentService: Charge Card
+    PaymentService-->>OrderService: Success
+    OrderService->>InventoryService: Reserve Items
+    InventoryService-->>OrderService: Out of Stock!
+    Note over OrderService: Problem: Payment charged<br/>but order fails
+@15 p
+*Flow tạo order qua nhiều services - không thể dùng database transaction*
+@16 p
+**Problem:**
+@17 pre
+1. Payment Service charges card → Success
+2. Inventory Service checks stock → Out of stock!
+3. Order Service fails
+
+Result:
+Payment charged (money taken)
+Order not created
+Inventory not reserved
+
+Customer: "Tại sao tiền bị trừ mà không có order?"
+
+@18 p
+**Tại sao không thể rollback?**
+@19 pre
+Cannot use database transaction:
+   - 3 services = 3 different databases
+   - Cannot rollback across databases
+   - Payment Service already committed
+
+Cannot undo payment:
+   - Already sent to payment gateway
+   - External system, không control được
+   - Cannot call "db.rollback()"
+
+@20 p
+**Root cause:**
+@21 pre
+ACID assumptions break khi:
+- Multiple databases involved
+- Multiple services involved  
+- External systems involved
+- Network calls involved
+
+Network is unreliable → ACID cannot be guaranteed
+
+@22 h2
+2-Phase Commit (2PC): The Traditional Solution
+@23 h3
+How 2PC Works
+@24 p
+**2-Phase Commit = Protocol để coordinate transactions across multiple databases**
+@25 pre
+sequenceDiagram
+    participant Coord as Coordinator
+    participant DB1 as Database 1
+    participant DB2 as Database 2
+    participant DB3 as Database 3
+    
+    Note over Coord: Phase 1: Prepare
+    Coord->>DB1: PREPARE to commit
+    Coord->>DB2: PREPARE to commit
+    Coord->>DB3: PREPARE to commit
+    
+    DB1-->>Coord: VOTE: YES
+    DB2-->>Coord: VOTE: YES
+    DB3-->>Coord: VOTE: YES
+    
+    Note over Coord: All votes YES
+    Note over Coord: Phase 2: Commit
+    
+    Coord->>DB1: COMMIT
+    Coord->>DB2: COMMIT
+    Coord->>DB3: COMMIT
+    
+    DB1-->>Coord: COMMITTED
+    DB2-->>Coord: COMMITTED
+    DB3-->>Coord: COMMITTED
+@26 p
+*2PC: Phase 1 prepare, Phase 2 commit nếu tất cả agree*
+@27 p
+**Phase 1: Prepare**
+@28 pre
+Coordinator → All participants: "Prepare to commit"
+
+Each participant:
+1. Lock resources
+2. Write to transaction log
+3. Ready to commit BUT don't commit yet
+4. Vote YES or NO
+
+If any participant votes NO → Abort
+If all vote YES → Proceed to Phase 2
+
+@29 p
+**Phase 2: Commit**
+@30 pre
+If all YES:
+   Coordinator → All: "COMMIT"
+   Participants commit changes
+   Release locks
+
+If any NO:
+   Coordinator → All: "ABORT"
+   Participants rollback
+   Release locks
+
+@31 h3
+2PC Implementation Example
+@32 h3
+The Fatal Flaw: Blocking
+@33 p
+**Problem: Coordinator crashes sau Phase 1**
+@34 pre
+Timeline:
+1. Coordinator sends PREPARE to all participants
+2. All participants vote YES, lock resources, wait...
+3. Coordinator CRASHES (before sending COMMIT)
+4. Participants stuck waiting forever
+5. Resources LOCKED indefinitely
+
+Result:
+Databases locked
+Cannot proceed
+Cannot timeout (don't know if coordinator will recover)
+System BLOCKED
+
+@35 pre
+sequenceDiagram
+    participant Coord as Coordinator
+    participant DB1 as Database 1
+    participant DB2 as Database 2
+    
+    Coord->>DB1: PREPARE
+    Coord->>DB2: PREPARE
+    DB1-->>Coord: YES (locked)
+    DB2-->>Coord: YES (locked)
+    
+    Note over Coord: CRASH! 💥
+    
+    Note over DB1,DB2: Waiting forever...<br/>Resources LOCKED
+@36 p
+*Coordinator crash sau prepare phase → Databases bị lock vô thời hạn*
+@37 p
+**Why can't timeout?**
+@38 pre
+Participant dilemma:
+- Không biết Coordinator đã send COMMIT chưa
+- Không biết participants khác committed chưa
+- Không thể tự quyết định commit hay abort
+- Timeout → Risk inconsistency
+
+→ Must wait for Coordinator recovery
+→ BLOCKING protocol
+
+@39 h3
+2PC Trade-offs
+@40 pre
+2-Phase Commit:
+Strong consistency (ACID maintained)
+All-or-nothing guarantee
+Proven protocol
+
+Blocking (coordinator failure = disaster)
+Performance overhead (2 round trips)
+High latency (wait for slowest participant)
+Reduced availability
+Complex implementation
+
+@41 h3
+Khi Nào Dùng 2PC?
+@42 pre
+Sử dụng 2PC khi:
+✓ Strong consistency absolutely required
+✓ Financial transactions (banking)
+✓ All participants under your control
+✓ Can tolerate blocking
+✓ Low-latency not critical
+
+Tránh 2PC khi:
+✗ Need high availability
+✗ Microservices architecture (external services)
+✗ High throughput required
+✗ Cannot tolerate blocking
+
+@43 p
+**Personal opinion:**
+@44 p
+Tôi tránh 2PC trong microservices. Blocking risk quá cao. Complexity không đáng.
+@45 p
+99% cases có better solutions: Saga pattern.
+@46 h2
+Saga Pattern: The Practical Solution
+@47 h3
+Saga Concept
+@48 p
+**Saga = Chuỗi local transactions + compensation**
+@49 p
+Thay vì 1 distributed transaction:
+@50 pre
+Old way (2PC):
+BEGIN_DISTRIBUTED_TRANSACTION
+  Payment Service: charge
+  Inventory Service: reserve
+  Order Service: create
+COMMIT_DISTRIBUTED_TRANSACTION
+
+@51 p
+Dùng chuỗi local transactions:
+@52 pre
+Saga way:
+Transaction 1: Payment Service charge (local commit)
+Transaction 2: Inventory Service reserve (local commit)
+Transaction 3: Order Service create (local commit)
+
+If any fails → Run compensation transactions backward
+
+@53 pre
+graph TB
+    T1[Transaction 1<br/>Payment: Charge]
+    T2[Transaction 2<br/>Inventory: Reserve]
+    T3[Transaction 3<br/>Order: Create]
+    
+    C1[Compensate 1<br/>Payment: Refund]
+    C2[Compensate 2<br/>Inventory: Release]
+    
+    T1-->|Success|T2
+    T2-->|Success|T3
+    T3-->|Success|Done[Complete]
+    
+    T2-->|Fail|C1
+    T3-->|Fail|C2
+    C2-->C1
+    
+    style Done fill:#51cf66
+    style C1 fill:#ff6b6b
+    style C2 fill:#ff6b6b
+@54 p
+*Saga: Forward transactions + backward compensations nếu fail*
+@55 h3
+Saga Implementation: Orchestration
+@56 p
+**Orchestration = Central coordinator điều phối saga**
+@57 p
+**Output khi success:**
+@58 pre
+Step 1: Charging payment...
+✓ Payment charged: payment_789
+
+Step 2: Reserving inventory...
+✓ Inventory reserved: reservation_321
+
+Step 3: Creating order...
+✓ Order created: order_654
+
+Result: Success
+
+@59 p
+**Output khi fail:**
+@60 pre
+Step 1: Charging payment...
+✓ Payment charged: payment_789
+
+Step 2: Reserving inventory...
+Out of stock!
+
+Saga failed: Out of stock
+
+Starting compensation...
+Compensating: Refund payment
+✓ Payment refunded
+
+Result: Failed - Out of stock
+
+@61 h3
+Saga Implementation: Choreography
+@62 p
+**Choreography = Services tự phối hợp qua events**
+@63 pre
+sequenceDiagram
+    participant PS as Payment Service
+    participant IS as Inventory Service
+    participant OS as Order Service
+    participant EB as Event Bus
+    
+    PS->>EB: payment.charged
+    EB->>IS: (event)
+    IS->>IS: Reserve inventory
+    IS->>EB: inventory.reserved
+    EB->>OS: (event)
+    OS->>OS: Create order
+    
+    alt Success
+        OS->>EB: order.created
+    else Failure
+        OS->>EB: order.failed
+        EB->>IS: (compensate)
+        IS->>EB: inventory.released
+        EB->>PS: (compensate)
+        PS->>EB: payment.refunded
+    end
+@64 p
+*Choreography: Services react to events, tự động compensation*
+@65 h3
+Orchestration vs Choreography
+@66 pre
+Orchestration (Central coordinator):
+Clear flow, dễ debug
+Centralized logic
+Explicit compensation order
+Single point of failure
+Tight coupling to orchestrator
+
+Choreography (Event-driven):
+Loosely coupled
+No single point of failure
+Scalable
+Hard to understand flow
+Hard to debug
+Complex error handling
+
+@67 p
+**My recommendation:**
+@68 pre
+Start với Orchestration:
+- Simpler to understand
+- Easier to debug
+- Clear ownership
+
+Move to Choreography khi:
+- Need extreme decoupling
+- Have event-driven infrastructure
+- Team experienced với async patterns
+
+@69 h2
+Compensation Thinking: The Core Mindset
+@70 h3
+Compensation ≠ Rollback
+@71 p
+**Database rollback:**
+@72 p
+**Saga compensation:**
+@73 p
+**Key difference:**
+@74 pre
+Rollback:     Undo → như không có gì xảy ra
+Compensation: Reverse effect → có audit trail đầy đủ
+
+@75 h3
+Designing Compensating Transactions
+@76 p
+**Rule 1: Compensation phải idempotent**
+@77 p
+**Rule 2: Compensation có thể fail**
+@78 p
+**Rule 3: Some actions cannot be compensated**
+@79 h3
+Compensation Order Matters
+@80 pre
+Forward order:
+1. Charge payment
+2. Reserve inventory  
+3. Send confirmation email ← Non-compensable
+
+Compensation order (REVERSE):
+3. (Cannot undo email - accept it)
+2. Release inventory
+1. Refund payment
+
+Why reverse? Latest changes undo first.
+
+@81 h2
+Idempotency: The Safety Net
+@82 h3
+Định Nghĩa Idempotency
+@83 p
+**Idempotent operation = Gọi nhiều lần = gọi 1 lần**
+@84 pre
+f(x) = y
+f(f(x)) = y  ← Same result
+f(f(f(x))) = y  ← Still same
+
+Example:
+- Set temperature to 20°C → Idempotent
+- Increase temperature by 1°C → NOT idempotent
+
+@85 h3
+Tại Sao Cần Idempotency?
+@86 p
+**Problem: Network unreliability**
+@87 pre
+Timeline:
+1. Client calls API: "Charge $100"
+2. Server processes, charges $100
+3. Server sends response
+4. Network fails before client receives response
+5. Client doesn't know if succeeded
+6. Client retries: "Charge $100" again
+7. Server charges ANOTHER $100
+
+Result: Customer charged $200 instead of $100!
+
+@88 pre
+sequenceDiagram
+    participant Client
+    participant API
+    participant Payment
+    
+    Client->>API: Charge $100
+    API->>Payment: Process
+    Payment-->>API: Success
+    API--xClient: (response lost)
+    
+    Note over Client: Timeout! Retry?
+    
+    Client->>API: Charge $100 (retry)
+    API->>Payment: Process AGAIN
+    Payment-->>API: Success
+    API-->>Client: OK
+    
+    Note over Client: Charged $200! 💸
+@89 p
+*Network failure → Retry → Duplicate charge*
+@90 h3
+Implementing Idempotency
+@91 p
+**Solution 1: Idempotency Key**
+@92 p
+**Implementation details:**
+@93 p
+**Solution 2: Natural Idempotency**
+@94 p
+**Solution 3: Database Constraints**
+@95 h3
+Idempotency Best Practices
+@96 p
+**1. Generate idempotency keys client-side**
+@97 p
+**2. Store idempotency results với TTL**
+@98 pre
+Don't store forever → Waste storage
+TTL 24-48 hours usually enough
+After TTL, new request = new operation (acceptable)
+
+@99 p
+**3. Return same status code cho idempotent requests**
+@100 p
+**4. Idempotency for compensation too**
+@101 h2
+Real-World Example: E-commerce Checkout
+@102 p
+Hãy xem complete example với tất cả concepts:
+@103 h2
+Key Takeaways
+@104 p
+**ACID breaks trong distributed systems:**
+@105 pre
+Single database: ACID works
+Multiple databases/services: ACID impossible
+Network unreliability → Cannot guarantee atomicity
+
+@106 p
+**2-Phase Commit:**
+@107 pre
+Strong consistency
+ACID maintained
+Blocking (fatal flaw)
+Coordinator failure = disaster
+Avoid trong microservices
+
+@108 p
+**Saga Pattern:**
+@109 pre
+Non-blocking
+High availability
+Practical cho microservices
+Eventual consistency
+Compensation complexity
+
+@110 p
+**Orchestration vs Choreography:**
+@111 pre
+Orchestration: Central coordinator (simpler, easier debug)
+Choreography: Event-driven (decoupled, complex)
+
+Start với Orchestration
+
+@112 p
+**Compensation thinking:**
+@113 pre
+- Compensation ≠ Rollback
+- Reverse effect, not undo
+- Must be idempotent
+- Some actions cannot compensate (put last)
+- Order matters (reverse order)
+
+@114 p
+**Idempotency:**
+@115 pre
+- Essential for distributed systems
+- Prevents duplicate operations
+- Use idempotency keys
+- Apply to ALL operations (including compensation)
+- Store results với TTL
+
+@116 p
+**Decision framework:**
+@117 pre
+Need ACID + Can tolerate blocking:
+→ 2-Phase Commit (rare)
+
+Need high availability + Can accept eventual consistency:
+→ Saga Pattern (common)
+
+Implementing Saga:
+- Start simple: Orchestration
+- All operations: Idempotent
+- Non-compensable actions: Last
+- Monitor compensation failures
+
+@118 p
+**Câu hỏi tự kiểm tra:**
+@119 p
+Khi design distributed transaction:
+@120 li
+*Có thực sự cần strong consistency không?*
+@121 li
+*Có thể tolerate eventual consistency không?*
+@122 li
+*Operations nào compensable, không compensable?*
+@123 li
+*Đã implement idempotency chưa?*
+@124 li
+*Compensation order đúng chưa (reverse)?*
+@125 p
+Distributed transactions là hard. Nhưng với Saga + Idempotency, bạn có tools để handle chúng correctly.
+@126 p
+**Remember:** Perfect consistency không achievable trong distributed systems. Goal là đảm bảo eventual consistency với clear compensation paths.

@@ -1,0 +1,421 @@
+@0
+⟦Chiến Lược Phỏng Vấn Thực Chiến|Real Interview Strategy⟧: Áp Dụng ⟦Khung Tư Duy|Framework⟧ Vào Tình Huống Thực Tế
+@1
+Sau khi học ⟦khung tư duy|framework⟧ SNAKE và ⟦tư duy đánh đổi|trade-off thinking⟧, nhiều người hỏi tôi:
+@2
+*"Khung tư duy thì hiểu rồi, nhưng áp dụng vào Twitter, YouTube... thế nào?"*
+@4
+Tôi đã tham gia hơn 50 buổi ⟦phỏng vấn thiết kế hệ thống|system design interviews⟧ (cả với vai trò ⟦người phỏng vấn|interviewer⟧ lẫn ⟦ứng viên|candidate⟧). Tôi nhận ra một quy luật:
+@5
+**⟦Ứng viên|Candidates⟧ trượt không phải vì thiếu kiến thức. Mà vì không biết ⟦người phỏng vấn|interviewer⟧ muốn gì.**
+@6
+Mỗi loại hệ thống có một "câu chuyện" mà ⟦người phỏng vấn|interviewer⟧ chờ đợi. Nếu bạn hiểu câu chuyện đó, bạn sẽ sắp xếp câu trả lời một cách hoàn hảo.
+@7
+Bài này sẽ dạy bạn: **Cách tiếp cận các bài toán ⟦thiết kế hệ thống|system design⟧ phổ biến nhất.**
+@8
+Không phải ⟦kiến trúc|architecture⟧ chi tiết (bạn đã học ở Phần 5). Mà là **⟦chiến lược phỏng vấn|interview strategy⟧**.
+@9
+Tại Sao Cần Chiến Lược Riêng Cho Mỗi Hệ Thống?
+@10
+Quy Luật Đằng Sau Các Câu Hỏi
+@11
+**⟦Người phỏng vấn|Interviewers⟧ không chọn hệ thống một cách ngẫu nhiên.**
+@12
+Mỗi hệ thống kiểm tra một nhóm kỹ năng cụ thể:
+@13
+Twitter/Bảng tin mạng xã hội:
+→ Kiểm tra: Phân phát (fanout), nhất quán cuối cùng, khuếch đại ghi
+→ Câu chuyện: "Làm sao phân phát nội dung tới hàng triệu người?"
+
+YouTube/Nền tảng video:
+→ Kiểm tra: CDN, quy trình mã hoá video, tối ưu lưu trữ
+→ Câu chuyện: "Làm sao phân phối video trên toàn cầu?"
+
+WhatsApp/Nhắn tin:
+→ Kiểm tra: Giao tiếp thời gian thực, đảm bảo giao tin, mã hoá
+→ Câu chuyện: "Làm sao đảm bảo tin nhắn được giao tới nơi?"
+
+Google Drive/Lưu trữ:
+→ Kiểm tra: Đồng bộ tệp, giải quyết xung đột, chia khối (chunking)
+→ Câu chuyện: "Làm sao đồng bộ tệp giữa các thiết bị?"
+
+@14
+**Nếu bạn hiểu "câu chuyện", bạn sẽ biết nên tập trung vào đâu.**
+@15
+Sai Lầm Phổ Biến: Đối Xử Với Mọi Hệ Thống Như Nhau
+@16
+Cách tiếp cận tồi:
+"Hệ thống nào cũng cần bộ cân bằng tải, bộ nhớ đệm, cơ sở dữ liệu, hàng đợi thông điệp..."
+
+→ Câu trả lời chung chung
+→ Bỏ lỡ những thách thức đặc thù
+→ Không có chiều sâu
+
+Cách tiếp cận tốt:
+"Thách thức của Twitter là phân phát tới hàng triệu người theo dõi.
+Thách thức của YouTube là mã hoá video và CDN.
+Thách thức của WhatsApp là đảm bảo giao tin thời gian thực.
+Mỗi hệ thống cần một trọng tâm khác nhau."
+
+→ Bám sát bài toán
+→ Thể hiện sự thấu hiểu
+→ Chứng minh chiều sâu
+
+@17
+Chiến Lược 1: Thiết Kế Twitter (Hệ Thống ⟦Bảng Tin|Feed⟧ Mạng Xã Hội)
+@18
+Điều ⟦Người Phỏng Vấn|Interviewer⟧ Muốn Nghe
+@19
+**Thách thức cốt lõi:** Phân phát bài đăng tới hàng triệu ⟦người theo dõi|followers⟧ một cách hiệu quả
+@20
+**Các chủ đề chính cần đề cập:**
+@21
+Chiến lược ⟦phân phát|fanout⟧ (đây là phần QUAN TRỌNG NHẤT)
+@22
+Tạo ⟦dòng thời gian|timeline⟧
+@23
+Tối ưu cho đọc hay cho ghi
+@24
+⟦Vấn đề người nổi tiếng|Celebrity problem⟧
+@25
+Các ⟦đánh đổi|trade-offs⟧ của ⟦nhất quán cuối cùng|eventual consistency⟧
+@26
+Áp Dụng SNAKE
+@27
+**S - Scope - Phạm vi (5 phút)**
+@28
+"Cho tôi làm rõ các yêu cầu:
+
+Tính năng cốt lõi:
+✓ Đăng tweet (280 ký tự)
+✓ Theo dõi người dùng
+✓ Xem dòng thời gian trang chủ
+✓ Thích, retweet
+
+Ngoài phạm vi:
+✗ Tin nhắn trực tiếp
+✗ Chủ đề thịnh hành
+✗ Tìm kiếm
+
+Quy mô:
+- 500 triệu người dùng
+- 100 triệu người dùng hoạt động hằng ngày
+- 200 triệu tweet/ngày
+- Thiên về đọc (95% là đọc)
+
+Như vậy đúng chưa?"
+
+@29
+**Điểm cần làm rõ then chốt:**
+@30
+"Với việc tạo dòng thời gian, tôi nên tối ưu cho:
+a) Ghi nhanh (đăng tweet trả về ngay lập tức)
+b) Đọc nhanh (dòng thời gian tải < 100ms)
+
+Tôi giả định là (b) - tối ưu cho tốc độ đọc?
+
+→ Điều này cho thấy bạn hiểu sự đánh đổi cốt lõi
+→ Người phỏng vấn sẽ xác nhận/điều chỉnh
+
+@31
+**N - Numbers - Con số (5 phút)**
+@32
+"Cho tôi tính toán quy mô:
+
+Lưu lượng ghi:
+200 triệu tweet/ngày / 86400 giây ≈ 2.300 tweet/giây
+
+Lưu lượng đọc:
+100 triệu người dùng × 10 lần tải dòng thời gian/ngày = 1 tỷ lần tải/ngày
+≈ 12.000 yêu cầu/giây
+
+Tỷ lệ Đọc:Ghi = 12K:2,3K ≈ 5:1
+→ Thiên về đọc, lưu đệm là yếu tố sống còn
+
+Lưu trữ (5 năm):
+200 triệu tweet/ngày × 365 × 5 = 365 tỷ tweet
+× 1KB mỗi tweet = 365TB
+
+Tính toán phân phát (fanout):
+Số người theo dõi trung bình: 200
+Khuếch đại ghi: 2.300 tweet/giây × 200 = 460K lượt cập nhật dòng thời gian/giây
+→ Đây chính là điểm nghẽn cần giải quyết!"
+
+→ Cho thấy bạn đã nhận diện được THÁCH THỨC then chốt
+
+@33
+**A - API (5 phút)**
+@35
+**K - Key Components - Thành phần chính (15 phút)**
+@36
+graph TB
+    CLIENT[Máy khách]
+    LB[Bộ cân bằng tải]
+    API[Máy chủ API]
+    POST[Dịch vụ đăng bài]
+    FANOUT[Dịch vụ phân phát]
+    TIMELINE[Dịch vụ dòng thời gian]
+    CACHE[Bộ nhớ đệm dòng thời gian Redis]
+    DB[(PostgreSQL)]
+    QUEUE[Hàng đợi Kafka]
+
+    CLIENT --> LB
+    LB --> API
+    API --> POST
+    API --> TIMELINE
+    POST --> DB
+    POST --> QUEUE
+    QUEUE --> FANOUT
+    FANOUT --> CACHE
+    TIMELINE --> CACHE
+    TIMELINE --> DB
+
+    style FANOUT fill:#ff6b6b
+    style CACHE fill:#51cf66
+@37
+*⟦Kiến trúc|Architecture⟧ Twitter: Tập trung vào ⟦Dịch vụ phân phát|Fanout Service⟧ và ⟦Bộ nhớ đệm dòng thời gian|Timeline Cache⟧*
+@38
+**Phần thảo luận then chốt (dành phần lớn thời gian ở đây):**
+@39
+"Thách thức cốt lõi là phân phát (fanout). Cho tôi giải thích cách tiếp cận của mình:
+
+Chiến lược phân phát lai (hybrid):
+
+Người dùng bình thường (< 10K người theo dõi):
+- Phân phát khi ghi (fanout on write)
+- Khi người dùng đăng bài → Đẩy tới dòng thời gian của mọi người theo dõi
+- Bảng tin tính sẵn = đọc nhanh
+
+Người nổi tiếng (> 10K người theo dõi):
+- Phân phát khi đọc (fanout on read)
+- Không đẩy tới hàng triệu dòng thời gian
+- Kéo về khi người theo dõi tải bảng tin
+
+Đánh đổi:
+Đọc nhanh cho hầu hết người dùng (< 50ms từ bộ nhớ đệm)
+Tránh bùng nổ phân phát với người nổi tiếng
+Tweet của người nổi tiếng hơi trễ một chút (chấp nhận được)
+Cách tiếp cận kết hợp = độ phức tạp cao hơn
+
+Cấu trúc bộ nhớ đệm dòng thời gian:
+- Một Redis sorted set cho mỗi người dùng
+- Khoá: timeline:{user_id}
+- Điểm (score): dấu thời gian
+- Phần tử: ID của tweet
+- Giữ 1000 tweet gần nhất
+
+Vì sao cách này hiệu quả:
+- 90% lượt tải dòng thời gian trúng bộ nhớ đệm
+- Tính sẵn để trải nghiệm người dùng nhanh
+- Tweet của người nổi tiếng được gộp vào khi cần"
+
+→ Đây chính là điều người phỏng vấn muốn nghe
+→ Thể hiện sự thấu hiểu sâu sắc
+→ Giải quyết đúng thách thức cốt lõi
+
+@40
+**E - Elaborate - Đào sâu (15 phút)**
+@41
+**Chọn 2-3 phần để ⟦đào sâu|deep dive⟧:**
+@42
+1. Chi tiết triển khai phân phát
+"Cho tôi trình bày logic của tiến trình phân phát (fanout worker):
+
+Khi tweet được đăng:
+- Tác vụ bất đồng bộ qua Kafka
+- Worker lấy danh sách người theo dõi
+- Chèn theo lô vào dòng thời gian Redis (100 người theo dõi/lô)
+- Nếu số người theo dõi > 10K → Bỏ qua phân phát, đánh dấu là người nổi tiếng
+
+Cách này xử lý được 460K lượt cập nhật/giây với:
+- 100 worker phân phát
+- Mỗi worker xử lý 4.600 lượt cập nhật/giây
+- Xử lý theo lô giúp giảm số thao tác Redis"
+
+2. Giải pháp cho vấn đề người nổi tiếng
+"Với Taylor Swift (100 triệu người theo dõi):
+- Không phân phát khi ghi
+- Khi người theo dõi tải dòng thời gian:
+  → Lấy bảng tin tính sẵn (từ người dùng bình thường)
+  → Gộp tweet của người nổi tiếng (truy vấn khi cần)
+  → Sắp xếp theo dấu thời gian
+  → Áp dụng xếp hạng"
+
+3. Xử lý sự cố
+"Nếu hàng đợi Kafka bị dồn ứ:
+- Bộ ngắt mạch dừng nhận tác vụ phân phát mới
+- Ưu tiên người dùng VIP
+- Chuyển sang cơ chế kéo (pull) cho tất cả khi tải cao"
+
+@43
+Điều Gì Làm Nên Một Câu Trả Lời Tốt
+@44
+✓ Nhận diện thách thức cốt lõi (phân phát)
+✓ Đề xuất giải pháp cụ thể (lai)
+✓ Giải thích rõ ràng các đánh đổi
+✓ Thể hiện tư duy về khả năng mở rộng
+✓ Chứng minh chiều sâu ở những phần then chốt
+
+@45
+Chiến Lược 2: Thiết Kế YouTube (Nền Tảng Video)
+@46
+Điều ⟦Người Phỏng Vấn|Interviewer⟧ Muốn Nghe
+@47
+**Thách thức cốt lõi:** ⟦Mã hoá|Encode⟧, lưu trữ và phân phối video trên toàn cầu ở ⟦quy mô|scale⟧ cực lớn
+@48
+**Các chủ đề chính cần đề cập:**
+@49
+⟦Quy trình tải video lên|Video upload pipeline⟧
+@50
+Chiến lược ⟦mã hoá|encoding⟧ (nhiều độ phân giải)
+@51
+CDN để phân phối toàn cầu
+@52
+Tối ưu ⟦lưu trữ|storage⟧
+@53
+⟦Hệ thống gợi ý|Recommendation system⟧ (ở mức tổng quan)
+@54
+Trọng Tâm Khi Áp Dụng SNAKE
+@55
+**S - Scope - Phạm vi**
+@56
+"Cho tôi làm rõ:
+
+Tính năng cốt lõi:
+✓ Tải video lên
+✓ Xem video
+✓ Tìm kiếm video
+✓ Gợi ý (chỉ ở mức tổng quan)
+
+Ngoài phạm vi:
+✗ Phát trực tiếp
+✗ Hệ thống bình luận
+✗ Kiếm tiền
+
+Giả định về quy mô:
+- 500 triệu người dùng
+- 1 tỷ lượt xem video/ngày
+- 100 triệu giờ xem/ngày
+- 500K video tải lên/ngày
+
+Như vậy đúng chưa?"
+
+@57
+**N - Numbers - Con số (Then chốt với YouTube)**
+@58
+"Cho tôi tính dung lượng lưu trữ và băng thông:
+
+Lưu trữ video tải lên:
+500K lượt tải lên/ngày
+Trung bình: video 10 phút ở 1080p = 1GB
+Mỗi ngày: 500K × 1GB = 500TB/ngày
+Mỗi năm: 500TB × 365 = 180PB/năm
+→ Cần lưu trữ đối tượng phân tán (S3)
+
+Nhưng ta mã hoá ra nhiều độ phân giải:
+- 360p (100MB)
+- 720p (300MB)
+- 1080p (1GB)
+- 4K (4GB) - tuỳ chọn
+Tổng mỗi video: ~5GB
+→ 500K × 5GB = 2,5PB lưu trữ/ngày!
+
+Băng thông (phân phối):
+1 tỷ lượt xem/ngày
+Thời gian xem trung bình: 6 phút
+Bitrate trung bình: 5 Mbps
+Tổng: 1 tỷ × 6 phút × 5 Mbps = 3 exabyte/tháng
+→ CDN là tuyệt đối thiết yếu!"
+
+→ Các con số cho thấy bạn hiểu về quy mô
+
+@59
+**K - Key Components - Thành phần chính (Các phần trọng tâm)**
+@60
+graph TB
+    USER[Người dùng]
+    UPLOAD[Dịch vụ tải lên]
+    S3[Lưu trữ S3]
+    ENCODE[Quy trình mã hoá]
+    CDN[CDN]
+    METADATA[(CSDL siêu dữ liệu)]
+    SEARCH[Dịch vụ tìm kiếm]
+    RECOMMEND[Gợi ý]
+
+    USER -->|Tải lên| UPLOAD
+    UPLOAD --> S3
+    UPLOAD --> ENCODE
+    ENCODE --> S3
+    ENCODE --> METADATA
+
+    USER -->|Xem| CDN
+    CDN --> S3
+
+    USER -->|Tìm kiếm| SEARCH
+    SEARCH --> METADATA
+
+    USER -->|Lấy gợi ý| RECOMMEND
+    RECOMMEND --> METADATA
+
+    style ENCODE fill:#ff6b6b
+    style CDN fill:#51cf66
+@61
+*YouTube: Tập trung vào ⟦Quy trình mã hoá|Encoding Pipeline⟧ và phân phối qua CDN*
+@62
+**Các phần thảo luận then chốt:**
+@63
+1. Quy trình tải lên và mã hoá:
+
+"Luồng tải lên:
+1. Người dùng tải video gốc lên → Dịch vụ tải lên
+2. Lưu bản gốc vào S3 (lưu trữ lạnh)
+3. Kích hoạt quy trình mã hoá (bất đồng bộ)
+4. Mã hoá song song ra nhiều độ phân giải:
+   - 360p, 720p, 1080p, 4K
+   - Nhiều codec khác nhau (H.264, VP9, AV1)
+5. Tạo ảnh thu nhỏ
+6. Cập nhật cơ sở dữ liệu siêu dữ liệu
+7. Thông báo cho người dùng
+
+Mã hoá tốn thời gian:
+- Video 10 phút → mất 30 phút để mã hoá mọi định dạng
+- Người dùng không phải chờ (xử lý bất đồng bộ)
+- Hiển thị trạng thái 'Đang xử lý'
+
+Vì sao cần nhiều độ phân giải:
+- Truyền phát với bitrate thích ứng
+- Người dùng có kết nối chậm → 360p
+- Người dùng có kết nối nhanh → 4K
+- Chuyển đổi chất lượng liền mạch"
+
+2. Chiến lược CDN:
+
+"CDN là yếu tố then chốt:
+- 3 exabyte/tháng = hơn $300K nếu không có CDN
+- Có CDN: $50K (tiết kiệm 5 lần!)
+
+Cách hoạt động:
+- Video lưu trên S3 (máy chủ gốc)
+- CDN lưu đệm các video phổ biến tại điểm biên
+- Yêu cầu của người dùng → Điểm biên CDN gần nhất
+- Trượt tại điểm biên → Lấy từ máy chủ gốc
+
+Chiến lược lưu đệm:
+- 10% video hàng đầu (thịnh hành) → Lưu đệm triệt để
+- Phần đuôi dài → Lưu đệm khi có yêu cầu
+- Loại bỏ khỏi bộ nhớ đệm: LRU
+
+Vì sao điều này quan trọng:
+- Độ trễ thấp (< 100ms để bắt đầu phát)
+- Chịu được video lan truyền (hàng triệu người xem đồng thời)
+- Tối ưu chi phí"
+
+@64
+Điều Gì Làm Nên Một Câu Trả Lời Tốt
+@65
+✓ Con số ở quy mô khổng lồ (tới exabyte!)
+✓ Trình bày chi tiết quy trình mã hoá
+✓ Chiến lược CDN kèm phân tích chi phí
+✓ Giải thích truyền phát thích ứng
+✓ Mẫu xử lý bất đồng bộ
+

@@ -1,0 +1,528 @@
+@0
+Thực Tế Của ⟦Hệ Thống Phân Tán|Distributed Systems⟧: ⟦Mô Hình Sự Cố|Failure Models⟧ Và Tư Duy CAP
+@1
+Tôi còn nhớ lần đầu tiên hệ thống ⟦vận hành thực tế|production⟧ của tôi gặp ⟦phân vùng mạng|network partition⟧.
+@2
+2 giờ sáng. ⟦Cảnh báo|Alert⟧ ⟦giám sát|monitoring⟧ réo inh ỏi. Một phần ⟦người dùng|users⟧ ở Mỹ không đăng nhập được. Một phần người dùng ở châu Âu vẫn đăng nhập bình thường. ⟦Cơ sở dữ liệu|Database⟧ vẫn khoẻ mạnh. Các ⟦máy chủ ứng dụng|application servers⟧ vẫn đang chạy.
+@3
+Tôi hoàn toàn hoang mang. Kiểm tra ⟦log|logs⟧, không thấy lỗi nào. Kiểm tra CPU, bộ nhớ, tất cả đều bình thường.
+@4
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ vào trực tuyến: *"Kiểm tra kết nối mạng giữa các ⟦trung tâm dữ liệu|datacenters⟧ ở Mỹ và châu Âu đi."*
+@5
+Chuẩn rồi. AWS gặp sự cố mạng. ⟦Trung tâm dữ liệu|Datacenter⟧ ở Mỹ không kết nối được với trung tâm dữ liệu ở châu Âu. Hệ thống đang ở trạng thái **⟦phân vùng mạng|network partition⟧**.
+@6
+Đó là lúc tôi học được bài học đắt giá nhất: **⟦Hệ thống phân tán|Distributed systems⟧ thì luôn luôn gặp sự cố. Không phải "nếu", mà là "khi nào".**
+@7
+Tại Sao ⟦Hệ Thống Phân Tán|Distributed Systems⟧ Lại Khác Biệt?
+@8
+Một Máy Đơn Lẻ Và Hệ Thống Phân Tán: Những ⟦Giả Định|Assumptions⟧ Bị Phá Vỡ
+@9
+**Một máy đơn lẻ (mã chạy cục bộ):**
+@10
+**⟦Hệ thống phân tán|Distributed system⟧ (lời gọi qua mạng):**
+@11
+**Điểm mấu chốt:** Khi chuyển từ một máy đơn lẻ sang hệ thống phân tán, mọi ⟦giả định|assumption⟧ bạn từng biết đều trở nên sai.
+@12
+Những Ngộ Nhận Về Tính Toán Phân Tán (The Fallacies of Distributed Computing)
+@13
+Peter Deutsch và James Gosling đã tổng kết 8 giả định sai lầm mà các ⟦lập trình viên|developers⟧ thường mắc phải:
+@14
+1. Mạng là đáng tin cậy
+   → Thực tế: Gói tin bị rơi, kết nối bị lỗi
+
+2. Độ trễ bằng không
+   → Thực tế: Lời gọi qua mạng mất 10-1000ms
+
+3. Băng thông là vô hạn
+   → Thực tế: Mạng có giới hạn thông lượng
+
+4. Mạng là an toàn
+   → Thực tế: Dữ liệu có thể bị chặn bắt (intercept)
+
+5. Cấu trúc mạng (topology) không thay đổi
+   → Thực tế: Máy chủ chết, mạng được cấu hình lại
+
+6. Chỉ có một người quản trị
+   → Thực tế: Nhiều nhóm, nhiều cấu hình
+
+7. Chi phí truyền tải bằng không
+   → Thực tế: Tốn chi phí tuần tự hoá và truyền qua mạng
+
+8. Mạng là đồng nhất
+   → Thực tế: Khác giao thức, khác phiên bản
+
+@15
+**Bài học:** Thiết kế ⟦hệ thống phân tán|distributed system⟧ = Thiết kế để đối phó với ⟦sự cố|failure⟧.
+@16
+Định Luật Murphy Trong ⟦Hệ Thống Phân Tán|Distributed Systems⟧
+@17
+**Định luật Murphy:** *"Cái gì có thể hỏng thì sẽ hỏng."*
+@18
+Trong ⟦hệ thống phân tán|distributed systems⟧, định luật này còn được khuếch đại lên:
+@19
+**"Mọi thứ có thể hỏng THÌ SẼ hỏng. Cùng một lúc. Lúc 3 giờ sáng. Vào đúng ngày Black Friday."**
+@20
+Những ⟦Sự Cố|Failures⟧ Thực Tế Tôi Đã Trải Qua
+@21
+**Sự cố 1: ⟦Hỏng Dữ Liệu Thầm Lặng|Silent Data Corruption⟧**
+@22
+Kịch bản:
+- Cơ sở dữ liệu nhân bản từ Master → Slave
+- Gói tin mạng bị hỏng (1 trên 10 triệu)
+- Slave nhận dữ liệu bị hỏng
+- Ứng dụng đọc từ Slave
+- Trả dữ liệu sai cho người dùng (lỗi khó phát hiện)
+
+Tác động: 3 ngày để phát hiện, 1 tuần để khắc phục
+
+@23
+**Sự cố 2: ⟦Hết Thời Gian Chờ Dây Chuyền|Cascading Timeout⟧**
+@24
+Kịch bản:
+- Dịch vụ A gọi Dịch vụ B (timeout 30 giây)
+- Dịch vụ B bị chậm (sự cố ổ đĩa)
+- Dịch vụ A đợi 30 giây cho mỗi yêu cầu
+- Các yêu cầu dồn ứ trong hàng đợi
+- Dịch vụ A cạn kiệt bộ nhớ
+- Dịch vụ A bị sập
+- Các dịch vụ phụ thuộc vào A cũng sập theo
+
+Tác động: Toàn bộ hệ thống ngừng hoạt động 2 giờ
+
+@25
+**Sự cố 3: ⟦Lệch Đồng Hồ|Clock Skew⟧**
+@26
+Kịch bản:
+- Đồng hồ Máy chủ 1: 10:00:00
+- Đồng hồ Máy chủ 2: 09:59:30 (chậm 30 giây)
+- Sự kiện A xảy ra trên Máy chủ 1 lúc 10:00:00
+- Sự kiện B xảy ra trên Máy chủ 2 lúc 09:59:45
+- Hệ thống cho rằng B xảy ra trước A (sai!)
+
+Tác động: Thứ tự giao dịch bị sai lệch
+
+@27
+**Bài học rút ra:** Không có ⟦kịch bản|scenario⟧ ⟦sự cố|failure⟧ nào là "quá kỳ quặc". Tất cả đều xảy ra trong ⟦môi trường thực tế|production⟧.
+@28
+Các Loại ⟦Sự Cố|Failures⟧ Trong ⟦Hệ Thống Phân Tán|Distributed Systems⟧
+@29
+Loại Sự Cố 1: ⟦Phân Vùng Mạng|Network Partition⟧
+@30
+**Định nghĩa:** Một phần hệ thống không giao tiếp được với phần còn lại, nhưng cả hai vẫn đang chạy.
+@31
+graph TB
+    subgraph "Trung tâm dữ liệu Mỹ"
+        US1[Máy chủ US-1]
+        US2[Máy chủ US-2]
+    end
+
+    subgraph "Trung tâm dữ liệu EU"
+        EU1[Máy chủ EU-1]
+        EU2[Máy chủ EU-2]
+    end
+
+    US1 <--> US2
+    EU1 <--> EU2
+    US1 -.X Phân vùng mạng X.-> EU1
+    US2 -.X Phân vùng mạng X.-> EU2
+
+    style US1 fill:#51cf66
+    style US2 fill:#51cf66
+    style EU1 fill:#51cf66
+    style EU2 fill:#51cf66
+@32
+*⟦Phân vùng mạng|Network partition⟧: các ⟦trung tâm dữ liệu|datacenters⟧ ở Mỹ và châu Âu không kết nối được với nhau, nhưng các ⟦máy chủ|servers⟧ trong mỗi trung tâm dữ liệu vẫn hoạt động bình thường*
+@33
+**⟦Kịch bản|Scenario⟧ thực tế:**
+@34
+Dòng thời gian:
+10:00:00 - Phân vùng mạng xảy ra
+10:00:01 - Người dùng A (Mỹ) cập nhật hồ sơ
+10:00:02 - Người dùng B (EU) đọc hồ sơ → Thấy dữ liệu cũ
+10:00:30 - Mạng được khôi phục
+10:00:31 - Trung tâm dữ liệu EU nhận được bản cập nhật
+10:00:32 - Người dùng B đọc lại → Thấy dữ liệu mới
+
+Vấn đề: 30 giây không nhất quán
+
+@35
+**Tại sao ⟦phân vùng|partition⟧ lại xảy ra?**
+@36
+Nguyên nhân phổ biến:
+- Thiết bị mạng hỏng (switch, router)
+- Đứt cáp quang
+- Sự cố theo vùng của AWS/GCP
+- Tấn công DDoS
+- Cấu hình sai
+- Quá nhiều lưu lượng (tắc nghẽn)
+
+@37
+**Không thể ngăn chặn, chỉ có thể xử lý:**
+@38
+Loại Sự Cố 2: ⟦Độ Trễ|Latency⟧ Cao
+@39
+**Định nghĩa:** Lời gọi qua mạng chậm hơn dự kiến, nhưng cuối cùng vẫn hoàn thành.
+@40
+**Vấn đề:** Chậm ≠ Chết. Hệ thống vẫn hoạt động nhưng ⟦trải nghiệm người dùng|UX⟧ tệ hại.
+@41
+Độ trễ bình thường: 50ms
+Độ trễ cao:         5000ms (chậm hơn 100 lần)
+
+Trải nghiệm người dùng:
+- Bấm nút
+- Đợi 5 giây
+- Vẫn đang tải...
+- Bấm lại (yêu cầu trùng lặp!)
+- Đợi thêm...
+- Bỏ cuộc, đóng tab
+
+@42
+**Hiệu ứng dây chuyền:**
+@43
+sequenceDiagram
+    participant User
+    participant API
+    participant Service
+    participant DB
+
+    User->>API: Yêu cầu (timeout 10 giây)
+    API->>Service: Gọi dịch vụ (timeout 8 giây)
+    Service->>DB: Truy vấn (chậm, mất 9 giây)
+
+    Note over Service,DB: CSDL chậm do quá tải
+    Note over API,Service: Dịch vụ hết thời gian chờ!
+    Service--xAPI: Lỗi hết thời gian chờ
+    API--xUser: Lỗi 500
+
+    Note over User: Người dùng thử lại
+    User->>API: Gửi lại yêu cầu
+    Note over API,DB: Tải tăng, càng chậm hơn
+@44
+*⟦Độ trễ|Latency⟧ cao gây ⟦hết thời gian chờ|timeout⟧, hết thời gian chờ gây ⟦thử lại|retry⟧, thử lại làm tăng ⟦tải|load⟧, tải tăng làm hệ thống chậm hơn nữa → ⟦Vòng xoáy tử thần|Death spiral⟧*
+@45
+**Giải pháp:**
+@46
+Loại Sự Cố 3: ⟦Mất Gói Tin|Packet Loss⟧
+@47
+**Định nghĩa:** Các gói tin mạng không đến được đích.
+@48
+Gửi:      [Gói tin 1] [Gói tin 2] [Gói tin 3] [Gói tin 4]
+Nhận:     [Gói tin 1] [         ] [Gói tin 3] [Gói tin 4]
+                      ↑ Mất!
+
+@49
+**Tỷ lệ ⟦mất gói tin|packet loss⟧ điển hình:**
+@50
+LAN (mạng cục bộ):      0.01% - 0.1%
+WiFi:                   1% - 5%
+Internet (tốt):         0.1% - 1%
+Internet (kém):         5% - 20%
+
+@51
+**Tác động:**
+@52
+**Xử lý ở ⟦tầng ứng dụng|application-level⟧:**
+@53
+Loại Sự Cố 4: ⟦Trùng Lặp Thông Điệp|Message Duplication⟧
+@54
+**Định nghĩa:** Cùng một thông điệp được gửi đến nhiều lần.
+@55
+**⟦Kịch bản|Scenario⟧:**
+@56
+sequenceDiagram
+    participant Client
+    participant Server
+    participant DB
+
+    Client->>Server: Tạo đơn hàng
+    Server->>DB: INSERT order
+    DB-->>Server: Thành công
+
+    Note over Server,Client: Gói tin phản hồi bị mất!
+    Server--xClient: (không nhận được phản hồi)
+
+    Note over Client: Máy khách hết thời gian chờ, thử lại
+    Client->>Server: Tạo đơn hàng (lần nữa)
+    Server->>DB: INSERT order (trùng lặp!)
+    DB-->>Server: Thành công
+    Server-->>Client: Thành công
+
+    Note over DB: Giờ có 2 đơn hàng!
+@57
+*⟦Mất gói tin|Packet loss⟧ trên mạng gây ra thông điệp trùng lặp khi ⟦máy khách|client⟧ ⟦thử lại|retry⟧*
+@58
+**Tác động trong thực tế:**
+@59
+Kịch bản: Xử lý thanh toán
+1. Người dùng bấm "Thanh toán $100"
+2. Yêu cầu hết thời gian chờ
+3. Người dùng bấm lại
+4. Cả hai yêu cầu đều thành công
+5. Người dùng bị trừ $200!
+
+💸 Công ty bị kiện, phải hoàn tiền, mang tiếng xấu
+
+@60
+**Giải pháp:**
+@61
+Loại Sự Cố 5: ⟦Sự Cố Cục Bộ|Partial Failure⟧
+@62
+**Định nghĩa:** Một phần hệ thống gặp ⟦sự cố|fail⟧, phần khác vẫn hoạt động.
+@63
+**Đây là loại ⟦sự cố|failure⟧ nguy hiểm nhất.**
+@64
+Kịch bản: Thanh toán trên trang thương mại điện tử
+
+Bước 1: Trừ tiền thẻ tín dụng         → Thành công
+Bước 2: Tạo đơn hàng trong CSDL       → Thành công
+Bước 3: Gửi email xác nhận            → Dịch vụ email ngừng hoạt động
+Bước 4: Cập nhật tồn kho              → Dịch vụ tồn kho chậm, hết thời gian chờ
+
+Kết quả:
+- Người dùng đã bị trừ tiền
+- Đơn hàng đã được tạo
+- Không có email (người dùng bối rối)
+- Tồn kho chưa được cập nhật (nguy cơ bán vượt số lượng)
+
+Thành công một phần = Trạng thái không nhất quán
+
+@65
+graph LR
+    A[Yêu cầu thanh toán] --> B[Dịch vụ thanh toán]
+    B --> C[Dịch vụ đơn hàng]
+    C --> D[Dịch vụ email]
+    C --> E[Dịch vụ tồn kho]
+
+    B -.Thành công.-> B
+    C -.Thành công.-> C
+    D -.Thất bại X.-> D
+    E -.Hết thời gian chờ X.-> E
+
+    style B fill:#51cf66
+    style C fill:#51cf66
+    style D fill:#ff6b6b
+    style E fill:#ff6b6b
+@66
+*⟦Sự cố cục bộ|Partial failure⟧: Một số ⟦dịch vụ|services⟧ thành công, một số thất bại, dẫn đến ⟦trạng thái không nhất quán|inconsistent state⟧*
+@67
+**Giải pháp:**
+@68
+Định Lý CAP: ⟦Sự Đánh Đổi|Trade-off⟧ Nền Tảng
+@70
+Trong một ⟦cơ sở dữ liệu phân tán|distributed database⟧ khi có ⟦phân vùng mạng|network partition⟧, bạn chỉ có thể chọn 2 trong 3:
+@71
+C (Consistency - Tính nhất quán):
+    Mọi thao tác đọc đều nhận được bản ghi mới nhất
+    Mọi nút thấy cùng một dữ liệu tại cùng thời điểm
+
+A (Availability - Tính sẵn sàng):
+    Mọi yêu cầu đều nhận được phản hồi (không phải lỗi)
+    Hệ thống luôn hoạt động
+
+P (Partition Tolerance - Khả năng chịu phân vùng):
+    Hệ thống tiếp tục hoạt động khi có phân vùng mạng
+    Các nút không giao tiếp được với nhau
+
+@72
+**Thực tế:** ⟦Phân vùng mạng|Network partition⟧ LUÔN xảy ra (P là bắt buộc).
+@73
+→ **Phải chọn giữa C hoặc A.**
+@74
+Trực Giác Về CAP Qua Ví Dụ Thực Tế
+@75
+**⟦Kịch bản|Scenario⟧: Ứng dụng ngân hàng với 2 ⟦trung tâm dữ liệu|datacenters⟧**
+@76
+graph LR
+    subgraph "Trung tâm dữ liệu Mỹ"
+        US_DB[(CSDL<br/>Số dư: $100)]
+    end
+
+    subgraph "Trung tâm dữ liệu EU"
+        EU_DB[(CSDL<br/>Số dư: $100)]
+    end
+
+    US_DB -.X Phân vùng mạng.-> EU_DB
+
+    USER_A[Người dùng A<br/>Mỹ] --> US_DB
+    USER_B[Người dùng B<br/>EU] --> EU_DB
+@77
+**⟦Phân vùng mạng|Network partition⟧ xảy ra. Phải làm gì đây?**
+@78
+Lựa Chọn 1: CP (⟦Tính Nhất Quán|Consistency⟧ + ⟦Khả Năng Chịu Phân Vùng|Partition Tolerance⟧)
+@79
+**Chiến lược:** Hy sinh ⟦tính sẵn sàng|availability⟧ để đảm bảo ⟦tính nhất quán|consistency⟧.
+@80
+**Các ⟦sự đánh đổi|trade-offs⟧:**
+@81
+Dữ liệu luôn nhất quán
+Không có rủi ro cập nhật xung đột
+Phù hợp cho: Ngân hàng, thanh toán, tồn kho
+
+Hệ thống ngừng hoạt động khi có phân vùng
+Trải nghiệm người dùng kém
+Mất giao dịch
+
+@82
+Lựa Chọn 2: AP (⟦Tính Sẵn Sàng|Availability⟧ + ⟦Khả Năng Chịu Phân Vùng|Partition Tolerance⟧)
+@83
+**Chiến lược:** Hy sinh ⟦tính nhất quán|consistency⟧ để đảm bảo ⟦tính sẵn sàng|availability⟧.
+@84
+**Các chiến lược ⟦giải quyết xung đột|conflict resolution⟧:**
+@85
+**Các ⟦sự đánh đổi|trade-offs⟧:**
+@86
+Hệ thống luôn sẵn sàng
+Trải nghiệm người dùng tốt
+Phù hợp cho: Mạng xã hội, gợi ý, phân tích dữ liệu
+
+Dữ liệu có thể không nhất quán
+Cần giải quyết xung đột
+Nhất quán cuối cùng (không tức thời)
+
+@87
+So Sánh CP Và AP
+@88
+Ứng dụng ngân hàng:
+Lựa chọn: CP
+Tại sao? Độ chính xác dữ liệu > Tính sẵn sàng
+Người dùng có thể đợi, nhưng không thể chấp nhận số dư sai
+
+Bảng tin mạng xã hội:
+Lựa chọn: AP
+Tại sao? Tính sẵn sàng > Nhất quán tuyệt đối
+Người dùng thấy số lượt thích hơi cũ một chút cũng không sao
+
+Tồn kho thương mại điện tử:
+Lựa chọn: CP
+Tại sao? Không được bán vượt số lượng sản phẩm
+Thà hiển thị "hết hàng" còn hơn bán món đã hết
+
+@89
+⟦Khung Tư Duy|Framework⟧ Về ⟦Sự Đánh Đổi|Trade-off⟧
+@90
+Bước 1: Xác Định ⟦Yêu Cầu|Requirements⟧
+@91
+Tự hỏi:
+1. Tính nhất quán có quan trọng sống còn không?
+   - Dữ liệu sai = vấn đề lớn? (Ngân hàng: CÓ)
+   - Dữ liệu cũ có chấp nhận được không? (Bảng tin mạng xã hội: CÓ)
+
+2. Tính sẵn sàng có quan trọng sống còn không?
+   - Thời gian ngừng hoạt động có chấp nhận được không? (Công cụ nội bộ: CÓ)
+   - Phải luôn hoạt động? (API công khai: CÓ)
+
+3. Tần suất phân vùng mạng?
+   - Một trung tâm dữ liệu: Hiếm
+   - Đa vùng: Thường xuyên
+
+@92
+Bước 2: Phân Tích Các ⟦Sự Đánh Đổi|Trade-offs⟧
+@93
+Hệ thống CP:
+Khi nào: Giao dịch tài chính, tồn kho, đặt chỗ
+Chấp nhận: Ngừng hoạt động khi có phân vùng
+Được: Độ chính xác dữ liệu
+
+Hệ thống AP:
+Khi nào: Tính năng mạng xã hội, phân tích dữ liệu, gợi ý
+Chấp nhận: Nhất quán cuối cùng
+Được: Luôn sẵn sàng
+
+Hệ thống CA:
+Không thể tồn tại trong hệ thống phân tán
+   (Phân vùng mạng luôn xảy ra)
+
+@94
+Bước 3: Các Cách Tiếp Cận Lai
+@95
+**Thực tế:** Không phải được ăn cả, ngã về không. Bạn có thể kết hợp.
+@96
+Các Nguyên Tắc Thiết Kế Thực Tiễn
+@97
+Nguyên Tắc 1: Thiết Kế Để Đối Phó Với ⟦Sự Cố|Failure⟧
+@98
+**Hãy giả định mọi thứ đều sẽ hỏng.**
+@99
+Nguyên Tắc 2: ⟦Thất Bại Nhanh|Fail Fast⟧
+@100
+**Đừng chờ đợi mãi. Hãy thất bại nhanh rồi ⟦thử lại|retry⟧.**
+@101
+Nguyên Tắc 3: ⟦Tính Lũy Đẳng|Idempotency⟧
+@102
+**Các thao tác phải an toàn khi ⟦thử lại|retry⟧.**
+@103
+Nguyên Tắc 4: ⟦Nhất Quán Cuối Cùng|Eventual Consistency⟧ Là Chấp Nhận Được
+@104
+**Không phải mọi thứ đều cần ⟦nhất quán tức thời|immediate consistency⟧.**
+@105
+Những Điểm Cốt Lõi
+@106
+**Các ⟦sự cố|failures⟧ trong ⟦hệ thống phân tán|distributed systems⟧:**
+@107
+1. Phân vùng mạng: Các nút không giao tiếp được với nhau
+2. Độ trễ cao: Chậm ≠ Chết
+3. Mất gói tin: Thông điệp biến mất
+4. Trùng lặp thông điệp: Cùng một thông điệp đến nhiều lần
+5. Sự cố cục bộ: Một số thành công, một số thất bại
+
+@108
+**Định lý CAP:**
+@109
+Không thể có cả 3: Tính nhất quán, Tính sẵn sàng, Khả năng chịu phân vùng
+
+Khả năng chịu phân vùng là bắt buộc (mạng luôn có lúc hỏng)
+
+→ Chọn CP (nhất quán) hoặc AP (sẵn sàng)
+
+CP: Ngân hàng, thanh toán, tồn kho
+AP: Mạng xã hội, phân tích dữ liệu, gợi ý
+
+@110
+**Các nguyên tắc thiết kế:**
+@111
+1. Thiết kế để đối phó với sự cố (giả định mọi thứ đều hỏng)
+2. Thất bại nhanh (timeout ngắn, thử lại nhanh)
+3. Tính lũy đẳng (an toàn khi thử lại)
+4. Nhất quán cuối cùng (chấp nhận được trong nhiều trường hợp)
+
+@112
+**Tư duy ⟦đánh đổi|trade-off⟧:**
+@113
+Không có giải pháp hoàn hảo.
+
+Mọi lựa chọn đều hy sinh một thứ gì đó:
+- CP hy sinh tính sẵn sàng
+- AP hy sinh tính nhất quán
+- Tính lũy đẳng hy sinh sự đơn giản
+- Thử lại hy sinh độ trễ
+
+Hãy chọn dựa trên yêu cầu nghiệp vụ, không phải sở thích kỹ thuật.
+
+@114
+**Định luật Murphy là có thật:**
+@115
+"Cái gì có thể hỏng thì sẽ hỏng."
+
+Trong hệ thống phân tán:
+"Mọi thứ đều sẽ hỏng. Cùng một lúc. Vào thời điểm tệ nhất."
+
+Hãy thiết kế cho phù hợp.
+
+@117
+Khi thiết kế ⟦hệ thống phân tán|distributed system⟧, hãy tự hỏi:
+@118
+*Tính năng này cần ⟦tính nhất quán|consistency⟧ hay ⟦tính sẵn sàng|availability⟧ hơn?*
+@119
+*Các thao tác có ⟦lũy đẳng|idempotent⟧ không?*
+@120
+*Các giá trị ⟦thời gian chờ|timeout⟧ có hợp lý không?*
+@121
+*Hệ thống xử lý ⟦phân vùng mạng|network partition⟧ thế nào?*
+@122
+*Có ⟦phương án dự phòng|fallback⟧ cho mọi lời gọi ra bên ngoài không?*
+@123
+Nếu không trả lời được → Chưa sẵn sàng cho ⟦môi trường thực tế|production⟧.
+@124
+⟦Hệ thống phân tán|Distributed systems⟧ rất khó. Nhưng với đúng ⟦tư duy|mindset⟧ (thiết kế để đối phó với ⟦sự cố|failure⟧) và đúng ⟦mẫu thiết kế|patterns⟧ (⟦thời gian chờ|timeouts⟧, ⟦thử lại|retries⟧, ⟦tính lũy đẳng|idempotency⟧), bạn có thể xây dựng những hệ thống ⟦bền bỉ|resilient⟧ và ⟦đáng tin cậy|reliable⟧.
+@125
+**Thất bại một cách êm thấm > Không bao giờ thất bại.**

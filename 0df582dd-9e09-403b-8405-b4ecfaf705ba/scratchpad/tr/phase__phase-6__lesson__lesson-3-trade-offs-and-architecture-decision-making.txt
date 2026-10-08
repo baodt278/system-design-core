@@ -1,0 +1,673 @@
+@0
+⟦Đánh Đổi|Trade-offs⟧ & ⟦Ra Quyết Định Kiến Trúc|Architecture Decision Making⟧
+@1
+Sau 3 năm làm việc, tôi được thăng chức lên ⟦kỹ sư lâu năm|Senior Engineer⟧.
+@2
+Quản lý của tôi hỏi: *"Em nghĩ điều gì phân biệt một kỹ sư lâu năm với một kỹ sư mới vào nghề?"*
+@3
+Tôi tự tin: *"Kỹ sư lâu năm biết nhiều ⟦mẫu thiết kế|patterns⟧ hơn, viết code giỏi hơn, có nhiều kinh nghiệm hơn."*
+@4
+Anh ấy lắc đầu: *"Không. Kỹ sư lâu năm giỏi ở **⟦tư duy đánh đổi|trade-off thinking⟧**."*
+@5
+Một tuần sau, trong buổi ⟦đánh giá kiến trúc|architecture review⟧:
+@6
+⟦Kỹ sư mới vào nghề|Junior Engineer⟧: *"Em đề xuất dùng ⟦vi dịch vụ|microservices⟧ cho dự án mới."*
+@7
+Quản lý: *"Tại sao?"*
+@8
+Kỹ sư mới: *"Vì ⟦vi dịch vụ|microservices⟧ là ⟦thực hành tốt nhất|best practice⟧, ⟦mở rộng|scale⟧ tốt, Netflix cũng dùng."*
+@9
+Quản lý: *"Với 3 ⟦lập trình viên|developers⟧ và 500 ⟦người dùng|users⟧, ⟦chi phí|cost⟧ của ⟦vi dịch vụ|microservices⟧ là gì? Lợi ích là gì? ⟦Sự đánh đổi|Trade-off⟧ đó có đáng không?"*
+@10
+Kỹ sư mới: *"... Em chưa nghĩ đến."*
+@12
+⟦Kỹ sư lâu năm|Senior Engineer⟧ không phải là người biết nhiều nhất. Mà là người **lập luận về các ⟦sự đánh đổi|trade-offs⟧ giỏi nhất**.
+@13
+Tại Sao ⟦Tư Duy Đánh Đổi|Trade-off Thinking⟧ Là Kỹ Năng Cốt Lõi?
+@14
+Sự Thật Nền Tảng
+@15
+**Trong ⟦kiến trúc phần mềm|software architecture⟧, không có giải pháp hoàn hảo.**
+@16
+Giải pháp hoàn hảo = Hoang đường
+Giải pháp thực tế = Các sự đánh đổi
+
+Mọi quyết định kỹ thuật đều có:
+Lợi ích (được)
+Chi phí (mất)
+
+Chọn giải pháp = Chọn chấp nhận sự đánh đổi nào
+
+@17
+Tư Duy Của ⟦Kỹ Sư Mới Vào Nghề|Junior⟧ và ⟦Kỹ Sư Lâu Năm|Senior⟧
+@18
+graph TB
+    subgraph Junior Thinking
+        J1[Bài toán] --> J2[Google "giải pháp tốt nhất"]
+        J2 --> J3[Áp dụng mẫu]
+        J3 --> J4[Xong]
+    end
+
+    subgraph Senior Thinking
+        S1[Bài toán] --> S2[Liệt kê các phương án]
+        S2 --> S3[Phân tích đánh đổi]
+        S3 --> S4[Xem xét bối cảnh]
+        S4 --> S5[Chọn & lý giải]
+        S5 --> S6[Ghi lại lập luận]
+    end
+
+    style J3 fill:#ff6b6b
+    style S5 fill:#51cf66
+@19
+*Kỹ sư mới vào nghề sao chép giải pháp, kỹ sư lâu năm đánh giá các ⟦sự đánh đổi|trade-offs⟧*
+@20
+**So sánh ví dụ:**
+@21
+Bài toán: Cần một tầng bộ nhớ đệm
+
+Kỹ sư mới:
+"Dùng Redis. Nó nhanh và ai cũng dùng."
+
+Kỹ sư lâu năm:
+"Hãy đánh giá các lựa chọn lưu đệm:
+
+Phương án 1: Redis
+Rất nhanh (< 1ms)
+Cấu trúc dữ liệu phong phú
+Lưu bền là tuỳ chọn
+Bộ nhớ đắt khi ở quy mô lớn
+Chi phí vận hành phụ trội
+Chi phí: ~$500/tháng cho 16GB
+
+Phương án 2: Memcached
+Đơn giản, ổn định
+Tốn bộ nhớ ít hơn một chút
+Không lưu bền
+Cấu trúc dữ liệu hạn chế
+Chi phí: ~$400/tháng
+
+Phương án 3: Bộ nhớ đệm cấp ứng dụng (trong tiến trình)
+Độ trễ bằng 0
+Không tốn chi phí hạ tầng
+Đơn giản
+Không chia sẻ được giữa các máy chủ
+Bị giới hạn bởi bộ nhớ máy chủ
+
+Với bối cảnh của chúng ta:
+- 5 máy chủ ứng dụng
+- Thiên về đọc (kỳ vọng tỷ lệ trúng bộ nhớ đệm 90%)
+- Công ty khởi nghiệp cần tiết kiệm ngân sách
+- Tình huống sử dụng đơn giản (chỉ key-value)
+
+Khuyến nghị: Memcached
+Lý do: Sự đơn giản + tiết kiệm chi phí có giá trị hơn các tính năng của Redis mà ta không cần.
+Ta có thể chuyển sang Redis sau nếu cần lưu bền."
+
+→ Đã phân tích các phương án
+→ Đã liệt kê các đánh đổi
+→ Đã xem xét bối cảnh
+→ Đã lý giải quyết định
+
+@22
+**Thấy sự khác biệt chưa?**
+@23
+Kỹ sư lâu năm không chỉ chọn giải pháp. Họ **lý giải vì sao giải pháp đó phù hợp với bối cảnh**.
+@24
+Những ⟦Đánh Đổi|Trade-offs⟧ Lớn Mà Mọi ⟦Kiến Trúc Sư|Architect⟧ Phải Hiểu
+@25
+Đánh đổi 1: ⟦Tính Nhất Quán|Consistency⟧ và ⟦Tính Sẵn Sàng|Availability⟧
+@26
+**Từ ⟦định lý CAP|CAP Theorem⟧:**
+@27
+Trong hệ thống phân tán khi có phân vùng mạng:
+Không thể có CẢ tính nhất quán hoàn hảo LẪN tính sẵn sàng hoàn hảo
+
+Phải chọn:
+- CP (Nhất quán + Chịu phân vùng)
+- AP (Sẵn sàng + Chịu phân vùng)
+
+@28
+**Diễn giải theo thực tế:**
+@29
+graph LR
+    A[Nhất quán mạnh] ---|Đánh đổi| B[Tính sẵn sàng cao]
+
+    A --> A1[Ngân hàng<br/>Thanh toán<br/>Tồn kho]
+    B --> B1[Mạng xã hội<br/>Phân tích dữ liệu<br/>Bảng tin]
+
+    style A fill:#ff6b6b
+    style B fill:#51cf66
+@30
+*⟦Tính nhất quán|Consistency⟧ và ⟦tính sẵn sàng|Availability⟧: Chọn dựa trên ⟦yêu cầu|requirements⟧ kinh doanh*
+@31
+**Kịch bản: Tồn kho thương mại điện tử**
+@32
+**Kịch bản: Lượt thích trên mạng xã hội**
+@33
+**⟦Khung ra quyết định|Decision framework⟧:**
+@34
+Đánh đổi 2: ⟦Độ Trễ|Latency⟧ và ⟦Chi Phí|Cost⟧
+@35
+**Thực tế là: Tốc độ thì tốn tiền.**
+@36
+Độ trễ thấp hơn = Chi phí cao hơn (thường là vậy)
+
+Các cách giảm độ trễ:
+- Thêm máy chủ (tốn kém)
+- Phần cứng nhanh hơn (tốn kém)
+- Đặt gần người dùng hơn (CDN = tốn kém)
+- Lưu đệm nhiều hơn (bộ nhớ = tốn kém)
+- Tối ưu cơ sở dữ liệu (thời gian kỹ sư = tốn kém)
+
+@37
+**Kịch bản: ⟦Thời gian phản hồi|Response Time⟧ của API**
+@38
+**⟦Khung ra quyết định|Decision framework⟧:**
+@39
+**Phân tích ⟦đánh đổi|trade-off⟧:**
+@40
+Câu hỏi: "Có nên thêm bộ nhớ đệm Redis không?"
+
+Đừng trả lời ngay. Hãy phân tích:
+
+Trạng thái hiện tại:
+- Độ trễ API: 400ms
+- Truy vấn CSDL: 300ms (điểm nghẽn)
+- Người dùng: 10 nghìn
+- Phàn nàn: Ít
+
+Khi có Redis:
+- Độ trễ API: 50ms (cải thiện 8 lần)
+- Chi phí: +$300/tháng
+- Độ phức tạp: +1 thành phần cần quản lý
+- Vô hiệu hoá bộ nhớ đệm: Vấn đề mới
+
+Sự đánh đổi có đáng không?
+- 10 nghìn người dùng × $5/tháng doanh thu = $50K/tháng
+- Trải nghiệm tốt hơn có thể tăng tỷ lệ giữ chân 5% = +$2.5K/tháng
+- Chi phí = $300/tháng
+- ROI = $2.5K / $300 = 8.3 lần
+
+Quyết định: Có, đáng làm
+
+@41
+**Nguyên tắc cá nhân:**
+@42
+Tối ưu độ trễ khi:
+✓ Trải nghiệm người dùng bị ảnh hưởng trực tiếp
+✓ Chỉ số kinh doanh tương quan với tốc độ
+✓ Chi phí được bù đắp bằng doanh thu/tỷ lệ giữ chân
+✓ Độ trễ hiện tại vượt quá yêu cầu của phân khúc
+
+Đừng tối ưu khi:
+✗ Người dùng không nhận ra khác biệt
+✗ Không có tác động kinh doanh
+✗ Chi phí quá cao so với lợi ích
+✗ Quá sớm (chưa có quy mô)
+
+@43
+Đánh đổi 3: Sự Đơn Giản và ⟦Khả Năng Mở Rộng|Scalability⟧
+@44
+**Mâu thuẫn muôn thuở: Đơn giản ngay bây giờ hay ⟦mở rộng|scale⟧ về sau?**
+@45
+graph LR
+    SIMPLE[Kiến trúc đơn giản<br/>Nguyên khối] ---|Áp lực tăng trưởng| COMPLEX[Kiến trúc phức tạp<br/>Vi dịch vụ]
+
+    SIMPLE --> S1[Phát triển nhanh<br/>Dễ gỡ lỗi<br/>Chi phí vận hành thấp]
+    COMPLEX --> C1[Mở rộng độc lập<br/>Nhóm tự chủ<br/>Cô lập lỗi]
+
+    style SIMPLE fill:#51cf66
+    style COMPLEX fill:#ffd43b
+@46
+*Phổ giữa sự đơn giản và ⟦khả năng mở rộng|scalability⟧: Mỗi giai đoạn cần một cách tiếp cận khác nhau*
+@47
+**Kịch bản: Quyết định kiến trúc cho ⟦công ty khởi nghiệp|startup⟧**
+@48
+**Lộ Trình ⟦Tái Cấu Trúc|Refactor⟧ (Thường Tốt Hơn):**
+@49
+Giai đoạn 1: Nguyên khối (0-10 nghìn người dùng)
+- Đơn giản, lặp nhanh
+- Tìm sự phù hợp giữa sản phẩm và thị trường
+Thời gian: 6 tháng
+
+Giai đoạn 2: Nguyên khối dạng mô-đun (10 nghìn-100 nghìn người dùng)
+- Tách mô-đun, ranh giới rõ ràng
+- Thêm bộ nhớ đệm, bản sao chỉ đọc
+Thời gian: +3 tháng
+
+Giai đoạn 3: Vi dịch vụ có chọn lọc (100 nghìn-1 triệu người dùng)
+- Chỉ tách các dịch vụ "nóng"
+- Giữ phần lõi nguyên khối
+Thời gian: +6 tháng
+
+Giai đoạn 4: Vi dịch vụ toàn phần (nếu cần, ở mức 1 triệu+)
+- Điểm nghẽn đã được chứng minh
+- Có đủ nhóm & nguồn lực
+Thời gian: +12 tháng
+
+Tổng: ~27 tháng, nhưng có doanh thu và nhóm lớn dần
+so với
+Vi dịch vụ ngay từ ngày đầu: 6 tháng, có thể không bao giờ ra mắt được
+
+@50
+**⟦Khung ra quyết định|Decision framework⟧:**
+@51
+Đánh đổi 4: ⟦Tối Ưu Hoá Quá Sớm|Premature Optimization⟧
+@52
+**"Tối ưu hoá quá sớm là nguồn gốc của mọi tội lỗi" - Donald Knuth**
+@53
+Cái bẫy:
+"Hãy xây dựng để mở rộng được tới 100 triệu người dùng ngay từ ngày đầu!"
+
+Thực tế:
+- 99% công ty khởi nghiệp không bao giờ đạt 100 triệu người dùng
+- Thiết kế thừa cho quy mô bạn chưa có = lãng phí thời gian
+- Thời gian lãng phí = chi phí cơ hội
+
+Cách tiếp cận tốt hơn:
+- Xây dựng cho gấp 2 lần quy mô hiện tại
+- Giám sát và tối ưu khi cần
+- Lặp lại dựa trên dữ liệu thực
+
+@54
+**Ví dụ: Tối ưu quá mức**
+@55
+**Khi nào nên tối ưu:**
+@56
+Tối ưu khi:
+- Có vấn đề hiệu năng thực sự
+- Vấn đề ảnh hưởng tới người dùng/doanh thu
+- Có dữ liệu chỉ ra điểm nghẽn
+- Chi phí của việc không tối ưu > chi phí của việc tối ưu
+
+Đừng tối ưu khi:
+- "Biết đâu một ngày nào đó sẽ cần"
+- "Thực hành tốt nhất bảo vậy"
+- Không có đo lường/dữ liệu
+- Người dùng không phàn nàn
+
+@57
+Trực Giác Về ⟦Định Lý CAP|CAP Theorem⟧ (Vượt Ra Ngoài Lý Thuyết)
+@58
+**⟦Định lý CAP|CAP Theorem⟧ được đơn giản hoá:**
+@59
+C - Consistency (Nhất quán): Mọi nút thấy cùng một dữ liệu
+A - Availability (Sẵn sàng): Hệ thống luôn phản hồi
+P - Partition tolerance (Chịu phân vùng): Vẫn hoạt động dù mạng gặp sự cố
+
+Trong hệ thống phân tán: Chỉ có thể đảm bảo 2 trong 3
+
+@60
+Nhưng trong thực tế, **⟦phân vùng mạng|network partitions⟧ luôn xảy ra**. Nên lựa chọn thực sự là:
+@61
+CP (Nhất quán + Chịu phân vùng):
+→ Chọn tính nhất quán thay vì tính sẵn sàng
+→ Hệ thống có thể từ chối yêu cầu để giữ nhất quán
+
+AP (Sẵn sàng + Chịu phân vùng):
+→ Chọn tính sẵn sàng thay vì tính nhất quán
+→ Hệ thống luôn phản hồi, có thể hiển thị dữ liệu cũ
+
+@62
+**Ví dụ trực quan:**
+@63
+**Máy ATM ngân hàng (Hệ thống CP):**
+@64
+Kịch bản: Phân vùng mạng giữa các ATM và ngân hàng trung tâm
+
+Hành vi CP:
+- ATM phát hiện phân vùng
+- ATM tạm khoá chức năng rút tiền
+- Hiển thị lỗi: "Dịch vụ tạm thời không khả dụng"
+- Ngăn số dư không nhất quán
+
+Vì sao chọn CP:
+- Không thể mạo hiểm hiển thị sai số dư
+- Không thể mạo hiểm rút tiền hai lần
+- Tính đúng đắn > Tính sẵn sàng
+
+Tác động tới người dùng:
+- Bực bội (không rút được tiền)
+- Nhưng giữ được niềm tin (dữ liệu không bị hỏng)
+
+@65
+**Bảng tin Facebook (Hệ thống AP):**
+@66
+Kịch bản: Phân vùng mạng giữa các trung tâm dữ liệu
+
+Hành vi AP:
+- Cả hai trung tâm dữ liệu tiếp tục phục vụ
+- Người dùng có thể thấy bảng tin hơi khác nhau
+- Cuối cùng sẽ đồng bộ lại khi phân vùng được khắc phục
+- Một số lượt thích có thể mất vài giây mới hiện
+
+Vì sao chọn AP:
+- Người dùng vẫn duyệt được (trải nghiệm tốt)
+- Bảng tin hơi cũ một chút là chấp nhận được
+- Tính sẵn sàng > Nhất quán hoàn hảo
+
+Tác động tới người dùng:
+- Vẫn dùng được ứng dụng (hài lòng)
+- Không để ý độ trễ 2 giây ở số lượt thích
+
+@67
+**Ma trận quyết định:**
+@68
+Dùng CP khi:
+✓ Giao dịch tài chính
+✓ Quản lý tồn kho
+✓ Xác thực người dùng
+✓ Hệ thống đặt chỗ (ghế, vé)
+✓ Hồ sơ y tế
+
+Dùng AP khi:
+✓ Bảng tin mạng xã hội
+✓ Số lượt xem/lượt thích
+✓ Gợi ý
+✓ Bảng điều khiển phân tích
+✓ Kết quả tìm kiếm
+
+@69
+Cách Bảo Vệ Các Quyết Định Kiến Trúc
+@70
+**Trong các buổi ⟦đánh giá kiến trúc|architecture reviews⟧, bạn sẽ bị chất vấn. Đây là cách để bảo vệ quan điểm:**
+@71
+⟦Khung Bảo Vệ|Defense Framework⟧
+@72
+1. Nêu rõ bài toán
+2. Liệt kê các phương án đã cân nhắc
+3. Giải thích đánh đổi của từng phương án
+4. Chỉ ra vì sao giải pháp được chọn phù hợp với bối cảnh
+5. Thừa nhận các hạn chế
+6. Xác định chỉ số thành công
+
+@73
+**Ví dụ bảo vệ:**
+@74
+Người chất vấn: "Tại sao bạn chọn PostgreSQL thay vì MongoDB?"
+
+Bảo vệ yếu:
+"PostgreSQL tốt hơn."
+
+Bảo vệ mạnh:
+"Để tôi giải thích lập luận:
+
+Bài toán:
+Chúng ta cần lưu dữ liệu người dùng, đơn hàng và các mối quan hệ.
+Giao dịch ACID là tối quan trọng (luồng thanh toán).
+
+Các phương án đã cân nhắc:
+
+Phương án 1: PostgreSQL
+Giao dịch ACID
+Khả năng truy vấn phong phú (JOIN)
+Nhóm đã quen thuộc
+Đã được chứng minh ở quy mô lớn (Instagram dùng nó)
+Giới hạn của mở rộng theo chiều dọc
+Thay đổi lược đồ tốn kém
+Mức phù hợp: Cao (khớp với yêu cầu)
+
+Phương án 2: MongoDB
+Mở rộng theo chiều ngang dễ hơn
+Lược đồ linh hoạt
+Tốt cho làm mẫu nhanh
+Không có ACID giữa các document
+Các thao tác kiểu JOIN tốn kém
+Nhóm cần được đào tạo
+Mức phù hợp: Trung bình (có vài lợi ích, nhưng có nhược điểm then chốt)
+
+Phương án 3: Cassandra
+Quy mô cực lớn (hàng tỷ dòng)
+Tính sẵn sàng cao
+Nhất quán cuối cùng (không chấp nhận được)
+Mô hình vận hành phức tạp
+Quá mức cần thiết với quy mô của ta (10 nghìn người dùng)
+Mức phù hợp: Thấp (thiết kế thừa)
+
+Quyết định: PostgreSQL
+Lý do:
+- Giao dịch ACID là không thể thương lượng (thanh toán)
+- Cần truy vấn phong phú (báo cáo, phân tích)
+- Năng suất của nhóm (không phải học thêm)
+- Quy mô của ta (10 nghìn → 100 nghìn người dùng) nằm gọn trong năng lực của PostgreSQL
+
+Các đánh đổi được chấp nhận:
+- Giới hạn mở rộng theo chiều dọc (chịu được 100 nghìn-1 triệu người dùng, đủ cho hiện tại)
+- Chuyển đổi lược đồ (chấp nhận được nếu có quy trình tốt)
+
+Chỉ số thành công:
+- Độ trễ truy vấn < 100ms (hiện tại 50ms)
+- Không có giao dịch nào thất bại
+- Duy trì được tốc độ phát triển
+
+Nếu PostgreSQL trở thành điểm nghẽn (> 1 triệu người dùng):
+- Thêm bản sao chỉ đọc trước
+- Sau đó phân mảnh nếu cần
+- Đã có lộ trình chuyển đổi
+
+Có câu hỏi nào không?"
+
+→ Phân tích kỹ lưỡng
+→ Quyết định dựa trên bối cảnh
+→ Thừa nhận các đánh đổi
+→ Xác định tiêu chí thành công
+→ Lên kế hoạch lộ trình phát triển
+
+@75
+Những Chất Vấn Thường Gặp & Cách Trả Lời
+@76
+**Chất vấn 1: "Sao không dùng [công nghệ đang thịnh hành]?"**
+@77
+Mẫu trả lời:
+"[Công nghệ X] rất tốt cho [tình huống sử dụng cụ thể].
+Yêu cầu của chúng ta là [Y], thứ mà [X] không tối ưu cho.
+Cụ thể, [đánh đổi Z] không khớp với ưu tiên của chúng ta.
+Chúng ta chọn [giải pháp của ta] vì [lập luận]."
+
+Ví dụ:
+"Kafka rất tốt cho truyền luồng sự kiện thông lượng cao.
+Yêu cầu của chúng ta là hàng đợi tác vụ đơn giản (100 tác vụ/phút).
+Độ phức tạp vận hành của Kafka không xứng với lợi ích ở quy mô của ta.
+Chúng ta chọn RabbitMQ vì đơn giản và cài đặt nhanh."
+
+@78
+**Chất vấn 2: "Cái này không ⟦mở rộng|scale⟧ được đâu!"**
+@79
+Mẫu trả lời:
+"Hãy định lượng 'quy mô'.
+Hiện tại: [X người dùng/yêu cầu]
+Tăng trưởng: [Y% mỗi tháng]
+Năng lực: [Giải pháp chịu được Z]
+Thời gian: [N tháng trước khi chạm điểm nghẽn]
+Kế hoạch: [Chiến lược giảm thiểu]"
+
+Ví dụ:
+"Hiện tại: 10 nghìn người dùng, 1 nghìn yêu cầu/phút
+Tăng trưởng: 20% mỗi tháng
+Một PostgreSQL chịu được: 10 nghìn thao tác ghi/giây
+Thời gian: ~24 tháng trước khi chạm điểm nghẽn (ở mức 150 nghìn người dùng)
+Kế hoạch: Thêm bản sao chỉ đọc ở mức 50 nghìn người dùng, phân mảnh ở mức 200 nghìn+ nếu cần
+Điều này cho ta 2 năm để kiểm chứng sự phù hợp giữa sản phẩm và thị trường."
+
+@80
+**Chất vấn 3: "Quá phức tạp / Quá đơn giản"**
+@81
+Trả lời:
+"Độ phức tạp nên tương xứng với bài toán.
+
+Các ràng buộc của chúng ta:
+- [Quy mô/Người dùng/Lưu lượng]
+- [Quy mô nhóm/chuyên môn]
+- [Thời hạn/Ngân sách]
+
+Với những điều này, [giải pháp] có kích cỡ phù hợp.
+Nếu ràng buộc thay đổi, chúng ta sẽ đánh giá lại."
+
+Ví dụ:
+"Các ràng buộc của chúng ta:
+- 5 nghìn người dùng, 100 req/s
+- 2 lập trình viên
+- Hạn chót 1 tháng
+- Ngân sách $500/tháng
+
+Vi dịch vụ sẽ là thiết kế thừa.
+Một hệ thống nguyên khối có cấu trúc tốt sẽ ra mắt nhanh và chịu được quy mô.
+Ta có thể tách ra sau nếu chứng minh được là cần thiết."
+
+@82
+Bài Tập Thực Hành: Phân Tích ⟦Đánh Đổi|Trade-off⟧
+@83
+**Hãy thử phân tích ⟦kịch bản|scenario⟧ này:**
+@84
+**Bài toán:** Thiết kế ⟦chiến lược lưu đệm|caching strategy⟧ cho trang sản phẩm thương mại điện tử
+@85
+**Bối cảnh:**
+@86
+100 nghìn sản phẩm
+@87
+1 triệu lượt xem trang/ngày
+@88
+Giá sản phẩm được cập nhật hằng giờ
+@89
+Các đợt ⟦flash sale|flash sales⟧ đổi giá mỗi phút
+@90
+70% ⟦lưu lượng|traffic⟧ tập trung vào 1 nghìn sản phẩm hàng đầu (sản phẩm "nóng")
+@91
+**Các phương án:**
+@92
+**Phương án A: Lưu đệm mạnh tay (TTL dài)**
+@93
+**Phương án B: TTL ngắn**
+@94
+**Phương án C: ⟦Vô hiệu hoá thông minh|Smart invalidation⟧**
+@95
+**Nhiệm vụ của bạn:**
+@96
+Bạn sẽ chọn phương án nào?
+@97
+Tại sao?
+@98
+Bạn đang chấp nhận những ⟦sự đánh đổi|trade-offs⟧ nào?
+@99
+Bạn sẽ bảo vệ lựa chọn của mình như thế nào?
+@100
+**Phân tích của tôi:**
+@101
+Khuyến nghị: Phương án C (Vô hiệu hoá thông minh)
+
+Lý do:
+- Độ chính xác của giá là tối quan trọng (niềm tin trong thương mại điện tử)
+- Flash sale là động lực doanh thu (không thể để dữ liệu cũ)
+- Độ phức tạp được bù đắp bằng giá trị kinh doanh
+- 70% là sản phẩm "nóng" = tỷ lệ trúng bộ nhớ đệm vẫn cao
+
+Các đánh đổi được chấp nhận:
+- Thời gian triển khai (+1 tuần)
+- Độ phức tạp vận hành (giám sát việc vô hiệu hoá)
+- Phụ thuộc vào hệ thống sự kiện
+
+Nhưng:
+- Tác động doanh thu của giá chính xác > chi phí phát triển
+- Hệ thống sự kiện còn hữu ích cho các tính năng khác
+- Đằng nào cũng cần giám sát
+
+Phương án thay thế cho MVP: Phương án B
+- Nếu thời gian gấp, bắt đầu với TTL 1 phút
+- Chuyển sang Phương án C khi đã chứng minh được giá trị
+- Cách tiếp cận theo từng giai đoạn giúp giảm rủi ro
+
+@102
+Những Điểm Cốt Lõi
+@103
+**⟦Tư duy đánh đổi|Trade-off thinking⟧ = Kỹ năng cốt lõi của ⟦kỹ sư lâu năm|Senior Engineer⟧**
+@104
+Kỹ sư mới: "Công nghệ nào là tốt nhất?"
+Kỹ sư lâu năm: "Những đánh đổi nào phù hợp với bối cảnh của ta?"
+
+Kinh nghiệm = Thư viện các mẫu
+Thâm niên = Lập luận về đánh đổi
+
+@105
+**Những ⟦đánh đổi|trade-offs⟧ lớn:**
+@106
+Nhất quán và Sẵn sàng
+→ Dữ liệu tài chính: Nhất quán
+→ Dữ liệu mạng xã hội: Sẵn sàng
+
+Độ trễ và Chi phí
+→ Tính ROI
+→ Tối ưu khi có lý do xác đáng
+
+Đơn giản và Khả năng mở rộng
+→ Bắt đầu đơn giản
+→ Mở rộng khi cần (có dữ liệu)
+
+Tối ưu sớm và Lặp dần
+→ Xây cho gấp 2 lần, không phải 100 lần
+→ Tối ưu hoá quá sớm = lãng phí
+
+@107
+**⟦Khung bảo vệ|Defense framework⟧:**
+@108
+1. Nêu rõ bài toán
+2. Liệt kê các phương án
+3. Giải thích các đánh đổi
+4. Lý giải lựa chọn dựa trên bối cảnh
+5. Thừa nhận các hạn chế
+6. Xác định chỉ số thành công
+7. Lên kế hoạch lộ trình phát triển
+
+@109
+**Trực giác về ⟦định lý CAP|CAP theorem⟧:**
+@110
+Phân vùng mạng luôn xảy ra (P là mặc định)
+Chọn: C hoặc A
+
+C (Nhất quán): Ngân hàng, thanh toán, đặt chỗ
+A (Sẵn sàng): Mạng xã hội, phân tích, bảng tin
+
+Không có câu trả lời hoàn hảo, chỉ có sự phù hợp với bối cảnh
+
+@111
+**⟦Mô hình tư duy|Mental model⟧:**
+@112
+Mọi quyết định kiến trúc:
+- Đều có đánh đổi (luôn luôn!)
+- Phụ thuộc vào bối cảnh (không có "tốt nhất" cho mọi trường hợp)
+- Cần được lý giải (có lập luận)
+- Có thể tiến hoá (không cố định mãi mãi)
+- Cần đo lường (không dựa vào cảm tính)
+
+@113
+**Bài kiểm tra tối thượng:**
+@114
+Một kiến trúc sư giỏi có thể trả lời:
+"Tại sao bạn chọn X thay vì Y?"
+
+Bằng:
+✓ Hiểu rõ bài toán
+✓ Các phương án thay thế
+✓ Phân tích đánh đổi
+✓ Sự khớp với bối cảnh
+✓ Chỉ số thành công
+✓ Kế hoạch phát triển
+
+Chứ không phải bằng:
+✗ "Đó là thực hành tốt nhất"
+✗ "Ai cũng dùng nó"
+✗ "Nó mới hơn/nhanh hơn/ngầu hơn"
+
+@115
+**Hãy nhớ:**
+@116
+Kiến trúc hoàn hảo = Hoang đường
+Kiến trúc tốt = Đánh đổi đúng cho bối cảnh của bạn
+
+Làm chủ tư duy đánh đổi
+Làm chủ việc ra quyết định kiến trúc
+Làm chủ vai trò kỹ sư lâu năm
+
+@117
+Bạn đã học các ⟦mẫu thiết kế|patterns⟧, ⟦khung tư duy|frameworks⟧, hệ thống. Giờ là lúc học cách **lập luận về chúng**.
+@118
+**⟦Tư duy đánh đổi|Trade-off thinking⟧ là thứ phân biệt kỹ sư lâu năm với kỹ sư mới vào nghề. Hãy làm chủ nó.**

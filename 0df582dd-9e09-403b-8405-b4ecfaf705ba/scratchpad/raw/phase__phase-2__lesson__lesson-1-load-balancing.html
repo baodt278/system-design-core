@@ -1,0 +1,947 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Load Balancing: Traffic Distribution Trong Distributed Systems | Phase 2 — Core Building Blocks | System Design Core</title><meta name="description" content="Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connectio"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-2/lesson/lesson-1-load-balancing"/><meta property="og:title" content="Load Balancing: Traffic Distribution Trong Distributed Systems | Phase 2 — Core Building Blocks"/><meta property="og:description" content="Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connectio"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-2/lesson/lesson-1-load-balancing"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Load Balancing: Traffic Distribution Trong Distributed Systems | Phase 2 — Core Building Blocks"/><meta name="twitter:description" content="Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connectio"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 2 — Core Building Blocks</p><p class="mt-3 text-xl font-semibold text-ink">Load Balancing: Traffic Distribution Trong Distributed Systems</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connections, Weighted algorithms và cách thiết kế high-availability systems.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-2/lesson/lesson-1-load-balancing"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Load Balancing: Traffic Distribution Trong Distributed Systems</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-2-caching"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Caching - Performance Layer Quan Trọng Nhất</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-3-database"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Database Scaling - Chiến Lược Scale Data Layer</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Message Queues &amp; Async Processing - Decoupling Services</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-2">Phase 2 — Core Building Blocks</a></li><li>/</li><li aria-current="page" class="text-ink">Load Balancing: Traffic Distribution Trong Distributed Systems</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Load Balancing: Traffic Distribution Trong Distributed Systems</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connections, Weighted algorithms và cách thiết kế high-availability systems.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Load Balancing: Traffic Distribution Trong Distributed Systems"><article class="prose-ui"><h1 id="load-balancing-traffic-distribution-trong-distributed-systems">Load Balancing: Traffic Distribution Trong Distributed Systems</h1>
+<h2 id="tldr">TL;DR</h2>
+<ul>
+<li><strong>Load balancing</strong> là cơ chế phân phối traffic giữa nhiều instances để tăng <strong>scalability</strong> và <strong>reliability</strong>.</li>
+<li>Ở production, load balancer giúp giảm single point of failure, hỗ trợ zero-downtime deploy và giữ latency ổn định khi traffic tăng.</li>
+<li>Chọn thuật toán theo workload: <code>Round Robin</code>, <code>Least Connections</code>, <code>Weighted</code>, hoặc <code>IP Hash</code>.</li>
+<li>Với web/API hiện đại, Layer 7 thường là lựa chọn mặc định; Layer 4 phù hợp khi cần throughput cực cao hoặc non-HTTP protocols.</li>
+</ul>
+<h2 id="what-is-load-balancing">What Is Load Balancing?</h2>
+<p>Load balancing trong system design là kỹ thuật phân phối request đến nhiều backend servers để tránh quá tải một node và tăng khả năng mở rộng hệ thống.</p>
+<h2 id="why-does-load-balancing-matter">Why Does Load Balancing Matter?</h2>
+<ul>
+<li>Tăng khả năng chịu tải khi traffic tăng đột biến.</li>
+<li>Tăng độ sẵn sàng hệ thống khi một server bị lỗi.</li>
+<li>Giữ hiệu năng ổn định cho user trong môi trường distributed systems.</li>
+<li>Là nền tảng cho high-availability architecture trong production.</li>
+</ul>
+<h2 id="when-should-you-use-it">When Should You Use It?</h2>
+<ul>
+<li>Khi một server không còn đủ capacity cho throughput hiện tại.</li>
+<li>Khi cần giảm downtime khi deploy.</li>
+<li>Khi hệ thống có nhiều service hoặc nhiều vùng (multi-region).</li>
+<li>Khi muốn cải thiện reliability và performance ở quy mô production.</li>
+</ul>
+<h2 id="how-does-it-work">How Does It Work?</h2>
+<ol>
+<li>Client gửi request đến load balancer.</li>
+<li>Load balancer chọn backend server theo routing algorithm.</li>
+<li>Request được forward đến server đã chọn.</li>
+<li>Response trả về qua load balancer cho client.</li>
+</ol>
+<h2 id="trade-offs-cần-nắm">Trade-offs Cần Nắm</h2>
+<ul>
+<li>Layer 4 nhanh hơn nhưng ít ngữ cảnh routing.</li>
+<li>Layer 7 linh hoạt hơn nhưng tốn thêm processing.</li>
+<li>Sticky session giúp stateful flow nhưng làm giảm phân phối đều.</li>
+<li>Thuật toán đơn giản dễ vận hành hơn nhưng có thể không tối ưu cho workload phức tạp.</li>
+</ul>
+<h2 id="key-terms-aiseo-quick-definitions">Key Terms (AI/SEO Quick Definitions)</h2>
+<ul>
+<li><strong>Scalability:</strong> khả năng hệ thống tăng công suất khi traffic tăng.</li>
+<li><strong>Reliability:</strong> khả năng hệ thống tiếp tục hoạt động ổn định khi có lỗi.</li>
+<li><strong>Latency:</strong> thời gian từ lúc gửi request đến khi nhận response.</li>
+<li><strong>Throughput:</strong> số lượng request hệ thống xử lý được trong một đơn vị thời gian.</li>
+</ul>
+<p>Bạn đã học components và communication patterns. Giờ là lúc đi sâu vào một trong những components quan trọng nhất: <strong>Load Balancer</strong>.</p>
+<p>Tôi còn nhớ ngày Black Friday đầu tiên của startup tôi từng làm. Traffic tăng 50x. Single server? Chết ngay lập tức.</p>
+<p>Chúng tôi panic add thêm 5 servers. Nhưng rồi nhận ra: <strong>Làm sao traffic biết đi đến server nào?</strong></p>
+<p>Đó là lúc tôi thực sự hiểu giá trị của load balancer. Không phải chỉ là &quot;phân phối traffic&quot;. Mà là <strong>làm cho distributed system hoạt động như một thể thống nhất</strong>.</p>
+<h2 id="tại-sao-load-balancing-tồn-tại">Tại Sao Load Balancing Tồn Tại?</h2>
+<h3 id="vấn-đề-cơ-bản-single-server-limits">Vấn Đề Cơ Bản: Single Server Limits</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    subgraph &quot;Single Server Architecture&quot;
+        C1[Client 1] --&gt; S[Server&lt;br/&gt;Max: 1000 req/s]
+        C2[Client 2] --&gt; S
+        C3[Client 3] --&gt; S
+        C4[...] --&gt; S
+        C5[Client N] --&gt; S
+    end
+    
+    style S fill:#ff6b6b</code></pre>
+<p><strong>Scenario thực tế:</strong></p>
+<pre><code>Server capacity: 1,000 requests/second
+Normal traffic: 800 req/s (80% capacity) 
+Black Friday traffic: 5,000 req/s 
+
+Result:
+- Response time: 200ms → 15 seconds
+- Timeouts everywhere
+- Server crash
+- Revenue loss
+</code></pre>
+<h3 id="solution-1-vertical-scaling-scale-up">Solution 1: Vertical Scaling (Scale Up)</h3>
+<pre><code>Upgrade server:
+4 CPU cores → 16 cores
+8GB RAM → 64GB RAM
+Cost: $200/month → $1,200/month
+
+Result: Handle 4,000 req/s
+Problem: Vẫn thiếu 1,000 req/s
+        Và... không thể upgrade mãi mãi
+</code></pre>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>Có giới hạn vật lý (không thể mua CPU vô hạn)</li>
+<li>Expensive (cost không linear)</li>
+<li>Single point of failure (server die = hệ thống chết)</li>
+<li>Downtime khi upgrade</li>
+</ul>
+<h3 id="solution-2-horizontal-scaling-scale-out">Solution 2: Horizontal Scaling (Scale Out)</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    subgraph &quot;Multi-Server Architecture&quot;
+        C1[Client 1] --&gt; LB[Load Balancer]
+        C2[Client 2] --&gt; LB
+        C3[Client 3] --&gt; LB
+        C4[...] --&gt; LB
+        C5[Client N] --&gt; LB
+        
+        LB --&gt; S1[Server 1&lt;br/&gt;1000 req/s]
+        LB --&gt; S2[Server 2&lt;br/&gt;1000 req/s]
+        LB --&gt; S3[Server 3&lt;br/&gt;1000 req/s]
+        LB --&gt; S4[Server 4&lt;br/&gt;1000 req/s]
+        LB --&gt; S5[Server 5&lt;br/&gt;1000 req/s]
+    end
+    
+    style LB fill:#51cf66</code></pre>
+<p><strong>Result:</strong></p>
+<pre><code>5 servers × 1,000 req/s = 5,000 req/s total capacity
+Cost: 5 × $200 = $1,000/month
+Can add more servers infinitely
+</code></pre>
+<p><strong>Nhưng có vấn đề:</strong></p>
+<p>Với 5 servers, <strong>client gửi request đến server nào?</strong></p>
+<p>Ai quyết định? Làm sao distribute đều?</p>
+<p>→ Đó chính là <strong>nhiệm vụ của Load Balancer</strong>.</p>
+<h2 id="load-balancer-là-gì">Load Balancer Là Gì?</h2>
+<p><strong>Definition:</strong></p>
+<p>Load balancer là component ngồi giữa clients và servers, nhận tất cả incoming requests và phân phối chúng đều (hoặc thông minh) giữa multiple backend servers.</p>
+<p><strong>Simple analogy:</strong></p>
+<p>Imagine quầy check-in sân bay:</p>
+<pre><code>Khách hàng đến → Nhân viên điều phối → Quầy check-in
+(clients)        (load balancer)      (servers)
+
+Nhân viên: &quot;Quầy 3 đang trống, mời anh qua đây&quot;
+</code></pre>
+<p><strong>Technical flow:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant C as Client
+    participant LB as Load Balancer
+    participant S1 as Server 1
+    participant S2 as Server 2
+    participant S3 as Server 3
+    
+    C-&gt;&gt;LB: HTTP Request
+    Note over LB: Choose server&lt;br/&gt;based on algorithm
+    LB-&gt;&gt;S2: Forward request
+    S2-&gt;&gt;S2: Process request
+    S2-&gt;&gt;LB: Response
+    LB-&gt;&gt;C: Forward response</code></pre>
+<p><em>Load balancer nhận request, chọn server theo algorithm, forward request, nhận response, return về client.</em></p>
+<h2 id="benefits-của-load-balancing">Benefits Của Load Balancing</h2>
+<h3 id="benefit-1-increased-capacity">Benefit 1: Increased Capacity</h3>
+<pre><code>Before: 1 server = 1,000 req/s
+After:  10 servers = 10,000 req/s
+
+Linear scaling (thêm server = thêm capacity)
+</code></pre>
+<h3 id="benefit-2-high-availability">Benefit 2: High Availability</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    LB[Load Balancer]
+    S1[Server 1&lt;br/&gt; Healthy]
+    S2[Server 2&lt;br/&gt; Down]
+    S3[Server 3&lt;br/&gt; Healthy]
+    
+    LB --&gt; S1
+    LB -.X S2
+    LB --&gt; S3
+    
+    style S2 fill:#ff6b6b
+    style S1 fill:#51cf66
+    style S3 fill:#51cf66</code></pre>
+<p><em>Khi Server 2 die, load balancer tự động remove nó khỏi pool và route traffic đến servers còn lại.</em></p>
+<p><strong>Without LB:</strong></p>
+<pre><code>Server dies → Users get errors → Downtime
+</code></pre>
+<p><strong>With LB:</strong></p>
+<pre><code>Server dies → LB detects → Routes to healthy servers
+→ Users không bị ảnh hưởng
+→ Zero downtime
+</code></pre>
+<h3 id="benefit-3-zero-downtime-deployment">Benefit 3: Zero-Downtime Deployment</h3>
+<pre><code>Traditional deployment:
+1. Stop server
+2. Deploy new code
+3. Start server
+→ Downtime: 2-5 minutes
+
+With Load Balancer:
+1. Remove Server 1 from pool
+2. Deploy to Server 1
+3. Add Server 1 back
+4. Repeat for Server 2, 3, 4, 5...
+→ Downtime: 0 seconds
+</code></pre>
+<p><strong>Rolling deployment strategy:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TD
+    Start[Start Deployment] --&gt; R1[Remove Server 1 from LB]
+    R1 --&gt; D1[Deploy to Server 1]
+    D1 --&gt; H1[Health check Server 1]
+    H1 --&gt; A1[Add Server 1 back to LB]
+    A1 --&gt; R2[Remove Server 2 from LB]
+    R2 --&gt; D2[Deploy to Server 2]
+    D2 --&gt; Done[All servers updated]</code></pre>
+<h3 id="benefit-4-geographic-distribution">Benefit 4: Geographic Distribution</h3>
+<pre><code>Users in US → US Load Balancer → US Servers (low latency)
+Users in Europe → EU Load Balancer → EU Servers (low latency)
+Users in Asia → Asia Load Balancer → Asia Servers (low latency)
+</code></pre>
+<p><strong>Impact:</strong></p>
+<pre><code>Without geo-distribution:
+User in Brazil → Server in Singapore → 400ms latency
+
+With geo-distribution:
+User in Brazil → Server in São Paulo → 20ms latency
+
+20x improvement!
+</code></pre>
+<h2 id="load-balancing-algorithms">Load Balancing Algorithms</h2>
+<p>Đây là phần quan trọng nhất: <strong>Làm thế nào load balancer quyết định request nào đi server nào?</strong></p>
+<h3 id="algorithm-1-round-robin">Algorithm 1: Round Robin</h3>
+<p><strong>How it works:</strong></p>
+<p>Distribute requests tuần tự, mỗi server nhận một request theo vòng tròn.</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    LB[Load Balancer]
+    S1[Server A]
+    S2[Server B]
+    S3[Server C]
+    
+    LB --&gt;|Request 1| S1
+    LB --&gt;|Request 2| S2
+    LB --&gt;|Request 3| S3
+    LB --&gt;|Request 4| S1
+    LB --&gt;|Request 5| S2</code></pre>
+<p><strong>Code concept:</strong></p>
+<pre><code class="language-python">servers = [&#x27;server_a&#x27;, &#x27;server_b&#x27;, &#x27;server_c&#x27;]
+current_index = 0
+
+def get_next_server():
+    global current_index
+    server = servers[current_index]
+    current_index = (current_index + 1) % len(servers)
+    return server
+
+# Request flow
+get_next_server()  # → server_a
+get_next_server()  # → server_b
+get_next_server()  # → server_c
+get_next_server()  # → server_a (cycle repeats)
+</code></pre>
+<p><strong>Ưu điểm:</strong></p>
+<p>Cực kỳ đơn giản
+Phân phối đều về số lượng requests
+Không cần track state
+Low overhead</p>
+<p><strong>Nhược điểm:</strong></p>
+<p>Không quan tâm server load hiện tại
+Không biết request nào heavy, nhẹ
+Giả định tất cả requests và servers giống nhau</p>
+<p><strong>Problem scenario:</strong></p>
+<pre><code>Request 1 → Server A: Upload 5GB file (takes 10 minutes)
+Request 2 → Server B: Get user profile (takes 10ms)
+Request 3 → Server C: Get user profile (takes 10ms)
+Request 4 → Server A: Get user profile (waits behind upload...)
+
+Server A: Overloaded (handling heavy request)
+Server B, C: Idle (finished quick requests)
+
+Round Robin không biết server A đang bận!
+</code></pre>
+<p><strong>Khi nào dùng:</strong></p>
+<p>Requests có execution time tương tự nhau
+Servers có specs giống nhau
+Simple use cases
+Default choice khi bắt đầu</p>
+<h3 id="algorithm-2-least-connections">Algorithm 2: Least Connections</h3>
+<p><strong>How it works:</strong></p>
+<p>Route request đến server có <strong>ít active connections nhất</strong>.</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    LB[Load Balancer&lt;br/&gt;Tracks connections]
+    
+    S1[Server A&lt;br/&gt;10 connections]
+    S2[Server B&lt;br/&gt;5 connections]
+    S3[Server C&lt;br/&gt;8 connections]
+    
+    LB --&gt;|New request goes here| S2
+    
+    style S2 fill:#51cf66</code></pre>
+<p><strong>Code concept:</strong></p>
+<pre><code class="language-python">servers = {
+    &#x27;server_a&#x27;: {&#x27;connections&#x27;: 10, &#x27;url&#x27;: &#x27;192.168.1.10&#x27;},
+    &#x27;server_b&#x27;: {&#x27;connections&#x27;: 5, &#x27;url&#x27;: &#x27;192.168.1.11&#x27;},
+    &#x27;server_c&#x27;: {&#x27;connections&#x27;: 8, &#x27;url&#x27;: &#x27;192.168.1.12&#x27;}
+}
+
+def get_next_server():
+    # Tìm server có ít connections nhất
+    min_server = min(servers.items(), 
+                     key=lambda x: x[1][&#x27;connections&#x27;])
+    return min_server[0]
+
+# New request arrives
+server = get_next_server()  # → server_b (5 connections)
+servers[server][&#x27;connections&#x27;] += 1  # Now 6
+
+# Next request
+server = get_next_server()  # → server_b again (6 connections)
+</code></pre>
+<p><strong>Ưu điểm:</strong></p>
+<p>Cân bằng load tốt hơn Round Robin
+Adapt với requests có execution time khác nhau
+Hiệu quả cho long-lived connections</p>
+<p><strong>Nhược điểm:</strong></p>
+<p>Phức tạp hơn (phải track connections)
+Overhead để update state
+Cần synchronization giữa multiple LB instances</p>
+<p><strong>Khi nào dùng:</strong></p>
+<p>Requests có execution time rất khác nhau
+WebSocket connections
+Long-polling
+File uploads/downloads
+Streaming</p>
+<p><strong>Personal experience:</strong></p>
+<p>Tôi từng có API với 2 loại endpoints:</p>
+<pre><code>GET /users/{id} → 10ms execution time
+POST /reports/generate → 60 seconds execution time
+</code></pre>
+<p>Dùng Round Robin → Servers nhận reports bị stuck, servers khác idle.</p>
+<p>Switch sang Least Connections → Load balanced đều, response time cải thiện 5x.</p>
+<h3 id="algorithm-3-weighted-round-robin">Algorithm 3: Weighted Round Robin</h3>
+<p><strong>Problem statement:</strong></p>
+<p>Servers có specs khác nhau. Round Robin treat tất cả servers như nhau → waste capacity.</p>
+<pre><code>Server A: 16GB RAM, 8 CPU cores (powerful)
+Server B: 8GB RAM, 4 CPU cores (normal)
+Server C: 8GB RAM, 4 CPU cores (normal)
+
+Round Robin: Mỗi server nhận same số requests
+→ Server A under-utilized
+→ Server B, C might be overloaded
+</code></pre>
+<p><strong>Solution: Assign weights</strong></p>
+<pre><code class="language-python">servers = [
+    {&#x27;name&#x27;: &#x27;server_a&#x27;, &#x27;weight&#x27;: 4},  # Powerful
+    {&#x27;name&#x27;: &#x27;server_b&#x27;, &#x27;weight&#x27;: 2},  # Normal
+    {&#x27;name&#x27;: &#x27;server_c&#x27;, &#x27;weight&#x27;: 2}   # Normal
+]
+
+# Distribution:
+# Server A gets 4 requests
+# Server B gets 2 requests
+# Server C gets 2 requests
+# Total: 8 requests per cycle
+
+# In ratio: 4:2:2 or 2:1:1
+</code></pre>
+<p><strong>Request flow:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    LB[Load Balancer]
+    
+    S1[Server A&lt;br/&gt;Weight: 4]
+    S2[Server B&lt;br/&gt;Weight: 2]
+    S3[Server C&lt;br/&gt;Weight: 2]
+    
+    LB --&gt;|Req 1,2,3,4| S1
+    LB --&gt;|Req 5,6| S2
+    LB --&gt;|Req 7,8| S3</code></pre>
+<p><strong>Implementation concept:</strong></p>
+<pre><code class="language-python">def weighted_round_robin():
+    # Expand servers theo weight
+    expanded = []
+    for server in servers:
+        expanded.extend([server[&#x27;name&#x27;]] * server[&#x27;weight&#x27;])
+    
+    # expanded = [&#x27;server_a&#x27;, &#x27;server_a&#x27;, &#x27;server_a&#x27;, &#x27;server_a&#x27;,
+    #             &#x27;server_b&#x27;, &#x27;server_b&#x27;, 
+    #             &#x27;server_c&#x27;, &#x27;server_c&#x27;]
+    
+    # Apply Round Robin trên expanded list
+    current_index = 0
+    while True:
+        server = expanded[current_index]
+        current_index = (current_index + 1) % len(expanded)
+        yield server
+</code></pre>
+<p><strong>Ưu điểm:</strong></p>
+<p>Utilize powerful servers hiệu quả hơn
+Flexible resource allocation
+Cost-effective (mix server types)</p>
+<p><strong>Nhược điểm:</strong></p>
+<p>Phải configure weights manually
+Cần adjust weights khi thêm/bớt servers
+Không dynamic (không adapt real-time load)</p>
+<p><strong>Khi nào dùng:</strong></p>
+<p>Servers có specs khác nhau
+Mix của spot instances và reserved instances (cloud)
+Gradual migration (old servers weight thấp, new servers weight cao)</p>
+<h3 id="algorithm-4-ip-hash-consistent-hashing">Algorithm 4: IP Hash (Consistent Hashing)</h3>
+<p><strong>How it works:</strong></p>
+<p>Hash client IP address và map to server. Same client → Same server.</p>
+<pre><code class="language-python">def get_server(client_ip):
+    hash_value = hash(client_ip)
+    server_index = hash_value % num_servers
+    return servers[server_index]
+
+# Example
+get_server(&#x27;192.168.1.100&#x27;)  # → server_a
+get_server(&#x27;192.168.1.101&#x27;)  # → server_c
+get_server(&#x27;192.168.1.100&#x27;)  # → server_a (same!)
+</code></pre>
+<p><strong>Diagram:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    C1[Client&lt;br/&gt;IP: 192.168.1.100] --&gt;|Hash → 0| S1[Server A]
+    C2[Client&lt;br/&gt;IP: 192.168.1.101] --&gt;|Hash → 2| S3[Server C]
+    C3[Client&lt;br/&gt;IP: 192.168.1.102] --&gt;|Hash → 1| S2[Server B]
+    C1b[Same Client&lt;br/&gt;IP: 192.168.1.100] --&gt;|Hash → 0| S1</code></pre>
+<p><em>Same client IP luôn hash to same server.</em></p>
+<p><strong>Ưu điểm:</strong></p>
+<p>Session persistence (sticky sessions)
+Server-side caching efficient (same user → same server → cache hit)
+Stateful applications work</p>
+<p><strong>Nhược điểm:</strong></p>
+<p>Uneven distribution nếu một số clients gửi nhiều requests
+Khi add/remove server → hash changes → sessions lost
+No load balancing nếu một client spam requests</p>
+<p><strong>Khi nào dùng:</strong></p>
+<p>Need session affinity
+WebSocket connections
+Server-side caching per user
+Legacy apps không support distributed sessions</p>
+<p><strong>Better alternative:</strong></p>
+<p>Thay vì IP Hash, dùng <strong>shared session store</strong> (Redis):</p>
+<pre><code class="language-python">#  IP Hash approach
+def handle_request(client_ip):
+    server = hash(client_ip) % num_servers
+    # Session stored on server → tied to server
+
+#  Shared session approach
+def handle_request(session_id):
+    session = redis.get(f&quot;session:{session_id}&quot;)
+    # Any server can handle → true stateless
+</code></pre>
+<h2 id="health-checks-tránh-route-đến-dead-servers">Health Checks: Tránh Route Đến Dead Servers</h2>
+<p><strong>Problem:</strong></p>
+<pre><code>Server 2 crashes
+Load Balancer không biết
+Continues routing 33% traffic to Server 2
+Users get errors
+</code></pre>
+<p><strong>Solution: Health Checks</strong></p>
+<p>Load balancer ping servers định kỳ để verify health.</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant LB as Load Balancer
+    participant S1 as Server 1
+    participant S2 as Server 2
+    participant S3 as Server 3
+    
+    loop Every 10 seconds
+        LB-&gt;&gt;S1: GET /health
+        S1-&gt;&gt;LB: 200 OK 
+        
+        LB-&gt;&gt;S2: GET /health
+        Note over S2: Server crashed
+        S2--xLB: Timeout 
+        
+        LB-&gt;&gt;S3: GET /health
+        S3-&gt;&gt;LB: 200 OK 
+    end
+    
+    Note over LB: Remove Server 2&lt;br/&gt;from pool</code></pre>
+<h3 id="health-check-implementation">Health Check Implementation</h3>
+<p><strong>Server-side endpoint:</strong></p>
+<pre><code class="language-python">from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route(&#x27;/health&#x27;)
+def health_check():
+    # Check critical dependencies
+    checks = {
+        &#x27;database&#x27;: check_database_connection(),
+        &#x27;cache&#x27;: check_cache_connection(),
+        &#x27;disk_space&#x27;: check_disk_space()
+    }
+    
+    if all(checks.values()):
+        return jsonify({
+            &#x27;status&#x27;: &#x27;healthy&#x27;,
+            &#x27;checks&#x27;: checks
+        }), 200
+    else:
+        return jsonify({
+            &#x27;status&#x27;: &#x27;unhealthy&#x27;,
+            &#x27;checks&#x27;: checks
+        }), 503  # Service Unavailable
+
+def check_database_connection():
+    try:
+        db.execute(&quot;SELECT 1&quot;)
+        return True
+    except:
+        return False
+
+def check_cache_connection():
+    try:
+        cache.ping()
+        return True
+    except:
+        return False
+</code></pre>
+<p><strong>Load Balancer side:</strong></p>
+<pre><code class="language-python">import requests
+import time
+
+servers = [
+    {&#x27;url&#x27;: &#x27;http://server1.example.com&#x27;, &#x27;healthy&#x27;: True},
+    {&#x27;url&#x27;: &#x27;http://server2.example.com&#x27;, &#x27;healthy&#x27;: True},
+    {&#x27;url&#x27;: &#x27;http://server3.example.com&#x27;, &#x27;healthy&#x27;: True}
+]
+
+def health_check_loop():
+    while True:
+        for server in servers:
+            try:
+                response = requests.get(
+                    f&quot;{server[&#x27;url&#x27;]}/health&quot;,
+                    timeout=2  # 2 second timeout
+                )
+                
+                if response.status_code == 200:
+                    server[&#x27;healthy&#x27;] = True
+                    print(f&quot;{server[&#x27;url&#x27;]}: Healthy &quot;)
+                else:
+                    server[&#x27;healthy&#x27;] = False
+                    print(f&quot;{server[&#x27;url&#x27;]}: Unhealthy &quot;)
+                    
+            except requests.exceptions.Timeout:
+                server[&#x27;healthy&#x27;] = False
+                print(f&quot;{server[&#x27;url&#x27;]}: Timeout &quot;)
+                
+            except requests.exceptions.ConnectionError:
+                server[&#x27;healthy&#x27;] = False
+                print(f&quot;{server[&#x27;url&#x27;]}: Connection failed &quot;)
+        
+        time.sleep(10)  # Check every 10 seconds
+
+def get_healthy_servers():
+    return [s for s in servers if s[&#x27;healthy&#x27;]]
+</code></pre>
+<h3 id="health-check-best-practices">Health Check Best Practices</h3>
+<p><strong>Practice 1: Check dependencies, không chỉ server</strong></p>
+<pre><code class="language-python">#  BAD: Chỉ return OK
+@app.route(&#x27;/health&#x27;)
+def health():
+    return &quot;OK&quot;, 200
+
+#  GOOD: Check critical dependencies
+@app.route(&#x27;/health&#x27;)
+def health():
+    if not database.is_connected():
+        return &quot;Database down&quot;, 503
+    
+    if not cache.is_connected():
+        return &quot;Cache down&quot;, 503
+    
+    if disk_usage() &gt; 90:
+        return &quot;Disk full&quot;, 503
+    
+    return &quot;OK&quot;, 200
+</code></pre>
+<p><strong>Practice 2: Appropriate timeout</strong></p>
+<pre><code>Too short (500ms):
+- False negatives (server healthy but slow response)
+- Remove healthy servers unnecessarily
+
+Too long (30s):
+- False positives (server dead but take 30s to detect)
+- Users get errors for 30s
+
+Sweet spot: 2-5 seconds
+</code></pre>
+<p><strong>Practice 3: Retry logic</strong></p>
+<pre><code class="language-python">#  BAD: Remove after 1 failed check
+if health_check_failed:
+    remove_from_pool(server)
+
+#  GOOD: Remove after N consecutive failures
+server[&#x27;failed_checks&#x27;] = server.get(&#x27;failed_checks&#x27;, 0) + 1
+
+if server[&#x27;failed_checks&#x27;] &gt;= 3:  # 3 consecutive failures
+    remove_from_pool(server)
+elif health_check_success:
+    server[&#x27;failed_checks&#x27;] = 0  # Reset counter
+</code></pre>
+<p><strong>Reason:</strong> Avoid flapping (server removed → added → removed → added...).</p>
+<p><strong>Practice 4: Graceful degradation</strong></p>
+<pre><code class="language-python"># Nếu TẤT CẢ servers unhealthy:
+healthy_servers = get_healthy_servers()
+
+if len(healthy_servers) == 0:
+    # Option A: Route to all servers anyway (some might work)
+    # Option B: Return 503 Service Unavailable
+    # Option C: Route to backup servers in different region
+    
+    # Choose based on use case
+</code></pre>
+<p><strong>Personal lesson:</strong></p>
+<p>Tôi từng set health check timeout = 500ms. Database có spike latency lên 800ms (vẫn healthy, chỉ slow).</p>
+<p>Load balancer detect ALL servers unhealthy → Remove all → No servers available → <strong>Complete outage</strong>.</p>
+<p>Lesson: Health checks phải distinguish &quot;slow&quot; vs &quot;dead&quot;.</p>
+<h2 id="layer-4-vs-layer-7-load-balancing">Layer 4 vs Layer 7 Load Balancing</h2>
+<p>Đây là concept nhiều người confused. Hãy phân tích rõ ràng.</p>
+<h3 id="osi-model-quick-recap">OSI Model Quick Recap</h3>
+<pre><code>Layer 7: Application (HTTP, FTP, SMTP)
+Layer 6: Presentation (SSL/TLS)
+Layer 5: Session
+Layer 4: Transport (TCP, UDP)
+Layer 3: Network (IP)
+Layer 2: Data Link (Ethernet)
+Layer 1: Physical
+</code></pre>
+<h3 id="layer-4-load-balancing-transport-layer">Layer 4 Load Balancing (Transport Layer)</h3>
+<p><strong>Operates at:</strong> TCP/UDP level</p>
+<p><strong>Information available:</strong></p>
+<ul>
+<li>Source IP address</li>
+<li>Destination IP address</li>
+<li>Source port</li>
+<li>Destination port</li>
+</ul>
+<p><strong>Cannot see:</strong></p>
+<ul>
+<li>HTTP headers</li>
+<li>URL path</li>
+<li>Cookies</li>
+<li>Request body</li>
+<li>Application-level data</li>
+</ul>
+<p><strong>How it works:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant C as Client
+    participant L4 as L4 Load Balancer
+    participant S as Server
+    
+    C-&gt;&gt;L4: TCP SYN
+    Note over L4: Look at IP:Port only&lt;br/&gt;Choose server
+    L4-&gt;&gt;S: Forward TCP connection
+    S-&gt;&gt;L4: TCP SYN-ACK
+    L4-&gt;&gt;C: Forward response
+    
+    Note over C,S: Entire TCP connection&lt;br/&gt;forwarded to server</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code>All traffic to port 443 → Backend HTTPS servers
+All traffic to port 5432 → PostgreSQL replicas
+All traffic to port 6379 → Redis cluster
+
+Simple port-based routing
+</code></pre>
+<p><strong>Ưu điểm:</strong></p>
+<p><strong>Cực nhanh</strong> (simple packet forwarding)
+<strong>Low latency</strong> (+5-10ms)
+<strong>Protocol-agnostic</strong> (works với bất kỳ TCP/UDP protocol)
+<strong>High throughput</strong> (millions connections/second)</p>
+<p><strong>Nhược điểm:</strong></p>
+<p>Không thể route based on URL
+Không thể route based on headers
+Không thể modify requests/responses
+Limited intelligence</p>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Non-HTTP protocols (databases, custom TCP apps)</li>
+<li>Extreme performance requirements</li>
+<li>Simple routing (all traffic to same backends)</li>
+<li>Gaming servers, VoIP</li>
+</ul>
+<p><strong>Example tools:</strong></p>
+<ul>
+<li>AWS Network Load Balancer (NLB)</li>
+<li>HAProxy (TCP mode)</li>
+<li>IPVS (Linux kernel)</li>
+</ul>
+<h3 id="layer-7-load-balancing-application-layer">Layer 7 Load Balancing (Application Layer)</h3>
+<p><strong>Operates at:</strong> HTTP/HTTPS level</p>
+<p><strong>Information available:</strong></p>
+<ul>
+<li>Everything Layer 4 has</li>
+<li>HTTP method (GET, POST, PUT, DELETE)</li>
+<li>URL path and query parameters</li>
+<li>HTTP headers (User-Agent, cookies, custom headers)</li>
+<li>Request body</li>
+<li>SSL/TLS information</li>
+</ul>
+<p><strong>How it works:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant C as Client
+    participant L7 as L7 Load Balancer
+    participant S as Server
+    
+    C-&gt;&gt;L7: HTTPS request&lt;br/&gt;POST /api/users
+    Note over L7: Terminate TCP&lt;br/&gt;Parse HTTP&lt;br/&gt;Read URL, headers&lt;br/&gt;Make routing decision
+    L7-&gt;&gt;S: New HTTP request
+    S-&gt;&gt;L7: HTTP response
+    Note over L7: Can modify response&lt;br/&gt;Add headers, etc.
+    L7-&gt;&gt;C: Forward response</code></pre>
+<p><strong>Example routing rules:</strong></p>
+<pre><code class="language-nginx"># Nginx configuration (Layer 7)
+
+# Route by URL path
+location /api/users {
+    proxy_pass http://user_service;
+}
+
+location /api/orders {
+    proxy_pass http://order_service;
+}
+
+location /api/payments {
+    proxy_pass http://payment_service;
+}
+
+# Route by header
+if ($http_x_api_version = &quot;v2&quot;) {
+    proxy_pass http://api_v2_servers;
+}
+
+# Route by cookie
+if ($cookie_beta_user = &quot;true&quot;) {
+    proxy_pass http://beta_servers;
+}
+
+# Admin traffic to special servers
+location /admin {
+    proxy_pass http://admin_servers;
+    # Can add authentication here
+}
+</code></pre>
+<p><strong>Advanced features:</strong></p>
+<pre><code class="language-python"># SSL termination
+# LB handles HTTPS, forwards HTTP to backends
+Client --HTTPS--&gt; LB --HTTP--&gt; Backend
+(encrypted)          (unencrypted, fast)
+
+# Request modification
+# Add custom headers
+X-Forwarded-For: client_ip
+X-Request-ID: unique_id
+
+# Response modification
+# Gzip compression
+# Add security headers (CORS, CSP)
+
+# Content-based routing
+if content_type == &quot;video/mp4&quot;:
+    route_to_video_servers()
+elif content_type == &quot;image/jpeg&quot;:
+    route_to_image_servers()
+</code></pre>
+<p><strong>Ưu điểm:</strong></p>
+<p><strong>Intelligent routing</strong> (URL, headers, cookies)
+<strong>Content-based decisions</strong>
+<strong>Can modify requests/responses</strong>
+<strong>SSL termination</strong> (offload encryption từ backends)
+<strong>Perfect for microservices</strong></p>
+<p><strong>Nhược điểm:</strong></p>
+<p><strong>Slower</strong> (more processing)
+<strong>Higher latency</strong> (+10-50ms)
+<strong>Only works với HTTP/HTTPS</strong>
+<strong>More CPU intensive</strong></p>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Web applications</li>
+<li>Microservices architecture</li>
+<li>Content-based routing</li>
+<li>A/B testing</li>
+<li>Canary deployments</li>
+</ul>
+<p><strong>Example tools:</strong></p>
+<ul>
+<li>AWS Application Load Balancer (ALB)</li>
+<li>Nginx</li>
+<li>HAProxy (HTTP mode)</li>
+<li>Traefik</li>
+<li>Envoy</li>
+</ul>
+<h3 id="comparison-table">Comparison Table</h3>
+<pre><code>Feature              | Layer 4        | Layer 7
+---------------------|----------------|------------------
+Speed                | Very fast      | Slower
+Latency              | +5-10ms        | +10-50ms
+Routing              | IP:Port only   | URL, headers, etc.
+Protocol support     | Any TCP/UDP    | HTTP/HTTPS only
+SSL termination      | No             | Yes
+Content inspection   | No             | Yes
+Request modification | No             | Yes
+Microservices        | Not ideal      | Perfect
+Cost (processing)    | Low            | High
+Use case             | Simple routing | Smart routing
+</code></pre>
+<h3 id="decision-framework">Decision Framework</h3>
+<pre><code>Choose Layer 4 when:
+ Need maximum performance
+ Millions of connections
+ Non-HTTP protocols (database, gaming, VoIP)
+ Simple routing (all traffic to same backends)
+ Every millisecond matters
+
+Choose Layer 7 when:
+ Web applications / APIs
+ Microservices (route by path)
+ Need SSL termination
+ Content-based routing
+ Need to modify requests/responses
+ A/B testing / Canary deployments
+</code></pre>
+<p><strong>My recommendation:</strong></p>
+<p>Cho web applications: <strong>Default to Layer 7</strong> (Application Load Balancer).</p>
+<p>Flexibility và features &gt; small latency difference.</p>
+<p>Chỉ drop xuống Layer 4 khi có proven performance requirements hoặc non-HTTP protocols.</p>
+<h2 id="real-world-architecture-example">Real-World Architecture Example</h2>
+<p>Hãy xem một e-commerce system thực tế.</p>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>100,000 requests/second</li>
+<li>Multiple services (Web, API, Admin, Payments)</li>
+<li>Global users</li>
+<li>99.99% uptime</li>
+</ul>
+<p><strong>Architecture:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    Internet[Internet]
+    
+    subgraph &quot;Edge Layer&quot;
+        CDN[CloudFlare CDN&lt;br/&gt;Static assets]
+        DNS[GeoDNS]
+    end
+    
+    subgraph &quot;US Region&quot;
+        L7_US[Layer 7 LB&lt;br/&gt;AWS ALB]
+        
+        subgraph &quot;Services US&quot;
+            Web_US[Web Servers&lt;br/&gt;×10]
+            API_US[API Servers&lt;br/&gt;×20]
+            Admin_US[Admin Servers&lt;br/&gt;×2]
+        end
+        
+        L7_US --&gt;|/*| Web_US
+        L7_US --&gt;|/api/*| API_US
+        L7_US --&gt;|/admin/*| Admin_US
+    end
+    
+    subgraph &quot;Asia Region&quot;
+        L7_Asia[Layer 7 LB&lt;br/&gt;AWS ALB]
+        
+        subgraph &quot;Services Asia&quot;
+            Web_Asia[Web Servers&lt;br/&gt;×10]
+            API_Asia[API Servers&lt;br/&gt;×20]
+        end
+        
+        L7_Asia --&gt;|/*| Web_Asia
+        L7_Asia --&gt;|/api/*| API_Asia
+    end
+    
+    Internet --&gt; CDN
+    Internet --&gt; DNS
+    DNS --&gt;|US users| L7_US
+    DNS --&gt;|Asia users| L7_Asia</code></pre>
+<p><strong>Configuration details:</strong></p>
+<pre><code class="language-yaml"># Layer 7 Load Balancer config
+
+# Web servers pool
+- path: /*
+  backend: web_servers
+  algorithm: round_robin
+  health_check:
+    path: /health
+    interval: 10s
+    timeout: 5s
+    unhealthy_threshold: 3
+  
+# API servers pool
+- path: /api/*
+  backend: api_servers
+  algorithm: least_connections  # APIs vary in execution time
+  health_check:
+    path: /api/health
+    interval: 10s
+    timeout: 5s
+  
+# Admin servers pool
+- path: /admin/*
+  backend: admin_servers
+  algorithm: round_robin
+  health_check:
+    path: /admin/health
+    interval: 10s
+  ip_whitelist:  # Security: Only allow from office IPs
+    - 203.0.113.0/24
+</code></pre>
+<p><strong>Why this design:</strong></p>
+<ol>
+<li><strong>GeoDNS</strong>: Route users to nearest region (low latency)</li>
+<li><strong>CDN</strong>: Serve static assets (images, CSS, JS) from edge (fast)</li>
+<li><strong>Layer 7 LB</strong>: Intelligent routing by URL path</li>
+<li><strong>Different pools</strong>: Isolation (admin separate từ public)</li>
+<li><strong>Different algorithms</strong>:<!-- -->
+<ul>
+<li>Web: Round Robin (requests similar)</li>
+<li>API: Least Connections (vary in time)</li>
+</ul>
+</li>
+<li><strong>Health checks</strong>: Auto-remove unhealthy servers</li>
+<li><strong>IP whitelist</strong>: Security for admin panel</li>
+</ol>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Load balancing solves:</strong></p>
+<ul>
+<li>Single server capacity limits</li>
+<li>Single point of failure</li>
+<li>High availability requirements</li>
+<li>Geographic distribution</li>
+</ul>
+<p><strong>Core algorithms:</strong></p>
+<ul>
+<li><strong>Round Robin</strong>: Simple, default choice, even distribution</li>
+<li><strong>Least Connections</strong>: Better khi requests vary, long-lived connections</li>
+<li><strong>Weighted Round Robin</strong>: Khi servers có specs khác nhau</li>
+<li><strong>IP Hash</strong>: Session persistence (nhưng shared session store tốt hơn)</li>
+</ul>
+<p><strong>Health checks are critical:</strong></p>
+<ul>
+<li>Prevent routing to dead servers</li>
+<li>Check dependencies, not just server</li>
+<li>Appropriate timeout (2-5s)</li>
+<li>Retry logic to avoid flapping</li>
+</ul>
+<p><strong>Layer 4 vs Layer 7:</strong></p>
+<ul>
+<li><strong>Layer 4</strong>: Fast, simple, any protocol, limited routing</li>
+<li><strong>Layer 7</strong>: Smart, flexible, HTTP only, microservices-friendly</li>
+<li><strong>Default to Layer 7 cho web apps</strong></li>
+</ul>
+<p><strong>Best practices:</strong></p>
+<ul>
+<li>Start simple (Round Robin + health checks)</li>
+<li>Measure before optimizing algorithm</li>
+<li>Multiple load balancers (avoid SPOF)</li>
+<li>Monitor metrics (request rate, latency, error rate)</li>
+<li>Test failover scenarios</li>
+</ul>
+<p><strong>Tự hỏi khi design:</strong></p>
+<ol>
+<li><em>Thuật toán nào phù hợp với request pattern?</em></li>
+<li><em>Health checks có detect failures correctly không?</em></li>
+<li><em>Load balancer có là SPOF không?</em></li>
+<li><em>Cần Layer 4 hay Layer 7?</em></li>
+</ol>
+<p>Load balancing không phải là optional. Nó là <strong>foundation của distributed systems</strong>.</p>
+<p>Master nó tốt = hệ thống của bạn scalable và reliable.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-2/lesson/lesson-2-caching">Caching - Performance Layer Quan Trọng Nhất<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-2\",\"lesson\",\"lesson-1-load-balancing\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-2\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-1-load-balancing\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 2 — Core Building Blocks\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Load Balancing: Traffic Distribution Trong Distributed Systems\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connections, Weighted algorithms và cách thiết kế high-availability systems.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-load-balancing\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-1-load-balancing\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Load Balancing: Traffic Distribution Trong Distributed Systems\"}]]}]}],[\"$\",\"li\",\"lesson-2-caching\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-2-caching\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Caching - Performance Layer Quan Trọng Nhất\"}]]}]}],[\"$\",\"li\",\"lesson-3-database\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-3-database\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Database Scaling - Chiến Lược Scale Data Layer\"}]]}]}],[\"$\",\"li\",\"lesson-4-message-queues-async-processing-decoupling-services\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Message Queues \u0026 Async Processing - Decoupling Services\"}]]}]}],[\"$\",\"li\",\"lesson-5-integration-trade-off-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[\"$L24\",\"Tổng quan phase\"]}]]}],\"$L25\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"26:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"25:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2\",\"className\":\"hover:text-ink\",\"children\":\"Phase 2 — Core Building Blocks\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Load Balancing: Traffic Distribution Trong Distributed Systems\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Load Balancing: Traffic Distribution Trong Distributed Systems\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connections, Weighted algorithms và cách thiết kế high-availability systems.\"}]]}],[\"$\",\"$L26\",null,{\"path\":\"/phase/phase-2/lesson/lesson-1-load-balancing\",\"title\":\"Load Balancing: Traffic Distribution Trong Distributed Systems\",\"description\":\"Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connections, Weighted algorithms và cách thiết kế high-availability systems.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Load Balancing: Traffic Distribution Trong Distributed Systems\",\"children\":\"$L27\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[null,[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-2-caching\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Caching - Performance Layer Quan Trọng Nhất\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"load-balancing-traffic-distribution-trong-distributed-systems\",\"children\":\"Load Balancing: Traffic Distribution Trong Distributed Systems\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tldr\",\"children\":\"TL;DR\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Load balancing\"}],\" là cơ chế phân phối traffic giữa nhiều instances để tăng \",[\"$\",\"strong\",null,{\"children\":\"scalability\"}],\" và \",[\"$\",\"strong\",null,{\"children\":\"reliability\"}],\".\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Ở production, load balancer giúp giảm single point of failure, hỗ trợ zero-downtime deploy và giữ latency ổn định khi traffic tăng.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"Chọn thuật toán theo workload: \",[\"$\",\"code\",null,{\"children\":\"Round Robin\"}],\", \",[\"$\",\"code\",null,{\"children\":\"Least Connections\"}],\", \",[\"$\",\"code\",null,{\"children\":\"Weighted\"}],\", hoặc \",[\"$\",\"code\",null,{\"children\":\"IP Hash\"}],\".\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Với web/API hiện đại, Layer 7 thường là lựa chọn mặc định; Layer 4 phù hợp khi cần throughput cực cao hoặc non-HTTP protocols.\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"what-is-load-balancing\",\"children\":\"What Is Load Balancing?\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Load balancing trong system design là kỹ thuật phân phối request đến nhiều backend servers để tránh quá tải một node và tăng khả năng mở rộng hệ thống.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"why-does-load-balancing-matter\",\"children\":\"Why Does Load Balancing Matter?\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Tăng khả năng chịu tải khi traffic tăng đột biến.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Tăng độ sẵn sàng hệ thống khi một server bị lỗi.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Giữ hiệu năng ổn định cho user trong môi trường distributed systems.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Là nền tảng cho high-availability architecture trong production.\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"when-should-you-use-it\",\"children\":\"When Should You Use It?\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Khi một server không còn đủ capacity cho throughput hiện tại.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Khi cần giảm downtime khi deploy.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Khi hệ thống có nhiều service hoặc nhiều vùng (multi-region).\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Khi muốn cải thiện reliability và performance ở quy mô production.\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"how-does-it-work\",\"children\":\"How Does It Work?\"}],\"\\n\",[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Client gửi request đến load balancer.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Load balancer chọn backend server theo routing algorithm.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Request được forward đến server đã chọn.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Response trả về qua load balancer cho client.\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"trade-offs-cần-nắm\",\"children\":\"Trade-offs Cần Nắm\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Layer 4 nhanh hơn nhưng ít ngữ cảnh routing.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Layer 7 linh hoạt hơn nhưng tốn thêm processing.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Sticky session giúp stateful flow nhưng làm giảm phân phối đều.\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Thuật toán đơn giản dễ vận hành hơn nhưng có thể không tối ưu cho workload phức tạp.\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"key-terms-aiseo-quick-definitions\",\"children\":\"Key Terms (AI/SEO Quick Definitions)\"}],\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Scalability:\"}],\" khả năng hệ thống tăng công suất khi traffic tăng.\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Reliability:\"}],\" khả năng hệ thống tiếp tục hoạt động ổn định khi có lỗi.\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Latency:\"}],\" thời gian từ lúc gửi request đến khi nhận response.\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Throughput:\"}],\" số lượng request hệ thống xử lý được trong một đơn vị thời gian.\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Bạn đã học components và communication patterns. Giờ là lúc đi sâu vào một trong những components quan trọng nhất: \",\"$L28\",\".\"]}],\"\\n\",\"$L29\",\"\\n\",\"$L2a\",\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\",\"\\n\",\"$Lbe\",\"\\n\",\"$Lbf\",\"\\n\",\"$Lc0\",\"\\n\",\"$Lc1\",\"\\n\",\"$Lc2\",\"\\n\",\"$Lc3\",\"\\n\",\"$Lc4\",\"\\n\",\"$Lc5\",\"\\n\",\"$Lc6\",\"\\n\",\"$Lc7\",\"\\n\",\"$Lc8\",\"\\n\",\"$Lc9\",\"\\n\",\"$Lca\",\"\\n\",\"$Lcb\",\"\\n\",\"$Lcc\",\"\\n\",\"$Lcd\",\"\\n\",\"$Lce\",\"\\n\",\"$Lcf\",\"\\n\",\"$Ld0\",\"\\n\",\"$Ld1\",\"\\n\",\"$Ld2\",\"\\n\",\"$Ld3\",\"\\n\",\"$Ld4\",\"\\n\",\"$Ld5\",\"\\n\",\"$Ld6\",\"\\n\",\"$Ld7\",\"\\n\",\"$Ld8\",\"\\n\",\"$Ld9\",\"\\n\",\"$Lda\",\"\\n\",\"$Ldb\",\"\\n\",\"$Ldc\",\"\\n\",\"$Ldd\",\"\\n\",\"$Lde\",\"\\n\",\"$Ldf\",\"\\n\",\"$Le0\",\"\\n\",\"$Le1\",\"\\n\",\"$Le2\",\"\\n\",\"$Le3\",\"\\n\",\"$Le4\",\"\\n\",\"$Le5\",\"\\n\",\"$Le6\",\"\\n\",\"$Le7\",\"\\n\",\"$Le8\",\"\\n\",\"$Le9\",\"\\n\",\"$Lea\",\"\\n\",\"$Leb\",\"\\n\",\"$Lec\",\"\\n\",\"$Led\",\"\\n\",\"$Lee\",\"\\n\",\"$Lef\",\"\\n\",\"$Lf0\",\"\\n\",\"$Lf1\",\"\\n\",\"$Lf2\",\"\\n\",\"$Lf3\",\"\\n\",\"$Lf4\",\"\\n\",\"$Lf5\",\"\\n\",\"$Lf6\",\"\\n\",\"$Lf7\",\"\\n\",\"$Lf8\",\"\\n\",\"$Lf9\",\"\\n\",\"$Lfa\"]}]\n"])</script><script>self.__next_f.push([1,"fb:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n28:[\"$\",\"strong\",null,{\"children\":\"Load Balancer\"}]\n29:[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ ngày Black Friday đầu tiên của startup tôi từng làm. Traffic tăng 50x. Single server? Chết ngay lập tức.\"}]\n2a:[\"$\",\"p\",null,{\"children\":[\"Chúng tôi panic add thêm 5 servers. Nhưng rồi nhận ra: \",[\"$\",\"strong\",null,{\"children\":\"Làm sao traffic biết đi đến server nào?\"}]]}]\n2b:[\"$\",\"p\",null,{\"children\":[\"Đó là lúc tôi thực sự hiểu giá trị của load balancer. Không phải chỉ là \\\"phân phối traffic\\\". Mà là \",[\"$\",\"strong\",null,{\"children\":\"làm cho distributed system hoạt động như một thể thống nhất\"}],\".\"]}]\n2c:[\"$\",\"h2\",null,{\"id\":\"tại-sao-load-balancing-tồn-tại\",\"children\":\"Tại Sao Load Balancing Tồn Tại?\"}]\n2d:[\"$\",\"h3\",null,{\"id\":\"vấn-đề-cơ-bản-single-server-limits\",\"children\":\"Vấn Đề Cơ Bản: Single Server Limits\"}]\n2e:[\"$\",\"$Lfb\",null,{\"chart\":\"flowchart TB\\n    subgraph \\\"Single Server Architecture\\\"\\n        C1[Client 1] --\u003e S[Server\u003cbr/\u003eMax: 1000 req/s]\\n        C2[Client 2] --\u003e S\\n        C3[Client 3] --\u003e S\\n        C4[...] --\u003e S\\n        C5[Client N] --\u003e S\\n    end\\n    \\n    style S fill:#ff6b6b\"}]\n2f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Scenario thực tế:\"}]}]\n30:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server capacity: 1,000 requests/second\\nNormal traffic: 800 req/s (80% capacity) \\nBlack Friday traffic: 5,000 req/s \\n\\nResult:\\n- Response time: 200ms → 15 seconds\\n- Timeouts everywhere\\n- Server crash\\n- Revenue loss\\n\"}]}]\n31:[\"$\",\"h3\",null,{\"id\":\"solution-1-vertical-scaling-scale-up\",\"children\":\"Solution 1: Vertical Scaling (Scale Up)\"}]\n32:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Upgrade server:\\n4 CPU cores → 16 cores\\n8GB RAM → 64GB RAM\\nCost: $200/month → $1,200/month\\n\\nResult: Handle 4,000 req/s\\nProblem: Vẫn thiếu 1,000 req/s\\n        Và... không thể upgrade mãi mãi\\n\"}]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Limitations:\"}]}]\n34:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Có giới hạn vật lý (không thể mua CPU vô hạn)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Expensive (cost không linear)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Single point of failure (server die = hệ thống chết)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Downtime khi upgrade\"}],\"\\n\"]}]\n35:[\"$\",\"h3\",null,{\"id\":\"solution-2-horizontal-scaling-scale-out\",\"children\":\"Solution 2: Horizontal Scaling (Scale Out)\"}]\n36:[\"$\",\"$Lfb\",null,{\"chart\":\"flowchart TB\\n    subgraph \\\"Multi-Server Architecture\\\"\\n        C1[Client 1] --\u003e LB[Load Balancer]\\n        C2[Client 2] --\u003e LB\\n        C3[Client 3] --\u003e LB\\n        C4[...] --\u003e LB\\n        C5[Client N] --\u003e LB\\n        \\n        LB --\u003e S1[Server 1\u003cbr/\u003e1000 req/s]\\n        LB --\u003e S2[Server 2\u003cbr/\u003e1000 req/s]\\n        LB --\u003e S3[Server 3\u003cbr/\u003e1000 req/s]\\n        LB --\u003e S4[Server 4\u003cbr/\u003e1000 req/s]\\n        LB --\u003e S5[Server 5\u003cbr/\u003e1000 req/s]\\n    end\\n    \\n    style LB fill:#51cf66\"}]\n37:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Result:\"}]}]\n38:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"5 servers × 1,000 req/s = 5,000 req/s total capacity\\nCost: 5 × $200 = $1,000/month\\nCan add more servers infinitely\\n\"}]}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhưng có vấn đề:\"}]}]\n3a:[\"$\",\"p\",null,{\"children\":[\"Với 5 servers, \",[\"$\",\"strong\",null,{\"children\":\"client gửi request đến server nào?\"}]]}]\n3b:[\"$\",\"p\",null,{\"children\":\"Ai quy"])</script><script>self.__next_f.push([1,"ết định? Làm sao distribute đều?\"}]\n3c:[\"$\",\"p\",null,{\"children\":[\"→ Đó chính là \",[\"$\",\"strong\",null,{\"children\":\"nhiệm vụ của Load Balancer\"}],\".\"]}]\n3d:[\"$\",\"h2\",null,{\"id\":\"load-balancer-là-gì\",\"children\":\"Load Balancer Là Gì?\"}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Definition:\"}]}]\n3f:[\"$\",\"p\",null,{\"children\":\"Load balancer là component ngồi giữa clients và servers, nhận tất cả incoming requests và phân phối chúng đều (hoặc thông minh) giữa multiple backend servers.\"}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Simple analogy:\"}]}]\n41:[\"$\",\"p\",null,{\"children\":\"Imagine quầy check-in sân bay:\"}]\n42:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Khách hàng đến → Nhân viên điều phối → Quầy check-in\\n(clients)        (load balancer)      (servers)\\n\\nNhân viên: \\\"Quầy 3 đang trống, mời anh qua đây\\\"\\n\"}]}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Technical flow:\"}]}]\n44:[\"$\",\"$Lfb\",null,{\"chart\":\"sequenceDiagram\\n    participant C as Client\\n    participant LB as Load Balancer\\n    participant S1 as Server 1\\n    participant S2 as Server 2\\n    participant S3 as Server 3\\n    \\n    C-\u003e\u003eLB: HTTP Request\\n    Note over LB: Choose server\u003cbr/\u003ebased on algorithm\\n    LB-\u003e\u003eS2: Forward request\\n    S2-\u003e\u003eS2: Process request\\n    S2-\u003e\u003eLB: Response\\n    LB-\u003e\u003eC: Forward response\"}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Load balancer nhận request, chọn server theo algorithm, forward request, nhận response, return về client.\"}]}]\n46:[\"$\",\"h2\",null,{\"id\":\"benefits-của-load-balancing\",\"children\":\"Benefits Của Load Balancing\"}]\n47:[\"$\",\"h3\",null,{\"id\":\"benefit-1-increased-capacity\",\"children\":\"Benefit 1: Increased Capacity\"}]\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Before: 1 server = 1,000 req/s\\nAfter:  10 servers = 10,000 req/s\\n\\nLinear scaling (thêm server = thêm capacity)\\n\"}]}]\n49:[\"$\",\"h3\",null,{\"id\":\"benefit-2-high-availability\",\"children\":\"Benefit 2: High Availability\"}]\n4a:[\"$\",\"$Lfb\",null,{\"chart\":\"flowchart LR\\n    LB[Load Balancer]\\n    S1[Server 1\u003cbr/\u003e Healthy]\\n    S2[Server 2\u003cbr/\u003e Down]\\n    S3[Server 3\u003cbr/\u003e Healthy]\\n    \\n    LB --\u003e S1\\n    LB -.X S2\\n    LB --\u003e S3\\n    \\n    style S2 fill:#ff6b6b\\n    style S1 fill:#51cf66\\n    style S3 fill:#51cf66\"}]\n4b:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Khi Server 2 die, load balancer tự động remove nó khỏi pool và route traffic đến servers còn lại.\"}]}]\n4c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Without LB:\"}]}]\n4d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server dies → Users get errors → Downtime\\n\"}]}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"With LB:\"}]}]\n4f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server dies → LB detects → Routes to healthy servers\\n→ Users không bị ảnh hưởng\\n→ Zero downtime\\n\"}]}]\n50:[\"$\",\"h3\",null,{\"id\":\"benefit-3-zero-downtime-deployment\",\"children\":\"Benefit 3: Zero-Downtime Deployment\"}]\n51:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Traditional deployment:\\n1. Stop server\\n2. Deploy new code\\n3. Start server\\n→ Downtime: 2-5 minutes\\n\\nWith Load Balancer:\\n1. Remove Server 1 from pool\\n2. Deploy to Server 1\\n3. Add Server 1 back\\n4. Repeat for Server 2, 3, 4, 5...\\n→ Downtime: 0 seconds\\n\"}]}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Rolling deployment strategy:\"}]}]\n53:[\"$\",\"$Lfb\",null,{\"chart\":\"flowchart TD\\n    Start[Start Deployment] --\u003e R1[Remove Server 1 from LB]\\n    R1 --\u003e D1[Deploy to Server 1]\\n    D1 --\u003e H1[Health check Server 1]\\n    H1 --\u003e A1[Add Server 1 back to LB]\\n    A1 --\u003e R2[Remove Server 2 from LB]\\n    R2 --\u003e D2[Deploy to Server 2]\\n    D2 --\u003e Done[All servers updated]\"}]\n54:[\"$\",\"h3\",null,{\"id\":\"benefit-4-geographic-distribution\",\"children\":\"Benefit 4: Geographic Distribution\"}]\n55:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Users in US → US Load B"])</script><script>self.__next_f.push([1,"alancer → US Servers (low latency)\\nUsers in Europe → EU Load Balancer → EU Servers (low latency)\\nUsers in Asia → Asia Load Balancer → Asia Servers (low latency)\\n\"}]}]\n56:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Impact:\"}]}]\n57:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Without geo-distribution:\\nUser in Brazil → Server in Singapore → 400ms latency\\n\\nWith geo-distribution:\\nUser in Brazil → Server in São Paulo → 20ms latency\\n\\n20x improvement!\\n\"}]}]\n58:[\"$\",\"h2\",null,{\"id\":\"load-balancing-algorithms\",\"children\":\"Load Balancing Algorithms\"}]\n59:[\"$\",\"p\",null,{\"children\":[\"Đây là phần quan trọng nhất: \",[\"$\",\"strong\",null,{\"children\":\"Làm thế nào load balancer quyết định request nào đi server nào?\"}]]}]\n5a:[\"$\",\"h3\",null,{\"id\":\"algorithm-1-round-robin\",\"children\":\"Algorithm 1: Round Robin\"}]\n5b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"How it works:\"}]}]\n5c:[\"$\",\"p\",null,{\"children\":\"Distribute requests tuần tự, mỗi server nhận một request theo vòng tròn.\"}]\n5d:[\"$\",\"$Lfb\",null,{\"chart\":\"flowchart LR\\n    LB[Load Balancer]\\n    S1[Server A]\\n    S2[Server B]\\n    S3[Server C]\\n    \\n    LB --\u003e|Request 1| S1\\n    LB --\u003e|Request 2| S2\\n    LB --\u003e|Request 3| S3\\n    LB --\u003e|Request 4| S1\\n    LB --\u003e|Request 5| S2\"}]\n5e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Code concept:\"}]}]\n5f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"servers = ['server_a', 'server_b', 'server_c']\\ncurrent_index = 0\\n\\ndef get_next_server():\\n    global current_index\\n    server = servers[current_index]\\n    current_index = (current_index + 1) % len(servers)\\n    return server\\n\\n# Request flow\\nget_next_server()  # → server_a\\nget_next_server()  # → server_b\\nget_next_server()  # → server_c\\nget_next_server()  # → server_a (cycle repeats)\\n\"}]}]\n60:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ưu điểm:\"}]}]\n61:[\"$\",\"p\",null,{\"children\":\"Cực kỳ đơn giản\\nPhân phối đều về số lượng requests\\nKhông cần track state\\nLow overhead\"}]\n62:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhược điểm:\"}]}]\n63:[\"$\",\"p\",null,{\"children\":\"Không quan tâm server load hiện tại\\nKhông biết request nào heavy, nhẹ\\nGiả định tất cả requests và servers giống nhau\"}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem scenario:\"}]}]\n65:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Request 1 → Server A: Upload 5GB file (takes 10 minutes)\\nRequest 2 → Server B: Get user profile (takes 10ms)\\nRequest 3 → Server C: Get user profile (takes 10ms)\\nRequest 4 → Server A: Get user profile (waits behind upload...)\\n\\nServer A: Overloaded (handling heavy request)\\nServer B, C: Idle (finished quick requests)\\n\\nRound Robin không biết server A đang bận!\\n\"}]}]\n66:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n67:[\"$\",\"p\",null,{\"children\":\"Requests có execution time tương tự nhau\\nServers có specs giống nhau\\nSimple use cases\\nDefault choice khi bắt đầu\"}]\n68:[\"$\",\"h3\",null,{\"id\":\"algorithm-2-least-connections\",\"children\":\"Algorithm 2: Least Connections\"}]\n69:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"How it works:\"}]}]\n6a:[\"$\",\"p\",null,{\"children\":[\"Route request đến server có \",[\"$\",\"strong\",null,{\"children\":\"ít active connections nhất\"}],\".\"]}]\n6b:[\"$\",\"$Lfb\",null,{\"chart\":\"flowchart TB\\n    LB[Load Balancer\u003cbr/\u003eTracks connections]\\n    \\n    S1[Server A\u003cbr/\u003e10 connections]\\n    S2[Server B\u003cbr/\u003e5 connections]\\n    S3[Server C\u003cbr/\u003e8 connections]\\n    \\n    LB --\u003e|New request goes here| S2\\n    \\n    style S2 fill:#51cf66\"}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Code concept:\"}]}]\n6d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"servers = {\\n    'server_a': {'connections': 10, 'url': '192.168.1.10'},\\n    'server_b': {'connections': 5, 'url': '192.168.1.11'},\\n    'serv"])</script><script>self.__next_f.push([1,"er_c': {'connections': 8, 'url': '192.168.1.12'}\\n}\\n\\ndef get_next_server():\\n    # Tìm server có ít connections nhất\\n    min_server = min(servers.items(), \\n                     key=lambda x: x[1]['connections'])\\n    return min_server[0]\\n\\n# New request arrives\\nserver = get_next_server()  # → server_b (5 connections)\\nservers[server]['connections'] += 1  # Now 6\\n\\n# Next request\\nserver = get_next_server()  # → server_b again (6 connections)\\n\"}]}]\n6e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ưu điểm:\"}]}]\n6f:[\"$\",\"p\",null,{\"children\":\"Cân bằng load tốt hơn Round Robin\\nAdapt với requests có execution time khác nhau\\nHiệu quả cho long-lived connections\"}]\n70:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhược điểm:\"}]}]\n71:[\"$\",\"p\",null,{\"children\":\"Phức tạp hơn (phải track connections)\\nOverhead để update state\\nCần synchronization giữa multiple LB instances\"}]\n72:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n73:[\"$\",\"p\",null,{\"children\":\"Requests có execution time rất khác nhau\\nWebSocket connections\\nLong-polling\\nFile uploads/downloads\\nStreaming\"}]\n74:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Personal experience:\"}]}]\n75:[\"$\",\"p\",null,{\"children\":\"Tôi từng có API với 2 loại endpoints:\"}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"GET /users/{id} → 10ms execution time\\nPOST /reports/generate → 60 seconds execution time\\n\"}]}]\n77:[\"$\",\"p\",null,{\"children\":\"Dùng Round Robin → Servers nhận reports bị stuck, servers khác idle.\"}]\n78:[\"$\",\"p\",null,{\"children\":\"Switch sang Least Connections → Load balanced đều, response time cải thiện 5x.\"}]\n79:[\"$\",\"h3\",null,{\"id\":\"algorithm-3-weighted-round-robin\",\"children\":\"Algorithm 3: Weighted Round Robin\"}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem statement:\"}]}]\n7b:[\"$\",\"p\",null,{\"children\":\"Servers có specs khác nhau. Round Robin treat tất cả servers như nhau → waste capacity.\"}]\n7c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server A: 16GB RAM, 8 CPU cores (powerful)\\nServer B: 8GB RAM, 4 CPU cores (normal)\\nServer C: 8GB RAM, 4 CPU cores (normal)\\n\\nRound Robin: Mỗi server nhận same số requests\\n→ Server A under-utilized\\n→ Server B, C might be overloaded\\n\"}]}]\n7d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution: Assign weights\"}]}]\n7e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"servers = [\\n    {'name': 'server_a', 'weight': 4},  # Powerful\\n    {'name': 'server_b', 'weight': 2},  # Normal\\n    {'name': 'server_c', 'weight': 2}   # Normal\\n]\\n\\n# Distribution:\\n# Server A gets 4 requests\\n# Server B gets 2 requests\\n# Server C gets 2 requests\\n# Total: 8 requests per cycle\\n\\n# In ratio: 4:2:2 or 2:1:1\\n\"}]}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Request flow:\"}]}]\n80:[\"$\",\"$Lfb\",null,{\"chart\":\"flowchart LR\\n    LB[Load Balancer]\\n    \\n    S1[Server A\u003cbr/\u003eWeight: 4]\\n    S2[Server B\u003cbr/\u003eWeight: 2]\\n    S3[Server C\u003cbr/\u003eWeight: 2]\\n    \\n    LB --\u003e|Req 1,2,3,4| S1\\n    LB --\u003e|Req 5,6| S2\\n    LB --\u003e|Req 7,8| S3\"}]\n81:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation concept:\"}]}]\n82:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def weighted_round_robin():\\n    # Expand servers theo weight\\n    expanded = []\\n    for server in servers:\\n        expanded.extend([server['name']] * server['weight'])\\n    \\n    # expanded = ['server_a', 'server_a', 'server_a', 'server_a',\\n    #             'server_b', 'server_b', \\n    #             'server_c', 'server_c']\\n    \\n    # Apply Round Robin trên expanded list\\n    current_index = 0\\n    while True:\\n        server = expanded[current_index]\\n        current_index = (current_index + 1) % len(expanded)\\n        yield server\\n\"}]}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ưu điểm:\"}]}]\n84:[\"$\",\"p\",null,{\"children\":\"Utilize powerf"])</script><script>self.__next_f.push([1,"ul servers hiệu quả hơn\\nFlexible resource allocation\\nCost-effective (mix server types)\"}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhược điểm:\"}]}]\n86:[\"$\",\"p\",null,{\"children\":\"Phải configure weights manually\\nCần adjust weights khi thêm/bớt servers\\nKhông dynamic (không adapt real-time load)\"}]\n87:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n88:[\"$\",\"p\",null,{\"children\":\"Servers có specs khác nhau\\nMix của spot instances và reserved instances (cloud)\\nGradual migration (old servers weight thấp, new servers weight cao)\"}]\n89:[\"$\",\"h3\",null,{\"id\":\"algorithm-4-ip-hash-consistent-hashing\",\"children\":\"Algorithm 4: IP Hash (Consistent Hashing)\"}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"How it works:\"}]}]\n8b:[\"$\",\"p\",null,{\"children\":\"Hash client IP address và map to server. Same client → Same server.\"}]\n8c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def get_server(client_ip):\\n    hash_value = hash(client_ip)\\n    server_index = hash_value % num_servers\\n    return servers[server_index]\\n\\n# Example\\nget_server('192.168.1.100')  # → server_a\\nget_server('192.168.1.101')  # → server_c\\nget_server('192.168.1.100')  # → server_a (same!)\\n\"}]}]\n8d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Diagram:\"}]}]\n8e:[\"$\",\"$Lfb\",null,{\"chart\":\"flowchart TB\\n    C1[Client\u003cbr/\u003eIP: 192.168.1.100] --\u003e|Hash → 0| S1[Server A]\\n    C2[Client\u003cbr/\u003eIP: 192.168.1.101] --\u003e|Hash → 2| S3[Server C]\\n    C3[Client\u003cbr/\u003eIP: 192.168.1.102] --\u003e|Hash → 1| S2[Server B]\\n    C1b[Same Client\u003cbr/\u003eIP: 192.168.1.100] --\u003e|Hash → 0| S1\"}]\n8f:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Same client IP luôn hash to same server.\"}]}]\n90:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ưu điểm:\"}]}]\n91:[\"$\",\"p\",null,{\"children\":\"Session persistence (sticky sessions)\\nServer-side caching efficient (same user → same server → cache hit)\\nStateful applications work\"}]\n92:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhược điểm:\"}]}]\n93:[\"$\",\"p\",null,{\"children\":\"Uneven distribution nếu một số clients gửi nhiều requests\\nKhi add/remove server → hash changes → sessions lost\\nNo load balancing nếu một client spam requests\"}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng:\"}]}]\n95:[\"$\",\"p\",null,{\"children\":\"Need session affinity\\nWebSocket connections\\nServer-side caching per user\\nLegacy apps không support distributed sessions\"}]\n96:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Better alternative:\"}]}]\n97:[\"$\",\"p\",null,{\"children\":[\"Thay vì IP Hash, dùng \",[\"$\",\"strong\",null,{\"children\":\"shared session store\"}],\" (Redis):\"]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  IP Hash approach\\ndef handle_request(client_ip):\\n    server = hash(client_ip) % num_servers\\n    # Session stored on server → tied to server\\n\\n#  Shared session approach\\ndef handle_request(session_id):\\n    session = redis.get(f\\\"session:{session_id}\\\")\\n    # Any server can handle → true stateless\\n\"}]}]\n99:[\"$\",\"h2\",null,{\"id\":\"health-checks-tránh-route-đến-dead-servers\",\"children\":\"Health Checks: Tránh Route Đến Dead Servers\"}]\n9a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\n9b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Server 2 crashes\\nLoad Balancer không biết\\nContinues routing 33% traffic to Server 2\\nUsers get errors\\n\"}]}]\n9c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution: Health Checks\"}]}]\n9d:[\"$\",\"p\",null,{\"children\":\"Load balancer ping servers định kỳ để verify health.\"}]\n9e:[\"$\",\"$Lfb\",null,{\"chart\":\"sequenceDiagram\\n    participant LB as Load Balancer\\n    participant S1 as Server 1\\n    participant S2 as Server 2\\n    participant S3 as Server 3\\n    \\n    loop Every 10 seconds\\n        LB-\u003e\u003eS1: GET /health\\n        S1-\u003e\u003eLB: 200 OK \\n        \\n        LB-\u003e\u003eS2: GET /health\\n        N"])</script><script>self.__next_f.push([1,"ote over S2: Server crashed\\n        S2--xLB: Timeout \\n        \\n        LB-\u003e\u003eS3: GET /health\\n        S3-\u003e\u003eLB: 200 OK \\n    end\\n    \\n    Note over LB: Remove Server 2\u003cbr/\u003efrom pool\"}]\n9f:[\"$\",\"h3\",null,{\"id\":\"health-check-implementation\",\"children\":\"Health Check Implementation\"}]\na0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Server-side endpoint:\"}]}]\na1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"from flask import Flask, jsonify\\n\\napp = Flask(__name__)\\n\\n@app.route('/health')\\ndef health_check():\\n    # Check critical dependencies\\n    checks = {\\n        'database': check_database_connection(),\\n        'cache': check_cache_connection(),\\n        'disk_space': check_disk_space()\\n    }\\n    \\n    if all(checks.values()):\\n        return jsonify({\\n            'status': 'healthy',\\n            'checks': checks\\n        }), 200\\n    else:\\n        return jsonify({\\n            'status': 'unhealthy',\\n            'checks': checks\\n        }), 503  # Service Unavailable\\n\\ndef check_database_connection():\\n    try:\\n        db.execute(\\\"SELECT 1\\\")\\n        return True\\n    except:\\n        return False\\n\\ndef check_cache_connection():\\n    try:\\n        cache.ping()\\n        return True\\n    except:\\n        return False\\n\"}]}]\na2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Load Balancer side:\"}]}]\nfc:T4d2,import requests\nimport time\n\nservers = [\n    {'url': 'http://server1.example.com', 'healthy': True},\n    {'url': 'http://server2.example.com', 'healthy': True},\n    {'url': 'http://server3.example.com', 'healthy': True}\n]\n\ndef health_check_loop():\n    while True:\n        for server in servers:\n            try:\n                response = requests.get(\n                    f\"{server['url']}/health\",\n                    timeout=2  # 2 second timeout\n                )\n                \n                if response.status_code == 200:\n                    server['healthy'] = True\n                    print(f\"{server['url']}: Healthy \")\n                else:\n                    server['healthy'] = False\n                    print(f\"{server['url']}: Unhealthy \")\n                    \n            except requests.exceptions.Timeout:\n                server['healthy'] = False\n                print(f\"{server['url']}: Timeout \")\n                \n            except requests.exceptions.ConnectionError:\n                server['healthy'] = False\n                print(f\"{server['url']}: Connection failed \")\n        \n        time.sleep(10)  # Check every 10 seconds\n\ndef get_healthy_servers():\n    return [s for s in servers if s['healthy']]\na3:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$fc\"}]}]\na4:[\"$\",\"h3\",null,{\"id\":\"health-check-best-practices\",\"children\":\"Health Check Best Practices\"}]\na5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Practice 1: Check dependencies, không chỉ server\"}]}]\na6:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: Chỉ return OK\\n@app.route('/health')\\ndef health():\\n    return \\\"OK\\\", 200\\n\\n#  GOOD: Check critical dependencies\\n@app.route('/health')\\ndef health():\\n    if not database.is_connected():\\n        return \\\"Database down\\\", 503\\n    \\n    if not cache.is_connected():\\n        return \\\"Cache down\\\", 503\\n    \\n    if disk_usage() \u003e 90:\\n        return \\\"Disk full\\\", 503\\n    \\n    return \\\"OK\\\", 200\\n\"}]}]\na7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Practice 2: Appropriate timeout\"}]}]\na8:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Too short (500ms):\\n- False negatives (server healthy but slow response)\\n- Remove healthy servers unnecessarily\\n\\nToo long (30s):\\n- False positives (server dead but take 30s to detect)\\n- Users get errors for 30s\\n\\nSweet spot: 2-5 seconds\\n\"}]}]\na9:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Practice 3: Retry logic\"}]}]\naa:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"#  BAD: Remove after 1 failed check\\nif"])</script><script>self.__next_f.push([1," health_check_failed:\\n    remove_from_pool(server)\\n\\n#  GOOD: Remove after N consecutive failures\\nserver['failed_checks'] = server.get('failed_checks', 0) + 1\\n\\nif server['failed_checks'] \u003e= 3:  # 3 consecutive failures\\n    remove_from_pool(server)\\nelif health_check_success:\\n    server['failed_checks'] = 0  # Reset counter\\n\"}]}]\nab:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Reason:\"}],\" Avoid flapping (server removed → added → removed → added...).\"]}]\nac:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Practice 4: Graceful degradation\"}]}]\nad:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Nếu TẤT CẢ servers unhealthy:\\nhealthy_servers = get_healthy_servers()\\n\\nif len(healthy_servers) == 0:\\n    # Option A: Route to all servers anyway (some might work)\\n    # Option B: Return 503 Service Unavailable\\n    # Option C: Route to backup servers in different region\\n    \\n    # Choose based on use case\\n\"}]}]\nae:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Personal lesson:\"}]}]\naf:[\"$\",\"p\",null,{\"children\":\"Tôi từng set health check timeout = 500ms. Database có spike latency lên 800ms (vẫn healthy, chỉ slow).\"}]\nb0:[\"$\",\"p\",null,{\"children\":[\"Load balancer detect ALL servers unhealthy → Remove all → No servers available → \",[\"$\",\"strong\",null,{\"children\":\"Complete outage\"}],\".\"]}]\nb1:[\"$\",\"p\",null,{\"children\":\"Lesson: Health checks phải distinguish \\\"slow\\\" vs \\\"dead\\\".\"}]\nb2:[\"$\",\"h2\",null,{\"id\":\"layer-4-vs-layer-7-load-balancing\",\"children\":\"Layer 4 vs Layer 7 Load Balancing\"}]\nb3:[\"$\",\"p\",null,{\"children\":\"Đây là concept nhiều người confused. Hãy phân tích rõ ràng.\"}]\nb4:[\"$\",\"h3\",null,{\"id\":\"osi-model-quick-recap\",\"children\":\"OSI Model Quick Recap\"}]\nb5:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Layer 7: Application (HTTP, FTP, SMTP)\\nLayer 6: Presentation (SSL/TLS)\\nLayer 5: Session\\nLayer 4: Transport (TCP, UDP)\\nLayer 3: Network (IP)\\nLayer 2: Data Link (Ethernet)\\nLayer 1: Physical\\n\"}]}]\nb6:[\"$\",\"h3\",null,{\"id\":\"layer-4-load-balancing-transport-layer\",\"children\":\"Layer 4 Load Balancing (Transport Layer)\"}]\nb7:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Operates at:\"}],\" TCP/UDP level\"]}]\nb8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Information available:\"}]}]\nb9:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Source IP address\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Destination IP address\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Source port\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Destination port\"}],\"\\n\"]}]\nba:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Cannot see:\"}]}]\nbb:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"HTTP headers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"URL path\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Cookies\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Request body\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Application-level data\"}],\"\\n\"]}]\nbc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"How it works:\"}]}]\nbd:[\"$\",\"$Lfb\",null,{\"chart\":\"sequenceDiagram\\n    participant C as Client\\n    participant L4 as L4 Load Balancer\\n    participant S as Server\\n    \\n    C-\u003e\u003eL4: TCP SYN\\n    Note over L4: Look at IP:Port only\u003cbr/\u003eChoose server\\n    L4-\u003e\u003eS: Forward TCP connection\\n    S-\u003e\u003eL4: TCP SYN-ACK\\n    L4-\u003e\u003eC: Forward response\\n    \\n    Note over C,S: Entire TCP connection\u003cbr/\u003eforwarded to server\"}]\nbe:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\nbf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"All traffic to port 443 → Backend HTTPS servers\\nAll traffic to port 5432 → PostgreSQL replicas\\nAll traffic to port 6379 → Redis cluster\\n\\nSimple port-based routing\\n\"}]}]\nc0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ưu điểm:\"}]}]\nc1:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Cực nhanh\"}],\" (simple packet forwarding)\\n\",[\"$\",\"strong\",null,{\"children\":\"Low latency\"}],\" (+5-10ms)\\n\",[\"$\",\"strong\",null,{\"children\":\"Protocol-agnostic\"}],\" (works"])</script><script>self.__next_f.push([1," với bất kỳ TCP/UDP protocol)\\n\",[\"$\",\"strong\",null,{\"children\":\"High throughput\"}],\" (millions connections/second)\"]}]\nc2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhược điểm:\"}]}]\nc3:[\"$\",\"p\",null,{\"children\":\"Không thể route based on URL\\nKhông thể route based on headers\\nKhông thể modify requests/responses\\nLimited intelligence\"}]\nc4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use cases:\"}]}]\nc5:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Non-HTTP protocols (databases, custom TCP apps)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Extreme performance requirements\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Simple routing (all traffic to same backends)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Gaming servers, VoIP\"}],\"\\n\"]}]\nc6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example tools:\"}]}]\nc7:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"AWS Network Load Balancer (NLB)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"HAProxy (TCP mode)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"IPVS (Linux kernel)\"}],\"\\n\"]}]\nc8:[\"$\",\"h3\",null,{\"id\":\"layer-7-load-balancing-application-layer\",\"children\":\"Layer 7 Load Balancing (Application Layer)\"}]\nc9:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Operates at:\"}],\" HTTP/HTTPS level\"]}]\nca:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Information available:\"}]}]\ncb:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Everything Layer 4 has\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"HTTP method (GET, POST, PUT, DELETE)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"URL path and query parameters\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"HTTP headers (User-Agent, cookies, custom headers)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Request body\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"SSL/TLS information\"}],\"\\n\"]}]\ncc:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"How it works:\"}]}]\ncd:[\"$\",\"$Lfb\",null,{\"chart\":\"sequenceDiagram\\n    participant C as Client\\n    participant L7 as L7 Load Balancer\\n    participant S as Server\\n    \\n    C-\u003e\u003eL7: HTTPS request\u003cbr/\u003ePOST /api/users\\n    Note over L7: Terminate TCP\u003cbr/\u003eParse HTTP\u003cbr/\u003eRead URL, headers\u003cbr/\u003eMake routing decision\\n    L7-\u003e\u003eS: New HTTP request\\n    S-\u003e\u003eL7: HTTP response\\n    Note over L7: Can modify response\u003cbr/\u003eAdd headers, etc.\\n    L7-\u003e\u003eC: Forward response\"}]\nce:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example routing rules:\"}]}]\ncf:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-nginx\",\"children\":\"# Nginx configuration (Layer 7)\\n\\n# Route by URL path\\nlocation /api/users {\\n    proxy_pass http://user_service;\\n}\\n\\nlocation /api/orders {\\n    proxy_pass http://order_service;\\n}\\n\\nlocation /api/payments {\\n    proxy_pass http://payment_service;\\n}\\n\\n# Route by header\\nif ($http_x_api_version = \\\"v2\\\") {\\n    proxy_pass http://api_v2_servers;\\n}\\n\\n# Route by cookie\\nif ($cookie_beta_user = \\\"true\\\") {\\n    proxy_pass http://beta_servers;\\n}\\n\\n# Admin traffic to special servers\\nlocation /admin {\\n    proxy_pass http://admin_servers;\\n    # Can add authentication here\\n}\\n\"}]}]\nd0:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Advanced features:\"}]}]\nd1:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# SSL termination\\n# LB handles HTTPS, forwards HTTP to backends\\nClient --HTTPS--\u003e LB --HTTP--\u003e Backend\\n(encrypted)          (unencrypted, fast)\\n\\n# Request modification\\n# Add custom headers\\nX-Forwarded-For: client_ip\\nX-Request-ID: unique_id\\n\\n# Response modification\\n# Gzip compression\\n# Add security headers (CORS, CSP)\\n\\n# Content-based routing\\nif content_type == \\\"video/mp4\\\":\\n    route_to_video_servers()\\nelif content_type == \\\"image/jpeg\\\":\\n    route_to_image_servers()\\n\"}]}]\nd2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ưu điểm:\"}]}]\nd3:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Intelligent routing\"}],\" (URL, headers, cookies)\\n\",[\"$\",\"strong\",null,{\"children\":\"Content-based decisions\"}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"Can modify "])</script><script>self.__next_f.push([1,"requests/responses\"}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"SSL termination\"}],\" (offload encryption từ backends)\\n\",[\"$\",\"strong\",null,{\"children\":\"Perfect for microservices\"}]]}]\nd4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nhược điểm:\"}]}]\nd5:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Slower\"}],\" (more processing)\\n\",[\"$\",\"strong\",null,{\"children\":\"Higher latency\"}],\" (+10-50ms)\\n\",[\"$\",\"strong\",null,{\"children\":\"Only works với HTTP/HTTPS\"}],\"\\n\",[\"$\",\"strong\",null,{\"children\":\"More CPU intensive\"}]]}]\nd6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use cases:\"}]}]\nd7:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Web applications\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Microservices architecture\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Content-based routing\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"A/B testing\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Canary deployments\"}],\"\\n\"]}]\nd8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example tools:\"}]}]\nd9:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"AWS Application Load Balancer (ALB)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Nginx\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"HAProxy (HTTP mode)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Traefik\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Envoy\"}],\"\\n\"]}]\nda:[\"$\",\"h3\",null,{\"id\":\"comparison-table\",\"children\":\"Comparison Table\"}]\ndb:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Feature              | Layer 4        | Layer 7\\n---------------------|----------------|------------------\\nSpeed                | Very fast      | Slower\\nLatency              | +5-10ms        | +10-50ms\\nRouting              | IP:Port only   | URL, headers, etc.\\nProtocol support     | Any TCP/UDP    | HTTP/HTTPS only\\nSSL termination      | No             | Yes\\nContent inspection   | No             | Yes\\nRequest modification | No             | Yes\\nMicroservices        | Not ideal      | Perfect\\nCost (processing)    | Low            | High\\nUse case             | Simple routing | Smart routing\\n\"}]}]\ndc:[\"$\",\"h3\",null,{\"id\":\"decision-framework\",\"children\":\"Decision Framework\"}]\ndd:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Choose Layer 4 when:\\n Need maximum performance\\n Millions of connections\\n Non-HTTP protocols (database, gaming, VoIP)\\n Simple routing (all traffic to same backends)\\n Every millisecond matters\\n\\nChoose Layer 7 when:\\n Web applications / APIs\\n Microservices (route by path)\\n Need SSL termination\\n Content-based routing\\n Need to modify requests/responses\\n A/B testing / Canary deployments\\n\"}]}]\nde:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"My recommendation:\"}]}]\ndf:[\"$\",\"p\",null,{\"children\":[\"Cho web applications: \",[\"$\",\"strong\",null,{\"children\":\"Default to Layer 7\"}],\" (Application Load Balancer).\"]}]\ne0:[\"$\",\"p\",null,{\"children\":\"Flexibility và features \u003e small latency difference.\"}]\ne1:[\"$\",\"p\",null,{\"children\":\"Chỉ drop xuống Layer 4 khi có proven performance requirements hoặc non-HTTP protocols.\"}]\ne2:[\"$\",\"h2\",null,{\"id\":\"real-world-architecture-example\",\"children\":\"Real-World Architecture Example\"}]\ne3:[\"$\",\"p\",null,{\"children\":\"Hãy xem một e-commerce system thực tế.\"}]\ne4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Requirements:\"}]}]\ne5:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"100,000 requests/second\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Multiple services (Web, API, Admin, Payments)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Global users\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"99.99% uptime\"}],\"\\n\"]}]\ne6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architecture:\"}]}]\ne7:[\"$\",\"$Lfb\",null,{\"chart\":\"flowchart TB\\n    Internet[Internet]\\n    \\n    subgraph \\\"Edge Layer\\\"\\n        CDN[CloudFlare CDN\u003cbr/\u003eStatic assets]\\n        DNS[GeoDNS]\\n    end\\n    \\n    subgraph \\\"US Region\\\"\\n        L7_US[Layer 7 LB\u003cbr/\u003eAWS ALB]\\n        \\n        subgraph \\\"Services US\\\"\\n            Web_US[Web Servers\u003cbr/\u003e×10]\\n            API_US[API Servers\u003cbr/\u003e×20]\\n            Admin_US[Admin Servers\u003c"])</script><script>self.__next_f.push([1,"br/\u003e×2]\\n        end\\n        \\n        L7_US --\u003e|/*| Web_US\\n        L7_US --\u003e|/api/*| API_US\\n        L7_US --\u003e|/admin/*| Admin_US\\n    end\\n    \\n    subgraph \\\"Asia Region\\\"\\n        L7_Asia[Layer 7 LB\u003cbr/\u003eAWS ALB]\\n        \\n        subgraph \\\"Services Asia\\\"\\n            Web_Asia[Web Servers\u003cbr/\u003e×10]\\n            API_Asia[API Servers\u003cbr/\u003e×20]\\n        end\\n        \\n        L7_Asia --\u003e|/*| Web_Asia\\n        L7_Asia --\u003e|/api/*| API_Asia\\n    end\\n    \\n    Internet --\u003e CDN\\n    Internet --\u003e DNS\\n    DNS --\u003e|US users| L7_US\\n    DNS --\u003e|Asia users| L7_Asia\"}]\ne8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Configuration details:\"}]}]\ne9:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-yaml\",\"children\":\"# Layer 7 Load Balancer config\\n\\n# Web servers pool\\n- path: /*\\n  backend: web_servers\\n  algorithm: round_robin\\n  health_check:\\n    path: /health\\n    interval: 10s\\n    timeout: 5s\\n    unhealthy_threshold: 3\\n  \\n# API servers pool\\n- path: /api/*\\n  backend: api_servers\\n  algorithm: least_connections  # APIs vary in execution time\\n  health_check:\\n    path: /api/health\\n    interval: 10s\\n    timeout: 5s\\n  \\n# Admin servers pool\\n- path: /admin/*\\n  backend: admin_servers\\n  algorithm: round_robin\\n  health_check:\\n    path: /admin/health\\n    interval: 10s\\n  ip_whitelist:  # Security: Only allow from office IPs\\n    - 203.0.113.0/24\\n\"}]}]\nea:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why this design:\"}]}]\neb:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"GeoDNS\"}],\": Route users to nearest region (low latency)\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"CDN\"}],\": Serve static assets (images, CSS, JS) from edge (fast)\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Layer 7 LB\"}],\": Intelligent routing by URL path\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Different pools\"}],\": Isolation (admin separate từ public)\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Different algorithms\"}],\":\",\"\\n\",[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Web: Round Robin (requests similar)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"API: Least Connections (vary in time)\"}],\"\\n\"]}],\"\\n\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Health checks\"}],\": Auto-remove unhealthy servers\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"IP whitelist\"}],\": Security for admin panel\"]}],\"\\n\"]}]\nec:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\ned:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Load balancing solves:\"}]}]\nee:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Single server capacity limits\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Single point of failure\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"High availability requirements\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Geographic distribution\"}],\"\\n\"]}]\nef:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core algorithms:\"}]}]\nf0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Round Robin\"}],\": Simple, default choice, even distribution\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Least Connections\"}],\": Better khi requests vary, long-lived connections\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Weighted Round Robin\"}],\": Khi servers có specs khác nhau\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"IP Hash\"}],\": Session persistence (nhưng shared session store tốt hơn)\"]}],\"\\n\"]}]\nf1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Health checks are critical:\"}]}]\nf2:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Prevent routing to dead servers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Check dependencies, not just server\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Appropriate timeout (2-5s)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Retry logic to avoid flapping\"}],\"\\n\"]}]\nf3:[\"$\",\"p\",null"])</script><script>self.__next_f.push([1,",{\"children\":[\"$\",\"strong\",null,{\"children\":\"Layer 4 vs Layer 7:\"}]}]\nf4:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Layer 4\"}],\": Fast, simple, any protocol, limited routing\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Layer 7\"}],\": Smart, flexible, HTTP only, microservices-friendly\"]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Default to Layer 7 cho web apps\"}]}],\"\\n\"]}]\nf5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Best practices:\"}]}]\nf6:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Start simple (Round Robin + health checks)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Measure before optimizing algorithm\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Multiple load balancers (avoid SPOF)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Monitor metrics (request rate, latency, error rate)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Test failover scenarios\"}],\"\\n\"]}]\nf7:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Tự hỏi khi design:\"}]}]\nf8:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Thuật toán nào phù hợp với request pattern?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Health checks có detect failures correctly không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Load balancer có là SPOF không?\"}]}],\"\\n\",[\"$\",\"li\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Cần Layer 4 hay Layer 7?\"}]}],\"\\n\"]}]\nf9:[\"$\",\"p\",null,{\"children\":[\"Load balancing không phải là optional. Nó là \",[\"$\",\"strong\",null,{\"children\":\"foundation của distributed systems\"}],\".\"]}]\nfa:[\"$\",\"p\",null,{\"children\":\"Master nó tốt = hệ thống của bạn scalable và reliable.\"}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"fd:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Load Balancing: Traffic Distribution Trong Distributed Systems | Phase 2 — Core Building Blocks | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connectio\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-2/lesson/lesson-1-load-balancing\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Load Balancing: Traffic Distribution Trong Distributed Systems | Phase 2 — Core Building Blocks\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connectio\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-2/lesson/lesson-1-load-balancing\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Load Balancing: Traffic Distribution Trong Distributed Systems | Phase 2 — Core Building Blocks\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học chi tiết về load balancing algorithms, health checks, và sự khác biệt giữa Layer 4 vs Layer 7 load balancing. Hiểu khi nào dùng Round Robin, Least Connectio\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$Lfd\",\"14\",{}]]\n"])</script></body></html>

@@ -1,0 +1,606 @@
+@0 h1
+Message Queues & Async Processing: Decoupling Services
+@1 p
+Tôi còn nhớ lần đầu production system của tôi sập vì một email.
+@2 p
+User upload video. Server phải:
+@3 li
+Save video (2 giây)
+@4 li
+Generate thumbnail (5 giây)
+@5 li
+Transcode 720p (30 giây)
+@6 li
+Transcode 1080p (60 giây)
+@7 li
+Send email notification (1 giây)
+@8 p
+Total: 98 giây. User đợi 98 giây để nhận response.
+@9 p
+Kết quả? Timeout. User frustrated. Server overload vì mỗi request hold connection 98 giây.
+@10 p
+Senior engineer nhìn tôi: *"Em biết message queue chưa?"*
+@11 p
+Tôi: *"Chưa ạ..."*
+@12 p
+Đó là đêm tôi học về async processing. Và đó là một trong những patterns quan trọng nhất trong distributed systems.
+@13 h2
+Tại Sao Cần Async Processing?
+@14 h3
+The Synchronous Problem
+@15 p
+**Synchronous = User đợi cho đến khi tất cả xong**
+@16 pre
+sequenceDiagram
+    participant User
+    participant API
+    participant Storage
+    participant Processor
+    participant Email
+    
+    User->>API: Upload video
+    API->>Storage: Save video (2s)
+    Storage-->>API: Done
+    API->>Processor: Generate thumbnail (5s)
+    Processor-->>API: Done
+    API->>Processor: Transcode 720p (30s)
+    Processor-->>API: Done
+    API->>Processor: Transcode 1080p (60s)
+    Processor-->>API: Done
+    API->>Email: Send notification (1s)
+    Email-->>API: Done
+    API-->>User: Success (after 98s!)
+    
+    Note over User,Email: User phải đợi 98 giây
+@17 p
+*Synchronous processing: User đợi cho đến khi mọi thứ hoàn thành*
+@18 p
+**Problems:**
+@19 pre
+Terrible UX
+   - User đợi 98 giây
+   - Timeout sau 30-60 giây
+   - User nghĩ app bị lỗi
+
+Poor resource utilization
+   - Connection held for 98 giây
+   - Server chỉ handle được ít requests
+   - Memory/thread exhausted
+
+Cascading failures
+   - Email service down → Entire upload fails
+   - Transcode fails → User không nhận video
+   - Tight coupling
+
+@20 h3
+The Async Solution
+@21 p
+**Asynchronous = User nhận response ngay, processing ở background**
+@22 pre
+sequenceDiagram
+    participant User
+    participant API
+    participant Queue
+    participant Worker
+    participant Email
+    
+    User->>API: Upload video
+    API->>API: Save video (2s)
+    API->>Queue: Add job to queue
+    Queue-->>API: Job queued
+    API-->>User: Success! Processing... (2s only)
+    
+    Note over User,API: User nhận response sau 2s
+    
+    Worker->>Queue: Poll for jobs
+    Queue-->>Worker: Job available
+    Worker->>Worker: Generate thumbnail (5s)
+    Worker->>Worker: Transcode 720p (30s)
+    Worker->>Worker: Transcode 1080p (60s)
+    Worker->>Email: Send notification
+    
+    Note over Worker,Email: Background processing
+@23 p
+*Async processing: User nhận response ngay, work happens ở background*
+@24 p
+**Benefits:**
+@25 pre
+Great UX
+   - User nhận response sau 2 giây
+   - No timeout
+   - Clear status: "Processing..."
+
+Better resource utilization
+   - Connections freed immediately
+   - Server handle nhiều requests
+   - Workers scale independently
+
+Fault tolerance
+   - Email fail? Video vẫn upload
+   - Retry logic built-in
+   - Loose coupling
+
+@26 h2
+Message Queue Fundamentals
+@27 h3
+Core Concepts
+@28 p
+**Message Queue = Buffer giữa producers và consumers**
+@29 pre
+graph LR
+    P1[Producer 1] -->|Publish message| Q[Message Queue]
+    P2[Producer 2] -->|Publish message| Q
+    P3[Producer 3] -->|Publish message| Q
+    
+    Q -->|Consume message| C1[Consumer 1]
+    Q -->|Consume message| C2[Consumer 2]
+    Q -->|Consume message| C3[Consumer 3]
+    
+    style Q fill:#ffd93d
+    style P1 fill:#51cf66
+    style P2 fill:#51cf66
+    style P3 fill:#51cf66
+    style C1 fill:#4dabf7
+    style C2 fill:#4dabf7
+    style C3 fill:#4dabf7
+@30 p
+*Message queue decouples producers và consumers*
+@31 p
+**Terminology:**
+@32 pre
+Producer:  Service tạo messages (publish/send)
+Consumer:  Service process messages (consume/receive)
+Queue:     Buffer lưu messages
+Message:   Unit of work (job/task/event)
+Broker:    Service quản lý queues (RabbitMQ, Kafka, SQS)
+
+@33 h3
+Simple Example
+@34 p
+**Timeline:**
+@35 pre
+API call:
+00:00 - User uploads
+00:02 - API returns (user happy!)
+Queue has 1 job
+
+Background:
+00:02 - Worker picks up job
+00:07 - Thumbnail done
+00:37 - 720p done
+01:37 - 1080p done
+01:38 - Send notification
+
+User experience: 2 seconds
+Actual work: 98 seconds (background)
+
+@36 h2
+Queue vs Pub/Sub: Hai Patterns Khác Nhau
+@37 h3
+Queue Pattern (Point-to-Point)
+@38 p
+**One message → One consumer**
+@39 pre
+graph LR
+    P[Producer] -->|Message 1| Q[Queue]
+    P -->|Message 2| Q
+    P -->|Message 3| Q
+    
+    Q -->|Message 1| C1[Consumer 1]
+    Q -->|Message 2| C2[Consumer 2]
+    Q -->|Message 3| C3[Consumer 3]
+    
+    style Q fill:#ffd93d
+    style P fill:#51cf66
+    style C1 fill:#4dabf7
+    style C2 fill:#4dabf7
+    style C3 fill:#4dabf7
+@40 p
+*Queue: Mỗi message chỉ được một consumer xử lý*
+@41 p
+**Characteristics:**
+@42 pre
+- Mỗi message processed by 1 consumer only
+- Load balanced giữa consumers
+- Used for task distribution
+- Compete for messages
+
+@43 p
+**Use cases:**
+@44 pre
+✓ Background jobs (email sending, image processing)
+✓ Task distribution (video encoding, PDF generation)
+✓ Load leveling (smooth traffic spikes)
+✓ Retry logic (failed payments, API calls)
+
+@45 p
+**Example:**
+@46 h3
+Pub/Sub Pattern (Publish-Subscribe)
+@47 p
+**One message → Many subscribers**
+@48 pre
+graph TB
+    P[Publisher] -->|Event: User Created| T[Topic: user.created]
+    
+    T -->|Copy 1| S1[Email Service<br/>Send welcome email]
+    T -->|Copy 2| S2[Analytics Service<br/>Track signup]
+    T -->|Copy 3| S3[CRM Service<br/>Create contact]
+    T -->|Copy 4| S4[Notification Service<br/>Push notification]
+    
+    style T fill:#ffd93d
+    style P fill:#51cf66
+    style S1 fill:#4dabf7
+    style S2 fill:#4dabf7
+    style S3 fill:#4dabf7
+    style S4 fill:#4dabf7
+@49 p
+*Pub/Sub: Mỗi subscriber nhận copy của message*
+@50 p
+**Characteristics:**
+@51 pre
+- Mỗi message copied đến ALL subscribers
+- No competition
+- Used for event broadcasting
+- Decoupled services
+
+@52 p
+**Use cases:**
+@53 pre
+✓ Event notification (user signup, order placed)
+✓ Real-time updates (stock prices, live scores)
+✓ Fan-out (1 event → multiple actions)
+✓ Audit logging (track all actions)
+
+@54 p
+**Example:**
+@55 h3
+Trade-off Comparison
+@56 pre
+Queue (Point-to-Point):
+Simple semantics (1 message = 1 consumer)
+Natural load balancing
+Easy to reason about
+Limited to single action per message
+Tight coupling if multiple actions needed
+
+Pub/Sub:
+Decouple services completely
+Easy to add new subscribers
+Broadcast events naturally
+More complex (eventual consistency)
+Harder to debug (who processed what?)
+Message duplication overhead
+
+@57 p
+**Decision framework:**
+@58 pre
+Use Queue khi:
+- Task needs to be done exactly once
+- Load balancing giữa workers
+- Simple workflow
+
+Use Pub/Sub khi:
+- Multiple services care về event
+- Need to decouple services
+- Fan-out pattern
+- Audit/logging requirements
+
+@59 h2
+Delivery Guarantees: Critical Understanding
+@60 h3
+The Guarantee Spectrum
+@61 p
+**At-Most-Once Delivery**
+@62 pre
+Message có thể bị mất, nhưng không bao giờ duplicate
+
+Timeline:
+Producer → Send message → Queue
+Queue → Deliver to Consumer (maybe fails)
+Queue deletes message immediately
+
+Result:
+- Success: Message processed once ✓
+- Failure: Message lost ✗
+- Never: Message processed twice ✓
+
+@63 pre
+Fastest (no confirmation needed)
+Simple
+Data loss possible
+No retry
+
+Use cases:
+- Metrics/logging (OK if lose some data)
+- Real-time data streams (stale data worthless)
+- Best-effort notifications
+
+@64 p
+**At-Least-Once Delivery**
+@65 pre
+Message không bao giờ mất, nhưng có thể duplicate
+
+Timeline:
+Producer → Send message → Queue
+Queue → Deliver to Consumer
+Consumer → Process
+Consumer → Ack (might fail/timeout)
+Queue → Redeliver if no ack
+
+Result:
+- Success: Message processed once ✓
+- Failure: Message redelivered ✓
+- Possible: Message processed multiple times ⚠️
+
+@66 pre
+No message loss
+Retry logic built-in
+Duplicate processing possible
+Must implement idempotency
+
+Use cases:
+- Payment processing (with idempotency)
+- Order fulfillment
+- Critical business logic
+
+@67 p
+**Exactly-Once Delivery**
+@68 pre
+Message processed exactly once, guaranteed
+
+Extremely hard to achieve in distributed systems
+Requires:
+- Distributed transactions
+- Deduplication logic
+- Coordination between services
+
+Result:
+- Always: Message processed exactly once ✓
+
+@69 pre
+Perfect semantics
+No loss, no duplicates
+Very complex to implement
+Performance overhead
+Often impossible in practice
+
+Use cases:
+- Financial transactions
+- Critical business operations
+- When duplicates absolutely cannot happen
+
+@70 h3
+Idempotency: The Practical Solution
+@71 p
+**Problem với at-least-once:**
+@72 p
+**Solution: Idempotent operations**
+@73 p
+**Idempotency techniques:**
+@74 p
+**Personal rule:**
+@75 p
+**Always assume at-least-once delivery. Always implement idempotency.**
+@76 p
+Ngay cả khi queue promise exactly-once, network failures, retries, và bugs có thể cause duplicates.
+@77 h2
+Dead Letter Queue (DLQ): Handle Failures
+@78 h3
+The Poison Message Problem
+@79 p
+**Problem:**
+@80 pre
+Scenario:
+- Message có bug (malformed data)
+- Worker process → Fail
+- Queue retry → Fail again
+- Queue retry → Fail again
+- ...
+
+Result:
+- Message never succeeds
+- Blocks queue (if ordered)
+- Wastes resources
+- Other messages stuck behind it
+
+@81 h3
+DLQ Solution
+@82 pre
+graph TB
+    Q[Main Queue] -->|1. Consume| W[Worker]
+    W -->|2. Success?| S{Success?}
+    S -->|Yes| A[Acknowledge<br/>Message deleted]
+    S -->|No, Retry| R[Retry Count++]
+    R -->|< Max retries| Q
+    R -->|>= Max retries| DLQ[Dead Letter Queue]
+    
+    DLQ -->|Manual review| H[Human/Debug]
+    
+    style Q fill:#51cf66
+    style DLQ fill:#ff6b6b
+    style W fill:#4dabf7
+@83 p
+*Dead Letter Queue: Messages fail nhiều lần được move sang DLQ*
+@84 p
+**Implementation:**
+@85 p
+**DLQ monitoring:**
+@86 p
+**Handling DLQ messages:**
+@87 pre
+1. Investigate root cause
+   - Malformed data?
+   - Bug in code?
+   - External service down?
+
+2. Fix issue
+   - Deploy code fix
+   - Data migration
+   - Update configuration
+
+3. Replay messages
+   - Move DLQ → Main queue
+   - Reprocess with fix
+   - Verify success
+
+4. Or discard
+   - If truly invalid
+   - If stale (old data)
+   - Document reason
+
+@88 h2
+Real-World Scenarios
+@89 h3
+Scenario 1: E-commerce Order Processing
+@90 p
+**Synchronous nightmare:**
+@91 p
+**Async with queue:**
+@92 p
+**Result:**
+@93 pre
+User experience:
+Before: 7 seconds wait
+After:  2.2 seconds (70% faster!)
+
+System capacity:
+Before: 10 orders/minute (blocked by long processing)
+After:  50 orders/minute (quick responses)
+
+@94 h3
+Scenario 2: Notification System
+@95 p
+**Requirements:**
+@96 pre
+- Send push notifications đến millions users
+- Multiple channels (push, email, SMS)
+- Cannot block API response
+- Need retry logic
+- Track delivery status
+
+@97 p
+**Architecture:**
+@98 pre
+graph TB
+    API[API Server] -->|Event| T[Topic: notifications]
+    
+    T -->|Subscribe| P[Push Queue]
+    T -->|Subscribe| E[Email Queue]
+    T -->|Subscribe| S[SMS Queue]
+    
+    P --> PW[Push Workers<br/>5 instances]
+    E --> EW[Email Workers<br/>3 instances]
+    S --> SW[SMS Workers<br/>2 instances]
+    
+    PW --> PN[Push Notification Service]
+    EW --> ES[Email Service]
+    SW --> SS[SMS Service]
+    
+    style T fill:#ffd93d
+    style P fill:#51cf66
+    style E fill:#51cf66
+    style S fill:#51cf66
+@99 p
+*Pub/Sub pattern: Event fanout đến multiple channels*
+@100 h3
+Scenario 3: Image Processing Pipeline
+@101 p
+**Chain of transformations:**
+@102 pre
+Original upload → Resize → Compress → Watermark → Store CDN
+
+@103 p
+**Implementation with queues:**
+@104 p
+**Benefits:**
+@105 pre
+Each step independent
+Scale each step separately  
+Retry individual steps
+Easy to add new transformations
+Monitor each step's performance
+
+@106 h2
+Best Practices
+@107 h3
+1. Message Design
+@108 p
+**Why?**
+@109 li
+Smaller messages = faster
+@110 li
+Avoid stale data (fetch fresh từ DB)
+@111 li
+Less network bandwidth
+@112 h3
+2. Error Handling
+@113 h3
+3. Monitoring
+@114 h3
+4. Backpressure Handling
+@115 h2
+Key Takeaways
+@116 p
+**Message queues solve critical problems:**
+@117 pre
+✓ Decouple services
+✓ Handle traffic spikes (buffer)
+✓ Enable async processing
+✓ Built-in retry logic
+✓ Improve UX (fast responses)
+
+@118 p
+**Patterns:**
+@119 pre
+Queue (Point-to-Point):
+- Task distribution
+- Load balancing
+- 1 message → 1 consumer
+
+Pub/Sub:
+- Event broadcasting
+- Fan-out pattern  
+- 1 message → N subscribers
+
+@120 p
+**Delivery guarantees:**
+@121 pre
+At-most-once:  Fast, may lose data
+At-least-once: Reliable, may duplicate (USE THIS)
+Exactly-once:  Perfect, very complex (rarely achievable)
+
+→ Always implement idempotency
+
+@122 p
+**Best practices:**
+@123 pre
+✓ Keep messages small (references, not full data)
+✓ Implement idempotency
+✓ Use DLQ for poison messages
+✓ Monitor queue metrics
+✓ Handle backpressure
+✓ Retry transient errors
+✓ Alert on anomalies
+
+@124 p
+**Khi nào dùng message queues?**
+@125 pre
+Use queues khi:
+✓ Long-running tasks (> 5 seconds)
+✓ User không cần kết quả ngay
+✓ Need to decouple services
+✓ Handle traffic spikes
+✓ Built-in retry logic needed
+
+Don't use khi:
+✗ User needs immediate response
+✗ Synchronous workflow
+✗ Simple CRUD operations
+
+@126 p
+**Lời khuyên cá nhân:**
+@127 p
+Start simple với managed services (AWS SQS, Google Pub/Sub). Chỉ run own infrastructure (RabbitMQ, Kafka) khi có specific requirements và team có expertise.
+@128 p
+Message queues là một trong những patterns quan trọng nhất trong distributed systems. Master này và bạn unlock khả năng build truly scalable, resilient applications.

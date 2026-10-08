@@ -1,0 +1,503 @@
+<article class="prose-ui"><h1 id="architect-mindset--production-thinking---from-engineer-to-trusted-architect">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<h2 id="reality-check-you-own-the-system">§§SEG5§§</h2>
+<h3 id="engineer-vs-architect-mindset">§§SEG6§§</h3>
+<pre><code>§§SEG7§§</code></pre>
+<p>§§SEG8§§</p>
+<h3 id="the-3am-test">§§SEG9§§</h3>
+<pre><code>§§SEG10§§</code></pre>
+<p>§§SEG11§§</p>
+<h2 id="1-production-incident-thinking---expect-failure">§§SEG12§§</h2>
+<h3 id="everything-will-fail">§§SEG13§§</h3>
+<p>§§SEG14§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG15§§</code></pre>
+<h3 id="incident-response-framework">§§SEG16§§</h3>
+<p>§§SEG17§§</p>
+<pre><code class="language-javascript">// Bad: Discover từ user complaints
+User tweet: "Your site is down!"
+→ 30 minutes before team knows
+
+// Good: Proactive monitoring
+Alert: "API error rate: 5% (threshold: 1%)"
+Slack: "@oncall immediate action required"
+→ Team knows trong 2 minutes
+</code></pre>
+<p>§§SEG18§§</p>
+<pre><code>§§SEG19§§</code></pre>
+<p>§§SEG20§§</p>
+<pre><code>§§SEG21§§</code></pre>
+<p>§§SEG22§§</p>
+<pre><code>§§SEG23§§</code></pre>
+<p>§§SEG24§§</p>
+<pre><code class="language-markdown">§§SEG25§§</code></pre>
+<h3 id="blameless-culture">§§SEG26§§</h3>
+<pre><code>§§SEG27§§</code></pre>
+<h2 id="2-failure-mindset---design-for-failure">§§SEG28§§</h2>
+<h3 id="murphys-law-for-architects">§§SEG29§§</h3>
+<p>§§SEG30§§</p>
+<pre><code>§§SEG31§§</code></pre>
+<h3 id="failure-mode-analysis">§§SEG32§§</h3>
+<p>§§SEG33§§</p>
+<pre><code class="language-markdown">§§SEG34§§</code></pre>
+<h3 id="design-for-degradation">§§SEG35§§</h3>
+<p>§§SEG36§§</p>
+<pre><code class="language-javascript">// Example: E-commerce homepage
+
+Critical (must work):
+- Browse products ✅
+- Search ✅
+- Add to cart ✅
+- Checkout ✅
+
+Non-critical (can degrade):
+- Recommendations ⚠️ → Show static list
+- Reviews ⚠️ → Hide section
+- Personalization ⚠️ → Generic experience
+- Real-time inventory ⚠️ → Show "In stock" always
+
+// Implementation
+async function getHomepage() {
+  const products = await getProducts() // Critical
+  
+  let recommendations = []
+  try {
+    recommendations = await getRecommendations()
+  } catch (error) {
+    // Degrade gracefully
+    recommendations = DEFAULT_RECOMMENDATIONS
+    logger.warn('Recommendations service down, using defaults')
+  }
+  
+  return { products, recommendations }
+}
+</code></pre>
+<h3 id="blast-radius-thinking">§§SEG37§§</h3>
+<p>§§SEG38§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG39§§</code></pre>
+<pre><code>§§SEG40§§</code></pre>
+<p>§§SEG41§§</p>
+<ul>
+<li>§§SEG42§§</li>
+<li>§§SEG43§§</li>
+<li>§§SEG44§§</li>
+<li>§§SEG45§§</li>
+<li>§§SEG46§§</li>
+</ul>
+<h2 id="3-monitoring--alerting-strategy---know-before-users-do">§§SEG47§§</h2>
+<h3 id="monitoring-pyramid">§§SEG48§§</h3>
+<pre><code>§§SEG49§§</code></pre>
+<h3 id="what-to-monitor">§§SEG50§§</h3>
+<p>§§SEG51§§</p>
+<pre><code class="language-javascript">// These affect users directly
+const userMetrics = {
+  availability: '99.9%',        // Can users access?
+  latency_p50: '100ms',         // How fast?
+  latency_p95: '300ms',         // Slow requests?
+  latency_p99: '1000ms',        // Worst case?
+  error_rate: '0.1%',           // How many failures?
+  success_rate: '99.9%'         // Overall health
+}
+</code></pre>
+<p>§§SEG52§§</p>
+<pre><code class="language-javascript">const systemMetrics = {
+  cpu_usage: '45%',
+  memory_usage: '60%',
+  disk_usage: '70%',
+  network_io: '500 Mbps',
+  connection_pool: '80/100 active'
+}
+</code></pre>
+<p>§§SEG53§§</p>
+<pre><code class="language-javascript">const businessMetrics = {
+  orders_per_minute: 150,
+  revenue_per_hour: '$5000',
+  active_users: 2500,
+  checkout_conversion: '3.2%'
+}
+</code></pre>
+<h3 id="the-golden-signals-google-sre">§§SEG54§§</h3>
+<p>§§SEG55§§</p>
+<pre><code>§§SEG56§§</code></pre>
+<h3 id="alerting-philosophy">§§SEG57§§</h3>
+<p>§§SEG58§§</p>
+<pre><code>§§SEG59§§</code></pre>
+<h3 id="alert-fatigue-prevention">§§SEG60§§</h3>
+<pre><code class="language-javascript">// Problem: Too many alerts
+Alert: CPU &gt; 80%  // Every day, not actionable
+Alert: Disk &gt; 70%  // Not urgent
+Alert: Memory &gt; 60%  // Normal
+
+Team: Ignores all alerts
+
+// Solution: Alert only on user impact
+const alertConfig = {
+  error_rate: {
+    threshold: '1%',
+    duration: '5 minutes',
+    severity: 'critical',
+    action: 'Page on-call immediately'
+  },
+  
+  latency_p95: {
+    threshold: '1000ms',
+    duration: '10 minutes',
+    severity: 'warning',
+    action: 'Slack notification'
+  }
+}
+</code></pre>
+<h3 id="runbooks-for-common-issues">§§SEG61§§</h3>
+<pre><code class="language-markdown">§§SEG62§§</code></pre>
+<h2 id="4-capacity-planning---scale-before-you-need-to">§§SEG63§§</h2>
+<h3 id="growth-projection">§§SEG64§§</h3>
+<pre><code class="language-javascript">// Current metrics (Feb 2024)
+const current = {
+  daily_users: 100_000,
+  peak_requests_per_second: 1_000,
+  database_size: '500 GB',
+  monthly_cost: '$10_000'
+}
+
+// Growth rate: 20% per month
+const projections = {
+  '3_months': {
+    users: 172_000,    // 1.2^3 = 1.72x
+    rps: 1_720,
+    db_size: '860 GB',
+    cost: '$17_200'
+  },
+  
+  '6_months': {
+    users: 298_000,    // 1.2^6 = 2.98x
+    rps: 2_980,
+    db_size: '1.5 TB',
+    cost: '$29_800'
+  },
+  
+  '12_months': {
+    users: 890_000,    // 1.2^12 = 8.9x
+    rps: 8_900,
+    db_size: '4.5 TB',
+    cost: '$89_000'
+  }
+}
+</code></pre>
+<h3 id="resource-planning-matrix">§§SEG65§§</h3>
+<pre><code class="language-markdown">§§SEG66§§</code></pre>
+<h3 id="load-testing-strategy">§§SEG67§§</h3>
+<pre><code class="language-javascript">// Gradual load test
+const loadTest = {
+  baseline: {
+    users: 1000,
+    duration: '10 minutes',
+    expected: 'p95 &lt; 200ms, 0% errors'
+  },
+  
+  target: {
+    users: 3000,
+    duration: '30 minutes',
+    expected: 'p95 &lt; 500ms, &lt; 0.1% errors'
+  },
+  
+  stress: {
+    users: 5000,
+    duration: '10 minutes',
+    expected: 'Find breaking point'
+  },
+  
+  spike: {
+    users: '0 → 5000 in 1 minute',
+    duration: '15 minutes',
+    expected: 'System recovers gracefully'
+  }
+}
+
+// What to monitor during load test
+const metrics = [
+  'Response time (p50, p95, p99)',
+  'Error rate',
+  'CPU, memory, disk usage',
+  'Database connections',
+  'Queue depth',
+  'Cache hit rate'
+]
+</code></pre>
+<h3 id="budget-for-growth">§§SEG68§§</h3>
+<pre><code>§§SEG69§§</code></pre>
+<h2 id="5-migration-strategy---change-production-safely">§§SEG70§§</h2>
+<h3 id="migration-challenges">§§SEG71§§</h3>
+<pre><code>§§SEG72§§</code></pre>
+<h3 id="strangler-fig-pattern">§§SEG73§§</h3>
+<p>§§SEG74§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG75§§</code></pre>
+<pre><code>§§SEG76§§</code></pre>
+<h3 id="database-migration-example">§§SEG77§§</h3>
+<pre><code class="language-javascript">// Phase 1: Dual Write
+async function updateUser(userId, data) {
+  // Write to old database
+  await oldDB.users.update(userId, data)
+  
+  // Also write to new database
+  try {
+    await newDB.users.update(userId, data)
+  } catch (error) {
+    // Log but don't fail
+    logger.error('New DB write failed', error)
+  }
+}
+
+// Phase 2: Verify Data Consistency
+async function verifyData() {
+  const oldData = await oldDB.users.find(userId)
+  const newData = await newDB.users.find(userId)
+  
+  if (!isEqual(oldData, newData)) {
+    alert('Data inconsistency detected')
+  }
+}
+
+// Phase 3: Dual Read (verify new DB)
+async function getUser(userId) {
+  const data = await oldDB.users.find(userId)
+  
+  // Compare with new DB
+  const newData = await newDB.users.find(userId)
+  if (!isEqual(data, newData)) {
+    logger.warn('Data mismatch', { userId, oldData: data, newData })
+  }
+  
+  return data  // Still return old DB data
+}
+
+// Phase 4: Switch Reads to New DB
+async function getUser(userId) {
+  const data = await newDB.users.find(userId)
+  
+  // Fallback to old DB if failed
+  if (!data) {
+    logger.error('New DB read failed, falling back')
+    return await oldDB.users.find(userId)
+  }
+  
+  return data
+}
+
+// Phase 5: Stop Writing to Old DB
+async function updateUser(userId, data) {
+  await newDB.users.update(userId, data)
+  // Old DB write removed
+}
+
+// Phase 6: Deprecate Old DB
+// Remove old database entirely
+</code></pre>
+<h3 id="feature-flag-for-migration">§§SEG78§§</h3>
+<pre><code class="language-javascript">const featureFlags = {
+  use_new_payment_service: {
+    enabled: true,
+    rollout: '10%',  // Start with 10% traffic
+    rules: [
+      { segment: 'internal_users', enabled: true },
+      { segment: 'beta_testers', enabled: true }
+    ]
+  }
+}
+
+async function processPayment(order) {
+  if (featureFlags.use_new_payment_service.enabled) {
+    if (shouldEnableForUser(order.userId)) {
+      try {
+        return await newPaymentService.process(order)
+      } catch (error) {
+        // Fallback to old service
+        logger.error('New payment failed, fallback', error)
+        return await oldPaymentService.process(order)
+      }
+    }
+  }
+  
+  return await oldPaymentService.process(order)
+}
+</code></pre>
+<h3 id="migration-checklist">§§SEG79§§</h3>
+<pre><code class="language-markdown">§§SEG80§§</code></pre>
+<h2 id="6-technical-leadership---influence-without-authority">§§SEG81§§</h2>
+<h3 id="architect-as-leader">§§SEG82§§</h3>
+<pre><code>§§SEG83§§</code></pre>
+<h3 id="build-trust-through-delivery">§§SEG84§§</h3>
+<pre><code>§§SEG85§§</code></pre>
+<h3 id="technical-decision-making">§§SEG86§§</h3>
+<p>§§SEG87§§</p>
+<pre><code class="language-markdown">§§SEG88§§</code></pre>
+<h3 id="influence-through-data">§§SEG89§§</h3>
+<pre><code class="language-javascript">// Instead of: "We need to rewrite this!"
+// Use data to make the case:
+
+const currentMetrics = {
+  deployment_frequency: '1/week',
+  lead_time: '2 weeks',
+  mttr: '4 hours',
+  change_failure_rate: '15%'
+}
+
+const industryBenchmark = {
+  elite_performers: {
+    deployment_frequency: 'Multiple/day',
+    lead_time: '&lt; 1 day',
+    mttr: '&lt; 1 hour',
+    change_failure_rate: '0-15%'
+  }
+}
+
+const proposal = `
+Problem: Our lead time is 14x slower than elite teams
+Impact: Competitors ship features faster
+Solution: Move to microservices + CI/CD
+Expected improvement: Lead time 2 weeks → 2 days
+Cost: 3 months, 4 engineers
+ROI: Ship 7x faster, competitive advantage
+`
+</code></pre>
+<h3 id="communication-skills">§§SEG90§§</h3>
+<p>§§SEG91§§</p>
+<pre><code>§§SEG92§§</code></pre>
+<p>§§SEG93§§</p>
+<pre><code class="language-markdown">§§SEG94§§</code></pre>
+<h3 id="code-review-excellence">§§SEG95§§</h3>
+<pre><code class="language-javascript">// Bad review
+"This is wrong. Use Redis instead."
+
+// Good review
+/*
+Concern: In-memory cache won't scale across multiple instances.
+
+Issue:
+- Each instance has separate cache
+- Cache miss rate will be high
+- Duplicated memory usage
+
+Suggestion:
+Consider shared Redis cache:
+- Single source of truth
+- Better hit rate
+- Scales horizontally
+
+If Redis not possible:
+- Document limitations
+- Add metrics for cache hit rate
+- Plan migration when needed
+
+Happy to discuss trade-offs!
+*/
+</code></pre>
+<h3 id="mentoring-engineers">§§SEG96§§</h3>
+<pre><code>§§SEG97§§</code></pre>
+<h2 id="7-architecture-review-process---prevent-problems-early">§§SEG98§§</h2>
+<h3 id="review-triggers">§§SEG99§§</h3>
+<pre><code>§§SEG100§§</code></pre>
+<h3 id="review-template">§§SEG101§§</h3>
+<pre><code class="language-markdown">§§SEG102§§</code></pre>
+<h3 id="review-guidelines">§§SEG103§§</h3>
+<p>§§SEG104§§</p>
+<pre><code>§§SEG105§§</code></pre>
+<p>§§SEG106§§</p>
+<pre><code>§§SEG107§§</code></pre>
+<h3 id="approval-criteria">§§SEG108§§</h3>
+<pre><code class="language-markdown">§§SEG109§§</code></pre>
+<h2 id="8-final-mindset---you-own-the-system">§§SEG110§§</h2>
+<h3 id="production-ownership-principles">§§SEG111§§</h3>
+<p>§§SEG112§§</p>
+<pre><code>§§SEG113§§</code></pre>
+<p>§§SEG114§§</p>
+<pre><code>§§SEG115§§</code></pre>
+<p>§§SEG116§§</p>
+<pre><code>§§SEG117§§</code></pre>
+<p>§§SEG118§§</p>
+<pre><code>§§SEG119§§</code></pre>
+<p>§§SEG120§§</p>
+<pre><code>§§SEG121§§</code></pre>
+<h3 id="career-growth-path">§§SEG122§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG123§§</code></pre>
+<p>§§SEG124§§</p>
+<pre><code>§§SEG125§§</code></pre>
+<h3 id="what-differentiates-great-architects">§§SEG126§§</h3>
+<pre><code>§§SEG127§§</code></pre>
+<h3 id="the-10-commandments-of-production-systems">§§SEG128§§</h3>
+<pre><code class="language-markdown">§§SEG129§§</code></pre>
+<h2 id="key-takeaways">§§SEG130§§</h2>
+<h3 id="engineer--architect-mindset-shifts">§§SEG131§§</h3>
+<p>§§SEG132§§</p>
+<ul>
+<li>§§SEG133§§</li>
+<li>§§SEG134§§</li>
+</ul>
+<p>§§SEG135§§</p>
+<ul>
+<li>§§SEG136§§</li>
+<li>§§SEG137§§</li>
+</ul>
+<p>§§SEG138§§</p>
+<ul>
+<li>§§SEG139§§</li>
+<li>§§SEG140§§</li>
+</ul>
+<p>§§SEG141§§</p>
+<ul>
+<li>§§SEG142§§</li>
+<li>§§SEG143§§</li>
+</ul>
+<p>§§SEG144§§</p>
+<ul>
+<li>§§SEG145§§</li>
+<li>§§SEG146§§</li>
+</ul>
+<h3 id="production-thinking-checklist">§§SEG147§§</h3>
+<pre><code class="language-markdown">§§SEG148§§</code></pre>
+<h3 id="technical-leadership-principles">§§SEG149§§</h3>
+<p>§§SEG150§§</p>
+<ul>
+<li>§§SEG151§§</li>
+<li>§§SEG152§§</li>
+<li>§§SEG153§§</li>
+</ul>
+<p>§§SEG154§§</p>
+<ul>
+<li>§§SEG155§§</li>
+<li>§§SEG156§§</li>
+<li>§§SEG157§§</li>
+</ul>
+<p>§§SEG158§§</p>
+<ul>
+<li>§§SEG159§§</li>
+<li>§§SEG160§§</li>
+<li>§§SEG161§§</li>
+</ul>
+<p>§§SEG162§§</p>
+<ul>
+<li>§§SEG163§§</li>
+<li>§§SEG164§§</li>
+<li>§§SEG165§§</li>
+</ul>
+<h3 id="final-thought">§§SEG166§§</h3>
+<p>§§SEG167§§</p>
+<p>§§SEG168§§</p>
+<ul>
+<li>§§SEG169§§</li>
+<li>§§SEG170§§</li>
+<li>§§SEG171§§</li>
+<li>§§SEG172§§</li>
+<li>§§SEG173§§</li>
+<li>§§SEG174§§</li>
+</ul>
+<p>§§SEG175§§</p>
+<ul>
+<li>§§SEG176§§</li>
+<li>§§SEG177§§</li>
+<li>§§SEG178§§</li>
+<li>§§SEG179§§</li>
+<li>§§SEG180§§</li>
+</ul>
+<p>§§SEG181§§</p></article>

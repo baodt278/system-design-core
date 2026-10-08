@@ -1,0 +1,449 @@
+@0
+⟦Giám Sát|Monitoring⟧, ⟦Khả Năng Quan Sát|Observability⟧ & ⟦Gỡ Lỗi Hiệu Năng|Performance Debugging⟧ - Đo Lường Để Mở Rộng
+@1
+Bạn ⟦triển khai|deploy⟧ hệ thống lên ⟦môi trường thực tế|production⟧. Mọi thứ chạy tốt... hoặc ít nhất bạn nghĩ vậy.
+@2
+Rồi người dùng phàn nàn: "Trang chậm quá". Bạn kiểm tra:
+@3
+CPU máy chủ: 30% ✅
+@4
+Bộ nhớ: 50%
+@5
+Ổ đĩa: 40% ✅
+@6
+Các ⟦chỉ số|metrics⟧ trông đều ổn. Vậy tại sao người dùng lại nói chậm?
+@7
+**Vấn đề:** Bạn đang đo sai thứ.
+@8
+CPU 30% chẳng nói lên điều gì về trải nghiệm người dùng. Có thể là:
+@9
+Thời gian ⟦phản hồi|response⟧ của API là 5 giây (người dùng phải chờ lâu)
+@10
+Các ⟦truy vấn|queries⟧ ⟦cơ sở dữ liệu|database⟧ bị ⟦hết thời gian chờ|timeout⟧
+@11
+Các lời gọi API bên thứ ba thất bại ở 50% ⟦yêu cầu|requests⟧
+@12
+**Không đo đúng = không biết hệ thống thực sự hoạt động thế nào.**
+@13
+**⟦Mô hình tư duy|Mental model⟧ quan trọng nhất:** **Nếu bạn không đo được, bạn không thể mở rộng.**
+@14
+Bài này dạy bạn:
+@15
+Những chỉ số nào thực sự quan trọng
+@16
+⟦Bách phân vị|Percentiles⟧ (p50, p95, p99) và tại sao chúng quan trọng
+@17
+⟦Chiến lược cảnh báo|Alert strategy⟧ (không gửi tràn lan, không bỏ sót sự cố nghiêm trọng)
+@18
+⟦Truy vết phân tán|Distributed tracing⟧ cho ⟦vi dịch vụ|microservices⟧
+@19
+⟦Thực hành tốt nhất|Best practices⟧ khi ⟦ghi log|logging⟧
+@20
+SLO/SLA/⟦Ngân sách lỗi|Error budgets⟧
+@21
+Tại Sao ⟦Giám Sát|Monitoring⟧ Lại Quan Trọng?
+@22
+1. Phát Hiện Vấn Đề Trước Người Dùng
+@23
+**Chủ động > Bị động.**
+@24
+Không có giám sát:
+  Người dùng phàn nàn → điều tra → tìm ra vấn đề → sửa
+  Thời gian trung bình để phát hiện (MTTD): Vài giờ đến vài ngày
+
+Có giám sát:
+  Cảnh báo kích hoạt → điều tra → sửa → người dùng không hề nhận ra
+  MTTD: Vài giây đến vài phút
+
+@25
+**Giám sát tốt = người dùng không biết là đã có sự cố.**
+@26
+2. Hiểu Hành Vi Của Hệ Thống
+@27
+**⟦Hoạch định năng lực|Capacity planning⟧:**
+@28
+Hiện tại: 1000 req/s, CPU 40%
+Câu hỏi: Có chịu được 5000 req/s không?
+Trả lời: Cần dữ liệu để ngoại suy
+
+@29
+Không có ⟦số liệu đo|metrics⟧ thì chỉ là đoán mò. Có số liệu đo thì quyết định dựa trên thông tin.
+@30
+3. ⟦Gỡ Lỗi|Debug⟧ Các Vấn Đề ⟦Hiệu Năng|Performance⟧
+@31
+**Người dùng:** "Trang chậm vào lúc 3 giờ chiều mỗi ngày."
+@32
+**Không có giám sát:** Không biết tại sao.
+@33
+**Có giám sát:**
+@34
+Kiểm tra số liệu lúc 3 giờ chiều:
+- Thời gian truy vấn CSDL tăng đột biến gấp 10 lần
+- Log truy vấn chậm: tác vụ tạo báo cáo hằng ngày
+→ Dời việc tạo báo cáo sang giờ thấp điểm
+
+@35
+4. Kiểm Chứng Các Tối Ưu
+@36
+**Bạn:** "Đã thêm ⟦lưu đệm|caching⟧, chắc là nhanh hơn rồi."
+@37
+**Đối chiếu thực tế:**
+@38
+Trước: độ trễ p95 là 800ms
+Sau:   độ trễ p95 là 150ms
+→ Xác nhận cải thiện gấp 5 lần ✅
+
+@39
+**Đo lường để chứng minh tác động.**
+@40
+5. Đáp Ứng SLA
+@41
+**Hợp đồng:** "⟦Thời gian hoạt động|Uptime⟧ 99,9%, ⟦độ trễ|latency⟧ p99 < 500ms"
+@42
+**Làm sao biết mình có đáp ứng được không?** Giám sát 24/7.
+@43
+Ba Trụ Cột Của ⟦Khả Năng Quan Sát|Observability⟧
+@44
+**⟦Khả năng quan sát|Observability⟧ = khả năng hiểu trạng thái bên trong của hệ thống từ các đầu ra bên ngoài.**
+@45
+flowchart TB
+    System[Hệ thống phân tán]
+
+    subgraph Pillars["Ba trụ cột"]
+        Metrics[Metrics<br/>Chuyện gì đang xảy ra?]
+        Logs[Logs<br/>Tại sao nó xảy ra?]
+        Traces[Traces<br/>Ở đâu trong luồng xử lý?]
+    end
+
+    System --> Metrics
+    System --> Logs
+    System --> Traces
+
+    Metrics --> Understand[Hiểu hệ thống]
+    Logs --> Understand
+    Traces --> Understand
+@46
+**⟦Số liệu đo|Metrics⟧:** Các con số tổng hợp (CPU, độ trễ, tỷ lệ lỗi)\n
+**⟦Log|Logs⟧:** Các ⟦sự kiện|events⟧ rời rạc (lỗi, cảnh báo, thông tin gỡ lỗi)\n
+**⟦Vết|Traces⟧:** Luồng đi của yêu cầu qua các ⟦dịch vụ|services⟧
+@47
+**Cần cả ba thì mới có được tầm nhìn toàn diện.**
+@48
+⟦Số Liệu Đo|Metrics⟧ - Nên Đo Những Gì
+@49
+⟦Tín Hiệu Vàng|Golden Signals⟧ (Google SRE)
+@50
+**4 chỉ số quan trọng nhất:**
+@51
+1. ⟦Độ Trễ|Latency⟧
+@52
+**Thời gian để phục vụ một yêu cầu.**
+@53
+**Theo dõi:**
+@54
+Độ trễ tổng thể của API
+@55
+Độ trễ theo từng ⟦điểm cuối|endpoint⟧
+@56
+Thời gian truy vấn cơ sở dữ liệu
+@57
+Thời gian gọi API bên ngoài
+@58
+**Tại sao:** Ảnh hưởng trực tiếp đến trải nghiệm người dùng.
+@59
+2. ⟦Lưu Lượng|Traffic⟧
+@60
+**Số yêu cầu mỗi giây (⟦thông lượng|throughput⟧).**
+@61
+**Theo dõi:**
+@62
+Tổng số yêu cầu/giây
+@63
+Số yêu cầu theo từng điểm cuối
+@64
+Tỷ lệ đọc so với ghi
+@65
+**Tại sao:** Hiểu các mẫu ⟦tải|load⟧, phục vụ hoạch định năng lực.
+@66
+3. Lỗi
+@67
+**Tỷ lệ yêu cầu thất bại.**
+@68
+**Theo dõi:**
+@69
+Lỗi 4xx (lỗi phía ⟦máy khách|client⟧)
+@70
+Lỗi 5xx (lỗi phía ⟦máy chủ|server⟧)
+@71
+⟦Tỷ lệ lỗi|Error rate⟧ (%)
+@72
+**Tại sao:** Chỉ báo ⟦độ tin cậy|reliability⟧, là điều kiện kích hoạt cảnh báo.
+@73
+4. ⟦Độ Bão Hòa|Saturation⟧
+@74
+**Dịch vụ của bạn đang "đầy" đến mức nào.**
+@75
+**Theo dõi:**
+@76
+Mức sử dụng CPU
+@77
+Mức sử dụng bộ nhớ
+@78
+Mức sử dụng ổ đĩa
+@79
+Mức sử dụng ⟦nhóm kết nối|connection pool⟧
+@80
+⟦Độ sâu hàng đợi|Queue depth⟧
+@81
+**Tại sao:** Dự đoán khi nào hệ thống sẽ chạm giới hạn.
+@82
+Phương Pháp RED (Cho Dịch Vụ)
+@83
+**Rate (tần suất), Errors (lỗi), Duration (thời lượng).**
+@84
+**Đơn giản, bao quát những gì thiết yếu.**
+@85
+Phương Pháp USE (Cho Tài Nguyên)
+@86
+**Utilization (mức sử dụng), Saturation (độ bão hòa), Errors (lỗi).**
+@87
+**Dùng cho giám sát ⟦hạ tầng|infrastructure⟧.**
+@88
+⟦Bách Phân Vị|Percentiles⟧ - Tại Sao Chúng Quan Trọng Hơn Giá Trị Trung Bình
+@89
+Vấn Đề Của Giá Trị Trung Bình
+@90
+**Kịch bản:**
+@91
+Độ trễ API:
+  99 yêu cầu: 100ms
+  1 yêu cầu:  10,000ms (10 giây!)
+
+Trung bình: (99 * 100 + 10,000) / 100 = 199ms
+
+@92
+**Trung bình nói 199ms - trông ổn!**
+@93
+**Thực tế: 1% người dùng phải chờ 10 giây - trải nghiệm tệ hại.**
+@94
+**Giá trị trung bình che giấu các ⟦giá trị ngoại lai|outliers⟧.**
+@95
+⟦Bách Phân Vị|Percentiles⟧ Kể Câu Chuyện Thật
+@96
+**p50 (⟦trung vị|median⟧):** 50% yêu cầu nhanh hơn, 50% chậm hơn\n
+**p95:** 95% yêu cầu nhanh hơn mức này\n
+**p99:** 99% yêu cầu nhanh hơn mức này\n
+**p99.9:** 99,9% yêu cầu nhanh hơn mức này
+@97
+Ví dụ về phân phối:
+  p50:  100ms  (trải nghiệm điển hình)
+  p95:  200ms  (đa số người dùng)
+  p99:  500ms  (trường hợp biên)
+  p99.9: 2000ms (ngoại lai hiếm gặp)
+
+@98
+**p95, p99 cho thấy trải nghiệm người dùng trong trường hợp xấu nhất.**
+@99
+Tại Sao p99 Quan Trọng
+@100
+**Nghiên cứu của Amazon:** độ trễ p99 tương quan trực tiếp với doanh thu.
+@101
+Độ trễ p99 = 1 giây
+→ Chậm với 1% người dùng
+→ Với 1 triệu yêu cầu/ngày = 10,000 trải nghiệm tồi
+→ Đánh giá xấu, mất doanh số
+
+@102
+**Tối ưu cho p99, không phải cho giá trị trung bình.**
+@103
+Theo Dõi ⟦Bách Phân Vị|Percentiles⟧
+@104
+**Truy vấn Prometheus:**
+@105
+⟦Chỉ Số Mức Dịch Vụ|Service Level Indicators⟧ (SLI)
+@106
+**Các bách phân vị đo được sẽ trở thành SLI.**
+@107
+SLI: độ trễ p99 < 500ms
+SLI: tính sẵn sàng p95 > 99.9%
+SLI: tỷ lệ lỗi p99 < 0.1%
+
+@108
+**Các mục tiêu khách quan, đo lường được.**
+@109
+⟦Chiến Lược Cảnh Báo|Alert Strategy⟧ - Tín Hiệu Và Nhiễu
+@110
+Vấn Đề ⟦Mệt Mỏi Vì Cảnh Báo|Alert Fatigue⟧
+@111
+**Cảnh báo tồi:**
+@112
+03:00 - Cảnh báo: CPU > 80%
+03:05 - Cảnh báo: CPU > 80%
+03:10 - Cảnh báo: CPU > 80%
+...
+→ 100 cảnh báo/đêm
+→ Kỹ sư phớt lờ cảnh báo
+→ Bỏ sót sự cố thật
+
+@113
+**⟦Mệt mỏi vì cảnh báo|Alert fatigue⟧ giết chết ⟦độ tin cậy|reliability⟧.**
+@114
+Các Nguyên Tắc Cảnh Báo Tốt
+@115
+**1. Cảnh báo dựa trên triệu chứng, không phải nguyên nhân**
+@116
+**Tồi:**
+@117
+Cảnh báo: CPU của CSDL > 80%
+
+@118
+**Tốt:**
+@119
+Cảnh báo: độ trễ p99 của API > 1 giây
+
+@120
+**Tại sao:** CPU cao có thể vẫn ổn nếu độ trễ bình thường. Độ trễ cao = người dùng bị ảnh hưởng = vấn đề thật.
+@121
+**2. Cảnh báo dựa trên tác động tới người dùng**
+@122
+**Tồi:**
+@123
+Cảnh báo: 1 máy chủ ngừng hoạt động (trên tổng số 10)
+
+@124
+**Tốt:**
+@125
+Cảnh báo: Tỷ lệ lỗi > 5%
+(Chỉ khi trải nghiệm người dùng bị ảnh hưởng)
+
+@126
+**3. Chỉ dùng cảnh báo có thể hành động được**
+@127
+**Mỗi ⟦cảnh báo|alert⟧ phải đi kèm một hành động rõ ràng.**
+@128
+Cảnh báo: Phát hiện truy vấn chậm trên CSDL
+
+Hành động:
+1. Kiểm tra log truy vấn chậm
+2. Kiểm tra tải của CSDL
+3. Huỷ các truy vấn chạy lâu nếu cần
+4. Gọi nhóm CSDL nếu tình trạng kéo dài > 15 phút
+
+@129
+**Không có hành động = không nên cảnh báo.**
+@130
+**4. Dùng ⟦ngưỡng|thresholds⟧ một cách khôn ngoan**
+@131
+**⟦Ngưỡng tĩnh|Static threshold⟧:**
+@132
+Vấn đề: Tải bình thường dao động. 90% lúc 2 giờ sáng = có vấn đề. 90% lúc ⟦cao điểm|peak⟧ = bình thường.
+@133
+**⟦Ngưỡng động|Dynamic threshold⟧:**
+@134
+Tự thích ứng với các mẫu hành vi bình thường.
+@135
+**5. Các mức độ ưu tiên của cảnh báo**
+@136
+**P0 (Nghiêm trọng):** Hệ thống sập, ảnh hưởng doanh thu\n
+ → Gọi ngay người ⟦trực sự cố|on-call⟧
+@137
+**P1 (Cao):** ⟦Hiệu năng|Performance⟧ suy giảm, ảnh hưởng người dùng\n
+ → Cảnh báo người trực sự cố, yêu cầu phản hồi trong vòng 30 phút
+@138
+**P2 (Trung bình):** Vấn đề không nghiêm trọng\n
+ → Tạo phiếu xử lý, giải quyết trong giờ hành chính
+@139
+**P3 (Thấp):** Mang tính thông tin\n
+ → Chỉ ghi log, không cảnh báo
+@140
+⟦Sổ Tay Xử Lý|Runbooks⟧ Cho Cảnh Báo
+@141
+**Mỗi cảnh báo cần một ⟦sổ tay xử lý|runbook⟧.**
+@142
+## Cảnh báo: Tỷ lệ lỗi API cao
+
+### Triệu chứng
+Tỷ lệ lỗi API > 5% trong 5 phút
+
+### Tác động
+Người dùng gặp lỗi, có thể mất doanh thu
+
+### Các bước điều tra
+1. Kiểm tra bảng điều khiển lỗi: ${dashboard_link}
+2. Kiểm tra log lỗi: `kubectl logs -l app=api --tail=100`
+3. Kiểm tra trạng thái các dịch vụ phụ thuộc
+4. Kiểm tra các lần triển khai gần đây
+
+### Khắc phục
+1. Nếu do triển khai lỗi: hoàn tác (rollback) ngay lập tức
+2. Nếu do CSDL: kiểm tra sức khoẻ CSDL, cân nhắc dùng bản sao chỉ đọc
+3. Nếu do bên thứ ba: bật bộ ngắt mạch (circuit breaker), dùng phương án dự phòng
+
+### Leo thang
+Nếu chưa giải quyết sau 15 phút: gọi @backend-lead
+
+@143
+**Giảm MTTR (⟦thời gian trung bình để khắc phục|Mean Time To Resolve⟧).**
+@144
+⟦Truy Vết Phân Tán|Distributed Tracing⟧ - Gỡ Lỗi Xuyên Suốt Các Dịch Vụ
+@145
+Vấn Đề Của ⟦Vi Dịch Vụ|Microservices⟧
+@146
+**⟦Hệ thống nguyên khối|Monolith⟧:**
+@147
+Yêu cầu người dùng → Một codebase duy nhất → Dễ gỡ lỗi
+
+@148
+**⟦Vi dịch vụ|Microservices⟧:**
+@149
+Yêu cầu người dùng → Service A → Service B → Service C
+                            ↓
+                        Service D
+
+@150
+**⟦Điểm nghẽn|Bottleneck⟧ nằm ở đâu? Khó mà biết được.**
+@151
+Giải Pháp ⟦Truy Vết Phân Tán|Distributed Tracing⟧
+@152
+**⟦Vết|Trace⟧ = toàn bộ hành trình của yêu cầu qua các dịch vụ.**
+@153
+sequenceDiagram
+    participant User
+    participant API
+    participant Auth
+    participant DB
+    participant Cache
+
+    User->>API: GET /profile (TraceID: abc123)
+    Note over API: Span: api-handler (50ms)
+
+    API->>Auth: Xác thực token
+    Note over Auth: Span: auth-verify (20ms)
+    Auth-->>API: OK
+
+    API->>Cache: Lấy thông tin người dùng
+    Note over Cache: Span: cache-lookup (5ms)
+    Cache-->>API: Trượt bộ nhớ đệm
+
+    API->>DB: Truy vấn người dùng
+    Note over DB: Span: db-query (200ms)
+    DB-->>API: Dữ liệu người dùng
+
+    API->>Cache: Lưu người dùng
+    API-->>User: Phản hồi
+
+    Note over User,Cache: Tổng: 275ms<br/>Điểm nghẽn: truy vấn DB (200ms)
+@154
+**Mỗi thao tác = một span (đoạn). Tập hợp các span = một ⟦vết|trace⟧.**
+@155
+Triển Khai ⟦Truy Vết|Tracing⟧
+@156
+**OpenTelemetry (chuẩn chung):**
+@157
+**Lan truyền ngữ cảnh truy vết (trace context) qua các dịch vụ:**
+@158
+**Dịch vụ phía sau tiếp tục vết truy vết:**
+@159
+Các Công Cụ ⟦Truy Vết|Tracing⟧
+@160
+**Jaeger:**

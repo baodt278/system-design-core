@@ -1,0 +1,894 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Message Queues &amp; Async Processing - Decoupling Services | Phase 2 — Core Building Blocks | System Design Core</title><meta name="description" content="Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services"/><meta property="og:title" content="Message Queues &amp; Async Processing - Decoupling Services | Phase 2 — Core Building Blocks"/><meta property="og:description" content="Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Message Queues &amp; Async Processing - Decoupling Services | Phase 2 — Core Building Blocks"/><meta name="twitter:description" content="Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 2 — Core Building Blocks</p><p class="mt-3 text-xl font-semibold text-ink">Message Queues &amp; Async Processing - Decoupling Services</p><p class="mt-3 text-sm leading-7 text-ink-dim">Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong distributed systems.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-1-load-balancing"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">Load Balancing: Traffic Distribution Trong Distributed Systems</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-2-caching"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">Caching - Performance Layer Quan Trọng Nhất</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-3-database"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Database Scaling - Chiến Lược Scale Data Layer</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Message Queues &amp; Async Processing - Decoupling Services</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-2">Phase 2 — Core Building Blocks</a></li><li>/</li><li aria-current="page" class="text-ink">Message Queues &amp; Async Processing - Decoupling Services</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Message Queues &amp; Async Processing - Decoupling Services</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong distributed systems.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Message Queues &amp; Async Processing - Decoupling Services"><article class="prose-ui"><h1 id="message-queues--async-processing-decoupling-services">Message Queues &amp; Async Processing: Decoupling Services</h1>
+<p>Tôi còn nhớ lần đầu production system của tôi sập vì một email.</p>
+<p>User upload video. Server phải:</p>
+<ol>
+<li>Save video (2 giây)</li>
+<li>Generate thumbnail (5 giây)</li>
+<li>Transcode 720p (30 giây)</li>
+<li>Transcode 1080p (60 giây)</li>
+<li>Send email notification (1 giây)</li>
+</ol>
+<p>Total: 98 giây. User đợi 98 giây để nhận response.</p>
+<p>Kết quả? Timeout. User frustrated. Server overload vì mỗi request hold connection 98 giây.</p>
+<p>Senior engineer nhìn tôi: <em>&quot;Em biết message queue chưa?&quot;</em></p>
+<p>Tôi: <em>&quot;Chưa ạ...&quot;</em></p>
+<p>Đó là đêm tôi học về async processing. Và đó là một trong những patterns quan trọng nhất trong distributed systems.</p>
+<h2 id="tại-sao-cần-async-processing">Tại Sao Cần Async Processing?</h2>
+<h3 id="the-synchronous-problem">The Synchronous Problem</h3>
+<p><strong>Synchronous = User đợi cho đến khi tất cả xong</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant API
+    participant Storage
+    participant Processor
+    participant Email
+    
+    User-&gt;&gt;API: Upload video
+    API-&gt;&gt;Storage: Save video (2s)
+    Storage--&gt;&gt;API: Done
+    API-&gt;&gt;Processor: Generate thumbnail (5s)
+    Processor--&gt;&gt;API: Done
+    API-&gt;&gt;Processor: Transcode 720p (30s)
+    Processor--&gt;&gt;API: Done
+    API-&gt;&gt;Processor: Transcode 1080p (60s)
+    Processor--&gt;&gt;API: Done
+    API-&gt;&gt;Email: Send notification (1s)
+    Email--&gt;&gt;API: Done
+    API--&gt;&gt;User: Success (after 98s!)
+    
+    Note over User,Email: User phải đợi 98 giây</code></pre>
+<p><em>Synchronous processing: User đợi cho đến khi mọi thứ hoàn thành</em></p>
+<p><strong>Problems:</strong></p>
+<pre><code>Terrible UX
+   - User đợi 98 giây
+   - Timeout sau 30-60 giây
+   - User nghĩ app bị lỗi
+
+Poor resource utilization
+   - Connection held for 98 giây
+   - Server chỉ handle được ít requests
+   - Memory/thread exhausted
+
+Cascading failures
+   - Email service down → Entire upload fails
+   - Transcode fails → User không nhận video
+   - Tight coupling
+</code></pre>
+<h3 id="the-async-solution">The Async Solution</h3>
+<p><strong>Asynchronous = User nhận response ngay, processing ở background</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>sequenceDiagram
+    participant User
+    participant API
+    participant Queue
+    participant Worker
+    participant Email
+    
+    User-&gt;&gt;API: Upload video
+    API-&gt;&gt;API: Save video (2s)
+    API-&gt;&gt;Queue: Add job to queue
+    Queue--&gt;&gt;API: Job queued
+    API--&gt;&gt;User: Success! Processing... (2s only)
+    
+    Note over User,API: User nhận response sau 2s
+    
+    Worker-&gt;&gt;Queue: Poll for jobs
+    Queue--&gt;&gt;Worker: Job available
+    Worker-&gt;&gt;Worker: Generate thumbnail (5s)
+    Worker-&gt;&gt;Worker: Transcode 720p (30s)
+    Worker-&gt;&gt;Worker: Transcode 1080p (60s)
+    Worker-&gt;&gt;Email: Send notification
+    
+    Note over Worker,Email: Background processing</code></pre>
+<p><em>Async processing: User nhận response ngay, work happens ở background</em></p>
+<p><strong>Benefits:</strong></p>
+<pre><code>Great UX
+   - User nhận response sau 2 giây
+   - No timeout
+   - Clear status: &quot;Processing...&quot;
+
+Better resource utilization
+   - Connections freed immediately
+   - Server handle nhiều requests
+   - Workers scale independently
+
+Fault tolerance
+   - Email fail? Video vẫn upload
+   - Retry logic built-in
+   - Loose coupling
+</code></pre>
+<h2 id="message-queue-fundamentals">Message Queue Fundamentals</h2>
+<h3 id="core-concepts">Core Concepts</h3>
+<p><strong>Message Queue = Buffer giữa producers và consumers</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    P1[Producer 1] --&gt;|Publish message| Q[Message Queue]
+    P2[Producer 2] --&gt;|Publish message| Q
+    P3[Producer 3] --&gt;|Publish message| Q
+    
+    Q --&gt;|Consume message| C1[Consumer 1]
+    Q --&gt;|Consume message| C2[Consumer 2]
+    Q --&gt;|Consume message| C3[Consumer 3]
+    
+    style Q fill:#ffd93d
+    style P1 fill:#51cf66
+    style P2 fill:#51cf66
+    style P3 fill:#51cf66
+    style C1 fill:#4dabf7
+    style C2 fill:#4dabf7
+    style C3 fill:#4dabf7</code></pre>
+<p><em>Message queue decouples producers và consumers</em></p>
+<p><strong>Terminology:</strong></p>
+<pre><code>Producer:  Service tạo messages (publish/send)
+Consumer:  Service process messages (consume/receive)
+Queue:     Buffer lưu messages
+Message:   Unit of work (job/task/event)
+Broker:    Service quản lý queues (RabbitMQ, Kafka, SQS)
+</code></pre>
+<h3 id="simple-example">Simple Example</h3>
+<pre><code class="language-python"># Producer: API server
+from queue import MessageQueue
+
+queue = MessageQueue(&#x27;video-processing&#x27;)
+
+def upload_video(video_file):
+    # Save video nhanh
+    video_id = save_to_storage(video_file)
+    
+    # Add job to queue
+    queue.publish({
+        &#x27;job&#x27;: &#x27;process_video&#x27;,
+        &#x27;video_id&#x27;: video_id,
+        &#x27;tasks&#x27;: [&#x27;thumbnail&#x27;, &#x27;transcode_720p&#x27;, &#x27;transcode_1080p&#x27;]
+    })
+    
+    # Return ngay cho user
+    return {
+        &#x27;status&#x27;: &#x27;processing&#x27;,
+        &#x27;video_id&#x27;: video_id,
+        &#x27;message&#x27;: &#x27;Video is being processed&#x27;
+    }
+
+# Consumer: Background worker
+def worker():
+    while True:
+        # Poll for messages
+        message = queue.consume()
+        
+        if message:
+            video_id = message[&#x27;video_id&#x27;]
+            
+            # Process tasks
+            generate_thumbnail(video_id)
+            transcode_720p(video_id)
+            transcode_1080p(video_id)
+            
+            # Acknowledge message processed
+            queue.ack(message)
+</code></pre>
+<p><strong>Timeline:</strong></p>
+<pre><code>API call:
+00:00 - User uploads
+00:02 - API returns (user happy!)
+Queue has 1 job
+
+Background:
+00:02 - Worker picks up job
+00:07 - Thumbnail done
+00:37 - 720p done
+01:37 - 1080p done
+01:38 - Send notification
+
+User experience: 2 seconds
+Actual work: 98 seconds (background)
+</code></pre>
+<h2 id="queue-vs-pubsub-hai-patterns-khác-nhau">Queue vs Pub/Sub: Hai Patterns Khác Nhau</h2>
+<h3 id="queue-pattern-point-to-point">Queue Pattern (Point-to-Point)</h3>
+<p><strong>One message → One consumer</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph LR
+    P[Producer] --&gt;|Message 1| Q[Queue]
+    P --&gt;|Message 2| Q
+    P --&gt;|Message 3| Q
+    
+    Q --&gt;|Message 1| C1[Consumer 1]
+    Q --&gt;|Message 2| C2[Consumer 2]
+    Q --&gt;|Message 3| C3[Consumer 3]
+    
+    style Q fill:#ffd93d
+    style P fill:#51cf66
+    style C1 fill:#4dabf7
+    style C2 fill:#4dabf7
+    style C3 fill:#4dabf7</code></pre>
+<p><em>Queue: Mỗi message chỉ được một consumer xử lý</em></p>
+<p><strong>Characteristics:</strong></p>
+<pre><code>- Mỗi message processed by 1 consumer only
+- Load balanced giữa consumers
+- Used for task distribution
+- Compete for messages
+</code></pre>
+<p><strong>Use cases:</strong></p>
+<pre><code>✓ Background jobs (email sending, image processing)
+✓ Task distribution (video encoding, PDF generation)
+✓ Load leveling (smooth traffic spikes)
+✓ Retry logic (failed payments, API calls)
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-python"># Queue: email-queue
+# 3 workers compete for jobs
+
+# Producer
+queue.publish({&#x27;to&#x27;: &#x27;user@example.com&#x27;, &#x27;subject&#x27;: &#x27;Welcome&#x27;})
+
+# Consumer 1 might get it
+# OR Consumer 2 might get it  
+# OR Consumer 3 might get it
+# Only ONE processes it
+</code></pre>
+<h3 id="pubsub-pattern-publish-subscribe">Pub/Sub Pattern (Publish-Subscribe)</h3>
+<p><strong>One message → Many subscribers</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    P[Publisher] --&gt;|Event: User Created| T[Topic: user.created]
+    
+    T --&gt;|Copy 1| S1[Email Service&lt;br/&gt;Send welcome email]
+    T --&gt;|Copy 2| S2[Analytics Service&lt;br/&gt;Track signup]
+    T --&gt;|Copy 3| S3[CRM Service&lt;br/&gt;Create contact]
+    T --&gt;|Copy 4| S4[Notification Service&lt;br/&gt;Push notification]
+    
+    style T fill:#ffd93d
+    style P fill:#51cf66
+    style S1 fill:#4dabf7
+    style S2 fill:#4dabf7
+    style S3 fill:#4dabf7
+    style S4 fill:#4dabf7</code></pre>
+<p><em>Pub/Sub: Mỗi subscriber nhận copy của message</em></p>
+<p><strong>Characteristics:</strong></p>
+<pre><code>- Mỗi message copied đến ALL subscribers
+- No competition
+- Used for event broadcasting
+- Decoupled services
+</code></pre>
+<p><strong>Use cases:</strong></p>
+<pre><code>✓ Event notification (user signup, order placed)
+✓ Real-time updates (stock prices, live scores)
+✓ Fan-out (1 event → multiple actions)
+✓ Audit logging (track all actions)
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-python"># Topic: order.placed
+# All subscribers receive event
+
+# Publisher
+pubsub.publish(&#x27;order.placed&#x27;, {
+    &#x27;order_id&#x27;: 12345,
+    &#x27;user_id&#x27;: 67890,
+    &#x27;amount&#x27;: 99.99
+})
+
+# Subscriber 1: Email Service
+# Sends order confirmation email
+
+# Subscriber 2: Inventory Service  
+# Updates stock count
+
+# Subscriber 3: Analytics Service
+# Records sale
+
+# Subscriber 4: Shipping Service
+# Creates shipping label
+
+# ALL 4 receive and process the event
+</code></pre>
+<h3 id="trade-off-comparison">Trade-off Comparison</h3>
+<pre><code>Queue (Point-to-Point):
+Simple semantics (1 message = 1 consumer)
+Natural load balancing
+Easy to reason about
+Limited to single action per message
+Tight coupling if multiple actions needed
+
+Pub/Sub:
+Decouple services completely
+Easy to add new subscribers
+Broadcast events naturally
+More complex (eventual consistency)
+Harder to debug (who processed what?)
+Message duplication overhead
+</code></pre>
+<p><strong>Decision framework:</strong></p>
+<pre><code>Use Queue khi:
+- Task needs to be done exactly once
+- Load balancing giữa workers
+- Simple workflow
+
+Use Pub/Sub khi:
+- Multiple services care về event
+- Need to decouple services
+- Fan-out pattern
+- Audit/logging requirements
+</code></pre>
+<h2 id="delivery-guarantees-critical-understanding">Delivery Guarantees: Critical Understanding</h2>
+<h3 id="the-guarantee-spectrum">The Guarantee Spectrum</h3>
+<p><strong>At-Most-Once Delivery</strong></p>
+<pre><code>Message có thể bị mất, nhưng không bao giờ duplicate
+
+Timeline:
+Producer → Send message → Queue
+Queue → Deliver to Consumer (maybe fails)
+Queue deletes message immediately
+
+Result:
+- Success: Message processed once ✓
+- Failure: Message lost ✗
+- Never: Message processed twice ✓
+</code></pre>
+<pre><code>Fastest (no confirmation needed)
+Simple
+Data loss possible
+No retry
+
+Use cases:
+- Metrics/logging (OK if lose some data)
+- Real-time data streams (stale data worthless)
+- Best-effort notifications
+</code></pre>
+<p><strong>At-Least-Once Delivery</strong></p>
+<pre><code>Message không bao giờ mất, nhưng có thể duplicate
+
+Timeline:
+Producer → Send message → Queue
+Queue → Deliver to Consumer
+Consumer → Process
+Consumer → Ack (might fail/timeout)
+Queue → Redeliver if no ack
+
+Result:
+- Success: Message processed once ✓
+- Failure: Message redelivered ✓
+- Possible: Message processed multiple times ⚠️
+</code></pre>
+<pre><code>No message loss
+Retry logic built-in
+Duplicate processing possible
+Must implement idempotency
+
+Use cases:
+- Payment processing (with idempotency)
+- Order fulfillment
+- Critical business logic
+</code></pre>
+<p><strong>Exactly-Once Delivery</strong></p>
+<pre><code>Message processed exactly once, guaranteed
+
+Extremely hard to achieve in distributed systems
+Requires:
+- Distributed transactions
+- Deduplication logic
+- Coordination between services
+
+Result:
+- Always: Message processed exactly once ✓
+</code></pre>
+<pre><code>Perfect semantics
+No loss, no duplicates
+Very complex to implement
+Performance overhead
+Often impossible in practice
+
+Use cases:
+- Financial transactions
+- Critical business operations
+- When duplicates absolutely cannot happen
+</code></pre>
+<h3 id="idempotency-the-practical-solution">Idempotency: The Practical Solution</h3>
+<p><strong>Problem với at-least-once:</strong></p>
+<pre><code class="language-python"># Non-idempotent operation
+def process_payment(order_id, amount):
+    charge_credit_card(amount)  # Charge twice if retry!
+    
+# Message delivered twice:
+# 1st: Charge $100 ✓
+# 2nd: Charge $100 again! ✗
+# User charged $200
+</code></pre>
+<p><strong>Solution: Idempotent operations</strong></p>
+<pre><code class="language-python"># Idempotent operation
+def process_payment(order_id, amount):
+    # Check if already processed
+    if payment_exists(order_id):
+        return  # Skip, already done
+    
+    charge_credit_card(amount)
+    record_payment(order_id)  # Mark as processed
+
+# Message delivered twice:
+# 1st: Charge $100, record ✓
+# 2nd: Check → Already done, skip ✓
+# User charged $100 (correct!)
+</code></pre>
+<p><strong>Idempotency techniques:</strong></p>
+<pre><code class="language-python"># Technique 1: Unique message ID
+def process_message(message):
+    message_id = message[&#x27;id&#x27;]
+    
+    if redis.exists(f&quot;processed:{message_id}&quot;):
+        return  # Already processed
+    
+    # Do work
+    do_actual_work(message)
+    
+    # Mark as processed
+    redis.set(f&quot;processed:{message_id}&quot;, &quot;1&quot;, ex=86400)  # 24h TTL
+
+# Technique 2: Database unique constraint
+def create_order(order_data):
+    try:
+        db.execute(&quot;&quot;&quot;
+            INSERT INTO orders (order_id, user_id, amount)
+            VALUES (?, ?, ?)
+        &quot;&quot;&quot;, order_data)
+    except UniqueConstraintError:
+        # Already exists, idempotent ✓
+        pass
+
+# Technique 3: Update operations (naturally idempotent)
+def update_user_status(user_id, status):
+    db.execute(&quot;&quot;&quot;
+        UPDATE users SET status = ?
+        WHERE user_id = ?
+    &quot;&quot;&quot;, status, user_id)
+    
+    # Running twice = same result ✓
+</code></pre>
+<p><strong>Personal rule:</strong></p>
+<p><strong>Always assume at-least-once delivery. Always implement idempotency.</strong></p>
+<p>Ngay cả khi queue promise exactly-once, network failures, retries, và bugs có thể cause duplicates.</p>
+<h2 id="dead-letter-queue-dlq-handle-failures">Dead Letter Queue (DLQ): Handle Failures</h2>
+<h3 id="the-poison-message-problem">The Poison Message Problem</h3>
+<pre><code class="language-python"># Worker consuming messages
+while True:
+    message = queue.consume()
+    
+    try:
+        process(message)
+        queue.ack(message)
+    except Exception as e:
+        # Message fails → Retry
+        # Retry fails again
+        # Retry fails again
+        # ...infinite loop!
+        # Queue blocked!
+</code></pre>
+<p><strong>Problem:</strong></p>
+<pre><code>Scenario:
+- Message có bug (malformed data)
+- Worker process → Fail
+- Queue retry → Fail again
+- Queue retry → Fail again
+- ...
+
+Result:
+- Message never succeeds
+- Blocks queue (if ordered)
+- Wastes resources
+- Other messages stuck behind it
+</code></pre>
+<h3 id="dlq-solution">DLQ Solution</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    Q[Main Queue] --&gt;|1. Consume| W[Worker]
+    W --&gt;|2. Success?| S{Success?}
+    S --&gt;|Yes| A[Acknowledge&lt;br/&gt;Message deleted]
+    S --&gt;|No, Retry| R[Retry Count++]
+    R --&gt;|&lt; Max retries| Q
+    R --&gt;|&gt;= Max retries| DLQ[Dead Letter Queue]
+    
+    DLQ --&gt;|Manual review| H[Human/Debug]
+    
+    style Q fill:#51cf66
+    style DLQ fill:#ff6b6b
+    style W fill:#4dabf7</code></pre>
+<p><em>Dead Letter Queue: Messages fail nhiều lần được move sang DLQ</em></p>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-python">class MessageProcessor:
+    MAX_RETRIES = 3
+    
+    def process_message(self, message):
+        try:
+            # Attempt processing
+            result = do_work(message)
+            
+            # Success → Acknowledge
+            queue.ack(message)
+            return result
+            
+        except Exception as e:
+            # Increment retry count
+            retry_count = message.get(&#x27;retry_count&#x27;, 0) + 1
+            
+            if retry_count &lt; self.MAX_RETRIES:
+                # Retry
+                message[&#x27;retry_count&#x27;] = retry_count
+                queue.nack(message)  # Return to queue
+                
+                log.warning(f&quot;Message retry {retry_count}/{self.MAX_RETRIES}&quot;)
+            else:
+                # Max retries exceeded → DLQ
+                dlq.publish(message)
+                queue.ack(message)  # Remove from main queue
+                
+                log.error(f&quot;Message moved to DLQ after {self.MAX_RETRIES} retries&quot;)
+                alert.send(&quot;DLQ message&quot;, message)
+</code></pre>
+<p><strong>DLQ monitoring:</strong></p>
+<pre><code class="language-python"># Monitor DLQ regularly
+def check_dlq():
+    dlq_size = dlq.size()
+    
+    if dlq_size &gt; 10:
+        alert.send(f&quot;DLQ has {dlq_size} messages!&quot;)
+    
+    # Sample messages for debugging
+    messages = dlq.peek(5)
+    for msg in messages:
+        log.info(f&quot;DLQ message: {msg}&quot;)
+        analyze_failure(msg)
+
+# Run every hour
+schedule.every(1).hour.do(check_dlq)
+</code></pre>
+<p><strong>Handling DLQ messages:</strong></p>
+<pre><code>1. Investigate root cause
+   - Malformed data?
+   - Bug in code?
+   - External service down?
+
+2. Fix issue
+   - Deploy code fix
+   - Data migration
+   - Update configuration
+
+3. Replay messages
+   - Move DLQ → Main queue
+   - Reprocess with fix
+   - Verify success
+
+4. Or discard
+   - If truly invalid
+   - If stale (old data)
+   - Document reason
+</code></pre>
+<h2 id="real-world-scenarios">Real-World Scenarios</h2>
+<h3 id="scenario-1-e-commerce-order-processing">Scenario 1: E-commerce Order Processing</h3>
+<p><strong>Synchronous nightmare:</strong></p>
+<pre><code class="language-python">def place_order(order_data):
+    # All in one request
+    validate_inventory(order_data)     # 200ms
+    charge_payment(order_data)         # 2s
+    update_inventory(order_data)       # 500ms
+    create_shipping_label(order_data)  # 3s
+    send_confirmation_email(order_data) # 1s
+    update_analytics(order_data)       # 300ms
+    
+    return {&quot;status&quot;: &quot;success&quot;}       # After 7 seconds!
+</code></pre>
+<p><strong>Async with queue:</strong></p>
+<pre><code class="language-python">def place_order(order_data):
+    # Critical path only
+    validate_inventory(order_data)  # 200ms
+    charge_payment(order_data)      # 2s
+    
+    # Everything else → Queue
+    queue.publish({
+        &#x27;event&#x27;: &#x27;order.placed&#x27;,
+        &#x27;order_id&#x27;: order_data[&#x27;id&#x27;]
+    })
+    
+    return {&quot;status&quot;: &quot;success&quot;}    # After 2.2 seconds!
+
+# Background workers
+@queue.consumer(&#x27;order.placed&#x27;)
+def handle_order_placed(event):
+    order_id = event[&#x27;order_id&#x27;]
+    
+    update_inventory(order_id)
+    create_shipping_label(order_id)
+    send_confirmation_email(order_id)
+    update_analytics(order_id)
+</code></pre>
+<p><strong>Result:</strong></p>
+<pre><code>User experience:
+Before: 7 seconds wait
+After:  2.2 seconds (70% faster!)
+
+System capacity:
+Before: 10 orders/minute (blocked by long processing)
+After:  50 orders/minute (quick responses)
+</code></pre>
+<h3 id="scenario-2-notification-system">Scenario 2: Notification System</h3>
+<p><strong>Requirements:</strong></p>
+<pre><code>- Send push notifications đến millions users
+- Multiple channels (push, email, SMS)
+- Cannot block API response
+- Need retry logic
+- Track delivery status
+</code></pre>
+<p><strong>Architecture:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    API[API Server] --&gt;|Event| T[Topic: notifications]
+    
+    T --&gt;|Subscribe| P[Push Queue]
+    T --&gt;|Subscribe| E[Email Queue]
+    T --&gt;|Subscribe| S[SMS Queue]
+    
+    P --&gt; PW[Push Workers&lt;br/&gt;5 instances]
+    E --&gt; EW[Email Workers&lt;br/&gt;3 instances]
+    S --&gt; SW[SMS Workers&lt;br/&gt;2 instances]
+    
+    PW --&gt; PN[Push Notification Service]
+    EW --&gt; ES[Email Service]
+    SW --&gt; SS[SMS Service]
+    
+    style T fill:#ffd93d
+    style P fill:#51cf66
+    style E fill:#51cf66
+    style S fill:#51cf66</code></pre>
+<p><em>Pub/Sub pattern: Event fanout đến multiple channels</em></p>
+<pre><code class="language-python"># API publishes event
+def send_notification(user_id, message):
+    pubsub.publish(&#x27;notifications&#x27;, {
+        &#x27;user_id&#x27;: user_id,
+        &#x27;message&#x27;: message,
+        &#x27;channels&#x27;: [&#x27;push&#x27;, &#x27;email&#x27;]
+    })
+    
+    return {&quot;status&quot;: &quot;queued&quot;}  # Instant response
+
+# Push worker
+@pubsub.subscribe(&#x27;notifications&#x27;)
+def send_push(event):
+    if &#x27;push&#x27; in event[&#x27;channels&#x27;]:
+        try:
+            push_service.send(event[&#x27;user_id&#x27;], event[&#x27;message&#x27;])
+            metrics.increment(&#x27;push.success&#x27;)
+        except Exception as e:
+            metrics.increment(&#x27;push.failure&#x27;)
+            raise  # Retry
+
+# Email worker (independent)
+@pubsub.subscribe(&#x27;notifications&#x27;)
+def send_email(event):
+    if &#x27;email&#x27; in event[&#x27;channels&#x27;]:
+        try:
+            email_service.send(event[&#x27;user_id&#x27;], event[&#x27;message&#x27;])
+            metrics.increment(&#x27;email.success&#x27;)
+        except Exception as e:
+            metrics.increment(&#x27;email.failure&#x27;)
+            raise  # Retry
+</code></pre>
+<h3 id="scenario-3-image-processing-pipeline">Scenario 3: Image Processing Pipeline</h3>
+<p><strong>Chain of transformations:</strong></p>
+<pre><code>Original upload → Resize → Compress → Watermark → Store CDN
+</code></pre>
+<p><strong>Implementation with queues:</strong></p>
+<pre><code class="language-python"># Step 1: Upload
+def upload_image(image_file):
+    image_id = save_original(image_file)
+    
+    queue.publish(&#x27;image.uploaded&#x27;, {
+        &#x27;image_id&#x27;: image_id,
+        &#x27;format&#x27;: &#x27;jpg&#x27;
+    })
+    
+    return {&quot;image_id&quot;: image_id, &quot;status&quot;: &quot;processing&quot;}
+
+# Step 2: Resize
+@queue.consumer(&#x27;image.uploaded&#x27;)
+def resize_image(event):
+    image_id = event[&#x27;image_id&#x27;]
+    
+    resized = resize(image_id, width=1200)
+    save(resized, f&quot;{image_id}_resized&quot;)
+    
+    queue.publish(&#x27;image.resized&#x27;, {
+        &#x27;image_id&#x27;: image_id
+    })
+
+# Step 3: Compress
+@queue.consumer(&#x27;image.resized&#x27;)
+def compress_image(event):
+    image_id = event[&#x27;image_id&#x27;]
+    
+    compressed = compress(f&quot;{image_id}_resized&quot;, quality=85)
+    save(compressed, f&quot;{image_id}_compressed&quot;)
+    
+    queue.publish(&#x27;image.compressed&#x27;, {
+        &#x27;image_id&#x27;: image_id
+    })
+
+# Step 4: Watermark
+@queue.consumer(&#x27;image.compressed&#x27;)
+def add_watermark(event):
+    image_id = event[&#x27;image_id&#x27;]
+    
+    watermarked = add_watermark(f&quot;{image_id}_compressed&quot;)
+    save(watermarked, f&quot;{image_id}_final&quot;)
+    
+    queue.publish(&#x27;image.ready&#x27;, {
+        &#x27;image_id&#x27;: image_id,
+        &#x27;url&#x27;: upload_to_cdn(f&quot;{image_id}_final&quot;)
+    })
+
+# Step 5: Notify
+@queue.consumer(&#x27;image.ready&#x27;)
+def notify_user(event):
+    send_notification(event[&#x27;image_id&#x27;], event[&#x27;url&#x27;])
+</code></pre>
+<p><strong>Benefits:</strong></p>
+<pre><code>Each step independent
+Scale each step separately  
+Retry individual steps
+Easy to add new transformations
+Monitor each step&#x27;s performance
+</code></pre>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-message-design">1. Message Design</h3>
+<pre><code class="language-python"># BAD: Large message
+queue.publish({
+    &#x27;user&#x27;: {
+        # Entire user object (10KB)
+        &#x27;id&#x27;: 123,
+        &#x27;name&#x27;: &#x27;John&#x27;,
+        &#x27;email&#x27;: &#x27;...&#x27;,
+        # ... 50 more fields
+    },
+    &#x27;order&#x27;: {
+        # Entire order (20KB)
+    }
+})
+
+# GOOD: Reference only
+queue.publish({
+    &#x27;user_id&#x27;: 123,
+    &#x27;order_id&#x27;: 456
+})
+
+# Consumer fetches what it needs
+@queue.consumer
+def process(event):
+    user = db.get_user(event[&#x27;user_id&#x27;])
+    order = db.get_order(event[&#x27;order_id&#x27;])
+</code></pre>
+<p><strong>Why?</strong></p>
+<ul>
+<li>Smaller messages = faster</li>
+<li>Avoid stale data (fetch fresh từ DB)</li>
+<li>Less network bandwidth</li>
+</ul>
+<h3 id="2-error-handling">2. Error Handling</h3>
+<pre><code class="language-python">@queue.consumer
+def process_message(message):
+    try:
+        result = do_work(message)
+        queue.ack(message)
+        
+    except TemporaryError as e:
+        # Transient error → Retry
+        log.warning(f&quot;Temporary error: {e}, will retry&quot;)
+        queue.nack(message)  # Requeue
+        
+    except PermanentError as e:
+        # Permanent error → DLQ
+        log.error(f&quot;Permanent error: {e}, moving to DLQ&quot;)
+        dlq.publish(message)
+        queue.ack(message)
+        
+    except Exception as e:
+        # Unknown error → Investigate
+        log.exception(f&quot;Unknown error: {e}&quot;)
+        alert.send(&quot;Unknown queue error&quot;, message, e)
+        queue.nack(message)
+</code></pre>
+<h3 id="3-monitoring">3. Monitoring</h3>
+<pre><code class="language-python"># Track queue metrics
+metrics.gauge(&#x27;queue.size&#x27;, queue.size())
+metrics.gauge(&#x27;queue.oldest_message_age&#x27;, queue.oldest_age())
+metrics.gauge(&#x27;dlq.size&#x27;, dlq.size())
+
+metrics.histogram(&#x27;message.processing_time&#x27;, processing_time)
+metrics.increment(&#x27;message.success&#x27;)
+metrics.increment(&#x27;message.failure&#x27;)
+
+# Alerts
+if queue.size() &gt; 10000:
+    alert.send(&quot;Queue backlog!&quot;)
+
+if queue.oldest_age() &gt; 3600:  # 1 hour
+    alert.send(&quot;Messages stuck in queue!&quot;)
+
+if dlq.size() &gt; 100:
+    alert.send(&quot;Too many DLQ messages!&quot;)
+</code></pre>
+<h3 id="4-backpressure-handling">4. Backpressure Handling</h3>
+<pre><code class="language-python"># Consumer rate limiting
+class RateLimitedConsumer:
+    def __init__(self, max_per_second=100):
+        self.rate_limiter = RateLimiter(max_per_second)
+    
+    def consume(self):
+        while True:
+            # Wait if rate limit exceeded
+            self.rate_limiter.wait()
+            
+            message = queue.consume()
+            if message:
+                self.process(message)
+
+# Circuit breaker pattern
+class CircuitBreaker:
+    def __init__(self):
+        self.failures = 0
+        self.state = &#x27;closed&#x27;  # closed, open, half-open
+    
+    def call(self, func):
+        if self.state == &#x27;open&#x27;:
+            raise Exception(&quot;Circuit breaker open&quot;)
+        
+        try:
+            result = func()
+            self.failures = 0
+            return result
+        except Exception:
+            self.failures += 1
+            if self.failures &gt;= 5:
+                self.state = &#x27;open&#x27;
+            raise
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Message queues solve critical problems:</strong></p>
+<pre><code>✓ Decouple services
+✓ Handle traffic spikes (buffer)
+✓ Enable async processing
+✓ Built-in retry logic
+✓ Improve UX (fast responses)
+</code></pre>
+<p><strong>Patterns:</strong></p>
+<pre><code>Queue (Point-to-Point):
+- Task distribution
+- Load balancing
+- 1 message → 1 consumer
+
+Pub/Sub:
+- Event broadcasting
+- Fan-out pattern  
+- 1 message → N subscribers
+</code></pre>
+<p><strong>Delivery guarantees:</strong></p>
+<pre><code>At-most-once:  Fast, may lose data
+At-least-once: Reliable, may duplicate (USE THIS)
+Exactly-once:  Perfect, very complex (rarely achievable)
+
+→ Always implement idempotency
+</code></pre>
+<p><strong>Best practices:</strong></p>
+<pre><code>✓ Keep messages small (references, not full data)
+✓ Implement idempotency
+✓ Use DLQ for poison messages
+✓ Monitor queue metrics
+✓ Handle backpressure
+✓ Retry transient errors
+✓ Alert on anomalies
+</code></pre>
+<p><strong>Khi nào dùng message queues?</strong></p>
+<pre><code>Use queues khi:
+✓ Long-running tasks (&gt; 5 seconds)
+✓ User không cần kết quả ngay
+✓ Need to decouple services
+✓ Handle traffic spikes
+✓ Built-in retry logic needed
+
+Don&#x27;t use khi:
+✗ User needs immediate response
+✗ Synchronous workflow
+✗ Simple CRUD operations
+</code></pre>
+<p><strong>Lời khuyên cá nhân:</strong></p>
+<p>Start simple với managed services (AWS SQS, Google Pub/Sub). Chỉ run own infrastructure (RabbitMQ, Kafka) khi có specific requirements và team có expertise.</p>
+<p>Message queues là một trong những patterns quan trọng nhất trong distributed systems. Master này và bạn unlock khả năng build truly scalable, resilient applications.</p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-2/lesson/lesson-3-database"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Database Scaling - Chiến Lược Scale Data Layer</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking">Integration &amp; Trade-off Thinking - Kết Hợp Components Thành Hệ Thống<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n11:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-2\",\"lesson\",\"lesson-4-message-queues-async-processing-decoupling-services\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-2\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-4-message-queues-async-processing-decoupling-services\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],\"$L6\",\"$L7\"]}]]}]}],\"$L8\"]}]}]]}],{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{\"children\":[\"$Ld\",{},null,false,false]},[\"$Le\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Lf\",[],[]],false,false],\"$L10\",false]],\"m\":\"$undefined\",\"G\":[\"$11\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"12:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n14:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n15:\"$Sreact.suspense\"\n21:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n23:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}]\n7:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n8:[\"$\",\"$L12\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nd:[\"$\",\"$1\",\"c\",{\"children\":[\"$L13\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L14\",null,{\"children\":[\"$\",\"$15\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@16\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L17\",\"$L18\",\"$L19\",\"$L1a\"]}],\"$L1b\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1c\",\"$L1d\",\"$L1e\",\"$L1f\"]}],\"$L20\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"10:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L21\",null,{\"children\":\"$L22\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L23\",null,{\"children\":[\"$\",\"$15\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L24\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1b:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n20:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"13:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 2 — Core Building Blocks\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Message Queues \u0026 Async Processing - Decoupling Services\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong distributed systems.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-load-balancing\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-1-load-balancing\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Load Balancing: Traffic Distribution Trong Distributed Systems\"}]]}]}],[\"$\",\"li\",\"lesson-2-caching\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-2-caching\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Caching - Performance Layer Quan Trọng Nhất\"}]]}]}],[\"$\",\"li\",\"lesson-3-database\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-3-database\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Database Scaling - Chiến Lược Scale Data Layer\"}]]}]}],[\"$\",\"li\",\"lesson-4-message-queues-async-processing-decoupling-services\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Message Queues \u0026 Async Processing - Decoupling Services\"}]]}]}],[\"$\",\"li\",\"lesson-5-integration-trade-off-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\"}]]}]}]]}]]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[\"$L25\",\"Tổng quan phase\"]}]]}],\"$L26\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"27:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n25:[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}]\n"])</script><script>self.__next_f.push([1,"26:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2\",\"className\":\"hover:text-ink\",\"children\":\"Phase 2 — Core Building Blocks\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Message Queues \u0026 Async Processing - Decoupling Services\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Message Queues \u0026 Async Processing - Decoupling Services\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong distributed systems.\"}]]}],[\"$\",\"$L27\",null,{\"path\":\"/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services\",\"title\":\"Message Queues \u0026 Async Processing - Decoupling Services\",\"description\":\"Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong distributed systems.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Message Queues \u0026 Async Processing - Decoupling Services\",\"children\":\"$L28\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-3-database\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Database Scaling - Chiến Lược Scale Data Layer\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-2/lesson/lesson-5-integration-trade-off-thinking\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Integration \u0026 Trade-off Thinking - Kết Hợp Components Thành Hệ Thống\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"29:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"28:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"message-queues--async-processing-decoupling-services\",\"children\":\"Message Queues \u0026 Async Processing: Decoupling Services\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi còn nhớ lần đầu production system của tôi sập vì một email.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"User upload video. Server phải:\"}],\"\\n\",[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Save video (2 giây)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Generate thumbnail (5 giây)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Transcode 720p (30 giây)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Transcode 1080p (60 giây)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Send email notification (1 giây)\"}],\"\\n\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Total: 98 giây. User đợi 98 giây để nhận response.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Kết quả? Timeout. User frustrated. Server overload vì mỗi request hold connection 98 giây.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Senior engineer nhìn tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Em biết message queue chưa?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Tôi: \",[\"$\",\"em\",null,{\"children\":\"\\\"Chưa ạ...\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Đó là đêm tôi học về async processing. Và đó là một trong những patterns quan trọng nhất trong distributed systems.\"}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-cần-async-processing\",\"children\":\"Tại Sao Cần Async Processing?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-synchronous-problem\",\"children\":\"The Synchronous Problem\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Synchronous = User đợi cho đến khi tất cả xong\"}]}],\"\\n\",[\"$\",\"$L29\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant API\\n    participant Storage\\n    participant Processor\\n    participant Email\\n    \\n    User-\u003e\u003eAPI: Upload video\\n    API-\u003e\u003eStorage: Save video (2s)\\n    Storage--\u003e\u003eAPI: Done\\n    API-\u003e\u003eProcessor: Generate thumbnail (5s)\\n    Processor--\u003e\u003eAPI: Done\\n    API-\u003e\u003eProcessor: Transcode 720p (30s)\\n    Processor--\u003e\u003eAPI: Done\\n    API-\u003e\u003eProcessor: Transcode 1080p (60s)\\n    Processor--\u003e\u003eAPI: Done\\n    API-\u003e\u003eEmail: Send notification (1s)\\n    Email--\u003e\u003eAPI: Done\\n    API--\u003e\u003eUser: Success (after 98s!)\\n    \\n    Note over User,Email: User phải đợi 98 giây\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Synchronous processing: User đợi cho đến khi mọi thứ hoàn thành\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problems:\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Terrible UX\\n   - User đợi 98 giây\\n   - Timeout sau 30-60 giây\\n   - User nghĩ app bị lỗi\\n\\nPoor resource utilization\\n   - Connection held for 98 giây\\n   - Server chỉ handle được ít requests\\n   - Memory/thread exhausted\\n\\nCascading failures\\n   - Email service down → Entire upload fails\\n   - Transcode fails → User không nhận video\\n   - Tight coupling\\n\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-async-solution\",\"children\":\"The Async Solution\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Asynchronous = User nhận response ngay, processing ở background\"}]}],\"\\n\",[\"$\",\"$L29\",null,{\"chart\":\"sequenceDiagram\\n    participant User\\n    participant API\\n    participant Queue\\n    participant Worker\\n    participant Email\\n    \\n    User-\u003e\u003eAPI: Upload video\\n    API-\u003e\u003eAPI: Save video (2s)\\n    API-\u003e\u003eQueue: Add job to queue\\n    Queue--\u003e\u003eAPI: Job queued\\n    API--\u003e\u003eUser: Success! Processing... (2s only)\\n    \\n    Note over User,API: User nhận response sau 2s\\n    \\n    Worker-\u003e\u003eQueue: Poll for jobs\\n    Queue--\u003e\u003eWorker: Job available\\n    Worker-\u003e\u003eWorker: Generate thumbnail (5s)\\n    Worker-\u003e\u003eWorker: Transcode 720p (30s)\\n    Worker-\u003e\u003eWorker: Transcode 1080p (60s)\\n    Worker-\u003e\u003eEmail: Send notification\\n    \\n    Note over Worker,Email: Background processing\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Async processing: User nhận response ngay, work happens ở background\"}]}],\"\\n\",\"$L2a\",\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\"]}]\n"])</script><script>self.__next_f.push([1,"2a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\n2b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Great UX\\n   - User nhận response sau 2 giây\\n   - No timeout\\n   - Clear status: \\\"Processing...\\\"\\n\\nBetter resource utilization\\n   - Connections freed immediately\\n   - Server handle nhiều requests\\n   - Workers scale independently\\n\\nFault tolerance\\n   - Email fail? Video vẫn upload\\n   - Retry logic built-in\\n   - Loose coupling\\n\"}]}]\n2c:[\"$\",\"h2\",null,{\"id\":\"message-queue-fundamentals\",\"children\":\"Message Queue Fundamentals\"}]\n2d:[\"$\",\"h3\",null,{\"id\":\"core-concepts\",\"children\":\"Core Concepts\"}]\n2e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Message Queue = Buffer giữa producers và consumers\"}]}]\n2f:[\"$\",\"$L29\",null,{\"chart\":\"graph LR\\n    P1[Producer 1] --\u003e|Publish message| Q[Message Queue]\\n    P2[Producer 2] --\u003e|Publish message| Q\\n    P3[Producer 3] --\u003e|Publish message| Q\\n    \\n    Q --\u003e|Consume message| C1[Consumer 1]\\n    Q --\u003e|Consume message| C2[Consumer 2]\\n    Q --\u003e|Consume message| C3[Consumer 3]\\n    \\n    style Q fill:#ffd93d\\n    style P1 fill:#51cf66\\n    style P2 fill:#51cf66\\n    style P3 fill:#51cf66\\n    style C1 fill:#4dabf7\\n    style C2 fill:#4dabf7\\n    style C3 fill:#4dabf7\"}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Message queue decouples producers và consumers\"}]}]\n31:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Terminology:\"}]}]\n32:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Producer:  Service tạo messages (publish/send)\\nConsumer:  Service process messages (consume/receive)\\nQueue:     Buffer lưu messages\\nMessage:   Unit of work (job/task/event)\\nBroker:    Service quản lý queues (RabbitMQ, Kafka, SQS)\\n\"}]}]\n33:[\"$\",\"h3\",null,{\"id\":\"simple-example\",\"children\":\"Simple Example\"}]\n34:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Producer: API server\\nfrom queue import MessageQueue\\n\\nqueue = MessageQueue('video-processing')\\n\\ndef upload_video(video_file):\\n    # Save video nhanh\\n    video_id = save_to_storage(video_file)\\n    \\n    # Add job to queue\\n    queue.publish({\\n        'job': 'process_video',\\n        'video_id': video_id,\\n        'tasks': ['thumbnail', 'transcode_720p', 'transcode_1080p']\\n    })\\n    \\n    # Return ngay cho user\\n    return {\\n        'status': 'processing',\\n        'video_id': video_id,\\n        'message': 'Video is being processed'\\n    }\\n\\n# Consumer: Background worker\\ndef worker():\\n    while True:\\n        # Poll for messages\\n        message = queue.consume()\\n        \\n        if message:\\n            video_id = message['video_id']\\n            \\n            # Process tasks\\n            generate_thumbnail(video_id)\\n            transcode_720p(video_id)\\n            transcode_1080p(video_id)\\n            \\n            # Acknowledge message processed\\n            queue.ack(message)\\n\"}]}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Timeline:\"}]}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"API call:\\n00:00 - User uploads\\n00:02 - API returns (user happy!)\\nQueue has 1 job\\n\\nBackground:\\n00:02 - Worker picks up job\\n00:07 - Thumbnail done\\n00:37 - 720p done\\n01:37 - 1080p done\\n01:38 - Send notification\\n\\nUser experience: 2 seconds\\nActual work: 98 seconds (background)\\n\"}]}]\n37:[\"$\",\"h2\",null,{\"id\":\"queue-vs-pubsub-hai-patterns-khác-nhau\",\"children\":\"Queue vs Pub/Sub: Hai Patterns Khác Nhau\"}]\n38:[\"$\",\"h3\",null,{\"id\":\"queue-pattern-point-to-point\",\"children\":\"Queue Pattern (Point-to-Point)\"}]\n39:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"One message → One consumer\"}]}]\n3a:[\"$\",\"$L29\",null,{\"chart\":\"graph LR\\n    P[Producer] --\u003e|Message 1| Q[Queue]\\n    P --\u003e|Message 2| Q\\n    P --\u003e|Message 3| Q\\n    \\n    Q --\u003e|Message 1| C1[Consumer 1]\\n    Q --\u003e|Message 2| C2[Consumer 2]\\n    Q --\u003e|Message 3| C3[Consumer 3]\\n    \\n    style Q fill:#ffd93d\\n    style P fill:#51cf66\\n    style C1 fill:#4dabf7\\n    style C2 fill:#4dabf7\\n    style C3 fill:#4"])</script><script>self.__next_f.push([1,"dabf7\"}]\n3b:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Queue: Mỗi message chỉ được một consumer xử lý\"}]}]\n3c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Characteristics:\"}]}]\n3d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- Mỗi message processed by 1 consumer only\\n- Load balanced giữa consumers\\n- Used for task distribution\\n- Compete for messages\\n\"}]}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use cases:\"}]}]\n3f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Background jobs (email sending, image processing)\\n✓ Task distribution (video encoding, PDF generation)\\n✓ Load leveling (smooth traffic spikes)\\n✓ Retry logic (failed payments, API calls)\\n\"}]}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Queue: email-queue\\n# 3 workers compete for jobs\\n\\n# Producer\\nqueue.publish({'to': 'user@example.com', 'subject': 'Welcome'})\\n\\n# Consumer 1 might get it\\n# OR Consumer 2 might get it  \\n# OR Consumer 3 might get it\\n# Only ONE processes it\\n\"}]}]\n42:[\"$\",\"h3\",null,{\"id\":\"pubsub-pattern-publish-subscribe\",\"children\":\"Pub/Sub Pattern (Publish-Subscribe)\"}]\n43:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"One message → Many subscribers\"}]}]\n44:[\"$\",\"$L29\",null,{\"chart\":\"graph TB\\n    P[Publisher] --\u003e|Event: User Created| T[Topic: user.created]\\n    \\n    T --\u003e|Copy 1| S1[Email Service\u003cbr/\u003eSend welcome email]\\n    T --\u003e|Copy 2| S2[Analytics Service\u003cbr/\u003eTrack signup]\\n    T --\u003e|Copy 3| S3[CRM Service\u003cbr/\u003eCreate contact]\\n    T --\u003e|Copy 4| S4[Notification Service\u003cbr/\u003ePush notification]\\n    \\n    style T fill:#ffd93d\\n    style P fill:#51cf66\\n    style S1 fill:#4dabf7\\n    style S2 fill:#4dabf7\\n    style S3 fill:#4dabf7\\n    style S4 fill:#4dabf7\"}]\n45:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Pub/Sub: Mỗi subscriber nhận copy của message\"}]}]\n46:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Characteristics:\"}]}]\n47:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- Mỗi message copied đến ALL subscribers\\n- No competition\\n- Used for event broadcasting\\n- Decoupled services\\n\"}]}]\n48:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Use cases:\"}]}]\n49:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Event notification (user signup, order placed)\\n✓ Real-time updates (stock prices, live scores)\\n✓ Fan-out (1 event → multiple actions)\\n✓ Audit logging (track all actions)\\n\"}]}]\n4a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Example:\"}]}]\n4b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Topic: order.placed\\n# All subscribers receive event\\n\\n# Publisher\\npubsub.publish('order.placed', {\\n    'order_id': 12345,\\n    'user_id': 67890,\\n    'amount': 99.99\\n})\\n\\n# Subscriber 1: Email Service\\n# Sends order confirmation email\\n\\n# Subscriber 2: Inventory Service  \\n# Updates stock count\\n\\n# Subscriber 3: Analytics Service\\n# Records sale\\n\\n# Subscriber 4: Shipping Service\\n# Creates shipping label\\n\\n# ALL 4 receive and process the event\\n\"}]}]\n4c:[\"$\",\"h3\",null,{\"id\":\"trade-off-comparison\",\"children\":\"Trade-off Comparison\"}]\n4d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Queue (Point-to-Point):\\nSimple semantics (1 message = 1 consumer)\\nNatural load balancing\\nEasy to reason about\\nLimited to single action per message\\nTight coupling if multiple actions needed\\n\\nPub/Sub:\\nDecouple services completely\\nEasy to add new subscribers\\nBroadcast events naturally\\nMore complex (eventual consistency)\\nHarder to debug (who processed what?)\\nMessage duplication overhead\\n\"}]}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision framework:\"}]}]\n4f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Use Queue khi:\\n- Task needs to be done exactly once\\n- Load balancing giữa workers\\n- Simple workflow\\n\\nUse Pub/Sub khi:\\n- Multiple services ca"])</script><script>self.__next_f.push([1,"re về event\\n- Need to decouple services\\n- Fan-out pattern\\n- Audit/logging requirements\\n\"}]}]\n50:[\"$\",\"h2\",null,{\"id\":\"delivery-guarantees-critical-understanding\",\"children\":\"Delivery Guarantees: Critical Understanding\"}]\n51:[\"$\",\"h3\",null,{\"id\":\"the-guarantee-spectrum\",\"children\":\"The Guarantee Spectrum\"}]\n52:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"At-Most-Once Delivery\"}]}]\n53:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Message có thể bị mất, nhưng không bao giờ duplicate\\n\\nTimeline:\\nProducer → Send message → Queue\\nQueue → Deliver to Consumer (maybe fails)\\nQueue deletes message immediately\\n\\nResult:\\n- Success: Message processed once ✓\\n- Failure: Message lost ✗\\n- Never: Message processed twice ✓\\n\"}]}]\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Fastest (no confirmation needed)\\nSimple\\nData loss possible\\nNo retry\\n\\nUse cases:\\n- Metrics/logging (OK if lose some data)\\n- Real-time data streams (stale data worthless)\\n- Best-effort notifications\\n\"}]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"At-Least-Once Delivery\"}]}]\n56:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Message không bao giờ mất, nhưng có thể duplicate\\n\\nTimeline:\\nProducer → Send message → Queue\\nQueue → Deliver to Consumer\\nConsumer → Process\\nConsumer → Ack (might fail/timeout)\\nQueue → Redeliver if no ack\\n\\nResult:\\n- Success: Message processed once ✓\\n- Failure: Message redelivered ✓\\n- Possible: Message processed multiple times ⚠️\\n\"}]}]\n57:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"No message loss\\nRetry logic built-in\\nDuplicate processing possible\\nMust implement idempotency\\n\\nUse cases:\\n- Payment processing (with idempotency)\\n- Order fulfillment\\n- Critical business logic\\n\"}]}]\n58:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Exactly-Once Delivery\"}]}]\n59:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Message processed exactly once, guaranteed\\n\\nExtremely hard to achieve in distributed systems\\nRequires:\\n- Distributed transactions\\n- Deduplication logic\\n- Coordination between services\\n\\nResult:\\n- Always: Message processed exactly once ✓\\n\"}]}]\n5a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Perfect semantics\\nNo loss, no duplicates\\nVery complex to implement\\nPerformance overhead\\nOften impossible in practice\\n\\nUse cases:\\n- Financial transactions\\n- Critical business operations\\n- When duplicates absolutely cannot happen\\n\"}]}]\n5b:[\"$\",\"h3\",null,{\"id\":\"idempotency-the-practical-solution\",\"children\":\"Idempotency: The Practical Solution\"}]\n5c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem với at-least-once:\"}]}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Non-idempotent operation\\ndef process_payment(order_id, amount):\\n    charge_credit_card(amount)  # Charge twice if retry!\\n    \\n# Message delivered twice:\\n# 1st: Charge $100 ✓\\n# 2nd: Charge $100 again! ✗\\n# User charged $200\\n\"}]}]\n5e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Solution: Idempotent operations\"}]}]\n5f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Idempotent operation\\ndef process_payment(order_id, amount):\\n    # Check if already processed\\n    if payment_exists(order_id):\\n        return  # Skip, already done\\n    \\n    charge_credit_card(amount)\\n    record_payment(order_id)  # Mark as processed\\n\\n# Message delivered twice:\\n# 1st: Charge $100, record ✓\\n# 2nd: Check → Already done, skip ✓\\n# User charged $100 (correct!)\\n\"}]}]\n60:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Idempotency techniques:\"}]}]\n61:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Technique 1: Unique message ID\\ndef process_message(message):\\n    message_id = message['id']\\n    \\n    if redis.exists(f\\\"processed:{message_id}\\\"):\\n        return  # Already processed\\n    \\n    # Do work\\n    do_actual_wo"])</script><script>self.__next_f.push([1,"rk(message)\\n    \\n    # Mark as processed\\n    redis.set(f\\\"processed:{message_id}\\\", \\\"1\\\", ex=86400)  # 24h TTL\\n\\n# Technique 2: Database unique constraint\\ndef create_order(order_data):\\n    try:\\n        db.execute(\\\"\\\"\\\"\\n            INSERT INTO orders (order_id, user_id, amount)\\n            VALUES (?, ?, ?)\\n        \\\"\\\"\\\", order_data)\\n    except UniqueConstraintError:\\n        # Already exists, idempotent ✓\\n        pass\\n\\n# Technique 3: Update operations (naturally idempotent)\\ndef update_user_status(user_id, status):\\n    db.execute(\\\"\\\"\\\"\\n        UPDATE users SET status = ?\\n        WHERE user_id = ?\\n    \\\"\\\"\\\", status, user_id)\\n    \\n    # Running twice = same result ✓\\n\"}]}]\n62:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Personal rule:\"}]}]\n63:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Always assume at-least-once delivery. Always implement idempotency.\"}]}]\n64:[\"$\",\"p\",null,{\"children\":\"Ngay cả khi queue promise exactly-once, network failures, retries, và bugs có thể cause duplicates.\"}]\n65:[\"$\",\"h2\",null,{\"id\":\"dead-letter-queue-dlq-handle-failures\",\"children\":\"Dead Letter Queue (DLQ): Handle Failures\"}]\n66:[\"$\",\"h3\",null,{\"id\":\"the-poison-message-problem\",\"children\":\"The Poison Message Problem\"}]\n67:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Worker consuming messages\\nwhile True:\\n    message = queue.consume()\\n    \\n    try:\\n        process(message)\\n        queue.ack(message)\\n    except Exception as e:\\n        # Message fails → Retry\\n        # Retry fails again\\n        # Retry fails again\\n        # ...infinite loop!\\n        # Queue blocked!\\n\"}]}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Problem:\"}]}]\n69:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario:\\n- Message có bug (malformed data)\\n- Worker process → Fail\\n- Queue retry → Fail again\\n- Queue retry → Fail again\\n- ...\\n\\nResult:\\n- Message never succeeds\\n- Blocks queue (if ordered)\\n- Wastes resources\\n- Other messages stuck behind it\\n\"}]}]\n6a:[\"$\",\"h3\",null,{\"id\":\"dlq-solution\",\"children\":\"DLQ Solution\"}]\n6b:[\"$\",\"$L29\",null,{\"chart\":\"graph TB\\n    Q[Main Queue] --\u003e|1. Consume| W[Worker]\\n    W --\u003e|2. Success?| S{Success?}\\n    S --\u003e|Yes| A[Acknowledge\u003cbr/\u003eMessage deleted]\\n    S --\u003e|No, Retry| R[Retry Count++]\\n    R --\u003e|\u003c Max retries| Q\\n    R --\u003e|\u003e= Max retries| DLQ[Dead Letter Queue]\\n    \\n    DLQ --\u003e|Manual review| H[Human/Debug]\\n    \\n    style Q fill:#51cf66\\n    style DLQ fill:#ff6b6b\\n    style W fill:#4dabf7\"}]\n6c:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Dead Letter Queue: Messages fail nhiều lần được move sang DLQ\"}]}]\n6d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation:\"}]}]\n6e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"class MessageProcessor:\\n    MAX_RETRIES = 3\\n    \\n    def process_message(self, message):\\n        try:\\n            # Attempt processing\\n            result = do_work(message)\\n            \\n            # Success → Acknowledge\\n            queue.ack(message)\\n            return result\\n            \\n        except Exception as e:\\n            # Increment retry count\\n            retry_count = message.get('retry_count', 0) + 1\\n            \\n            if retry_count \u003c self.MAX_RETRIES:\\n                # Retry\\n                message['retry_count'] = retry_count\\n                queue.nack(message)  # Return to queue\\n                \\n                log.warning(f\\\"Message retry {retry_count}/{self.MAX_RETRIES}\\\")\\n            else:\\n                # Max retries exceeded → DLQ\\n                dlq.publish(message)\\n                queue.ack(message)  # Remove from main queue\\n                \\n                log.error(f\\\"Message moved to DLQ after {self.MAX_RETRIES} retries\\\")\\n                alert.send(\\\"DLQ message\\\", message)\\n\"}]}]\n6f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"DLQ monitoring:\"}]}]\n70:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"class"])</script><script>self.__next_f.push([1,"Name\":\"language-python\",\"children\":\"# Monitor DLQ regularly\\ndef check_dlq():\\n    dlq_size = dlq.size()\\n    \\n    if dlq_size \u003e 10:\\n        alert.send(f\\\"DLQ has {dlq_size} messages!\\\")\\n    \\n    # Sample messages for debugging\\n    messages = dlq.peek(5)\\n    for msg in messages:\\n        log.info(f\\\"DLQ message: {msg}\\\")\\n        analyze_failure(msg)\\n\\n# Run every hour\\nschedule.every(1).hour.do(check_dlq)\\n\"}]}]\n71:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Handling DLQ messages:\"}]}]\n72:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Investigate root cause\\n   - Malformed data?\\n   - Bug in code?\\n   - External service down?\\n\\n2. Fix issue\\n   - Deploy code fix\\n   - Data migration\\n   - Update configuration\\n\\n3. Replay messages\\n   - Move DLQ → Main queue\\n   - Reprocess with fix\\n   - Verify success\\n\\n4. Or discard\\n   - If truly invalid\\n   - If stale (old data)\\n   - Document reason\\n\"}]}]\n73:[\"$\",\"h2\",null,{\"id\":\"real-world-scenarios\",\"children\":\"Real-World Scenarios\"}]\n74:[\"$\",\"h3\",null,{\"id\":\"scenario-1-e-commerce-order-processing\",\"children\":\"Scenario 1: E-commerce Order Processing\"}]\n75:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Synchronous nightmare:\"}]}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def place_order(order_data):\\n    # All in one request\\n    validate_inventory(order_data)     # 200ms\\n    charge_payment(order_data)         # 2s\\n    update_inventory(order_data)       # 500ms\\n    create_shipping_label(order_data)  # 3s\\n    send_confirmation_email(order_data) # 1s\\n    update_analytics(order_data)       # 300ms\\n    \\n    return {\\\"status\\\": \\\"success\\\"}       # After 7 seconds!\\n\"}]}]\n77:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Async with queue:\"}]}]\n78:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"def place_order(order_data):\\n    # Critical path only\\n    validate_inventory(order_data)  # 200ms\\n    charge_payment(order_data)      # 2s\\n    \\n    # Everything else → Queue\\n    queue.publish({\\n        'event': 'order.placed',\\n        'order_id': order_data['id']\\n    })\\n    \\n    return {\\\"status\\\": \\\"success\\\"}    # After 2.2 seconds!\\n\\n# Background workers\\n@queue.consumer('order.placed')\\ndef handle_order_placed(event):\\n    order_id = event['order_id']\\n    \\n    update_inventory(order_id)\\n    create_shipping_label(order_id)\\n    send_confirmation_email(order_id)\\n    update_analytics(order_id)\\n\"}]}]\n79:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Result:\"}]}]\n7a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"User experience:\\nBefore: 7 seconds wait\\nAfter:  2.2 seconds (70% faster!)\\n\\nSystem capacity:\\nBefore: 10 orders/minute (blocked by long processing)\\nAfter:  50 orders/minute (quick responses)\\n\"}]}]\n7b:[\"$\",\"h3\",null,{\"id\":\"scenario-2-notification-system\",\"children\":\"Scenario 2: Notification System\"}]\n7c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Requirements:\"}]}]\n7d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"- Send push notifications đến millions users\\n- Multiple channels (push, email, SMS)\\n- Cannot block API response\\n- Need retry logic\\n- Track delivery status\\n\"}]}]\n7e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architecture:\"}]}]\n7f:[\"$\",\"$L29\",null,{\"chart\":\"graph TB\\n    API[API Server] --\u003e|Event| T[Topic: notifications]\\n    \\n    T --\u003e|Subscribe| P[Push Queue]\\n    T --\u003e|Subscribe| E[Email Queue]\\n    T --\u003e|Subscribe| S[SMS Queue]\\n    \\n    P --\u003e PW[Push Workers\u003cbr/\u003e5 instances]\\n    E --\u003e EW[Email Workers\u003cbr/\u003e3 instances]\\n    S --\u003e SW[SMS Workers\u003cbr/\u003e2 instances]\\n    \\n    PW --\u003e PN[Push Notification Service]\\n    EW --\u003e ES[Email Service]\\n    SW --\u003e SS[SMS Service]\\n    \\n    style T fill:#ffd93d\\n    style P fill:#51cf66\\n    style E fill:#51cf66\\n    style S fill:#51cf66\"}]\n80:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Pub/Sub pattern: Event fanout đến multiple channels\"}]}]\n81:[\"$\",\"pre\",null,{\"children\":[\"$\",\""])</script><script>self.__next_f.push([1,"code\",null,{\"className\":\"language-python\",\"children\":\"# API publishes event\\ndef send_notification(user_id, message):\\n    pubsub.publish('notifications', {\\n        'user_id': user_id,\\n        'message': message,\\n        'channels': ['push', 'email']\\n    })\\n    \\n    return {\\\"status\\\": \\\"queued\\\"}  # Instant response\\n\\n# Push worker\\n@pubsub.subscribe('notifications')\\ndef send_push(event):\\n    if 'push' in event['channels']:\\n        try:\\n            push_service.send(event['user_id'], event['message'])\\n            metrics.increment('push.success')\\n        except Exception as e:\\n            metrics.increment('push.failure')\\n            raise  # Retry\\n\\n# Email worker (independent)\\n@pubsub.subscribe('notifications')\\ndef send_email(event):\\n    if 'email' in event['channels']:\\n        try:\\n            email_service.send(event['user_id'], event['message'])\\n            metrics.increment('email.success')\\n        except Exception as e:\\n            metrics.increment('email.failure')\\n            raise  # Retry\\n\"}]}]\n82:[\"$\",\"h3\",null,{\"id\":\"scenario-3-image-processing-pipeline\",\"children\":\"Scenario 3: Image Processing Pipeline\"}]\n83:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Chain of transformations:\"}]}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Original upload → Resize → Compress → Watermark → Store CDN\\n\"}]}]\n85:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Implementation with queues:\"}]}]\na2:T524,# Step 1: Upload\ndef upload_image(image_file):\n    image_id = save_original(image_file)\n    \n    queue.publish('image.uploaded', {\n        'image_id': image_id,\n        'format': 'jpg'\n    })\n    \n    return {\"image_id\": image_id, \"status\": \"processing\"}\n\n# Step 2: Resize\n@queue.consumer('image.uploaded')\ndef resize_image(event):\n    image_id = event['image_id']\n    \n    resized = resize(image_id, width=1200)\n    save(resized, f\"{image_id}_resized\")\n    \n    queue.publish('image.resized', {\n        'image_id': image_id\n    })\n\n# Step 3: Compress\n@queue.consumer('image.resized')\ndef compress_image(event):\n    image_id = event['image_id']\n    \n    compressed = compress(f\"{image_id}_resized\", quality=85)\n    save(compressed, f\"{image_id}_compressed\")\n    \n    queue.publish('image.compressed', {\n        'image_id': image_id\n    })\n\n# Step 4: Watermark\n@queue.consumer('image.compressed')\ndef add_watermark(event):\n    image_id = event['image_id']\n    \n    watermarked = add_watermark(f\"{image_id}_compressed\")\n    save(watermarked, f\"{image_id}_final\")\n    \n    queue.publish('image.ready', {\n        'image_id': image_id,\n        'url': upload_to_cdn(f\"{image_id}_final\")\n    })\n\n# Step 5: Notify\n@queue.consumer('image.ready')\ndef notify_user(event):\n    send_notification(event['image_id'], event['url'])\n86:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"$a2\"}]}]\n87:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Benefits:\"}]}]\n88:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Each step independent\\nScale each step separately  \\nRetry individual steps\\nEasy to add new transformations\\nMonitor each step's performance\\n\"}]}]\n89:[\"$\",\"h2\",null,{\"id\":\"best-practices\",\"children\":\"Best Practices\"}]\n8a:[\"$\",\"h3\",null,{\"id\":\"1-message-design\",\"children\":\"1. Message Design\"}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# BAD: Large message\\nqueue.publish({\\n    'user': {\\n        # Entire user object (10KB)\\n        'id': 123,\\n        'name': 'John',\\n        'email': '...',\\n        # ... 50 more fields\\n    },\\n    'order': {\\n        # Entire order (20KB)\\n    }\\n})\\n\\n# GOOD: Reference only\\nqueue.publish({\\n    'user_id': 123,\\n    'order_id': 456\\n})\\n\\n# Consumer fetches what it needs\\n@queue.consumer\\ndef process(event):\\n    user = db.get_user(event['user_id'])\\n    order = db.get_order(event['order_id'])\\n\"}]}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Why?\"}]}]\n8d:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Smaller messag"])</script><script>self.__next_f.push([1,"es = faster\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Avoid stale data (fetch fresh từ DB)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Less network bandwidth\"}],\"\\n\"]}]\n8e:[\"$\",\"h3\",null,{\"id\":\"2-error-handling\",\"children\":\"2. Error Handling\"}]\n8f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"@queue.consumer\\ndef process_message(message):\\n    try:\\n        result = do_work(message)\\n        queue.ack(message)\\n        \\n    except TemporaryError as e:\\n        # Transient error → Retry\\n        log.warning(f\\\"Temporary error: {e}, will retry\\\")\\n        queue.nack(message)  # Requeue\\n        \\n    except PermanentError as e:\\n        # Permanent error → DLQ\\n        log.error(f\\\"Permanent error: {e}, moving to DLQ\\\")\\n        dlq.publish(message)\\n        queue.ack(message)\\n        \\n    except Exception as e:\\n        # Unknown error → Investigate\\n        log.exception(f\\\"Unknown error: {e}\\\")\\n        alert.send(\\\"Unknown queue error\\\", message, e)\\n        queue.nack(message)\\n\"}]}]\n90:[\"$\",\"h3\",null,{\"id\":\"3-monitoring\",\"children\":\"3. Monitoring\"}]\n91:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Track queue metrics\\nmetrics.gauge('queue.size', queue.size())\\nmetrics.gauge('queue.oldest_message_age', queue.oldest_age())\\nmetrics.gauge('dlq.size', dlq.size())\\n\\nmetrics.histogram('message.processing_time', processing_time)\\nmetrics.increment('message.success')\\nmetrics.increment('message.failure')\\n\\n# Alerts\\nif queue.size() \u003e 10000:\\n    alert.send(\\\"Queue backlog!\\\")\\n\\nif queue.oldest_age() \u003e 3600:  # 1 hour\\n    alert.send(\\\"Messages stuck in queue!\\\")\\n\\nif dlq.size() \u003e 100:\\n    alert.send(\\\"Too many DLQ messages!\\\")\\n\"}]}]\n92:[\"$\",\"h3\",null,{\"id\":\"4-backpressure-handling\",\"children\":\"4. Backpressure Handling\"}]\n93:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-python\",\"children\":\"# Consumer rate limiting\\nclass RateLimitedConsumer:\\n    def __init__(self, max_per_second=100):\\n        self.rate_limiter = RateLimiter(max_per_second)\\n    \\n    def consume(self):\\n        while True:\\n            # Wait if rate limit exceeded\\n            self.rate_limiter.wait()\\n            \\n            message = queue.consume()\\n            if message:\\n                self.process(message)\\n\\n# Circuit breaker pattern\\nclass CircuitBreaker:\\n    def __init__(self):\\n        self.failures = 0\\n        self.state = 'closed'  # closed, open, half-open\\n    \\n    def call(self, func):\\n        if self.state == 'open':\\n            raise Exception(\\\"Circuit breaker open\\\")\\n        \\n        try:\\n            result = func()\\n            self.failures = 0\\n            return result\\n        except Exception:\\n            self.failures += 1\\n            if self.failures \u003e= 5:\\n                self.state = 'open'\\n            raise\\n\"}]}]\n94:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n95:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Message queues solve critical problems:\"}]}]\n96:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Decouple services\\n✓ Handle traffic spikes (buffer)\\n✓ Enable async processing\\n✓ Built-in retry logic\\n✓ Improve UX (fast responses)\\n\"}]}]\n97:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Patterns:\"}]}]\n98:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Queue (Point-to-Point):\\n- Task distribution\\n- Load balancing\\n- 1 message → 1 consumer\\n\\nPub/Sub:\\n- Event broadcasting\\n- Fan-out pattern  \\n- 1 message → N subscribers\\n\"}]}]\n99:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Delivery guarantees:\"}]}]\n9a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"At-most-once:  Fast, may lose data\\nAt-least-once: Reliable, may duplicate (USE THIS)\\nExactly-once:  Perfect, very complex (rarely achievable)\\n\\n→ Always implement idempotency\\n\"}]}]\n9b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Best practices:\"}]}]\n9c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Keep messages small "])</script><script>self.__next_f.push([1,"(references, not full data)\\n✓ Implement idempotency\\n✓ Use DLQ for poison messages\\n✓ Monitor queue metrics\\n✓ Handle backpressure\\n✓ Retry transient errors\\n✓ Alert on anomalies\\n\"}]}]\n9d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Khi nào dùng message queues?\"}]}]\n9e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Use queues khi:\\n✓ Long-running tasks (\u003e 5 seconds)\\n✓ User không cần kết quả ngay\\n✓ Need to decouple services\\n✓ Handle traffic spikes\\n✓ Built-in retry logic needed\\n\\nDon't use khi:\\n✗ User needs immediate response\\n✗ Synchronous workflow\\n✗ Simple CRUD operations\\n\"}]}]\n9f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Lời khuyên cá nhân:\"}]}]\na0:[\"$\",\"p\",null,{\"children\":\"Start simple với managed services (AWS SQS, Google Pub/Sub). Chỉ run own infrastructure (RabbitMQ, Kafka) khi có specific requirements và team có expertise.\"}]\na1:[\"$\",\"p\",null,{\"children\":\"Message queues là một trong những patterns quan trọng nhất trong distributed systems. Master này và bạn unlock khả năng build truly scalable, resilient applications.\"}]\n"])</script><script>self.__next_f.push([1,"22:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"a3:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n16:null\n"])</script><script>self.__next_f.push([1,"24:[[\"$\",\"title\",\"0\",{\"children\":\"Message Queues \u0026 Async Processing - Decoupling Services | Phase 2 — Core Building Blocks | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Message Queues \u0026 Async Processing - Decoupling Services | Phase 2 — Core Building Blocks\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-2/lesson/lesson-4-message-queues-async-processing-decoupling-services\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Message Queues \u0026 Async Processing - Decoupling Services | Phase 2 — Core Building Blocks\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Master message queues và async processing: queue vs pub/sub, delivery guarantees, dead letter queues. Học cách decouple services và handle background jobs trong\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$La3\",\"14\",{}]]\n"])</script></body></html>

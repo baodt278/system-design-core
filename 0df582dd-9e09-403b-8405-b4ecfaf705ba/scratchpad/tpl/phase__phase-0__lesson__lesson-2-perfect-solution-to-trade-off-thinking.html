@@ -1,0 +1,288 @@
+<article class="prose-ui"><h1 id="từ-perfect-solution-đến-trade-off-thinking">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<h2 id="tại-sao-perfect-solution-không-tồn-tại">§§SEG4§§</h2>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<ul>
+<li>§§SEG9§§</li>
+<li>§§SEG10§§</li>
+<li>§§SEG11§§</li>
+<li>§§SEG12§§</li>
+</ul>
+<p>§§SEG13§§</p>
+<h2 id="the-myth-of-best-practices">§§SEG14§§</h2>
+<p>§§SEG15§§</p>
+<p>§§SEG16§§</p>
+<p>§§SEG17§§</p>
+<p>§§SEG18§§</p>
+<p>§§SEG19§§</p>
+<h3 id="ví-dụ-thực-tế-monolith-vs-microservices">§§SEG20§§</h3>
+<p>§§SEG21§§</p>
+<p>§§SEG22§§</p>
+<pre><code>§§SEG23§§</code></pre>
+<p>§§SEG24§§</p>
+<pre><code>§§SEG25§§</code></pre>
+<p>§§SEG26§§</p>
+<p>§§SEG27§§</p>
+<h2 id="framework-the-trade-off-matrix">§§SEG28§§</h2>
+<p>§§SEG29§§</p>
+<h3 id="step-1-define-your-constraints">§§SEG30§§</h3>
+<p>§§SEG31§§</p>
+<p>§§SEG32§§</p>
+<ul>
+<li>§§SEG33§§</li>
+<li>§§SEG34§§</li>
+<li>§§SEG35§§</li>
+<li>§§SEG36§§</li>
+</ul>
+<p>§§SEG37§§</p>
+<ul>
+<li>§§SEG38§§</li>
+<li>§§SEG39§§</li>
+<li>§§SEG40§§</li>
+</ul>
+<p>§§SEG41§§</p>
+<ul>
+<li>§§SEG42§§</li>
+<li>§§SEG43§§</li>
+<li>§§SEG44§§</li>
+</ul>
+<h3 id="step-2-list-trade-offs-explicitly">§§SEG45§§</h3>
+<p>§§SEG46§§</p>
+<pre><code>§§SEG47§§</code></pre>
+<h3 id="step-3-align-với-priorities">§§SEG48§§</h3>
+<p>§§SEG49§§</p>
+<pre><code>§§SEG50§§</code></pre>
+<p>§§SEG51§§</p>
+<pre><code>§§SEG52§§</code></pre>
+<p>§§SEG53§§</p>
+<h2 id="real-world-case-study-cache-hay-không-cache">§§SEG54§§</h2>
+<p>§§SEG55§§</p>
+<p>§§SEG56§§</p>
+<p>§§SEG57§§</p>
+<h3 id="scenario-e-commerce-product-page">§§SEG58§§</h3>
+<p>§§SEG59§§</p>
+<pre><code>§§SEG60§§</code></pre>
+<p>§§SEG61§§</p>
+<pre><code>§§SEG62§§</code></pre>
+<h3 id="the-trade-off-decision">§§SEG63§§</h3>
+<p>§§SEG64§§</p>
+<p>§§SEG65§§</p>
+<ul>
+<li>§§SEG66§§</li>
+<li>§§SEG67§§</li>
+<li>§§SEG68§§</li>
+<li>§§SEG69§§</li>
+</ul>
+<p>§§SEG70§§</p>
+<p>§§SEG71§§</p>
+<ul>
+<li>§§SEG72§§</li>
+<li>§§SEG73§§</li>
+<li>§§SEG74§§</li>
+<li>§§SEG75§§</li>
+</ul>
+<p>§§SEG76§§</p>
+<h2 id="common-trade-offs-mọi-architect-phải-biết">§§SEG77§§</h2>
+<h3 id="1-consistency-vs-availability-cap-theorem">§§SEG78§§</h3>
+<p>§§SEG79§§</p>
+<p>§§SEG80§§</p>
+<pre><code>§§SEG81§§</code></pre>
+<p>§§SEG82§§</p>
+<pre><code>§§SEG83§§</code></pre>
+<p>§§SEG84§§</p>
+<ul>
+<li>§§SEG85§§</li>
+<li>§§SEG86§§</li>
+<li>§§SEG87§§</li>
+</ul>
+<h3 id="2-normalization-vs-denormalization">§§SEG88§§</h3>
+<p>§§SEG89§§</p>
+<pre><code class="language-sql">-- 3 tables, proper 3NF
+users: id, name
+posts: id, user_id, content
+likes: id, post_id, user_id
+
+-- Query post with like count
+SELECT p.*, COUNT(l.id) as likes
+FROM posts p
+LEFT JOIN likes l ON p.id = l.post_id
+WHERE p.id = 123
+GROUP BY p.id;
+</code></pre>
+<p>§§SEG90§§</p>
+<p>§§SEG91§§</p>
+<pre><code class="language-sql">-- 1 table
+posts: id, user_id, content, like_count
+
+-- Query post with like count
+SELECT * FROM posts WHERE id = 123;
+</code></pre>
+<p>§§SEG92§§</p>
+<p>§§SEG93§§</p>
+<ul>
+<li>§§SEG94§§</li>
+<li>§§SEG95§§</li>
+<li>§§SEG96§§</li>
+</ul>
+<p>§§SEG97§§</p>
+<ul>
+<li>§§SEG98§§</li>
+<li>§§SEG99§§</li>
+<li>§§SEG100§§</li>
+</ul>
+<h3 id="3-async-vs-sync-processing">§§SEG101§§</h3>
+<p>§§SEG102§§</p>
+<pre><code class="language-python">def upload_video(video):
+    save_to_s3(video)           # 2s
+    generate_thumbnail(video)   # 3s
+    transcode_720p(video)       # 30s
+    send_notification()         # 1s
+    return "Success"            # User waits 36s
+</code></pre>
+<p>§§SEG103§§</p>
+<p>§§SEG104§§</p>
+<pre><code class="language-python">def upload_video(video):
+    save_to_s3(video)           # 2s
+    queue.add_job('process_video', video.id)
+    return "Success"            # User waits 2s
+
+# Background worker processes rest
+</code></pre>
+<p>§§SEG105§§</p>
+<p>§§SEG106§§</p>
+<ul>
+<li>§§SEG107§§</li>
+<li>§§SEG108§§</li>
+<li>§§SEG109§§</li>
+</ul>
+<h2 id="the-art-of-good-enough">§§SEG110§§</h2>
+<p>§§SEG111§§</p>
+<p>§§SEG112§§</p>
+<p>§§SEG113§§</p>
+<p>§§SEG114§§</p>
+<p>§§SEG115§§</p>
+<h3 id="the-8020-rule-in-architecture">§§SEG116§§</h3>
+<p>§§SEG117§§</p>
+<p>§§SEG118§§</p>
+<pre><code>§§SEG119§§</code></pre>
+<p>§§SEG120§§</p>
+<ul>
+<li>§§SEG121§§</li>
+<li>§§SEG122§§</li>
+<li>§§SEG123§§</li>
+<li>§§SEG124§§</li>
+</ul>
+<h2 id="bài-tập-trade-off-analysis">§§SEG125§§</h2>
+<h3 id="exercise-1-design-user-authentication">§§SEG126§§</h3>
+<p>§§SEG127§§</p>
+<p>§§SEG128§§</p>
+<p>§§SEG129§§</p>
+<ul>
+<li>§§SEG130§§</li>
+<li>§§SEG131§§</li>
+<li>§§SEG132§§</li>
+</ul>
+<p>§§SEG133§§</p>
+<p>§§SEG134§§</p>
+<ul>
+<li>§§SEG135§§</li>
+<li>§§SEG136§§</li>
+<li>§§SEG137§§</li>
+</ul>
+<p>§§SEG138§§</p>
+<h3 id="exercise-2-real-world-scenario">§§SEG139§§</h3>
+<p>§§SEG140§§</p>
+<ul>
+<li>§§SEG141§§</li>
+<li>§§SEG142§§</li>
+<li>§§SEG143§§</li>
+<li>§§SEG144§§</li>
+</ul>
+<p>§§SEG145§§</p>
+<ol>
+<li>§§SEG146§§</li>
+<li>§§SEG147§§</li>
+<li>§§SEG148§§</li>
+</ol>
+<p>§§SEG149§§</p>
+<ol>
+<li>§§SEG150§§</li>
+<li>§§SEG151§§</li>
+<li>§§SEG152§§</li>
+</ol>
+<p>§§SEG153§§</p>
+<h2 id="mental-models-để-đưa-ra-quyết-định">§§SEG154§§</h2>
+<h3 id="model-1-reversibility">§§SEG155§§</h3>
+<p>§§SEG156§§</p>
+<p>§§SEG157§§</p>
+<ul>
+<li>§§SEG158§§</li>
+<li>§§SEG159§§</li>
+<li>§§SEG160§§</li>
+</ul>
+<p>§§SEG161§§</p>
+<p>§§SEG162§§</p>
+<ul>
+<li>§§SEG163§§</li>
+<li>§§SEG164§§</li>
+<li>§§SEG165§§</li>
+</ul>
+<p>§§SEG166§§</p>
+<h3 id="model-2-impact-vs-effort">§§SEG167§§</h3>
+<pre><code>§§SEG168§§</code></pre>
+<p>§§SEG169§§</p>
+<ul>
+<li>§§SEG170§§</li>
+<li>§§SEG171§§</li>
+<li>§§SEG172§§</li>
+<li>§§SEG173§§</li>
+</ul>
+<h3 id="model-3-regret-minimization">§§SEG174§§</h3>
+<p>§§SEG175§§</p>
+<p>§§SEG176§§</p>
+<p>§§SEG177§§</p>
+<ul>
+<li>§§SEG178§§</li>
+<li>§§SEG179§§</li>
+</ul>
+<p>§§SEG180§§</p>
+<ul>
+<li>§§SEG181§§</li>
+<li>§§SEG182§§</li>
+</ul>
+<p>§§SEG183§§</p>
+<h2 id="checklist-bạn-đã-think-in-trade-offs-chưa">§§SEG184§§</h2>
+<p>§§SEG185§§</p>
+<ul class="contains-task-list">
+<li class="task-list-item">§§CHECK§§§§SEG186§§</li>
+<li class="task-list-item">§§CHECK§§§§SEG187§§</li>
+<li class="task-list-item">§§CHECK§§§§SEG188§§</li>
+<li class="task-list-item">§§CHECK§§§§SEG189§§</li>
+<li class="task-list-item">§§CHECK§§§§SEG190§§</li>
+<li class="task-list-item">§§CHECK§§§§SEG191§§</li>
+<li class="task-list-item">§§CHECK§§§§SEG192§§</li>
+</ul>
+<p>§§SEG193§§</p>
+<h2 id="key-takeaways">§§SEG194§§</h2>
+<p>§§SEG195§§</p>
+<p>§§SEG196§§</p>
+<ol>
+<li>§§SEG197§§</li>
+<li>§§SEG198§§</li>
+<li>§§SEG199§§</li>
+<li>§§SEG200§§</li>
+<li>§§SEG201§§</li>
+</ol>
+<p>§§SEG202§§</p>
+<blockquote>
+<p>§§SEG203§§</p>
+</blockquote>
+<p>§§SEG204§§</p>
+<p>§§SEG205§§</p>
+<p>§§SEG206§§</p>
+<p>§§SEG207§§</p></article>

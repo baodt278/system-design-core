@@ -1,0 +1,960 @@
+@0 h1
+Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer
+@1 p
+Khi bạn đã master được system design fundamentals, patterns, và trade-off thinking, câu hỏi tiếp theo là: **"Điều gì tạo nên sự khác biệt giữa senior và staff engineer?"**
+@2 p
+Câu trả lời không phải là học thêm patterns. Mà là **hiểu sâu về những vấn đề mà chỉ distributed systems ở scale mới gặp phải** - và biết cách giải quyết chúng một cách có hệ thống.
+@3 p
+Lesson này không phải "must-know" để làm system design interview. Nhưng nó là **kiến thức giúp bạn thinking ở level cao hơn** - từ "design một system" sang "evolve và maintain production systems at scale".
+@4 h2
+Tại Sao Các Topics Này Lại "Advanced"?
+@5 h3
+Reality Check
+@6 p
+Hầu hết systems không cần event sourcing hay service mesh. Nhưng khi bạn gặp những problems này:
+@7 li
+**Audit trail không đầy đủ** → cần replay toàn bộ history
+@8 li
+**Read và write có requirement khác nhau hoàn toàn** → CQRS
+@9 li
+**Service communication phức tạp với 50+ microservices** → Service Mesh
+@10 li
+**Không tin hệ thống có thể handle failure** → Chaos Engineering
+@11 li
+**Duplicate requests gây data corruption** → Idempotency
+@12 li
+**Cascading failures lan như domino** → Circuit Breaker
+@13 li
+**Debug distributed systems như mò kim đáy bể** → Distributed Tracing
+@14 p
+Lúc đó, bạn mới hiểu tại sao những concepts này tồn tại.
+@15 h2
+1. Event Sourcing - Store Events, Not State
+@16 h3
+Vấn Đề Của Traditional State Storage
+@17 pre
+Traditional Database:
+User Balance: $1000 (current state only)
+
+Mất hết history
+Không biết balance này từ đâu ra
+Không audit được
+Không replay được
+
+@18 h3
+Event Sourcing Approach
+@19 p
+**Core idea: Store every change as an event, derive state from events**
+@20 pre
+flowchart LR
+    E1[Event: Deposit $500] --> E2[Event: Withdraw $200]
+    E2 --> E3[Event: Deposit $700]
+    E3 --> State[Current State: $1000]
+@21 pre
+Event Store:
+1. UserCreated { userId: 123 }
+2. MoneyDeposited { userId: 123, amount: 500 }
+3. MoneyWithdrawn { userId: 123, amount: 200 }
+4. MoneyDeposited { userId: 123, amount: 700 }
+
+Current State = Replay all events
+Balance = 0 + 500 - 200 + 700 = $1000
+
+@22 h3
+Tại Sao Event Sourcing?
+@23 p
+**1. Complete Audit Trail**
+@24 li
+Biết chính xác điều gì đã xảy ra, khi nào, tại sao
+@25 li
+Compliance và regulatory requirements
+@26 p
+**2. Time Travel**
+@27 li
+Rebuild state tại bất kỳ thời điểm nào trong quá khứ
+@28 li
+Debug production issues by replaying events
+@29 p
+**3. Multiple Projections**
+@30 li
+Cùng một event stream → nhiều views khác nhau
+@31 li
+Analytics, reporting, real-time dashboards
+@32 p
+**4. Scalability**
+@33 li
+Events là append-only → cực kỳ nhanh
+@34 li
+Không cần locking, transactions phức tạp
+@35 h3
+Trade-offs
+@36 p
+**Pros:**
+@37 li
+Full history và audit trail
+@38 li
+Time travel capabilities
+@39 li
+Easy to add new projections
+@40 li
+Event replay cho debugging
+@41 p
+**Cons:**
+@42 li
+Complexity tăng đáng kể
+@43 li
+Event schema evolution khó
+@44 li
+Storage tăng (lưu mọi event)
+@45 li
+Query current state phải replay events
+@46 li
+Learning curve cao
+@47 h3
+Khi Nào Dùng Event Sourcing?
+@48 p
+**Dùng khi:**
+@49 li
+Banking, financial systems (cần audit đầy đủ)
+@50 li
+Domain phức tạp với nhiều business rules
+@51 li
+Cần complete history và time travel
+@52 li
+Multiple projections từ cùng data
+@53 p
+**Không dùng khi:**
+@54 li
+Simple CRUD applications
+@55 li
+Team chưa có experience
+@56 li
+Audit trail không critical
+@57 li
+Complexity không justify benefits
+@58 h2
+2. CQRS - Command Query Responsibility Segregation
+@59 h3
+Core Concept
+@60 p
+**CQRS = Tách riêng read và write models**
+@61 pre
+flowchart TB
+    Client[Client Request]
+    Client -->|Write: UpdateUser| WriteModel[Write Model<br/>Normalized DB]
+    Client -->|Read: GetUserProfile| ReadModel[Read Model<br/>Denormalized View]
+    WriteModel -->|Events/Sync| ReadModel
+@62 h3
+Tại Sao CQRS?
+@63 p
+**Reality: Read và Write có requirements hoàn toàn khác nhau**
+@64 pre
+Write Side:
+- Validate business rules
+- Ensure consistency
+- Handle transactions
+- Normalized data
+
+Read Side:
+- Fast queries
+- Complex joins
+- Aggregations
+- Denormalized views
+
+@65 h3
+Example: E-commerce Product Page
+@66 p
+**Without CQRS (Single Model):**
+@67 p
+**With CQRS:**
+@68 h3
+CQRS + Event Sourcing Combo
+@69 pre
+Write Side: Event Store
+↓
+Events: ProductCreated, PriceUpdated, ReviewAdded
+↓
+Read Side: Materialized Views
+- Product Detail View (cache)
+- Search Index (Elasticsearch)
+- Analytics Dashboard (BigQuery)
+
+@70 h3
+Trade-offs
+@71 p
+**Pros:**
+@72 li
+Optimize read và write độc lập
+@73 li
+Scale read và write riêng biệt
+@74 li
+Multiple read models cho use cases khác nhau
+@75 li
+Performance cải thiện đáng kể
+@76 p
+**Cons:**
+@77 li
+Eventual consistency giữa write và read
+@78 li
+Complexity tăng (2 models thay vì 1)
+@79 li
+Data sync phải reliable
+@80 li
+Harder để debug và maintain
+@81 h3
+Khi Nào Dùng CQRS?
+@82 p
+**Dùng khi:**
+@83 li
+Read:Write ratio chênh lệch lớn (99:1)
+@84 li
+Read queries cực kỳ complex
+@85 li
+Cần scale read và write khác nhau
+@86 li
+Multiple views từ cùng data
+@87 p
+**Không dùng khi:**
+@88 li
+Simple CRUD với read/write balanced
+@89 li
+Strong consistency required
+@90 li
+Team nhỏ, không đủ resource maintain
+@91 h2
+3. Service Mesh - Infrastructure Layer For Service Communication
+@92 h3
+Vấn Đề Của Microservices Communication
+@93 p
+Khi bạn có 50+ microservices:
+@94 pre
+Service A call Service B:
+- Retry logic?
+- Circuit breaker?
+- Load balancing?
+- TLS encryption?
+- Tracing?
+- Metrics?
+
+→ Mỗi service phải implement lại tất cả
+→ Code duplication
+→ Inconsistent behavior
+
+@95 h3
+Service Mesh Solution
+@96 p
+**Core idea: Move network logic ra khỏi application code, vào infrastructure layer**
+@97 pre
+flowchart LR
+    A[Service A] <--> PA[Sidecar Proxy]
+    PB[Sidecar Proxy] <--> B[Service B]
+    PA <--> PB
+    PA --> Control[Control Plane<br/>Rules & Config]
+    PB --> Control
+@98 p
+**Sidecar proxy** (như Envoy) intercept tất cả traffic:
+@99 pre
+Service A → Sidecar Proxy A → Sidecar Proxy B → Service B
+
+Proxy handles:
+- Load balancing
+- Retries
+- Circuit breaking
+- TLS
+- Metrics
+- Tracing
+
+@100 h3
+Service Mesh Features
+@101 p
+**1. Traffic Management**
+@102 li
+Load balancing algorithms
+@103 li
+Circuit breakers tự động
+@104 li
+Retry và timeout policies
+@105 li
+Traffic splitting (canary, blue-green)
+@106 p
+**2. Security**
+@107 li
+Mutual TLS (mTLS) tự động
+@108 li
+Authentication giữa services
+@109 li
+Authorization policies
+@110 p
+**3. Observability**
+@111 li
+Distributed tracing tự động
+@112 li
+Metrics collection
+@113 li
+Service topology visualization
+@114 p
+**4. Resilience**
+@115 li
+Automatic retries
+@116 li
+Circuit breakers
+@117 li
+Fault injection để test
+@118 h3
+Popular Service Meshes
+@119 li
+**Istio** - full-featured, complex
+@120 li
+**Linkerd** - simpler, lightweight
+@121 li
+**Consul Connect** - HashiCorp ecosystem
+@122 h3
+Trade-offs
+@123 p
+**Pros:**
+@124 li
+Centralized configuration
+@125 li
+Consistent behavior across services
+@126 li
+Observability out-of-the-box
+@127 li
+Security features tự động
+@128 p
+**Cons:**
+@129 li
+Complexity cao - thêm 1 layer infrastructure
+@130 li
+Performance overhead (proxy layer)
+@131 li
+Learning curve steep
+@132 li
+Debugging khó hơn
+@133 h3
+Khi Nào Cần Service Mesh?
+@134 p
+**Dùng khi:**
+@135 li
+50+ microservices
+@136 li
+Need consistent traffic management
+@137 li
+Security requirements cao (mTLS everywhere)
+@138 li
+Observability critical
+@139 p
+**Không dùng khi:**
+@140 li
+< 10 microservices
+@141 li
+Monolith hoặc simple architecture
+@142 li
+Team chưa mature với Kubernetes
+@143 li
+Performance overhead không chấp nhận được
+@144 h2
+4. Chaos Engineering - Break Things On Purpose
+@145 h3
+Core Philosophy
+@146 p
+**"The best way to avoid failure is to fail constantly"**
+@147 pre
+Traditional Testing:
+Test → Deploy → Hope nothing breaks
+
+Chaos Engineering:
+Deploy → Intentionally break things → Fix weaknesses → More resilient
+
+@148 h3
+Netflix's Chaos Monkey
+@149 p
+Netflix pioneer chaos engineering:
+@150 pre
+Chaos Monkey randomly:
+- Terminates production instances
+- Kills services
+- Adds latency
+- Drops network packets
+
+Goal: Force systems to be resilient by design
+
+@151 h3
+Chaos Engineering Principles
+@152 p
+**1. Start With Hypothesis**
+@153 pre
+Hypothesis: "If payment service fails, 
+            users can still browse products"
+
+Experiment: Kill payment service in production
+Measure: Browse functionality still works?
+
+@154 p
+**2. Minimize Blast Radius**
+@155 pre
+Start small:
+- 1 instance → 1 service → 1 region → global
+
+Not: Kill everything at once
+
+@156 p
+**3. Automate Experiments**
+@157 h3
+Common Chaos Experiments
+@158 p
+**1. Service Failures**
+@159 li
+Random instance termination
+@160 li
+Service unavailable
+@161 li
+Dependency failures
+@162 p
+**2. Network Issues**
+@163 li
+Latency injection
+@164 li
+Packet loss
+@165 li
+Network partition
+@166 p
+**3. Resource Exhaustion**
+@167 li
+CPU spike
+@168 li
+Memory leak simulation
+@169 li
+Disk full
+@170 p
+**4. State Corruption**
+@171 li
+Clock skew
+@172 li
+Data corruption
+@173 li
+Zombie nodes
+@174 h3
+Tools
+@175 li
+**Chaos Monkey** - Netflix's original
+@176 li
+**Gremlin** - commercial platform
+@177 li
+**Chaos Mesh** - Kubernetes native
+@178 li
+**Litmus** - CNCF project
+@179 h3
+Trade-offs
+@180 p
+**Benefits:**
+@181 li
+Uncover weaknesses trước khi production incident
+@182 li
+Build confidence in system resilience
+@183 li
+Force teams thinking về failure scenarios
+@184 li
+Reduce MTTR (Mean Time To Recovery)
+@185 p
+**Challenges:**
+@186 li
+Rủi ro cause real outages
+@187 li
+Cần mature monitoring và alerting
+@188 li
+Cultural shift - accept breaking things
+@189 li
+Time investment lớn
+@190 h3
+Khi Nào Áp Dụng Chaos Engineering?
+@191 p
+**Dùng khi:**
+@192 li
+Production systems critical
+@193 li
+Already have good monitoring
+@194 li
+Team mature với distributed systems
+@195 li
+Cost of downtime cao
+@196 p
+**Chưa dùng khi:**
+@197 li
+System chưa stable
+@198 li
+Monitoring chưa tốt
+@199 li
+Đang fire-fighting incidents thường xuyên
+@200 h2
+5. Idempotency - Handle Duplicate Requests Safely
+@201 h3
+Vấn Đề: Network Unreliable
+@202 pre
+Client → Server: Create Payment $100
+
+Scenario 1:
+Client sends → Server processes → Response lost
+Client retries → Server charges $200 ❌
+
+Scenario 2 (Idempotent):
+Client sends with ID → Server processes
+Client retries with same ID → Server returns cached result
+Total charged: $100 ✅
+
+@203 h3
+Core Concept
+@204 p
+**Idempotent operation: Calling multiple times = same result as calling once**
+@205 pre
+Mathematical:
+f(f(x)) = f(x)
+
+Example:
+SET value = 10  → idempotent
+value = value + 1  → NOT idempotent
+
+@206 h3
+Implementation Strategies
+@207 p
+**1. Idempotency Keys**
+@208 p
+**2. Natural Idempotency**
+@209 p
+**3. Database Constraints**
+@210 h3
+Idempotency Levels
+@211 p
+**1. HTTP Method Level**
+@212 pre
+GET, PUT, DELETE → idempotent by spec
+POST → NOT idempotent (need explicit handling)
+
+@213 p
+**2. Application Level**
+@214 p
+**3. Distributed System Level**
+@215 pre
+Use distributed locks:
+- Acquire lock with idempotency key
+- Process if lock acquired
+- Release lock
+- Retry safe
+
+@216 h3
+Real-World Examples
+@217 p
+**Stripe Payments:**
+@218 p
+**Message Processing:**
+@219 h3
+Trade-offs
+@220 p
+**Benefits:**
+@221 li
+Safe retries
+@222 li
+Avoid duplicate charges, orders, etc.
+@223 li
+Better reliability
+@224 p
+**Costs:**
+@225 li
+Extra storage (cache idempotency keys)
+@226 li
+Complexity in implementation
+@227 li
+TTL management (keys expire khi nào?)
+@228 h2
+6. Circuit Breaker - Stop Cascading Failures
+@229 h3
+Vấn Đề: Cascading Failures
+@230 pre
+flowchart TB
+    User --> A[Service A]
+    A --> B[Service B - Slow]
+    A --> C[Service C - Slow]
+    B --> D[Database - Down]
+    C --> D
+@231 pre
+Database down → Service B slow (waiting for timeout)
+→ Service A threads blocked waiting for B
+→ Service A down
+→ All dependent services down
+→ Entire system down
+
+@232 h3
+Circuit Breaker Pattern
+@233 p
+**Idea: Stop calling failing services, fail fast**
+@234 pre
+States:
+1. CLOSED → calls go through normally
+2. OPEN → calls fail immediately (no wait)
+3. HALF-OPEN → test if service recovered
+
+Closed → (failures > threshold) → Open
+Open → (timeout) → Half-Open
+Half-Open → (success) → Closed
+Half-Open → (failure) → Open
+
+@235 pre
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open: Failures > threshold
+    Open --> HalfOpen: Timeout elapsed
+    HalfOpen --> Closed: Success
+    HalfOpen --> Open: Failure
+@236 h3
+Implementation
+@237 h3
+Circuit Breaker + Fallback
+@238 h3
+Advanced: Bulkhead Pattern
+@239 p
+**Isolate failures với resource pools:**
+@240 h3
+Monitoring Circuit Breaker
+@241 h3
+Trade-offs
+@242 p
+**Benefits:**
+@243 li
+Prevent cascading failures
+@244 li
+Fail fast thay vì wait timeout
+@245 li
+Give failing service time to recover
+@246 li
+Better resource utilization
+@247 p
+**Challenges:**
+@248 li
+False positives (open khi không cần)
+@249 li
+Fallback logic cần maintain
+@250 li
+Tuning thresholds khó
+@251 li
+Monitoring complexity
+@252 h2
+7. Distributed Tracing - Debug Across Services
+@253 h3
+Vấn Đề: Debugging Microservices
+@254 pre
+User report: "Checkout quá chậm"
+
+Request flow:
+Frontend → API Gateway → Auth → Cart → Inventory 
+→ Payment → Order → Notification → Email
+
+Câu hỏi: Service nào chậm?
+
+@255 h3
+Traditional Logging Approach
+@256 h3
+Distributed Tracing Solution
+@257 p
+**Core concept: Track request journey across all services**
+@258 pre
+graph LR
+    A[Frontend] -->|TraceId: abc123| B[API Gateway]
+    B -->|TraceId: abc123| C[Auth]
+    B -->|TraceId: abc123| D[Cart]
+    D -->|TraceId: abc123| E[Payment]
+    D -->|TraceId: abc123| F[Inventory]
+@259 p
+**Mỗi request có:**
+@260 li
+**Trace ID** - unique ID cho entire request
+@261 li
+**Span ID** - ID cho mỗi operation trong trace
+@262 li
+**Parent Span ID** - link spans with nhau
+@263 pre
+Trace: abc123
+├─ Span: frontend (5ms)
+├─ Span: api-gateway (150ms)
+│  ├─ Span: auth-service (20ms)
+│  └─ Span: cart-service (130ms)
+│     ├─ Span: inventory-check (50ms)
+│     └─ Span: payment-process (80ms) ← Bottleneck!
+└─ Span: notification (10ms)
+
+@264 h3
+Implementation With OpenTelemetry
+@265 h3
+Trace Context Propagation
+@266 h3
+Distributed Tracing Tools
+@267 p
+**Popular platforms:**
+@268 li
+**Jaeger** - open-source, CNCF project
+@269 li
+**Zipkin** - Twitter's tracing system
+@270 li
+**Datadog APM** - commercial, full-featured
+@271 li
+**New Relic** - commercial, easy setup
+@272 li
+**Tempo** - Grafana's tracing backend
+@273 h3
+Tracing + Metrics + Logs = Observability
+@274 pre
+Request chậm?
+
+1. Tracing → tìm span chậm nhất
+2. Metrics → check CPU, memory của service đó
+3. Logs → xem errors tại thời điểm đó
+
+→ Root cause: Database query không có index
+
+@275 h3
+Sampling Strategy
+@276 p
+**Problem: Trace mọi request = storage explosion**
+@277 h3
+Trade-offs
+@278 p
+**Benefits:**
+@279 li
+Visualize request flow
+@280 li
+Identify bottlenecks instantly
+@281 li
+Debug cross-service issues
+@282 li
+Performance optimization data
+@283 p
+**Costs:**
+@284 li
+Overhead (latency + storage)
+@285 li
+Instrumentation effort
+@286 li
+Learning curve
+@287 li
+Cost của tracing platforms
+@288 h2
+8. Observability Mindset - You Cannot Fix What You Cannot See
+@289 h3
+Observability vs Monitoring
+@290 pre
+Monitoring (traditional):
+- Know WHAT happened
+- Predefined metrics và dashboards
+- "Is service up?"
+- "Is CPU > 80%?"
+
+Observability:
+- Know WHY it happened
+- Ask arbitrary questions
+- "Why was this request slow?"
+- "What changed before incident?"
+
+@291 h3
+Three Pillars of Observability
+@292 p
+**1. Metrics (Aggregated Data)**
+@293 p
+**2. Logs (Discrete Events)**
+@294 p
+**3. Traces (Request Journey)**
+@295 pre
+Request flow với timing:
+Frontend (5ms) 
+→ API Gateway (10ms)
+→ Auth (50ms)
+→ Database (200ms) ← bottleneck!
+
+@296 h3
+Structured Logging Best Practices
+@297 h3
+High Cardinality Data
+@298 p
+**Modern observability handles high cardinality:**
+@299 pre
+Old monitoring:
+- user_id? No, too many unique values!
+- Aggregate by service, endpoint only
+
+Modern observability:
+- user_id? Yes!
+- Request ID? Yes!
+- A/B test variant? Yes!
+- Customer segment? Yes!
+
+→ Ask ANY question about specific user journey
+
+@300 h3
+Observability-Driven Development
+@301 h3
+SLIs, SLOs, SLAs
+@302 p
+**Service Level Indicators (SLIs):**
+@303 pre
+Metrics đo lường service health:
+- Availability: 99.9% requests succeed
+- Latency: 95% requests < 200ms
+- Throughput: 1000 req/s
+
+@304 p
+**Service Level Objectives (SLOs):**
+@305 pre
+Internal targets:
+- API availability: 99.9% (43 minutes downtime/month)
+- P95 latency: < 200ms
+- Error rate: < 0.1%
+
+@306 p
+**Service Level Agreements (SLAs):**
+@307 pre
+Customer commitments:
+- 99.9% uptime guaranteed
+- Penalty if not met
+- Public-facing promise
+
+@308 h3
+Error Budget
+@309 pre
+SLO: 99.9% availability
+→ Error budget: 0.1% = 43 minutes downtime/month
+
+Use error budget for:
+- Deploy riskier features
+- Run chaos experiments
+- Maintenance windows
+
+If error budget consumed:
+→ Freeze deploys
+→ Focus on reliability
+
+@310 h3
+Alerting Best Practices
+@311 h3
+Modern Observability Platforms
+@312 li
+**Datadog** - all-in-one, expensive
+@313 li
+**New Relic** - APM + observability
+@314 li
+**Grafana Stack** - open-source (Loki + Tempo + Mimir)
+@315 li
+**Honeycomb** - high-cardinality specialist
+@316 li
+**Lightstep** - tracing-first approach
+@317 h2
+Key Takeaways
+@318 h3
+Khi Nào Cần Advanced Topics?
+@319 p
+**Event Sourcing + CQRS:**
+@320 li
+Financial systems cần full audit
+@321 li
+Complex domains với nhiều business rules
+@322 li
+Cần multiple projections từ same data
+@323 p
+**Service Mesh:**
+@324 li
+50+ microservices
+@325 li
+Security requirements cao (mTLS)
+@326 li
+Need unified observability
+@327 p
+**Chaos Engineering:**
+@328 li
+Production-critical systems
+@329 li
+Cost of downtime cao
+@330 li
+Already have mature monitoring
+@331 p
+**Idempotency:**
+@332 li
+Payment, order processing
+@333 li
+Any operation không muốn duplicate
+@334 li
+Distributed systems with retries
+@335 p
+**Circuit Breaker:**
+@336 li
+Microservices với dependencies
+@337 li
+Prevent cascading failures
+@338 li
+Need graceful degradation
+@339 p
+**Distributed Tracing:**
+@340 p
+5 microservices
+@341 li
+Debug cross-service issues
+@342 li
+Performance optimization critical
+@343 p
+**Observability:**
+@344 li
+ALWAYS - không thể debug distributed systems không có observability
+@345 li
+Start simple, evolve gradually
+@346 h3
+Progression Path
+@347 pre
+Junior → Senior:
+- Master system design patterns
+- Understand trade-offs
+- Design systems from scratch
+
+Senior → Staff:
+- Know khi nào patterns phức tạp justify cost
+- Evolve và maintain systems at scale
+- Build observability từ đầu
+- Think về failure scenarios
+- Balance complexity vs benefit
+
+@348 h3
+Practical Advice
+@349 p
+**1. Don't over-engineer**
+@350 li
+Start simple, add complexity khi cần
+@351 li
+Measure before optimize
+@352 li
+Question if benefits > costs
+@353 p
+**2. Observability first**
+@354 li
+Cannot debug what you cannot see
+@355 li
+Instrument từ ngày đầu
+@356 li
+Structured logging, tracing, metrics
+@357 p
+**3. Learn from failures**
+@358 li
+Post-mortems sau incidents
+@359 li
+Chaos engineering khi ready
+@360 li
+Build resilience gradually
+@361 p
+**4. Focus on user impact**
+@362 li
+Metrics phải relate to user experience
+@363 li
+SLOs based on user expectations
+@364 li
+Alert on symptoms user feel
+@365 h3
+Final Thought
+@366 p
+Advanced topics không phải để "flex technical knowledge". Chúng là tools giải quyết real problems mà only production systems at scale mới gặp.
+@367 p
+Staff engineer khác senior ở chỗ: **Biết khi nào dùng, khi nào không dùng, và lý do tại sao.**
+@368 p
+Don't learn everything. Learn when you need them. Focus on fundamentals first.

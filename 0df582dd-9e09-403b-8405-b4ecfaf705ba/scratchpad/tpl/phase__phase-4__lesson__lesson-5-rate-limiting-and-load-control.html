@@ -1,0 +1,798 @@
+<article class="prose-ui"><h1 id="rate-limiting--load-control---protect-system-khỏi-overload">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<ul>
+<li>§§SEG3§§</li>
+<li>§§SEG4§§</li>
+<li>§§SEG5§§</li>
+<li>§§SEG6§§</li>
+</ul>
+<p>§§SEG7§§</p>
+<p>§§SEG8§§</p>
+<p>§§SEG9§§</p>
+<p>§§SEG10§§</p>
+<ul>
+<li>§§SEG11§§</li>
+<li>§§SEG12§§</li>
+<li>§§SEG13§§</li>
+<li>§§SEG14§§</li>
+<li>§§SEG15§§</li>
+</ul>
+<h2 id="tại-sao-cần-rate-limiting">§§SEG16§§</h2>
+<h3 id="problem-1-resource-exhaustion">§§SEG17§§</h3>
+<p>§§SEG18§§</p>
+<pre><code>§§SEG19§§</code></pre>
+<p>§§SEG20§§</p>
+<p>§§SEG21§§</p>
+<h3 id="problem-2-cost-control">§§SEG22§§</h3>
+<p>§§SEG23§§</p>
+<pre><code>§§SEG24§§</code></pre>
+<p>§§SEG25§§</p>
+<p>§§SEG26§§</p>
+<h3 id="problem-3-abuse--security">§§SEG27§§</h3>
+<p>§§SEG28§§</p>
+<ul>
+<li>§§SEG29§§</li>
+<li>§§SEG30§§</li>
+<li>§§SEG31§§</li>
+</ul>
+<p>§§SEG32§§</p>
+<h3 id="problem-4-fair-usage">§§SEG33§§</h3>
+<p>§§SEG34§§</p>
+<p>§§SEG35§§</p>
+<p>§§SEG36§§</p>
+<h3 id="use-cases">§§SEG37§§</h3>
+<p>§§SEG38§§</p>
+<ul>
+<li>§§SEG39§§</li>
+<li>§§SEG40§§</li>
+</ul>
+<p>§§SEG41§§</p>
+<ul>
+<li>§§SEG42§§</li>
+</ul>
+<p>§§SEG43§§</p>
+<ul>
+<li>§§SEG44§§</li>
+</ul>
+<p>§§SEG45§§</p>
+<ul>
+<li>§§SEG46§§</li>
+</ul>
+<h2 id="rate-limiting-algorithms">§§SEG47§§</h2>
+<p>§§SEG48§§</p>
+<h3 id="1-fixed-window-counter">§§SEG49§§</h3>
+<p>§§SEG50§§</p>
+<pre><code class="language-python">import time
+
+class FixedWindowRateLimiter:
+    def __init__(self, limit, window_seconds):
+        self.limit = limit
+        self.window = window_seconds
+        self.counter = 0
+        self.window_start = time.time()
+    
+    def allow_request(self):
+        now = time.time()
+        
+        # New window
+        if now - self.window_start &gt;= self.window:
+            self.counter = 0
+            self.window_start = now
+        
+        # Check limit
+        if self.counter &lt; self.limit:
+            self.counter += 1
+            return True
+        
+        return False
+</code></pre>
+<p>§§SEG51§§</p>
+<pre><code>§§SEG52§§</code></pre>
+<p>§§SEG53§§</p>
+<pre><code>§§SEG54§§</code></pre>
+<p>§§SEG55§§</p>
+<h3 id="2-sliding-window-log">§§SEG56§§</h3>
+<p>§§SEG57§§</p>
+<pre><code class="language-python">from collections import deque
+import time
+
+class SlidingWindowLog:
+    def __init__(self, limit, window_seconds):
+        self.limit = limit
+        self.window = window_seconds
+        self.log = deque()
+    
+    def allow_request(self):
+        now = time.time()
+        
+        # Remove old requests outside window
+        while self.log and self.log[0] &lt;= now - self.window:
+            self.log.popleft()
+        
+        # Check limit
+        if len(self.log) &lt; self.limit:
+            self.log.append(now)
+            return True
+        
+        return False
+</code></pre>
+<p>§§SEG58§§</p>
+<pre><code>§§SEG59§§</code></pre>
+<p>§§SEG60§§</p>
+<ul>
+<li>§§SEG61§§</li>
+<li>§§SEG62§§</li>
+</ul>
+<p>§§SEG63§§</p>
+<ul>
+<li>§§SEG64§§</li>
+<li>§§SEG65§§</li>
+</ul>
+<h3 id="3-sliding-window-counter-hybrid">§§SEG66§§</h3>
+<p>§§SEG67§§</p>
+<pre><code class="language-python">import time
+
+class SlidingWindowCounter:
+    def __init__(self, limit, window_seconds):
+        self.limit = limit
+        self.window = window_seconds
+        self.current_window = {"start": time.time(), "count": 0}
+        self.prev_window_count = 0
+    
+    def allow_request(self):
+        now = time.time()
+        
+        # Calculate sliding count
+        elapsed = now - self.current_window["start"]
+        
+        if elapsed &gt;= self.window:
+            # New window
+            self.prev_window_count = self.current_window["count"]
+            self.current_window = {"start": now, "count": 0}
+            elapsed = 0
+        
+        # Weighted count from previous window
+        prev_weight = (self.window - elapsed) / self.window
+        estimated_count = (
+            self.prev_window_count * prev_weight +
+            self.current_window["count"]
+        )
+        
+        if estimated_count &lt; self.limit:
+            self.current_window["count"] += 1
+            return True
+        
+        return False
+</code></pre>
+<p>§§SEG68§§</p>
+<h3 id="4-token-bucket-most-popular">§§SEG69§§</h3>
+<p>§§SEG70§§</p>
+<pre><code class="language-python">import time
+
+class TokenBucket:
+    def __init__(self, capacity, refill_rate):
+        self.capacity = capacity        # Max tokens
+        self.tokens = capacity           # Current tokens
+        self.refill_rate = refill_rate   # Tokens per second
+        self.last_refill = time.time()
+    
+    def allow_request(self, tokens_needed=1):
+        now = time.time()
+        
+        # Refill tokens
+        elapsed = now - self.last_refill
+        tokens_to_add = elapsed * self.refill_rate
+        self.tokens = min(self.capacity, self.tokens + tokens_to_add)
+        self.last_refill = now
+        
+        # Check if enough tokens
+        if self.tokens &gt;= tokens_needed:
+            self.tokens -= tokens_needed
+            return True
+        
+        return False
+</code></pre>
+<p>§§SEG71§§</p>
+<pre><code>§§SEG72§§</code></pre>
+<p>§§SEG73§§</p>
+<ul>
+<li>§§SEG74§§</li>
+<li>§§SEG75§§</li>
+<li>§§SEG76§§</li>
+</ul>
+<p>§§SEG77§§</p>
+<ul>
+<li>§§SEG78§§</li>
+</ul>
+<p>§§SEG79§§</p>
+<h3 id="5-leaky-bucket">§§SEG80§§</h3>
+<p>§§SEG81§§</p>
+<pre><code class="language-python">import time
+from collections import deque
+
+class LeakyBucket:
+    def __init__(self, capacity, leak_rate):
+        self.capacity = capacity      # Max queue size
+        self.leak_rate = leak_rate    # Requests processed per second
+        self.queue = deque()
+        self.last_leak = time.time()
+    
+    def allow_request(self):
+        now = time.time()
+        
+        # Leak (process) requests
+        elapsed = now - self.last_leak
+        leaks = int(elapsed * self.leak_rate)
+        
+        for _ in range(min(leaks, len(self.queue))):
+            self.queue.popleft()
+        
+        self.last_leak = now
+        
+        # Add request to queue
+        if len(self.queue) &lt; self.capacity:
+            self.queue.append(now)
+            return True
+        
+        return False
+</code></pre>
+<p>§§SEG82§§</p>
+<p>§§SEG83§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG84§§</code></pre>
+<p>§§SEG85§§</p>
+<h3 id="algorithm-comparison">§§SEG86§§</h3>
+<table><thead><tr><th>§§SEG87§§</th><th>§§SEG88§§</th><th>§§SEG89§§</th><th>§§SEG90§§</th><th>§§SEG91§§</th></tr></thead><tbody><tr><td>§§SEG92§§</td><td>§§SEG93§§</td><td>§§SEG94§§</td><td>§§SEG95§§</td><td>§§SEG96§§</td></tr><tr><td>§§SEG97§§</td><td>§§SEG98§§</td><td>§§SEG99§§</td><td>§§SEG100§§</td><td>§§SEG101§§</td></tr><tr><td>§§SEG102§§</td><td>§§SEG103§§</td><td>§§SEG104§§</td><td>§§SEG105§§</td><td>§§SEG106§§</td></tr><tr><td>§§SEG107§§</td><td>§§SEG108§§</td><td>§§SEG109§§</td><td>§§SEG110§§</td><td>§§SEG111§§</td></tr><tr><td>§§SEG112§§</td><td>§§SEG113§§</td><td>§§SEG114§§</td><td>§§SEG115§§</td><td>§§SEG116§§</td></tr></tbody></table>
+<p>§§SEG117§§</p>
+<h2 id="distributed-rate-limiting">§§SEG118§§</h2>
+<p>§§SEG119§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG120§§</code></pre>
+<p>§§SEG121§§</p>
+<p>§§SEG122§§</p>
+<h3 id="solution-1-centralized-state-redis">§§SEG123§§</h3>
+<p>§§SEG124§§</p>
+<pre><code class="language-python">import redis
+import time
+
+class DistributedRateLimiter:
+    def __init__(self, redis_client, limit, window):
+        self.redis = redis_client
+        self.limit = limit
+        self.window = window
+    
+    def allow_request(self, user_id):
+        key = f"rate_limit:{user_id}"
+        current = self.redis.get(key)
+        
+        if current is None:
+            # First request
+            self.redis.setex(key, self.window, 1)
+            return True
+        
+        if int(current) &lt; self.limit:
+            self.redis.incr(key)
+            return True
+        
+        return False
+</code></pre>
+<p>§§SEG125§§</p>
+<pre><code class="language-python">def allow_request_token_bucket(self, user_id):
+    key = f"token_bucket:{user_id}"
+    now = time.time()
+    
+    # Lua script for atomic operation
+    lua_script = """
+    local key = KEYS[1]
+    local capacity = tonumber(ARGV[1])
+    local refill_rate = tonumber(ARGV[2])
+    local now = tonumber(ARGV[3])
+    
+    local bucket = redis.call('HMGET', key, 'tokens', 'last_refill')
+    local tokens = tonumber(bucket[1]) or capacity
+    local last_refill = tonumber(bucket[2]) or now
+    
+    -- Refill tokens
+    local elapsed = now - last_refill
+    tokens = math.min(capacity, tokens + elapsed * refill_rate)
+    
+    if tokens &gt;= 1 then
+        tokens = tokens - 1
+        redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
+        redis.call('EXPIRE', key, 3600)
+        return 1
+    else
+        return 0
+    end
+    """
+    
+    return self.redis.eval(lua_script, 1, key, 
+                          self.capacity, self.refill_rate, now)
+</code></pre>
+<p>§§SEG126§§</p>
+<ul>
+<li>§§SEG127§§</li>
+<li>§§SEG128§§</li>
+</ul>
+<p>§§SEG129§§</p>
+<ul>
+<li>§§SEG130§§</li>
+<li>§§SEG131§§</li>
+<li>§§SEG132§§</li>
+</ul>
+<h3 id="solution-2-eventually-consistent-gossip">§§SEG133§§</h3>
+<p>§§SEG134§§</p>
+<pre><code class="language-python">class EventuallyConsistentRateLimiter:
+    def __init__(self, limit, num_servers):
+        self.limit = limit
+        self.local_limit = limit // num_servers  # Divide among servers
+        self.local_counter = 0
+        self.global_counters = {}  # From other servers
+    
+    def allow_request(self, user_id):
+        # Check local limit first
+        if self.local_counter &lt; self.local_limit:
+            self.local_counter += 1
+            return True
+        
+        # Check global limit (eventual)
+        total = sum(self.global_counters.values()) + self.local_counter
+        return total &lt; self.limit
+    
+    def sync_with_peers(self):
+        # Gossip protocol: exchange counters with other servers
+        pass
+</code></pre>
+<p>§§SEG135§§</p>
+<ul>
+<li>§§SEG136§§</li>
+<li>§§SEG137§§</li>
+</ul>
+<p>§§SEG138§§</p>
+<ul>
+<li>§§SEG139§§</li>
+<li>§§SEG140§§</li>
+</ul>
+<h3 id="hybrid-approach-practical">§§SEG141§§</h3>
+<p>§§SEG142§§</p>
+<pre><code class="language-python">class HybridRateLimiter:
+    def __init__(self, redis_client, limit, window):
+        self.redis = redis_client
+        self.limit = limit
+        self.window = window
+        self.local_cache = {}
+        self.cache_ttl = 1  # 1 second cache
+    
+    def allow_request(self, user_id):
+        # Check local cache first
+        cache_entry = self.local_cache.get(user_id)
+        now = time.time()
+        
+        if cache_entry and now - cache_entry['time'] &lt; self.cache_ttl:
+            if cache_entry['count'] &lt; self.limit:
+                cache_entry['count'] += 1
+                return True
+            return False
+        
+        # Cache miss or expired - check Redis
+        key = f"rate_limit:{user_id}"
+        current = self.redis.get(key)
+        
+        if current is None or int(current) &lt; self.limit:
+            count = self.redis.incr(key)
+            self.redis.expire(key, self.window)
+            
+            # Update local cache
+            self.local_cache[user_id] = {
+                'count': count,
+                'time': now
+            }
+            return True
+        
+        return False
+</code></pre>
+<p>§§SEG143§§</p>
+<h2 id="rate-limiting-response-headers">§§SEG144§§</h2>
+<p>§§SEG145§§</p>
+<p>§§SEG146§§</p>
+<pre><code class="language-http">HTTP/1.1 200 OK
+X-RateLimit-Limit: 1000           # Total limit
+X-RateLimit-Remaining: 950        # Requests remaining
+X-RateLimit-Reset: 1643990400     # Unix timestamp when resets
+
+HTTP/1.1 429 Too Many Requests
+Retry-After: 60                   # Seconds until retry
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1643990400
+</code></pre>
+<p>§§SEG147§§</p>
+<ul>
+<li>§§SEG148§§</li>
+<li>§§SEG149§§</li>
+<li>§§SEG150§§</li>
+</ul>
+<h2 id="backpressure---push-back-on-upstream">§§SEG151§§</h2>
+<p>§§SEG152§§</p>
+<h3 id="the-problem">§§SEG153§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG154§§</code></pre>
+<p>§§SEG155§§</p>
+<h3 id="solution-backpressure">§§SEG156§§</h3>
+<p>§§SEG157§§</p>
+<pre><code class="language-python">class BackpressureQueue:
+    def __init__(self, max_size):
+        self.queue = []
+        self.max_size = max_size
+    
+    def push(self, item):
+        if len(self.queue) &gt;= self.max_size:
+            # Backpressure: Block or reject
+            raise QueueFullError("Queue full, slow down!")
+        
+        self.queue.append(item)
+    
+    def pop(self):
+        if self.queue:
+            return self.queue.pop(0)
+        return None
+</code></pre>
+<p>§§SEG158§§</p>
+<pre><code class="language-python">@app.route('/api/task', methods=['POST'])
+def create_task():
+    try:
+        queue.push(request.data)
+        return {"status": "queued"}, 202
+    except QueueFullError:
+        return {"error": "System overloaded, try later"}, 503
+</code></pre>
+<p>§§SEG159§§</p>
+<h3 id="reactive-streams-backpressure">§§SEG160§§</h3>
+<p>§§SEG161§§</p>
+<pre><code class="language-python">class ReactiveStream:
+    def __init__(self, producer, consumer):
+        self.producer = producer
+        self.consumer = consumer
+        self.buffer = []
+        self.requested = 0
+    
+    def request(self, n):
+        # Consumer requests n items
+        self.requested += n
+        self.try_send()
+    
+    def try_send(self):
+        while self.requested &gt; 0 and self.buffer:
+            item = self.buffer.pop(0)
+            self.consumer.on_next(item)
+            self.requested -= 1
+    
+    def on_data(self, item):
+        # Producer sends data
+        if self.requested &gt; 0:
+            self.consumer.on_next(item)
+            self.requested -= 1
+        else:
+            # Buffer or drop
+            if len(self.buffer) &lt; MAX_BUFFER:
+                self.buffer.append(item)
+            else:
+                self.consumer.on_error("Backpressure limit")
+</code></pre>
+<p>§§SEG162§§</p>
+<h2 id="load-shedding---drop-traffic-to-survive">§§SEG163§§</h2>
+<p>§§SEG164§§</p>
+<h3 id="priority-based-shedding">§§SEG165§§</h3>
+<p>§§SEG166§§</p>
+<pre><code class="language-python">class LoadShedder:
+    def __init__(self, max_load):
+        self.max_load = max_load
+        self.current_load = 0
+    
+    def allow_request(self, priority):
+        if self.current_load &lt; self.max_load:
+            return True
+        
+        # Overload: only allow high priority
+        if priority == "critical":
+            return True
+        elif priority == "high" and self.current_load &lt; self.max_load * 1.1:
+            return True
+        else:
+            return False
+</code></pre>
+<p>§§SEG167§§</p>
+<pre><code class="language-python"># Critical: payment, checkout
+if allow_request("critical"):
+    process_payment()
+
+# High: user profile update  
+if allow_request("high"):
+    update_profile()
+
+# Low: analytics, logging
+if allow_request("low"):
+    track_analytics()
+</code></pre>
+<p>§§SEG168§§</p>
+<h3 id="adaptive-shedding">§§SEG169§§</h3>
+<p>§§SEG170§§</p>
+<pre><code class="language-python">class AdaptiveLoadShedder:
+    def __init__(self):
+        self.error_rate = 0.0
+        self.latency_p99 = 0.0
+    
+    def should_shed_load(self):
+        # Shed if error rate high
+        if self.error_rate &gt; 0.05:  # 5% errors
+            return True
+        
+        # Shed if latency high
+        if self.latency_p99 &gt; 1000:  # 1 second
+            return True
+        
+        # Shed if CPU high
+        cpu_usage = psutil.cpu_percent()
+        if cpu_usage &gt; 90:
+            return True
+        
+        return False
+    
+    def calculate_shed_probability(self):
+        # Progressive shedding
+        if self.error_rate &lt; 0.01:
+            return 0.0  # No shedding
+        elif self.error_rate &lt; 0.05:
+            return 0.5  # Shed 50%
+        else:
+            return 0.9  # Shed 90%
+</code></pre>
+<p>§§SEG171§§</p>
+<h2 id="circuit-breaker---stop-calling-failing-services">§§SEG172§§</h2>
+<p>§§SEG173§§</p>
+<h3 id="the-problem-1">§§SEG174§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG175§§</code></pre>
+<p>§§SEG176§§</p>
+<h3 id="circuit-breaker-states">§§SEG177§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG178§§</code></pre>
+<p>§§SEG179§§</p>
+<p>§§SEG180§§</p>
+<ul>
+<li>§§SEG181§§</li>
+<li>§§SEG182§§</li>
+</ul>
+<p>§§SEG183§§</p>
+<ul>
+<li>§§SEG184§§</li>
+<li>§§SEG185§§</li>
+<li>§§SEG186§§</li>
+</ul>
+<p>§§SEG187§§</p>
+<ul>
+<li>§§SEG188§§</li>
+<li>§§SEG189§§</li>
+<li>§§SEG190§§</li>
+</ul>
+<h3 id="implementation">§§SEG191§§</h3>
+<pre><code class="language-python">import time
+from enum import Enum
+
+class CircuitState(Enum):
+    CLOSED = "closed"
+    OPEN = "open"
+    HALF_OPEN = "half_open"
+
+class CircuitBreaker:
+    def __init__(self, failure_threshold=5, timeout=60, half_open_max=3):
+        self.failure_threshold = failure_threshold
+        self.timeout = timeout  # Seconds before trying again
+        self.half_open_max = half_open_max
+        
+        self.state = CircuitState.CLOSED
+        self.failure_count = 0
+        self.last_failure_time = None
+        self.half_open_attempts = 0
+    
+    def call(self, func, *args, **kwargs):
+        if self.state == CircuitState.OPEN:
+            # Check if timeout expired
+            if time.time() - self.last_failure_time &gt;= self.timeout:
+                self.state = CircuitState.HALF_OPEN
+                self.half_open_attempts = 0
+            else:
+                raise CircuitBreakerOpenError("Circuit breaker is open")
+        
+        try:
+            result = func(*args, **kwargs)
+            self.on_success()
+            return result
+        except Exception as e:
+            self.on_failure()
+            raise e
+    
+    def on_success(self):
+        if self.state == CircuitState.HALF_OPEN:
+            self.state = CircuitState.CLOSED
+        
+        self.failure_count = 0
+    
+    def on_failure(self):
+        self.failure_count += 1
+        self.last_failure_time = time.time()
+        
+        if self.state == CircuitState.HALF_OPEN:
+            self.state = CircuitState.OPEN
+        elif self.failure_count &gt;= self.failure_threshold:
+            self.state = CircuitState.OPEN
+</code></pre>
+<p>§§SEG192§§</p>
+<pre><code class="language-python">breaker = CircuitBreaker(failure_threshold=5, timeout=60)
+
+def call_external_service():
+    return breaker.call(external_api.get_data)
+
+try:
+    data = call_external_service()
+except CircuitBreakerOpenError:
+    # Service is down, use fallback
+    data = get_cached_data()
+</code></pre>
+<h3 id="benefits">§§SEG193§§</h3>
+<p>§§SEG194§§</p>
+<ul>
+<li>§§SEG195§§</li>
+<li>§§SEG196§§</li>
+</ul>
+<p>§§SEG197§§</p>
+<ul>
+<li>§§SEG198§§</li>
+<li>§§SEG199§§</li>
+</ul>
+<p>§§SEG200§§</p>
+<ul>
+<li>§§SEG201§§</li>
+</ul>
+<p>§§SEG202§§</p>
+<pre><code class="language-python">try:
+    data = call_external_service()
+except CircuitBreakerOpenError:
+    # Fallback strategies
+    data = get_cached_data()           # Use cache
+    data = get_default_data()          # Use defaults
+    data = call_backup_service()       # Alternate service
+</code></pre>
+<h2 id="bulkhead-pattern---isolate-failures">§§SEG203§§</h2>
+<p>§§SEG204§§</p>
+<h3 id="thread-pool-bulkheads">§§SEG205§§</h3>
+<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor
+
+class BulkheadPattern:
+    def __init__(self):
+        # Separate thread pools for different services
+        self.service_a_pool = ThreadPoolExecutor(max_workers=10)
+        self.service_b_pool = ThreadPoolExecutor(max_workers=10)
+        self.service_c_pool = ThreadPoolExecutor(max_workers=10)
+    
+    def call_service_a(self, request):
+        return self.service_a_pool.submit(service_a.process, request)
+    
+    def call_service_b(self, request):
+        return self.service_b_pool.submit(service_b.process, request)
+</code></pre>
+<p>§§SEG206§§</p>
+<p>§§SEG207§§</p>
+<h3 id="connection-pool-bulkheads">§§SEG208§§</h3>
+<pre><code class="language-python"># Separate database connection pools
+db_pool_users = create_pool(max_connections=20)
+db_pool_orders = create_pool(max_connections=20)
+db_pool_analytics = create_pool(max_connections=10)
+
+# Analytics queries won't starve user queries
+</code></pre>
+<h2 id="putting-it-all-together">§§SEG209§§</h2>
+<p>§§SEG210§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG211§§</code></pre>
+<p>§§SEG212§§</p>
+<ol>
+<li>§§SEG213§§</li>
+<li>§§SEG214§§</li>
+<li>§§SEG215§§</li>
+<li>§§SEG216§§</li>
+<li>§§SEG217§§</li>
+</ol>
+<p>§§SEG218§§</p>
+<h2 id="practical-recommendations">§§SEG219§§</h2>
+<h3 id="1-start-with-rate-limiting">§§SEG220§§</h3>
+<p>§§SEG221§§</p>
+<pre><code class="language-python"># Simple Flask example
+from flask_limiter import Limiter
+
+limiter = Limiter(
+    app,
+    key_func=lambda: request.headers.get('X-API-Key'),
+    default_limits=["1000 per day", "100 per hour"]
+)
+
+@app.route('/api/data')
+@limiter.limit("10 per minute")
+def get_data():
+    return jsonify(data)
+</code></pre>
+<p>§§SEG222§§</p>
+<h3 id="2-implement-circuit-breakers-for-external-dependencies">§§SEG223§§</h3>
+<pre><code class="language-python"># Wrap external API calls
+payment_breaker = CircuitBreaker()
+email_breaker = CircuitBreaker()
+
+@payment_breaker.call
+def charge_payment(amount):
+    return stripe_api.charge(amount)
+
+@email_breaker.call
+def send_email(to, body):
+    return sendgrid_api.send(to, body)
+</code></pre>
+<h3 id="3-monitor--alert">§§SEG224§§</h3>
+<p>§§SEG225§§</p>
+<pre><code>§§SEG226§§</code></pre>
+<p>§§SEG227§§</p>
+<ul>
+<li>§§SEG228§§</li>
+<li>§§SEG229§§</li>
+<li>§§SEG230§§</li>
+</ul>
+<h3 id="4-design-for-degradation">§§SEG231§§</h3>
+<p>§§SEG232§§</p>
+<pre><code class="language-python">def get_user_recommendations():
+    try:
+        # Try ML service
+        return ml_service.get_recommendations()
+    except CircuitBreakerOpenError:
+        # Fallback to simple algorithm
+        return simple_recommendation()
+    except Exception:
+        # Last resort: popular items
+        return get_popular_items()
+</code></pre>
+<h3 id="5-test-under-load">§§SEG233§§</h3>
+<p>§§SEG234§§</p>
+<pre><code class="language-bash"># k6 load test
+k6 run --vus 1000 --duration 30s load_test.js
+</code></pre>
+<p>§§SEG235§§</p>
+<ul>
+<li>§§SEG236§§</li>
+<li>§§SEG237§§</li>
+<li>§§SEG238§§</li>
+</ul>
+<h2 id="mental-model-system-phải-protect-itself">§§SEG239§§</h2>
+<p>§§SEG240§§</p>
+<p>§§SEG241§§</p>
+<pre><code>§§SEG242§§</code></pre>
+<p>§§SEG243§§</p>
+<ol>
+<li>§§SEG244§§</li>
+<li>§§SEG245§§</li>
+<li>§§SEG246§§</li>
+<li>§§SEG247§§</li>
+</ol>
+<p>§§SEG248§§</p>
+<h2 id="key-takeaways">§§SEG249§§</h2>
+<p>§§SEG250§§</p>
+<p>§§SEG251§§</p>
+<p>§§SEG252§§</p>
+<p>§§SEG253§§</p>
+<p>§§SEG254§§</p>
+<p>§§SEG255§§</p>
+<p>§§SEG256§§</p>
+<p>§§SEG257§§</p>
+<p>§§SEG258§§</p>
+<p>§§SEG259§§</p>
+<p>§§SEG260§§</p>
+<p>§§SEG261§§</p>
+<p>§§SEG262§§</p>
+<p>§§SEG263§§</p>
+<p>§§SEG264§§</p>
+<p>§§SEG265§§</p>
+<p>§§SEG266§§</p>
+<p>§§SEG267§§</p>
+<hr>
+<p>§§SEG268§§</p></article>

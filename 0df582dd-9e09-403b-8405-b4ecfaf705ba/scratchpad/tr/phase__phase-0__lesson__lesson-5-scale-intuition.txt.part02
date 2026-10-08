@@ -1,0 +1,298 @@
+@74
+Bài tập 2: Ứng Dụng Mạng Xã Hội
+@75
+**Dữ kiện:**
+@76
+10 triệu người dùng
+@77
+1 triệu người dùng hoạt động hằng ngày
+@78
+Mỗi người dùng đăng bài 2 lần/ngày
+@79
+Mỗi người dùng xem 100 bài đăng/ngày
+@80
+**Hãy tính:**
+@81
+**⟦Lưu lượng ghi|Write traffic⟧:**
+@82
+Số bài đăng được tạo:
+1M người dùng × 2 bài/ngày = 2M bài/ngày
+2M / 86.400 ≈ 23 lượt ghi/giây
+
+Cao điểm: 69 lượt ghi/giây
+→ Một cơ sở dữ liệu xử lý được
+
+@83
+**⟦Lưu lượng đọc|Read traffic⟧:**
+@84
+Số bài đăng được xem:
+1M người dùng × 100 bài/ngày = 100M lượt xem/ngày
+100M / 86.400 ≈ 1.157 lượt đọc/giây
+
+Cao điểm: 3.471 lượt đọc/giây
+→ Cần bộ nhớ đệm!
+
+@85
+**Tốc độ tăng ⟦lưu trữ|storage⟧:**
+@86
+Số bài đăng mỗi ngày: 2M
+Kích thước bài đăng: 500 byte (văn bản + siêu dữ liệu)
+Lưu trữ mỗi ngày: 2M × 500 byte = 1GB/ngày
+
+Ảnh (50% bài đăng có 1 ảnh):
+1M ảnh/ngày × 2MB = 2TB/ngày
+
+Tăng trưởng hằng năm:
+Văn bản: 1GB × 365 = 365GB
+Ảnh: 2TB × 365 = 730TB
+
+→ Cần lưu trữ phân tán (S3)
+→ Cơ sở dữ liệu: Phân mảnh sau 1-2 năm
+
+@87
+**Tỷ lệ Đọc:Ghi:**
+@88
+Đọc: 1.157/s
+Ghi: 23/s
+Tỷ lệ: 50:1
+
+→ Cần tối ưu mạnh cho việc đọc
+→ Chiến lược lưu đệm quyết liệt
+→ CDN cho nội dung đa phương tiện
+
+@89
+Trực Giác Về Số Yêu Cầu Mỗi Giây (RPS)
+@90
+Các Mức RPS Khác Nhau Có Ý Nghĩa Gì
+@91
+1-10 RPS:
+- Công cụ nội bộ nhỏ
+- Một máy chủ là đủ
+- Không cần tối ưu gì đặc biệt
+
+10-100 RPS:
+- Ứng dụng web nhỏ
+- 1-2 máy chủ
+- Lưu đệm cơ bản là có ích
+
+100-1.000 RPS:
+- Ứng dụng web cỡ vừa
+- 5-10 máy chủ
+- Lưu đệm là thiết yếu
+- Tối ưu cơ sở dữ liệu trở nên quan trọng
+
+1.000-10.000 RPS:
+- Ứng dụng web lớn
+- 20-50 máy chủ
+- Bộ nhớ đệm phân tán
+- Bản sao chỉ đọc cho cơ sở dữ liệu
+- Cân bằng tải là sống còn
+
+10.000-100.000 RPS:
+- Quy mô rất lớn
+- 100+ máy chủ
+- Phân mảnh cơ sở dữ liệu
+- Phân bố theo địa lý
+- Bắt buộc có CDN
+
+100.000+ RPS:
+- Quy mô khổng lồ (cỡ Google, Facebook)
+- Hàng nghìn máy chủ
+- Hạ tầng tự xây dựng
+- Điện toán biên
+- Tối ưu nâng cao ở mọi nơi
+
+@92
+Quy Tắc Kinh Nghiệm Về Năng Lực Máy Chủ
+@93
+Máy chủ web thông thường:
+- Truy vấn đơn giản: ~1.000 req/s
+- Độ phức tạp trung bình: ~500 req/s
+- Logic phức tạp: ~100 req/s
+
+Cơ sở dữ liệu:
+- Đọc đơn giản: ~10.000 req/s
+- Ghi đơn giản: ~5.000 req/s
+- Truy vấn phức tạp: ~100 req/s
+- Giao dịch: ~1.000 req/s
+
+Bộ nhớ đệm (Redis):
+- Đọc: ~100.000 req/s mỗi nút
+- Ghi: ~50.000 req/s mỗi nút
+
+@94
+**Dùng các con số này để ⟦ước lượng|estimate⟧:**
+@95
+Cần 5.000 req/s với độ phức tạp trung bình?
+5.000 / 500 = tối thiểu 10 máy chủ
+Thêm 50% dư phòng: 15 máy chủ
+
+Cơ sở dữ liệu không theo kịp?
+Dùng bộ nhớ đệm để giảm 90% tải lên CSDL
+5.000 × 0,1 = 500 req/s tới CSDL → Một CSDL là ổn
+
+@96
+Trực Giác Về Tốc Độ Tăng ⟦Lưu Trữ|Storage⟧
+@97
+Tính Toán ⟦Lưu Trữ|Storage⟧
+@98
+Kích thước dữ liệu phổ biến:
+
+Bản ghi người dùng: ~1KB
+- tên người dùng, email, mật khẩu đã băm, siêu dữ liệu
+
+Tweet/Bài đăng: ~500 byte
+- nội dung văn bản, user_id, dấu thời gian, siêu dữ liệu
+
+Ảnh (đã nén): ~2MB
+- JPEG, tối ưu cho web
+
+Video (1 phút, 720p): ~50MB
+- Nén H.264
+
+Một dòng log: ~200 byte
+- dấu thời gian, mức độ, thông điệp
+
+@99
+Ví Dụ Tính Toán Tăng Trưởng
+@100
+**Kịch bản: Ứng dụng chia sẻ ảnh**
+@101
+Người dùng: 1 triệu
+Hoạt động hằng ngày: 200K
+Số ảnh tải lên mỗi người dùng hoạt động: 2
+
+Lượt tải lên mỗi ngày:
+200K × 2 = 400K ảnh/ngày
+
+Lưu trữ mỗi ngày:
+400K × 2MB = 800GB/ngày
+
+Hằng tháng: 800GB × 30 = 24TB/tháng
+Hằng năm: 24TB × 12 = 288TB/năm
+
+Chi phí (AWS S3):
+$0,023/GB/tháng
+288TB = 288.000GB
+Chi phí: 288.000 × $0,023 = $6.624/tháng
+
+→ Đáng kể! Cần nén, CDN, phân tầng lưu trữ
+
+@102
+**Các chiến lược ⟦tối ưu|optimization⟧:**
+@103
+Tính toán ban đầu: 288TB/năm
+
+Sau khi tối ưu:
+1. Nén mạnh tay: -30% = 200TB
+2. Xoá ảnh cũ/không dùng: -20% = 160TB
+3. Dùng phân tầng lưu trữ (lưu trữ lạnh): -40% chi phí
+4. Tổng: 160TB với giá $0,014/GB = $2.240/tháng
+
+Tiết kiệm: $4.384/tháng (giảm 66%!)
+
+@104
+Mẫu Hình ⟦Thiên Về Đọc|Read Heavy⟧ và ⟦Thiên Về Ghi|Write Heavy⟧
+@105
+Nhận Diện ⟦Mẫu Hình|Pattern⟧
+@106
+graph TB
+    subgraph Read Heavy
+        R1[Bảng tin mạng xã hội<br/>99% đọc]
+        R2[Trang tin tức<br/>99.9% đọc]
+        R3[Wikipedia<br/>99.99% đọc]
+    end
+
+    subgraph Balanced
+        B1[Thương mại điện tử<br/>80% đọc]
+        B2[CRM<br/>70% đọc]
+    end
+
+    subgraph Write Heavy
+        W1[Phân tích dữ liệu<br/>80% ghi]
+        W2[Ghi log<br/>99% ghi]
+        W3[Dữ liệu IoT<br/>95% ghi]
+    end
+
+    style R1 fill:#51cf66
+    style B1 fill:#ffd43b
+    style W1 fill:#ff6b6b
+@107
+*Mỗi ⟦mẫu hình|pattern⟧ khác nhau cần một ⟦chiến lược tối ưu|optimization strategy⟧ khác nhau*
+@108
+Hệ Thống ⟦Thiên Về Đọc|Read-Heavy⟧ (90%+ Lượt Đọc)
+@109
+Ví dụ: Mạng xã hội, tin tức, blog, tài liệu
+
+Đặc điểm:
+- Nhiều người dùng xem cùng một nội dung
+- Nội dung không thay đổi thường xuyên
+- Tỷ lệ trúng bộ nhớ đệm rất cao
+
+Chiến lược tối ưu:
+✓ Lưu đệm quyết liệt (Redis, Memcached)
+✓ CDN cho nội dung tĩnh
+✓ Bản sao chỉ đọc cho cơ sở dữ liệu
+✓ Nhất quán cuối cùng là chấp nhận được
+✗ Đừng tối ưu việc ghi (không phải điểm nghẽn)
+
+Trọng tâm hạ tầng:
+- Tầng bộ nhớ đệm (quan trọng nhất)
+- CDN (cho nội dung đa phương tiện)
+- Nhiều bản sao chỉ đọc
+
+Ví dụ: Reddit
+- 1 bài đăng → 10.000 lượt xem
+- Lưu đệm bài đăng trong 5 phút
+- Tỷ lệ trúng bộ nhớ đệm 99,99%
+- Tải lên cơ sở dữ liệu rất nhỏ
+
+@110
+Hệ Thống ⟦Thiên Về Ghi|Write-Heavy⟧ (50%+ Lượt Ghi)
+@111
+Ví dụ: Phân tích dữ liệu, ghi log, cảm biến IoT, giao dịch tài chính
+
+Đặc điểm:
+- Dữ liệu được nạp vào liên tục
+- Việc đọc ít thường xuyên hơn
+- Dữ liệu thường là chuỗi thời gian
+
+Chiến lược tối ưu:
+✓ Cơ sở dữ liệu tối ưu cho ghi (Cassandra, CSDL chuỗi thời gian)
+✓ Ghi bất đồng bộ (dùng hàng đợi làm vùng đệm)
+✓ Xử lý theo lô
+✓ Phân mảnh/phân vùng dữ liệu
+✗ Lưu đệm kém hiệu quả hơn
+
+Trọng tâm hạ tầng:
+- Thông lượng ghi (cơ sở dữ liệu)
+- Hàng đợi thông điệp (vùng đệm)
+- Xử lý theo lô
+
+Ví dụ: Hệ thống giám sát
+- 10K máy chủ × 100 chỉ số/phút
+- 1M lượt ghi/phút = 16K/giây
+- Đọc: Một lần/ngày cho bảng điều khiển
+- Tối ưu cho thông lượng ghi
+
+@112
+Hệ Thống Cân Bằng (50-80% Lượt Đọc)
+@113
+Ví dụ: Thương mại điện tử, CRM, công cụ năng suất
+
+Đặc điểm:
+- Kết hợp cả đọc và ghi
+- Cần tối ưu cả hai
+- Các đánh đổi phức tạp hơn
+
+Chiến lược tối ưu:
+✓ Lưu đệm có chọn lọc (chỉ dữ liệu "nóng")
+✓ Tối ưu cơ sở dữ liệu (chỉ mục)
+✓ Bản sao chỉ đọc cho báo cáo
+✓ Tối ưu ghi cho các giao dịch
+
+Trọng tâm hạ tầng:
+- Cách tiếp cận cân bằng
+- Lưu đệm các luồng xử lý "nóng"
+- Tối ưu các truy vấn quan trọng
+

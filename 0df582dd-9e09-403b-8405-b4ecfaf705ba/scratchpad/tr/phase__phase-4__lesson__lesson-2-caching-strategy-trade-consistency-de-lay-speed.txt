@@ -1,0 +1,657 @@
+@0
+Chiến Lược ⟦Lưu Đệm|Caching⟧ - Đánh Đổi ⟦Tính Nhất Quán|Consistency⟧ Để Lấy Tốc Độ
+@1
+Có một câu nói nổi tiếng trong ⟦thiết kế hệ thống|system design⟧:
+@2
+**"Trong Khoa học Máy tính chỉ có hai việc khó: ⟦vô hiệu hoá bộ nhớ đệm|cache invalidation⟧ và đặt tên." - Phil Karlton**
+@3
+⟦Lưu đệm|Caching⟧ nghe thì đơn giản: lưu dữ liệu vào bộ nhớ để đọc nhanh hơn. Nhưng khi triển khai thực tế, bạn sẽ gặp hàng tá câu hỏi khó:
+@4
+Đặt ⟦bộ nhớ đệm|cache⟧ ở đâu? Ở ứng dụng? Ở cơ sở dữ liệu? Ở CDN?
+@5
+Khi nào cập nhật ⟦bộ nhớ đệm|cache⟧? Ngay lập tức hay để sau (lazy)?
+@6
+Khi nào xoá ⟦bộ nhớ đệm|cache⟧? Làm sao biết dữ liệu đã ⟦cũ|stale⟧?
+@7
+Lưu đệm bao nhiêu dữ liệu? RAM có giới hạn mà
+@8
+Chuyện gì xảy ra khi ⟦bộ nhớ đệm|cache⟧ và cơ sở dữ liệu không ⟦đồng bộ|sync⟧ với nhau?
+@9
+**Đây chính là lý do chiến lược ⟦lưu đệm|caching⟧ lại quan trọng.**
+@10
+Bài học này dạy bạn tư duy về ⟦lưu đệm|caching⟧ như một ⟦kiến trúc sư|architect⟧ - hiểu các ⟦mẫu thiết kế|patterns⟧, biết khi nào dùng mẫu nào, và quan trọng nhất: **hiểu ⟦sự đánh đổi|trade-off⟧ giữa ⟦hiệu năng|performance⟧ và ⟦tính nhất quán|consistency⟧.**
+@11
+Tại Sao ⟦Lưu Đệm|Caching⟧ Lại Hiệu Quả?
+@12
+Trước khi học chiến lược, phải hiểu **tại sao** ⟦lưu đệm|caching⟧ lại hiệu quả đến vậy.
+@13
+⟦Tính Cục Bộ Của Tham Chiếu|Locality of Reference⟧
+@16
+Facebook: Bạn làm mới ⟦bảng tin|newsfeed⟧ 10 lần/phút → vẫn là cùng các bài viết đó
+@17
+Thương mại điện tử: Sản phẩm "hot" (iPhone mới) được xem hàng triệu lần
+@18
+Trang tin tức: Tin nóng được hàng triệu người đọc
+@19
+**Thay vì ⟦truy vấn|query⟧ cơ sở dữ liệu 1 triệu lần, hãy lưu đệm ở lần đầu → phục vụ 999.999 lần còn lại từ bộ nhớ.**
+@20
+Chênh Lệch Tốc Độ Giữa Các Tầng ⟦Lưu Trữ|Storage⟧
+@21
+RAM (bộ nhớ đệm):   ~100 nano giây
+SSD (CSDL):         ~100 micro giây (chậm hơn 1000 lần)
+HDD:                ~10 mili giây (chậm hơn 100.000 lần)
+Mạng (từ xa):       ~100 mili giây (chậm hơn 1.000.000 lần)
+
+@22
+**⟦Trúng bộ nhớ đệm|Cache hit⟧ = nhanh hơn từ 1000 đến 1.000.000 lần.**
+@23
+Đây là lý do tại sao ⟦lưu đệm|caching⟧ có tác động khổng lồ lên ⟦hiệu năng|performance⟧.
+@24
+Quy Tắc 80/20 (Nguyên Lý Pareto)
+@25
+**80% ⟦yêu cầu|requests⟧ truy cập vào 20% dữ liệu.**
+@26
+YouTube: 20% video chiếm 80% lượt xem (các video lan truyền)
+@27
+Reddit: 20% bài viết trên trang nhất chiếm 80% ⟦lưu lượng|traffic⟧
+@28
+API: 20% ⟦điểm cuối|endpoints⟧ nhận 80% ⟦yêu cầu|requests⟧
+@29
+**Chỉ cần lưu đệm 20% ⟦dữ liệu "nóng"|data hot⟧, bạn đã giải quyết được 80% ⟦lưu lượng|traffic⟧.**
+@30
+**⟦Mô hình tư duy|Mental model⟧:** ⟦Lưu đệm|Caching⟧ không phải là lưu đệm tất cả. Mà là lưu đệm đúng dữ liệu.
+@31
+Mẫu Cache-Aside (Tải Lười - Lazy Loading)
+@32
+Đây là ⟦mẫu thiết kế|pattern⟧ phổ biến nhất và đơn giản nhất.
+@33
+Luồng Hoạt Động
+@34
+sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+
+    App->>Cache: 1. Kiểm tra bộ nhớ đệm
+    alt Trúng bộ nhớ đệm
+        Cache-->>App: 2a. Trả về dữ liệu
+    else Trượt bộ nhớ đệm
+        Cache-->>App: 2b. Trượt bộ nhớ đệm
+        App->>DB: 3. Truy vấn cơ sở dữ liệu
+        DB-->>App: 4. Trả về dữ liệu
+        App->>Cache: 5. Ghi vào bộ nhớ đệm
+        App-->>App: 6. Trả về dữ liệu
+    end
+@35
+**Từng bước:**
+@36
+Ứng dụng kiểm tra ⟦bộ nhớ đệm|cache⟧ trước
+@37
+**⟦Trúng bộ nhớ đệm|Cache hit⟧:** Trả về dữ liệu từ ⟦bộ nhớ đệm|cache⟧ (đường nhanh)
+@38
+**⟦Trượt bộ nhớ đệm|Cache miss⟧:** ⟦Truy vấn|Query⟧ cơ sở dữ liệu
+@39
+Ghi dữ liệu vào ⟦bộ nhớ đệm|cache⟧
+@40
+Trả dữ liệu về cho người dùng
+@41
+Ví Dụ Mã Nguồn
+@43
+**Đơn giản và dễ triển khai**
+@45
+Dễ ⟦gỡ lỗi|debug⟧
+@46
+Ứng dụng kiểm soát hoàn toàn
+@47
+**⟦Bộ nhớ đệm|Cache⟧ chỉ chứa dữ liệu được ⟦yêu cầu|request⟧**
+@48
+Không lãng phí bộ nhớ cho dữ liệu không dùng đến
+@49
+⟦Bộ nhớ đệm|Cache⟧ tự nhiên được "làm nóng" (warm up) theo đặc điểm ⟦lưu lượng|traffic⟧
+@50
+**Chống chịu tốt khi ⟦bộ nhớ đệm|cache⟧ gặp ⟦sự cố|failure⟧**
+@51
+⟦Bộ nhớ đệm|Cache⟧ sập → ứng dụng vẫn hoạt động (chỉ chậm hơn thôi)
+@52
+Không có ⟦điểm lỗi duy nhất|single point of failure⟧
+@54
+**Cái giá của ⟦trượt bộ nhớ đệm|cache miss⟧ cao**
+@55
+⟦Yêu cầu|Request⟧ đầu tiên luôn chậm (truy vấn CSDL + ghi vào bộ nhớ đệm)
+@56
+Vấn đề ⟦dồn dập|stampede⟧: nhiều ⟦yêu cầu|requests⟧ cùng ⟦trượt bộ nhớ đệm|cache miss⟧ → truy vấn CSDL nhiều lần
+@57
+**Dữ liệu có thể bị ⟦cũ|stale⟧**
+@58
+⟦Bộ nhớ đệm|Cache⟧ không tự động cập nhật khi CSDL thay đổi
+@59
+Phải dựa vào TTL hoặc ⟦vô hiệu hoá thủ công|manual invalidation⟧
+@60
+Khi Nào Dùng Cache-Aside
+@62
+⟦Khối lượng công việc|Workload⟧ ⟦thiên về đọc|read-heavy⟧
+@63
+Dữ liệu không thay đổi thường xuyên
+@64
+Ứng dụng cần kiểm soát logic ⟦bộ nhớ đệm|cache⟧
+@65
+Chấp nhận được ⟦nhất quán cuối cùng|eventual consistency⟧
+@66
+**Ví dụ ⟦tình huống sử dụng|use case⟧:**
+@67
+Hồ sơ người dùng (ít thay đổi)
+@68
+Danh mục sản phẩm
+@69
+Dữ liệu cấu hình
+@70
+Bài viết blog
+@71
+Mẫu Write-Through (Ghi Xuyên)
+@72
+Write-through giải quyết vấn đề ⟦tính nhất quán|consistency⟧ của cache-aside.
+@73
+Luồng Hoạt Động
+@74
+sequenceDiagram
+    participant App
+    participant Cache
+    participant DB
+
+    Note over App,DB: Luồng ĐỌC
+    App->>Cache: 1. Đọc từ bộ nhớ đệm
+    alt Trúng bộ nhớ đệm
+        Cache-->>App: Trả về dữ liệu
+    else Trượt bộ nhớ đệm
+        App->>DB: 2. Đọc từ CSDL
+        DB-->>App: 3. Trả về dữ liệu
+        App->>Cache: 4. Ghi vào bộ nhớ đệm
+    end
+
+    Note over App,DB: Luồng GHI
+    App->>Cache: 1. Ghi vào bộ nhớ đệm
+    Cache->>DB: 2. Ghi vào cơ sở dữ liệu
+    DB-->>Cache: 3. Xác nhận ghi
+    Cache-->>App: 4. Xác nhận ghi
+@75
+**Khác biệt then chốt:** Khi ghi dữ liệu, ứng dụng ghi vào ⟦bộ nhớ đệm|cache⟧ → ⟦bộ nhớ đệm|cache⟧ ghi vào cơ sở dữ liệu.
+@76
+**⟦Bộ nhớ đệm|Cache⟧ luôn ⟦đồng bộ|sync⟧ với cơ sở dữ liệu.**
+@77
+Ví Dụ Mã Nguồn
+@79
+**⟦Tính nhất quán|Consistency⟧ dữ liệu cao**
+@80
+⟦Bộ nhớ đệm|Cache⟧ và cơ sở dữ liệu luôn ⟦đồng bộ|sync⟧
+@81
+Không có vấn đề ⟦dữ liệu cũ|stale data⟧
+@82
+**⟦Hiệu năng|Performance⟧ đọc tốt**
+@83
+Dữ liệu luôn có sẵn trong ⟦bộ nhớ đệm|cache⟧
+@84
+Không bị ⟦trượt bộ nhớ đệm|cache miss⟧ với dữ liệu vừa ghi
+@86
+**⟦Độ trễ|Latency⟧ ghi cao**
+@87
+Mỗi lần ghi phải đợi cả ⟦bộ nhớ đệm|cache⟧ lẫn cơ sở dữ liệu
+@88
+Đường chậm cho các thao tác ghi
+@89
+**Không hiệu quả với ⟦khối lượng công việc|workload⟧ ⟦thiên về ghi|write-heavy⟧**
+@90
+⟦Bộ nhớ đệm|Cache⟧ được cập nhật nhưng có thể không bao giờ được đọc
+@91
+Lãng phí công sức nếu dữ liệu không "nóng"
+@92
+**⟦Bộ nhớ đệm|Cache⟧ lỗi = ghi lỗi**
+@93
+⟦Bộ nhớ đệm|Cache⟧ sập → không thể ghi
+@94
+Tăng sự phụ thuộc và rủi ro
+@95
+Khi Nào Dùng Write-Through
+@97
+Cần ⟦nhất quán mạnh|strong consistency⟧
+@98
+Mẫu ⟦đọc ngay sau khi ghi|read-after-write⟧ (ghi rồi đọc ngay)
+@99
+Dữ liệu quan trọng không được phép ⟦cũ|stale⟧
+@100
+**Ví dụ ⟦tình huống sử dụng|use case⟧:**
+@101
+⟦Giao dịch|transactions⟧ tài chính
+@102
+Quản lý tồn kho
+@103
+Dữ liệu ⟦phiên|session⟧
+@104
+Giỏ hàng
+@105
+Mẫu Write-Behind (Ghi Sau - Write-Back)
+@106
+Write-behind tối ưu ⟦hiệu năng|performance⟧ ghi bằng cách ghi ⟦bất đồng bộ|async⟧.
+@107
+Luồng Hoạt Động
+@108
+sequenceDiagram
+    participant App
+    participant Cache
+    participant Queue
+    participant DB
+
+    Note over App,DB: Luồng GHI
+    App->>Cache: 1. Ghi vào bộ nhớ đệm (nhanh)
+    Cache-->>App: 2. Trả về ngay lập tức
+    Cache->>Queue: 3. Đưa lệnh ghi vào hàng đợi bất đồng bộ
+
+    Note over Queue,DB: Tiến trình nền
+    Queue->>DB: 4. Ghi theo lô vào CSDL
+    DB-->>Queue: 5. Xác nhận
+@109
+**Khác biệt then chốt:** Ứng dụng chỉ ghi vào ⟦bộ nhớ đệm|cache⟧ → trả về ngay. ⟦Bộ nhớ đệm|Cache⟧ tự ⟦đồng bộ|sync⟧ xuống cơ sở dữ liệu sau đó (⟦bất đồng bộ|async⟧).
+@111
+**⟦Hiệu năng|Performance⟧ ghi cực cao**
+@112
+Ứng dụng chỉ ghi vào bộ nhớ
+@113
+⟦Độ trễ|Latency⟧ thấp nhất có thể
+@114
+**Ghi ⟦theo lô|Batch⟧**
+@115
+⟦Bộ nhớ đệm|Cache⟧ có thể gộp nhiều lần ghi lại với nhau
+@116
+Giảm ⟦tải|load⟧ cơ sở dữ liệu đáng kể
+@117
+**⟦Thông lượng|Throughput⟧ cao**
+@118
+Hệ thống chịu được ⟦khối lượng công việc|workload⟧ ⟦thiên về ghi|write-heavy⟧
+@119
+Cơ sở dữ liệu không bị quá tải
+@121
+**Rủi ro mất dữ liệu**
+@122
+⟦Bộ nhớ đệm|Cache⟧ sập trước khi ⟦đồng bộ|sync⟧ → mất dữ liệu
+@123
+Cần ⟦nhân bản|replication⟧ cho tầng ⟦bộ nhớ đệm|cache⟧
+@124
+**⟦Tính nhất quán|Consistency⟧ phức tạp**
+@125
+⟦Bộ nhớ đệm|Cache⟧ có dữ liệu mới, cơ sở dữ liệu có dữ liệu cũ
+@126
+Đọc trực tiếp từ cơ sở dữ liệu sẽ nhận dữ liệu ⟦cũ|stale⟧
+@127
+**Triển khai phức tạp**
+@128
+Cần hệ thống ⟦hàng đợi|queue⟧
+@129
+Cần xử lý ⟦thử lại|retry⟧, ⟦sự cố|failure⟧
+@130
+Cần ⟦giám sát|monitoring⟧
+@131
+Khi Nào Dùng Write-Behind
+@133
+Ứng dụng ⟦thiên về ghi|write-heavy⟧
+@134
+Chấp nhận được ⟦nhất quán cuối cùng|eventual consistency⟧
+@135
+Có ⟦hạ tầng|infra⟧ để xử lý ⟦độ phức tạp|complexity⟧
+@136
+**Ví dụ ⟦tình huống sử dụng|use case⟧:**
+@137
+Thu thập dữ liệu phân tích
+@138
+Hệ thống ghi ⟦log|logging⟧
+@139
+Bộ đếm lượt thích/lượt xem trên mạng xã hội
+@140
+Bảng xếp hạng trong game
+@141
+⟦Vô Hiệu Hoá Bộ Nhớ Đệm|Cache Invalidation⟧ - Bài Toán Khó Của ⟦Lưu Đệm|Caching⟧
+@142
+**"⟦Vô hiệu hoá bộ nhớ đệm|Cache invalidation⟧ là một trong những bài toán khó nhất của khoa học máy tính."**
+@143
+Vấn đề: Làm sao biết khi nào ⟦bộ nhớ đệm|cache⟧ đã ⟦cũ|stale⟧ và cần làm mới?
+@144
+Chiến Lược 1: Dựa Trên Thời Gian (TTL)
+@145
+**Đặt thời gian hết hạn cho mỗi mục trong ⟦bộ nhớ đệm|cache⟧.**
+@147
+Đơn giản
+@148
+Tự động dọn dẹp
+@149
+Hành vi dễ dự đoán
+@151
+Dữ liệu có thể ⟦cũ|stale⟧ trong khoảng thời gian TTL
+@152
+Khó chọn được giá trị TTL phù hợp
+@153
+⟦Trượt bộ nhớ đệm|Cache miss⟧ tăng vọt khi nhiều ⟦khoá|keys⟧ hết hạn cùng lúc
+@154
+**⟦Thực hành tốt nhất|Best practice⟧:**
+@155
+Thêm ⟦độ lệch ngẫu nhiên|random jitter⟧ để tránh hiện tượng ⟦đàn bò dồn dập|thundering herd⟧
+@156
+Chiến Lược 2: ⟦Vô Hiệu Hoá|Invalidation⟧ Dựa Trên ⟦Sự Kiện|Event⟧
+@157
+**⟦Vô hiệu hoá|Invalidate⟧ ⟦bộ nhớ đệm|cache⟧ khi dữ liệu thay đổi.**
+@159
+Dữ liệu luôn mới
+@160
+Không có khoảng thời gian ⟦dữ liệu cũ|stale data⟧
+@162
+Phức tạp khi có nhiều nơi cùng cập nhật dữ liệu
+@163
+⟦Trượt bộ nhớ đệm|Cache miss⟧ sau khi ⟦vô hiệu hoá|invalidation⟧ (khởi động lạnh)
+@164
+Khó theo dõi hết mọi phụ thuộc
+@165
+Chiến Lược 3: ⟦Vô Hiệu Hoá|Invalidation⟧ Dựa Trên Phiên Bản
+@166
+**Dùng số phiên bản trong ⟦khoá bộ nhớ đệm|cache key⟧.**
+@168
+⟦Bộ nhớ đệm|Cache⟧ cũ tự nhiên mất hiệu lực (không khớp phiên bản)
+@169
+Không cần xoá một cách tường minh
+@170
+Dễ ⟦hoàn tác|rollback⟧
+@172
+Cần duy trì siêu dữ liệu về phiên bản
+@173
+Nhiều ⟦khoá bộ nhớ đệm|cache keys⟧ hơn (tốn bộ nhớ)
+@174
+Đối Chiếu Thực Tế: Kết Hợp Các Chiến Lược
+@175
+**Trong thực tế, ⟦kiến trúc sư|architect⟧ dùng kết hợp:**
+@176
+**TTL làm lưới an toàn:** Đảm bảo dữ liệu không bị ⟦cũ|stale⟧ quá lâu
+@177
+**Dựa trên ⟦sự kiện|event⟧ cho các đường đi then chốt:** Người dùng cập nhật hồ sơ → ⟦vô hiệu hoá|invalidate⟧ ngay
+@178
+**Phiên bản cho các phụ thuộc phức tạp:** Sản phẩm có nhiều dữ liệu liên quan
+@179
+**Không có giải pháp hoàn hảo. Hãy chọn ⟦sự đánh đổi|trade-off⟧ phù hợp.**
+@180
+Chính Sách ⟦Loại Bỏ|Eviction⟧ Khỏi ⟦Bộ Nhớ Đệm|Cache⟧ - Khi ⟦Bộ Nhớ Đệm|Cache⟧ Đầy
+@181
+RAM có giới hạn. Khi ⟦bộ nhớ đệm|cache⟧ đầy, phải xoá bớt dữ liệu cũ.
+@182
+**Câu hỏi: Xoá mục nào trong ⟦bộ nhớ đệm|cache⟧?**
+@183
+LRU (Least Recently Used - Ít Được Dùng Gần Đây Nhất)
+@184
+**Xoá mục lâu nhất không được truy cập.**
+@186
+Mỗi lần ⟦trúng bộ nhớ đệm|cache hit⟧ → đưa mục đó lên đầu
+@187
+Khi ⟦bộ nhớ đệm|cache⟧ đầy → xoá mục ở cuối (lâu nhất không dùng)
+@189
+Kiểu truy cập theo thời gian (dữ liệu gần đây được dùng lại)
+@190
+⟦Lưu đệm|Caching⟧ cho mục đích chung
+@191
+Lựa chọn mặc định cho hầu hết các trường hợp
+@192
+**Ví dụ:** Trang tin tức - Tin nóng (gần đây) được đọc nhiều.
+@193
+LFU (Least Frequently Used - Ít Được Dùng Thường Xuyên Nhất)
+@194
+**Xoá mục có tần suất truy cập thấp nhất.**
+@196
+Theo dõi số lần mỗi mục được truy cập
+@197
+Khi ⟦bộ nhớ đệm|cache⟧ đầy → xoá mục ít được dùng nhất
+@199
+⟦Dữ liệu "nóng"|Hot data⟧ không thay đổi theo thời gian (luôn được ưa chuộng)
+@200
+⟦Bộ nhớ đệm|Cache⟧ tồn tại lâu dài
+@201
+**Ví dụ:** Thương mại điện tử - Sản phẩm bán chạy luôn "hot", không phụ thuộc vào thời điểm.
+@202
+FIFO (First In First Out - Vào Trước Ra Trước)
+@203
+**Xoá mục cũ nhất (theo thứ tự thêm vào).**
+@204
+Đơn giản nhưng ít được dùng vì không tính đến kiểu truy cập.
+@205
+So Sánh
+@206
+Chính sách
+@207
+Loại bỏ
+@208
+Phù hợp nhất cho
+@209
+⟦Chi phí phụ|Overhead⟧
+@212
+Truy cập theo thời gian
+@213
+Trung bình
+@216
+Phổ biến lâu dài
+@217
+Cao
+@220
+Trường hợp đơn giản
+@221
+Thấp
+@222
+**Thực tế:** Redis mặc định dùng **LRU xấp xỉ** (nhanh + hiệu quả).
+@223
+⟦Lưu Đệm Nhiều Tầng|Multi-Layer Caching⟧ - ⟦Phòng Thủ Nhiều Lớp|Defense In Depth⟧
+@224
+⟦Lưu đệm|Caching⟧ không chỉ có một tầng. Hệ thống lớn có nhiều tầng ⟦bộ nhớ đệm|cache⟧.
+@225
+Tầng 1: ⟦Bộ Nhớ Đệm Trình Duyệt|Browser Cache⟧
+@226
+**⟦Bộ nhớ đệm|Cache⟧ nằm ở trình duyệt phía ⟦máy khách|client⟧.**
+@228
+Không phát sinh ⟦yêu cầu|request⟧ qua mạng
+@229
+Nhanh nhất có thể
+@230
+Giảm ⟦tải|load⟧ cho ⟦máy chủ|server⟧
+@232
+Tài nguyên tĩnh (CSS, JS, hình ảnh)
+@233
+Nội dung bất biến
+@234
+Tầng 2: ⟦Bộ Nhớ Đệm|Cache⟧ CDN
+@235
+**⟦Bộ nhớ đệm|Cache⟧ đặt tại các ⟦điểm biên|edge locations⟧ gần người dùng.**
+@236
+Người dùng (Việt Nam) → CDN (Singapore) → Máy chủ gốc (Mỹ)
+
+@238
+Giảm ⟦độ trễ|latency⟧ (theo vị trí địa lý)
+@239
+Giảm ⟦tải|load⟧ cho ⟦máy chủ gốc|origin server⟧
+@240
+Chịu được ⟦lưu lượng|traffic⟧ ⟦tăng đột biến|spikes⟧
+@242
+Hình ảnh, video
+@243
+Các trang HTML tĩnh
+@244
+Nội dung công khai
+@245
+Tầng 3: ⟦Bộ Nhớ Đệm Ứng Dụng|Application Cache⟧ (Redis/Memcached)
+@246
+**⟦Bộ nhớ đệm|Cache⟧ ở tầng ứng dụng.**
+@248
+Linh hoạt (logic tuỳ biến)
+@249
+Dùng chung giữa các ⟦máy chủ|servers⟧ ứng dụng
+@250
+Tra cứu nhanh
+@252
+⟦Phản hồi|responses⟧ của API
+@253
+Kết quả ⟦truy vấn|query⟧ cơ sở dữ liệu
+@254
+Dữ liệu ⟦phiên|session⟧
+@255
+Dữ liệu đã tính toán sẵn
+@256
+Tầng 4: ⟦Bộ Nhớ Đệm|Cache⟧ Cơ Sở Dữ Liệu (⟦Bộ Nhớ Đệm Truy Vấn|Query Cache⟧)
+@257
+**⟦Bộ nhớ đệm|Cache⟧ ở tầng cơ sở dữ liệu.**
+@258
+Query cache của MySQL, shared buffers của PostgreSQL, v.v.
+@260
+Trong suốt (ứng dụng không cần biết)
+@261
+Tối ưu các ⟦truy vấn|queries⟧ lặp lại
+@263
+Các ⟦truy vấn|queries⟧ tốn kém
+@264
+Các phép tổng hợp
+@265
+Kết quả phép join
+@266
+Chiến Lược Nhiều Tầng
+@267
+flowchart TD
+    User[Yêu cầu từ người dùng]
+    Browser[Bộ nhớ đệm trình duyệt]
+    CDN[Bộ nhớ đệm CDN]
+    AppCache[Bộ nhớ đệm ứng dụng]
+    DB[Cơ sở dữ liệu]
+
+    User --> Browser
+    Browser -->|Trượt| CDN
+    CDN -->|Trượt| AppCache
+    AppCache -->|Trượt| DB
+
+    DB -->|Lưu| AppCache
+    AppCache -->|Lưu| CDN
+    CDN -->|Lưu| Browser
+@268
+**Luồng ⟦yêu cầu|request⟧:**
+@269
+Kiểm tra ⟦bộ nhớ đệm|cache⟧ trình duyệt → trúng = tức thì
+@270
+Trượt → kiểm tra CDN → trúng = nhanh
+@271
+Trượt → kiểm tra ⟦bộ nhớ đệm|cache⟧ ứng dụng → trúng = tốt
+@272
+Trượt → ⟦truy vấn|query⟧ cơ sở dữ liệu → chậm nhưng chấp nhận được
+@273
+**Mỗi tầng đều giảm ⟦tải|load⟧ cho tầng phía sau.**
+@274
+So Sánh Các ⟦Mẫu|Patterns⟧ ⟦Lưu Đệm|Cache⟧
+@275
+⟦Mẫu|Pattern⟧
+@276
+⟦Hiệu năng|Perf⟧ ghi
+@277
+⟦Hiệu năng|Perf⟧ đọc
+@278
+⟦Tính nhất quán|Consistency⟧
+@279
+⟦Độ phức tạp|Complexity⟧
+@281
+Nhanh
+@282
+Tốt
+@283
+Cuối cùng
+@284
+Thấp
+@286
+Chậm
+@287
+Tốt nhất
+@288
+Mạnh
+@289
+Trung bình
+@291
+Tốt nhất
+@292
+Tốt nhất
+@293
+Cuối cùng
+@294
+Cao
+@295
+**Không có ⟦mẫu|pattern⟧ tốt nhất. Chỉ có ⟦mẫu|pattern⟧ đúng cho từng ⟦tình huống sử dụng|use case⟧.**
+@296
+⟦Mô Hình Tư Duy|Mental Model⟧: ⟦Hiệu Năng|Performance⟧ = Đánh Đổi ⟦Tính Nhất Quán|Consistency⟧ Lấy Tốc Độ
+@297
+**Điểm mấu chốt của ⟦lưu đệm|caching⟧:**
+@298
+**Bạn đang đánh đổi ⟦tính nhất quán|consistency⟧ để lấy tốc độ.**
+@299
+Cache-aside: Chấp nhận ⟦dữ liệu cũ|stale data⟧ trong khoảng thời gian TTL
+@300
+Write-through: Hy sinh tốc độ ghi để có ⟦tính nhất quán|consistency⟧
+@301
+Write-behind: Chấp nhận rủi ro mất dữ liệu để có tốc độ cực cao
+@302
+**Không có bữa trưa nào miễn phí.**
+@303
+⟦Kiến trúc sư|Architect⟧ giỏi biết:
+@304
+⟦Tình huống sử dụng|Use case⟧ cần mức ⟦nhất quán|consistency⟧ nào?
+@305
+⟦Sự đánh đổi|Trade-off⟧ nào chấp nhận được?
+@306
+Rủi ro nào có thể giảm thiểu?
+@307
+**Ví dụ về các quyết định:**
+@308
+**Giá sản phẩm trong thương mại điện tử:**
+@309
+Cần ⟦nhất quán mạnh|strong consistency⟧ → Write-through
+@310
+Giá ⟦cũ|stale⟧ = đơn hàng sai = mất tiền
+@311
+**Số lượt thích trên mạng xã hội:**
+@312
+Chấp nhận ⟦nhất quán cuối cùng|eventual consistency⟧ → Write-behind
+@313
+Số đếm ⟦cũ|stale⟧ vài giây = chấp nhận được
+@314
+⟦Thông lượng|throughput⟧ ghi cực cao = then chốt
+@315
+**Bài viết blog:**
+@316
+Chấp nhận dữ liệu ⟦cũ|stale⟧ → Cache-aside với TTL
+@317
+Nội dung ít thay đổi
+@318
+⟦Hiệu năng|Performance⟧ quan trọng hơn tính thời gian thực
+@319
+Những Điểm Cốt Lõi
+@320
+**1. ⟦Lưu đệm|Caching⟧ hiệu quả nhờ ⟦tính cục bộ của tham chiếu|locality of reference⟧**
+@321
+80% ⟦lưu lượng|traffic⟧ rơi vào 20% dữ liệu. Hãy lưu đệm đúng 20% đó.
+@322
+**2. Ba ⟦mẫu|pattern⟧ chính: Cache-Aside, Write-Through, Write-Behind**
+@323
+Mỗi ⟦mẫu|pattern⟧ có ⟦sự đánh đổi|trade-off⟧ khác nhau. Hãy chọn dựa trên ⟦tình huống sử dụng|use case⟧.
+@324
+**3. ⟦Vô hiệu hoá bộ nhớ đệm|Cache invalidation⟧ rất khó**
+@325
+Kết hợp TTL, dựa trên ⟦sự kiện|event⟧, dựa trên phiên bản. Không có giải pháp hoàn hảo.
+@326
+**4. ⟦Loại bỏ|eviction⟧ khỏi ⟦bộ nhớ đệm|cache⟧: LRU cho truy cập theo thời gian, LFU cho dữ liệu phổ biến lâu dài**
+@327
+LRU mặc định của Redis đáp ứng được hầu hết các trường hợp.
+@328
+**5. ⟦Lưu đệm nhiều tầng|Multi-layer caching⟧: Trình duyệt → CDN → Ứng dụng → Cơ sở dữ liệu**
+@329
+Mỗi tầng giảm ⟦tải|load⟧ cho tầng phía sau. ⟦Phòng thủ nhiều lớp|Defense in depth⟧.
+@330
+**6. ⟦Mô hình tư duy|Mental model⟧: Đánh đổi ⟦tính nhất quán|consistency⟧ lấy tốc độ**
+@331
+Hiểu ⟦sự đánh đổi|trade-off⟧, chọn đúng mức độ cho từng ⟦tình huống sử dụng|use case⟧.
+@332
+**7. ⟦Bộ nhớ đệm|Cache⟧ là sự tối ưu, không phải ⟦yêu cầu|requirement⟧ bắt buộc**
+@333
+⟦Bộ nhớ đệm|Cache⟧ gặp ⟦sự cố|failure⟧ không được làm cả hệ thống sập. Luôn phải có phương án dự phòng.
+@334
+**Hãy nhớ: ⟦Kiến trúc sư|architects⟧ giỏi không chỉ thêm ⟦bộ nhớ đệm|cache⟧ vào. Họ hiểu nên lưu đệm dữ liệu nào, lưu đệm ở đâu, và họ đang từ bỏ những đảm bảo ⟦nhất quán|consistency⟧ nào.**

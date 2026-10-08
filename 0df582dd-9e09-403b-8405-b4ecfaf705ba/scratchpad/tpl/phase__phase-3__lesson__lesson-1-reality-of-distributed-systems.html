@@ -1,0 +1,425 @@
+<article class="prose-ui"><h1 id="reality-of-distributed-systems-failure-models--cap-thinking">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<p>§§SEG4§§</p>
+<p>§§SEG5§§</p>
+<p>§§SEG6§§</p>
+<h2 id="tại-sao-distributed-systems-khác-biệt">§§SEG7§§</h2>
+<h3 id="single-machine-vs-distributed-assumptions-bị-phá-vỡ">§§SEG8§§</h3>
+<p>§§SEG9§§</p>
+<pre><code class="language-python"># Local function call
+result = calculate_total(items)
+
+Assumptions:
+Function luôn return (hoặc throw exception)
+Execution time predictable
+Data consistent
+Either success or fail (no in-between)
+</code></pre>
+<p>§§SEG10§§</p>
+<pre><code class="language-python"># Remote API call
+result = api.calculate_total(items)
+
+Reality:
+Request có thể lost (no response)
+Response có thể timeout (slow network)
+Request có thể duplicate (retry)
+Partial success/failure possible
+Data có thể inconsistent across nodes
+</code></pre>
+<p>§§SEG11§§</p>
+<h3 id="the-fallacies-of-distributed-computing">§§SEG12§§</h3>
+<p>§§SEG13§§</p>
+<pre><code>§§SEG14§§</code></pre>
+<p>§§SEG15§§</p>
+<h2 id="murphys-law-in-distributed-systems">§§SEG16§§</h2>
+<p>§§SEG17§§</p>
+<p>§§SEG18§§</p>
+<p>§§SEG19§§</p>
+<h3 id="real-production-failures-tôi-đã-trải-qua">§§SEG20§§</h3>
+<p>§§SEG21§§</p>
+<pre><code>§§SEG22§§</code></pre>
+<p>§§SEG23§§</p>
+<pre><code>§§SEG24§§</code></pre>
+<p>§§SEG25§§</p>
+<pre><code>§§SEG26§§</code></pre>
+<p>§§SEG27§§</p>
+<h2 id="types-of-failures-in-distributed-systems">§§SEG28§§</h2>
+<h3 id="failure-type-1-network-partition">§§SEG29§§</h3>
+<p>§§SEG30§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG31§§</code></pre>
+<p>§§SEG32§§</p>
+<p>§§SEG33§§</p>
+<pre><code>§§SEG34§§</code></pre>
+<p>§§SEG35§§</p>
+<pre><code>§§SEG36§§</code></pre>
+<p>§§SEG37§§</p>
+<pre><code class="language-python"># Assume network luôn available
+def update_user(user_id, data):
+    primary_db.write(data)
+    replica_db.write(data)  # Assume này luôn succeed
+
+# Handle partition
+def update_user(user_id, data):
+    try:
+        primary_db.write(data)
+    except WriteError:
+        log_error("Primary DB unavailable")
+        queue_for_retry(data)
+    
+    try:
+        replica_db.write(data)
+    except WriteError:
+        # Replica unavailable, but primary succeeded
+        # System vẫn functional (eventual consistency)
+        log_warning("Replica unavailable, will retry")
+</code></pre>
+<h3 id="failure-type-2-high-latency">§§SEG38§§</h3>
+<p>§§SEG39§§</p>
+<p>§§SEG40§§</p>
+<pre><code>§§SEG41§§</code></pre>
+<p>§§SEG42§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG43§§</code></pre>
+<p>§§SEG44§§</p>
+<p>§§SEG45§§</p>
+<pre><code class="language-python"># Solution 1: Timeouts với reasonable values
+response = requests.get(url, timeout=2)  # Fail fast
+
+# Solution 2: Circuit breaker
+class CircuitBreaker:
+    def call(self, func):
+        if self.failure_rate &gt; threshold:
+            raise CircuitOpenError("Too many failures")
+        
+        try:
+            return func()
+        except TimeoutError:
+            self.record_failure()
+
+# Solution 3: Bulkhead pattern (isolate resources)
+thread_pool_for_service_a = ThreadPool(10)
+thread_pool_for_service_b = ThreadPool(10)
+# Service A slow không ảnh hưởng Service B
+</code></pre>
+<h3 id="failure-type-3-packet-loss">§§SEG46§§</h3>
+<p>§§SEG47§§</p>
+<pre><code>§§SEG48§§</code></pre>
+<p>§§SEG49§§</p>
+<pre><code>§§SEG50§§</code></pre>
+<p>§§SEG51§§</p>
+<pre><code class="language-python"># Request bị lost
+client.send(request)
+# ... no response ...
+# Client không biết: request lost? or response lost?
+
+# TCP retransmit automatically (but slow)
+# UDP không retry (faster but unreliable)
+</code></pre>
+<p>§§SEG52§§</p>
+<pre><code class="language-python"># Idempotent operations
+def create_user(user_id, data):
+    # Use user_id (client-generated UUID)
+    # Retry-safe: create twice = same result
+    db.insert_or_update(user_id, data)
+
+# Non-idempotent (dangerous)
+def increment_counter():
+    counter += 1
+    # Retry = wrong result!
+</code></pre>
+<h3 id="failure-type-4-message-duplication">§§SEG53§§</h3>
+<p>§§SEG54§§</p>
+<p>§§SEG55§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG56§§</code></pre>
+<p>§§SEG57§§</p>
+<p>§§SEG58§§</p>
+<pre><code>§§SEG59§§</code></pre>
+<p>§§SEG60§§</p>
+<pre><code class="language-python"># Solution 1: Idempotency key
+def process_payment(amount, idempotency_key):
+    if cache.exists(idempotency_key):
+        return cache.get(idempotency_key)  # Return cached result
+    
+    result = charge_card(amount)
+    cache.set(idempotency_key, result, ttl=86400)
+    return result
+
+# Client
+idempotency_key = uuid.generate()
+process_payment(100, idempotency_key)
+# Retry với same key → No duplicate charge
+
+# Solution 2: Database constraints
+CREATE TABLE orders (
+    order_id UUID PRIMARY KEY,  -- Client-generated
+    user_id INT,
+    amount DECIMAL
+);
+-- Duplicate INSERT fails due to PK constraint
+</code></pre>
+<h3 id="failure-type-5-partial-failure">§§SEG61§§</h3>
+<p>§§SEG62§§</p>
+<p>§§SEG63§§</p>
+<pre><code>§§SEG64§§</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG65§§</code></pre>
+<p>§§SEG66§§</p>
+<p>§§SEG67§§</p>
+<pre><code class="language-python"># Solution 1: Saga pattern (compensating transactions)
+def checkout_saga(order):
+    try:
+        # Step 1: Charge
+        payment_id = payment_service.charge(order.amount)
+        
+        # Step 2: Create order
+        order_id = order_service.create(order)
+        
+        # Step 3: Send email
+        email_service.send(order.email)
+        
+        # Step 4: Update inventory
+        inventory_service.decrease(order.items)
+        
+        return Success(order_id)
+        
+    except EmailServiceError:
+        # Email failed, compensate
+        order_service.mark_no_email(order_id)
+        queue.retry_email(order)  # Retry later
+        return PartialSuccess(order_id)
+        
+    except InventoryServiceError:
+        # Critical failure, rollback
+        payment_service.refund(payment_id)
+        order_service.cancel(order_id)
+        return Failure("Inventory unavailable")
+
+# Solution 2: Event sourcing
+# Log all events, replay để achieve consistency
+events = [
+    {type: "payment_charged", amount: 100},
+    {type: "order_created", order_id: 123},
+    {type: "email_failed", retry_at: "10:00"},
+    {type: "inventory_timeout", retry_at: "10:01"}
+]
+# Background job process failures
+</code></pre>
+<h2 id="cap-theorem-the-fundamental-trade-off">§§SEG68§§</h2>
+<h3 id="định-nghĩa-cap">§§SEG69§§</h3>
+<p>§§SEG70§§</p>
+<pre><code>§§SEG71§§</code></pre>
+<p>§§SEG72§§</p>
+<p>§§SEG73§§</p>
+<h3 id="cap-intuition-qua-ví-dụ-thực-tế">§§SEG74§§</h3>
+<p>§§SEG75§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG76§§</code></pre>
+<p>§§SEG77§§</p>
+<h3 id="choice-1-cp-consistency--partition-tolerance">§§SEG78§§</h3>
+<p>§§SEG79§§</p>
+<pre><code class="language-python"># CP system behavior
+def withdraw(amount):
+    if not can_reach_all_replicas():
+        raise ServiceUnavailableError("System temporarily unavailable")
+    
+    # Only proceed nếu có thể sync all replicas
+    for replica in all_replicas:
+        replica.withdraw(amount)
+    
+    return Success()
+
+Timeline khi partition:
+10:00:00 - Network partition
+10:00:01 - User A (US) withdraw $50
+           → US DB: "Cannot reach EU, refuse request"
+           → User sees error (unavailable)
+10:00:02 - User B (EU) withdraw $30  
+           → EU DB: "Cannot reach US, refuse request"
+           → User sees error (unavailable)
+
+Result:
+System unavailable (bad UX)
+No inconsistency (data safe)
+</code></pre>
+<p>§§SEG80§§</p>
+<pre><code>§§SEG81§§</code></pre>
+<h3 id="choice-2-ap-availability--partition-tolerance">§§SEG82§§</h3>
+<p>§§SEG83§§</p>
+<pre><code class="language-python"># AP system behavior
+def withdraw(amount):
+    # Proceed with local replica, sync later
+    local_db.withdraw(amount)
+    
+    queue_sync_to_other_replicas(amount)
+    
+    return Success()
+
+Timeline khi partition:
+10:00:00 - Network partition
+10:00:01 - User A (US) withdraw $50
+           → US DB: $100 - $50 = $50
+           → Success (local write)
+10:00:02 - User B (EU) withdraw $30
+           → EU DB: $100 - $30 = $70  
+           → Success (local write)
+10:01:00 - Network heals
+10:01:01 - Replicas sync
+           → Conflict! US says $50, EU says $70
+
+Result:
+System available (good UX)
+Data inconsistent (problem!)
+</code></pre>
+<p>§§SEG84§§</p>
+<pre><code class="language-python"># Strategy 1: Last-Write-Wins (timestamp)
+us_balance = {"value": 50, "timestamp": "10:00:01"}
+eu_balance = {"value": 70, "timestamp": "10:00:02"}
+# EU timestamp later → Balance = $70
+# Lost US transaction!
+
+# Strategy 2: Vector clocks (keep both)
+us_balance = {"value": 50, "version": [1, 0]}
+eu_balance = {"value": 70, "version": [0, 1]}
+# Both are concurrent → Flag for manual resolution
+# No data loss, but need human intervention
+
+# Strategy 3: Application-specific merge
+# Banking: Merge = apply both withdrawals
+# Balance = $100 - $50 - $30 = $20
+# Correct final state
+# But requires domain knowledge
+</code></pre>
+<p>§§SEG85§§</p>
+<pre><code>§§SEG86§§</code></pre>
+<h3 id="so-sánh-cp-vs-ap">§§SEG87§§</h3>
+<pre><code>§§SEG88§§</code></pre>
+<h2 id="trade-off-thinking-framework">§§SEG89§§</h2>
+<h3 id="step-1-identify-requirements">§§SEG90§§</h3>
+<pre><code>§§SEG91§§</code></pre>
+<h3 id="step-2-analyze-trade-offs">§§SEG92§§</h3>
+<pre><code>§§SEG93§§</code></pre>
+<h3 id="step-3-hybrid-approaches">§§SEG94§§</h3>
+<p>§§SEG95§§</p>
+<pre><code class="language-python"># Different consistency cho different data
+class UserService:
+    def update_profile(self, user_id, data):
+        # Profile updates: AP (eventual consistency OK)
+        local_db.write(data)
+        async_replicate(data)
+    
+    def update_balance(self, user_id, amount):
+        # Balance updates: CP (strong consistency required)
+        if not all_replicas_reachable():
+            raise UnavailableError()
+        
+        for replica in all_replicas:
+            replica.write(amount)
+
+# Per-feature consistency choice
+features = {
+    "user_profile": "AP",      # Stale OK
+    "account_balance": "CP",   # Must be accurate
+    "friend_list": "AP",       # Stale OK
+    "purchase_history": "CP"   # Must be accurate
+}
+</code></pre>
+<h2 id="practical-design-principles">§§SEG96§§</h2>
+<h3 id="principle-1-design-for-failure">§§SEG97§§</h3>
+<p>§§SEG98§§</p>
+<pre><code class="language-python"># Optimistic (dangerous)
+def call_service():
+    return service.request()
+
+# Pessimistic (safe)
+def call_service():
+    try:
+        return service.request(timeout=2)
+    except TimeoutError:
+        log_error("Service timeout")
+        return fallback_value()
+    except ConnectionError:
+        log_error("Service unreachable")
+        return cached_value()
+    except Exception as e:
+        log_error(f"Unexpected error: {e}")
+        return default_value()
+</code></pre>
+<h3 id="principle-2-fail-fast">§§SEG99§§</h3>
+<p>§§SEG100§§</p>
+<pre><code class="language-python"># Slow failure (30s timeout)
+response = requests.get(url, timeout=30)
+
+# Fast failure (2s timeout)
+response = requests.get(url, timeout=2)
+
+# Exponential backoff retry
+for attempt in range(max_retries):
+    try:
+        return requests.get(url, timeout=2)
+    except TimeoutError:
+        if attempt &lt; max_retries - 1:
+            time.sleep(2 ** attempt)  # 1s, 2s, 4s, 8s
+        else:
+            raise
+</code></pre>
+<h3 id="principle-3-idempotency">§§SEG101§§</h3>
+<p>§§SEG102§§</p>
+<pre><code class="language-python"># Not idempotent
+def process_order(order):
+    send_email(order.email)  # Retry = duplicate emails!
+    charge_card(order.amount)  # Retry = double charge!
+
+# Idempotent
+def process_order(order, idempotency_key):
+    if already_processed(idempotency_key):
+        return get_cached_result(idempotency_key)
+    
+    result = {
+        "email_sent": send_email_once(order.email, idempotency_key),
+        "payment": charge_card_once(order.amount, idempotency_key)
+    }
+    
+    cache_result(idempotency_key, result)
+    return result
+</code></pre>
+<h3 id="principle-4-eventual-consistency-là-ok">§§SEG103§§</h3>
+<p>§§SEG104§§</p>
+<pre><code class="language-python"># Strong consistency (expensive)
+def like_post(post_id):
+    db.transaction:
+        count = db.get_like_count(post_id)
+        db.set_like_count(post_id, count + 1)
+    # Every like requires DB write
+
+# Eventual consistency (cheap)
+def like_post(post_id):
+    cache.increment(f"likes:{post_id}")
+    queue.add({"action": "like", "post_id": post_id})
+    # Batch update DB every 10 seconds
+
+# User sees: 1000 likes
+# Reality: 1002 likes (2 second lag)
+# Acceptable? YES for social features
+</code></pre>
+<h2 id="key-takeaways">§§SEG105§§</h2>
+<p>§§SEG106§§</p>
+<pre><code>§§SEG107§§</code></pre>
+<p>§§SEG108§§</p>
+<pre><code>§§SEG109§§</code></pre>
+<p>§§SEG110§§</p>
+<pre><code>§§SEG111§§</code></pre>
+<p>§§SEG112§§</p>
+<pre><code>§§SEG113§§</code></pre>
+<p>§§SEG114§§</p>
+<pre><code>§§SEG115§§</code></pre>
+<p>§§SEG116§§</p>
+<p>§§SEG117§§</p>
+<ol>
+<li>§§SEG118§§</li>
+<li>§§SEG119§§</li>
+<li>§§SEG120§§</li>
+<li>§§SEG121§§</li>
+<li>§§SEG122§§</li>
+</ol>
+<p>§§SEG123§§</p>
+<p>§§SEG124§§</p>
+<p>§§SEG125§§</p></article>

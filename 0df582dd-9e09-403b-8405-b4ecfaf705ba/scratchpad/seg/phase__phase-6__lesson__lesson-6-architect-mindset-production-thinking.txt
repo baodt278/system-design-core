@@ -1,0 +1,1075 @@
+@0 h1
+Architect Mindset & Production Thinking - From Engineer To Trusted Architect
+@1 p
+Sau khi master tất cả technical knowledge - patterns, distributed systems, scalability - câu hỏi cuối cùng là: **"Điều gì tạo nên một trusted architect?"**
+@2 p
+Câu trả lời không phải technical skill. Mà là **mindset shift từ "write code" sang "own the system".**
+@3 p
+Engineer viết code để solve problem. Architect design system và **chịu tr책nhiệm khi production down lúc 3AM.**
+@4 p
+Lesson này không dạy thêm patterns. Nó dạy cách **thinking như người phải on-call, phải explain outage cho CEO, phải plan migration cho 100M users.**
+@5 h2
+Reality Check: You Own The System
+@6 h3
+Engineer vs Architect Mindset
+@7 pre
+Engineer thinking:
+"Feature works on my laptop ✅"
+"Passed all tests ✅"
+"Deployed to production ✅"
+→ Move to next ticket
+
+Architect thinking:
+"Will this work under 10x load?"
+"What if database fails?"
+"How do we rollback?"
+"What's monitoring strategy?"
+"Who's on-call when this breaks?"
+→ System ownership
+
+@8 p
+**Core difference: Architects think beyond the happy path.**
+@9 h3
+The 3AM Test
+@10 pre
+Scenario: Production alert at 3AM
+
+Engineer response:
+"Not my code, not my problem"
+"Let's check tomorrow"
+
+Architect response:
+"What's user impact?"
+"How do we mitigate now?"
+"Root cause analysis tomorrow"
+"How do we prevent this?"
+
+@11 p
+**Architect mindset = Ownership mindset.**
+@12 h2
+1. Production Incident Thinking - Expect Failure
+@13 h3
+Everything Will Fail
+@14 p
+**Fundamental truth: All systems fail. Your job is minimizing impact.**
+@15 pre
+flowchart TB
+    Normal[Normal Operation] --> Incident[Incident Detected]
+    Incident --> Assess[Assess Impact]
+    Assess --> Mitigate[Mitigate ASAP]
+    Mitigate --> RCA[Root Cause Analysis]
+    RCA --> Prevent[Prevention Measures]
+    Prevent --> Normal
+@16 h3
+Incident Response Framework
+@17 p
+**Phase 1: Detection (Minutes matter)**
+@18 p
+**Phase 2: Assessment (Understand before act)**
+@19 pre
+Critical questions:
+1. User impact? (How many users affected?)
+2. Business impact? (Revenue loss? SLA breach?)
+3. Scope? (One service? Entire system?)
+4. Trend? (Getting worse? Stable?)
+
+Example:
+- 15% of checkout requests failing
+- ~500 users affected
+- Payment service only
+- Error rate stable last 10 min
+→ High severity, contained scope
+
+@20 p
+**Phase 3: Mitigation (Fix now, understand later)**
+@21 pre
+Priority: Stop the bleeding
+
+Options (in order):
+1. Rollback (safest, fastest)
+2. Feature flag off (disable new code)
+3. Traffic routing (shift to healthy instances)
+4. Graceful degradation (disable non-critical features)
+5. Emergency fix (last resort)
+
+Example:
+Payment service down?
+→ Rollback to previous version (5 min)
+Not: Debug root cause in production (hours)
+
+@22 p
+**Phase 4: Communication (Keep stakeholders informed)**
+@23 pre
+Incident update template:
+
+Status: INVESTIGATING
+Impact: 15% checkout failures
+Started: 14:30 UTC
+Current action: Rolling back payment service to v2.3.1
+Next update: 14:45 UTC
+
+Audience:
+- Internal team (Slack #incidents)
+- Support team (brief customers)
+- Management (business impact)
+- Customers if needed (status page)
+
+@24 p
+**Phase 5: Root Cause Analysis (Learn from failure)**
+@25 pre
+# Post-Mortem: Payment Service Outage
+Date: 2024-02-15
+Duration: 14:30 - 14:52 UTC (22 minutes)
+Impact: 15% checkout failures, ~500 affected users
+
+## Timeline
+14:30 - Deployed v2.3.2 with new retry logic
+14:32 - Error rate started climbing
+14:35 - Alerts fired
+14:37 - Oncall acknowledged
+14:40 - Decision to rollback
+14:45 - Rollback completed
+14:52 - Service recovered
+
+## Root Cause
+Retry logic introduced infinite loop on certain errors.
+Under load, exhausted connection pool.
+
+## Impact
+- 500 users experienced checkout failures
+- Estimated revenue loss: $5,000
+- No data loss or corruption
+
+## Action Items
+[ ] Add circuit breaker to retry logic (Owner: @alice, Due: 2/20)
+[ ] Load testing for retry scenarios (Owner: @bob, Due: 2/22)
+[ ] Connection pool monitoring (Owner: @carol, Due: 2/18)
+[ ] Review deployment checklist (Owner: @dave, Due: 2/25)
+
+## What Went Well
+- Fast detection (2 min from deploy to alert)
+- Clear rollback procedure
+- Good communication
+
+## What To Improve
+- Load testing didn't catch this scenario
+- Retry logic not reviewed carefully enough
+- Need better connection pool visibility
+
+@26 h3
+Blameless Culture
+@27 pre
+Bad post-mortem:
+"Bob deployed buggy code"
+"Alice didn't review properly"
+→ People hide mistakes
+
+Good post-mortem:
+"Deployment process didn't catch infinite loop"
+"Need better load testing coverage"
+"Review checklist should include retry logic patterns"
+→ Focus on system improvements
+
+@28 h2
+2. Failure Mindset - Design For Failure
+@29 h3
+Murphy's Law For Architects
+@30 p
+**"Everything that can go wrong, will go wrong."**
+@31 pre
+Architect's job: Assume failure, design resilience
+
+Common failures:
+- Server crash
+- Network partition
+- Database slow/down
+- Disk full
+- Memory leak
+- Dependency timeout
+- Data corruption
+- Config error
+- Human error (deployment)
+- DDoS attack
+
+@32 h3
+Failure Mode Analysis
+@33 p
+**Before designing system, list failure scenarios:**
+@34 pre
+# E-commerce Checkout - Failure Scenarios
+
+## Component Failures
+- Payment gateway down → Retry + queue
+- Inventory service slow → Circuit breaker + cache
+- Database connection pool exhausted → Connection limits
+- Redis cache down → Fallback to database
+
+## Network Failures
+- Timeout to payment service → Async processing
+- Packet loss → Retry with exponential backoff
+- Network partition → Eventual consistency
+
+## Data Failures
+- Duplicate payment → Idempotency keys
+- Race condition on inventory → Optimistic locking
+- Data corruption → Checksums + validation
+
+## Operational Failures
+- Bad deployment → Gradual rollout + rollback plan
+- Config change error → Config validation + dry-run
+- Certificate expiry → Automated renewal + alerting
+
+@35 h3
+Design For Degradation
+@36 p
+**Not all features equally critical:**
+@37 h3
+Blast Radius Thinking
+@38 p
+**Limit failure impact:**
+@39 pre
+flowchart TB
+    subgraph "Small Blast Radius ✅"
+    S1[Service A] --> S2[Service B]
+    S3[Service C] --> S4[Service D]
+    end
+    
+    subgraph "Large Blast Radius ❌"
+    S5[Service E] --> S6[Central DB]
+    S7[Service F] --> S6
+    S8[Service G] --> S6
+    S9[Service H] --> S6
+    end
+@40 pre
+Small blast radius:
+- Service B fails → only Service A affected
+- Isolated failure domain
+
+Large blast radius:
+- Central DB fails → ALL services down
+- Single point of failure
+
+@41 p
+**Strategies to reduce blast radius:**
+@42 li
+Microservices isolation
+@43 li
+Database sharding
+@44 li
+Multi-region deployment
+@45 li
+Bulkhead pattern
+@46 li
+Circuit breakers
+@47 h2
+3. Monitoring & Alerting Strategy - Know Before Users Do
+@48 h3
+Monitoring Pyramid
+@49 pre
+              Alerts
+              /    \
+         Dashboards  \
+         /      \     \
+    Metrics   Logs   Traces
+    
+Bottom: Collect everything
+Middle: Visualize important
+Top: Alert critical only
+
+@50 h3
+What To Monitor
+@51 p
+**1. User-Facing Metrics (Most Important)**
+@52 p
+**2. System Health Metrics**
+@53 p
+**3. Business Metrics**
+@54 h3
+The Golden Signals (Google SRE)
+@55 p
+**Monitor these 4 metrics for every service:**
+@56 pre
+1. Latency - How long requests take?
+2. Traffic - How much demand?
+3. Errors - How many failures?
+4. Saturation - How "full" is the system?
+
+Example: API service
+- Latency: p95 = 200ms
+- Traffic: 1000 req/s
+- Errors: 0.5% error rate
+- Saturation: CPU 60%, memory 70%
+
+@57 h3
+Alerting Philosophy
+@58 p
+**Alert on symptoms, not causes:**
+@59 pre
+Bad alerts (causes):
+- CPU > 80%
+- Memory > 90%
+- Disk > 85%
+
+Why bad? Users don't care about CPU.
+
+Good alerts (symptoms):
+- Error rate > 1% for 5 minutes
+- P95 latency > 1s for 5 minutes
+- Availability < 99.9% last hour
+
+Why good? These affect users.
+
+@60 h3
+Alert Fatigue Prevention
+@61 h3
+Runbooks For Common Issues
+@62 pre
+# Runbook: High Error Rate Alert
+
+## Alert
+Error rate > 1% for 5 minutes
+
+## Immediate Actions
+1. Check status page: https://status.company.com
+2. Check recent deployments (last 2 hours)
+3. Check dependency health (payment, database)
+
+## Diagnosis Steps
+1. View error logs: 
+   `kubectl logs -l app=api --tail=100 | grep ERROR`
+2. Check traces for slow requests
+3. Review metrics dashboard
+
+## Common Causes
+- Recent deployment → Rollback
+- Dependency timeout → Circuit breaker activated?
+- Database slow → Check slow query log
+- Rate limit hit → Check traffic spike
+
+## Mitigation
+- Rollback: `./scripts/rollback.sh`
+- Disable feature: `feature-flag payment-v2 off`
+- Scale up: `kubectl scale deployment api --replicas=10`
+
+## Escalation
+If not resolved in 15 minutes:
+- Escalate to @architect
+- Update incident channel
+- Contact vendors if dependency issue
+
+@63 h2
+4. Capacity Planning - Scale Before You Need To
+@64 h3
+Growth Projection
+@65 h3
+Resource Planning Matrix
+@66 pre
+# Capacity Plan - Next 6 Months
+
+## Current Capacity
+- API servers: 10 instances, 60% CPU avg
+- Database: 1 primary + 2 replicas, 70% connections
+- Cache: 50GB Redis, 40% memory
+- Max capacity: ~1500 RPS before degradation
+
+## 6-Month Projection
+- Expected load: 3000 RPS (2x current max)
+- Peak traffic: 4500 RPS (holiday season)
+
+## Action Plan
+| Timeline | Action | Cost | Owner |
+|----------|--------|------|-------|
+| Month 1 | Add 10 API instances | +$2k/mo | DevOps |
+| Month 2 | Database read replicas (2 → 4) | +$3k/mo | DBA |
+| Month 2 | Redis cluster upgrade (50GB → 100GB) | +$1k/mo | DevOps |
+| Month 3 | Database sharding preparation | $0 | Backend |
+| Month 4 | Implement database sharding | $0 | Backend |
+| Month 5 | CDN upgrade for static assets | +$1k/mo | Frontend |
+| Month 6 | Load test at 5000 RPS | $0 | QA |
+
+## Risk Assessment
+- ⚠️ Database sharding complex, allow 2 months
+- ⚠️ Need load testing environment
+- API scaling straightforward
+
+@67 h3
+Load Testing Strategy
+@68 h3
+Budget For Growth
+@69 pre
+Rule of thumb: Infrastructure cost = 5-10% of revenue
+
+Example:
+- Monthly revenue: $1M
+- Acceptable infra cost: $50k-$100k
+- Current cost: $30k
+- Room for growth: $20k-$70k
+
+Strategy:
+- Optimize before scale (reduce cost 20%)
+- Plan gradual increases
+- Reserve budget for incidents
+
+@70 h2
+5. Migration Strategy - Change Production Safely
+@71 h3
+Migration Challenges
+@72 pre
+Why migrations are risky:
+- Zero downtime requirement
+- Large data volume
+- Can't rollback easily
+- User impact if failed
+- Business pressure (revenue)
+
+Example scenarios:
+- Database migration (PostgreSQL → MySQL)
+- Cloud migration (AWS → GCP)
+- Architecture change (monolith → microservices)
+- Data model change (schema evolution)
+
+@73 h3
+Strangler Fig Pattern
+@74 p
+**Gradually replace old system với new system:**
+@75 pre
+flowchart LR
+    Users --> Router{Router}
+    Router -->|Old Features| Old[Old System]
+    Router -->|New Features| New[New System]
+    Old -.Data Sync.-> New
+@76 pre
+Phase 1: Build new system alongside old
+Phase 2: Route new traffic to new system
+Phase 3: Migrate old data gradually
+Phase 4: Redirect more traffic to new
+Phase 5: Deprecate old system
+
+Timeline: Months to years, không phải big-bang
+
+@77 h3
+Database Migration Example
+@78 h3
+Feature Flag for Migration
+@79 h3
+Migration Checklist
+@80 pre
+# Migration Checklist
+
+## Pre-Migration
+[ ] Load test new system at expected traffic
+[ ] Feature flags implemented
+[ ] Rollback plan documented
+[ ] Data validation scripts ready
+[ ] Monitoring dashboards prepared
+[ ] On-call team briefed
+[ ] Stakeholders notified
+[ ] Maintenance window scheduled (if needed)
+
+## During Migration
+[ ] Start with 1% traffic
+[ ] Monitor error rates closely
+[ ] Verify data consistency every hour
+[ ] Gradual rollout: 1% → 5% → 10% → 25% → 50% → 100%
+[ ] Each step: monitor 24-48 hours before next
+[ ] Document any issues encountered
+
+## Post-Migration
+[ ] Full monitoring for 1 week
+[ ] Data validation report
+[ ] Performance comparison (old vs new)
+[ ] Post-mortem meeting
+[ ] Document lessons learned
+[ ] Plan deprecation of old system
+
+@81 h2
+6. Technical Leadership - Influence Without Authority
+@82 h3
+Architect As Leader
+@83 pre
+Technical leadership ≠ Management
+
+You don't have authority to:
+- Assign tasks
+- Fire people
+- Approve budget
+
+You DO have influence through:
+- Technical expertise
+- Earned trust
+- Clear communication
+- Good decisions track record
+
+@84 h3
+Build Trust Through Delivery
+@85 pre
+How to earn trust as architect:
+
+Deliver results:
+- Designs that actually work in production
+- Solutions that scale when needed
+- Smooth migrations without incidents
+
+Be reliable:
+- Available during incidents
+- Follow through on commitments
+- Respond to questions quickly
+
+Admit mistakes:
+- "I was wrong about X"
+- "Better approach is Y"
+- Learn publicly
+
+Give credit:
+- "Sarah's idea to use caching saved us"
+- Highlight team contributions
+- Share success
+
+@86 h3
+Technical Decision Making
+@87 p
+**Framework for architecture decisions:**
+@88 pre
+# Architecture Decision Record (ADR)
+
+## Context
+We need to redesign our notification system. 
+Current system:
+- Sends 1M notifications/day
+- Growing 50% per quarter
+- Frequent delays and failures
+
+## Decision
+Adopt event-driven architecture with Kafka
+
+## Alternatives Considered
+1. **RabbitMQ + workers** 
+   - Pros: Team familiar, simpler
+   - Cons: Scale limitations, no replay
+   
+2. **AWS SNS/SQS**
+   - Pros: Managed, reliable
+   - Cons: Vendor lock-in, cost at scale
+   
+3. **Kafka** (CHOSEN)
+   - Pros: High throughput, replay, ecosystem
+   - Cons: Operational complexity, learning curve
+
+## Consequences
+Positive:
+- Handle 10M+ notifications/day
+- Message replay for debugging
+- Real-time analytics possible
+
+Negative:
+- Team needs Kafka training
+- More operational overhead
+- Migration takes 3 months
+
+## Timeline
+- Month 1: Kafka setup + training
+- Month 2: Build new notification service
+- Month 3: Gradual migration
+
+@89 h3
+Influence Through Data
+@90 h3
+Communication Skills
+@91 p
+**Explain technical to non-technical:**
+@92 pre
+Technical jargon:
+"We need to implement horizontal pod autoscaling 
+with Kubernetes HPA based on custom metrics from 
+Prometheus to handle traffic spikes"
+
+Business language:
+"Currently, traffic spikes crash our site. 
+This causes lost revenue.
+Solution: Automatically add servers when busy.
+Cost: $5k/month
+Benefit: No more outages, protect $50k/hour revenue"
+
+@93 p
+**Write clear technical docs:**
+@94 pre
+# Bad Documentation
+Uses Redis for caching. Configure TTL appropriately.
+
+# Good Documentation
+## Caching Strategy
+
+We use Redis to cache API responses, reducing database load by 80%.
+
+### When to Cache
+- Cache: User profiles, product lists (rarely change)
+- Don't cache: Real-time inventory, prices (change often)
+
+### TTL Guidelines
+- User profiles: 1 hour (okay if slightly stale)
+- Product lists: 5 minutes (update regularly)
+- Search results: 30 seconds (balance fresh vs performance)
+
+### Example
+```javascript
+await redis.set(`user:${id}`, data, { ttl: 3600 })
+```
+
+### Monitoring
+- Hit rate: https://dashboard/redis
+- Alert if hit rate < 80%
+
+@95 h3
+Code Review Excellence
+@96 h3
+Mentoring Engineers
+@97 pre
+Junior engineer: "Should I use MongoDB or PostgreSQL?"
+
+Bad answer:
+"Use PostgreSQL, it's better."
+
+Good answer:
+"Great question! Let's think through trade-offs:
+
+What's your data like?
+- Structured, relations? → PostgreSQL
+- Unstructured, flexible schema? → MongoDB
+
+What operations?
+- Complex queries, joins? → PostgreSQL
+- Simple CRUD, fast writes? → MongoDB
+
+What's your team familiar with?
+- SQL experience? → PostgreSQL easier
+
+For your use case (user profiles with relations),
+I'd recommend PostgreSQL because:
+1. You have structured data
+2. Need join queries (users + orders)
+3. Team knows SQL
+
+But either could work. Want to prototype both?"
+
+@98 h2
+7. Architecture Review Process - Prevent Problems Early
+@99 h3
+Review Triggers
+@100 pre
+When to require architecture review:
+
+Always review:
+- New service/system
+- Major refactor
+- Database schema change
+- New technology adoption
+- Security-sensitive changes
+- Cross-team dependencies
+
+⚠️ Consider review:
+- Performance-critical path
+- Complex algorithms
+- External API integration
+
+No review needed:
+- Bug fixes
+- UI changes
+- Copy updates
+- Small refactors
+
+@101 h3
+Review Template
+@102 pre
+# Architecture Review: Payment Service Redesign
+
+## Requestor
+Sarah Chen, Backend Lead
+
+## Overview
+Redesign payment service to support international payments
+
+## Current System
+- Single payment provider (Stripe)
+- USD only
+- Synchronous processing
+- ~1000 transactions/day
+
+## Proposed System
+- Multiple payment providers (Stripe, PayPal, Adyen)
+- Multi-currency support
+- Async processing via Kafka
+- Expected 10k transactions/day
+
+## Architecture Diagram
+[Insert diagram]
+
+## Key Design Decisions
+
+### 1. Multiple Payment Providers
+Decision: Support 3+ providers
+Rationale: Regional preferences, redundancy
+Trade-off: Complexity vs flexibility
+
+### 2. Async Processing
+Decision: Use Kafka for payment events
+Rationale: Decouple, handle spikes, retry
+Trade-off: Eventual consistency
+
+### 3. Provider Abstraction
+Decision: Abstract provider behind interface
+Rationale: Easy to add/remove providers
+Trade-off: Extra abstraction layer
+
+## Concerns & Risks
+1. **Currency conversion**
+   - Risk: Exchange rate changes during processing
+   - Mitigation: Lock rate at checkout
+
+2. **Provider failover**
+   - Risk: Primary provider down
+   - Mitigation: Automatic fallback to secondary
+
+3. **Data consistency**
+   - Risk: Event lost in Kafka
+   - Mitigation: At-least-once delivery, idempotency
+
+## Scale Considerations
+- Current: 1k transactions/day
+- 1 year: 50k transactions/day (50x)
+- Design handles: 100k transactions/day
+
+## Security
+- PCI compliance maintained
+- No card data stored
+- Provider tokens encrypted
+- Audit logging
+
+## Monitoring
+- Transaction success rate per provider
+- Latency p95, p99
+- Currency conversion accuracy
+- Failed payment alerts
+
+## Timeline
+- Week 1-2: Build provider abstraction
+- Week 3-4: Integrate providers
+- Week 5-6: Kafka setup + event handlers
+- Week 7-8: Migration + testing
+- Week 9: Gradual rollout
+
+## Questions for Reviewers
+1. Provider abstraction too complex?
+2. Kafka overkill for current scale?
+3. Missing failure scenarios?
+
+## Reviewers
+- @architect-alice (infra)
+- @architect-bob (security)
+- @devops-lead (operations)
+
+@103 h3
+Review Guidelines
+@104 p
+**For Reviewers:**
+@105 pre
+Focus on:
+- Failure scenarios missed?
+- Scale considerations?
+- Security issues?
+- Operational complexity?
+- Better alternatives?
+
+Avoid:
+- Bikeshedding (naming, formatting)
+- "I would do it differently" without reasoning
+- Perfectionism ("This isn't optimal")
+
+🎯 Goal:
+Help improve design, not block progress
+
+@106 p
+**For Design Author:**
+@107 pre
+Be open to:
+- Critical feedback
+- Alternative approaches
+- Simpler solutions
+
+Avoid:
+- Defensive reactions
+- "Trust me, it will work"
+- Dismissing concerns
+
+🎯 Goal:
+Learn, improve design, build consensus
+
+@108 h3
+Approval Criteria
+@109 pre
+## Definition of Approved
+
+Design can be approved when:
+- [ ] Failure scenarios identified and mitigated
+- [ ] Scale considerations addressed
+- [ ] Security reviewed
+- [ ] Operational impact understood
+- [ ] Monitoring strategy defined
+- [ ] Rollback plan exists
+- [ ] 2+ architects approved
+- [ ] No blocking concerns
+
+⚠️ Approved with conditions:
+- Minor concerns to address during implementation
+- Follow-up reviews scheduled
+
+Not approved:
+- Major risks not mitigated
+- Scale concerns not addressed
+- Blocking security issues
+
+@110 h2
+8. Final Mindset - You Own The System
+@111 h3
+Production Ownership Principles
+@112 p
+**1. Think Long-Term**
+@113 pre
+Code you write today:
+- You'll maintain for years
+- Others will extend
+- Will run at 10x scale
+- Will fail eventually
+
+Write code you're proud to own.
+
+@114 p
+**2. Empathy For Oncall**
+@115 pre
+Before merging:
+"Will this wake someone at 3AM?"
+"Is this debuggable?"
+"Can it be rolled back?"
+"Are errors actionable?"
+
+If answer is "maybe" → improve design.
+
+@116 p
+**3. Documentation As Love Letter**
+@117 pre
+Document for your future self (6 months later):
+- Why this design?
+- What are trade-offs?
+- How to debug?
+- How to scale?
+
+You'll thank yourself.
+
+@118 p
+**4. Measure Everything**
+@119 pre
+"In God we trust. All others must bring data."
+- W. Edwards Deming
+
+No metrics = No visibility = Cannot improve
+
+Add metrics first, optimize later.
+
+@120 p
+**5. Automate Toil**
+@121 pre
+Repetitive tasks:
+- Deployments
+- Rollbacks
+- Scaling
+- Monitoring setup
+- Incident response
+
+Automate once, benefit forever.
+
+@122 h3
+Career Growth Path
+@123 pre
+flowchart TB
+    Junior[Junior Engineer<br/>Write code] --> Mid[Mid Engineer<br/>Own features]
+    Mid --> Senior[Senior Engineer<br/>Design systems]
+    Senior --> Staff[Staff Engineer<br/>Cross-team impact]
+    Staff --> Principal[Principal Engineer<br/>Company-wide strategy]
+@124 p
+**Each level:**
+@125 pre
+Junior → Mid:
+- Code quality
+- Feature ownership
+- Learn system design
+
+Mid → Senior:
+- Design systems
+- Trade-off thinking
+- Mentor others
+
+Senior → Staff:
+- Cross-team impact
+- Production thinking
+- Technical strategy
+
+Staff → Principal:
+- Company-wide architecture
+- Hire & build teams
+- Set technical direction
+
+@126 h3
+What Differentiates Great Architects
+@127 pre
+Average Architect:
+- Knows patterns
+- Follows best practices
+- Designs systems
+
+Great Architect:
+- Thinks about failure
+- Simplifies complexity
+- Enables others
+- Owns production
+- Communicates clearly
+- Earns trust
+- Ships results
+
+@128 h3
+The 10 Commandments of Production Systems
+@129 pre
+1. **Monitor everything** - You cannot improve what you cannot measure
+
+2. **Design for failure** - Everything will fail. Plan for it.
+
+3. **Start simple** - Add complexity only when needed
+
+4. **Think in trade-offs** - No perfect solution. Choose wisely.
+
+5. **Document decisions** - Future you will ask "Why?"
+
+6. **Automate toil** - Humans for thinking, machines for repetition
+
+7. **Security by default** - Easier to relax than tighten later
+
+8. **Test at scale** - Load test before users do it for you
+
+9. **Gradual rollouts** - Big bang deployments = big bang failures
+
+10. **Own your code** - You build it, you run it
+
+@130 h2
+Key Takeaways
+@131 h3
+Engineer → Architect Mindset Shifts
+@132 p
+**1. From Code → System**
+@133 li
+Engineer: "Feature works on my machine"
+@134 li
+Architect: "System works at scale in production"
+@135 p
+**2. From Happy Path → Failure Scenarios**
+@136 li
+Engineer: "If everything works..."
+@137 li
+Architect: "When things fail..."
+@138 p
+**3. From Solo → Team**
+@139 li
+Engineer: Write code alone
+@140 li
+Architect: Enable team to succeed
+@141 p
+**4. From Build → Own**
+@142 li
+Engineer: Ship and move on
+@143 li
+Architect: Own it in production
+@144 p
+**5. From Technical → Business**
+@145 li
+Engineer: "This is technically better"
+@146 li
+Architect: "This provides business value"
+@147 h3
+Production Thinking Checklist
+@148 pre
+Before shipping to production:
+
+[ ] What's the blast radius if this fails?
+[ ] Can we rollback in under 5 minutes?
+[ ] Do we have monitoring for this?
+[ ] Are errors actionable?
+[ ] Did we load test at 2x expected traffic?
+[ ] Is there a runbook for common issues?
+[ ] Can the oncall engineer debug this at 3AM?
+[ ] What's the impact if this service is down?
+[ ] Do we have a gradual rollout plan?
+[ ] Have we considered all failure modes?
+
+@149 h3
+Technical Leadership Principles
+@150 p
+**Communication:**
+@151 li
+Explain technical in business terms
+@152 li
+Write docs others can understand
+@153 li
+Overcommunicate in incidents
+@154 p
+**Decision Making:**
+@155 li
+Use data, not opinions
+@156 li
+Document trade-offs
+@157 li
+Include team in decisions
+@158 p
+**Influence:**
+@159 li
+Build trust through delivery
+@160 li
+Give credit, take blame
+@161 li
+Mentor generously
+@162 p
+**Ownership:**
+@163 li
+Available during incidents
+@164 li
+Follow through on commitments
+@165 li
+Think long-term
+@166 h3
+Final Thought
+@167 p
+**The journey from engineer to architect is not about learning more patterns. It's about taking ownership.**
+@168 p
+You don't need to know every technology. You need to:
+@169 li
+Think in trade-offs
+@170 li
+Design for failure
+@171 li
+Own production
+@172 li
+Enable your team
+@173 li
+Communicate clearly
+@174 li
+Ship results
+@175 p
+**Great architects are not built in a day. They're built through:**
+@176 li
+Responding to production incidents
+@177 li
+Making mistakes and learning
+@178 li
+Earning trust over time
+@179 li
+Shipping systems that scale
+@180 li
+Helping others succeed
+@181 p
+**You're ready when you realize: The system is yours. Own it.**

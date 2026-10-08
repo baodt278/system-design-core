@@ -1,0 +1,887 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế | Phase 6 — System Design Mastery | System Design Core</title><meta name="description" content="Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress inte"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-6/lesson/lesson-4-real-interview-strategy"/><meta property="og:title" content="Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế | Phase 6 — System Design Mastery"/><meta property="og:description" content="Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress inte"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-6/lesson/lesson-4-real-interview-strategy"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế | Phase 6 — System Design Mastery"/><meta name="twitter:description" content="Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress inte"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 6 — System Design Mastery</p><p class="mt-3 text-xl font-semibold text-ink">Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế</p><p class="mt-3 text-sm leading-7 text-ink-dim">Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress interviewer với SNAKE framework.</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-1-system-design-thinking-framework"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-2-snake-framework"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">SNAKE Framework - Methodology Để Ace System Design Interview</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-6/lesson/lesson-4-real-interview-strategy"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-5-advanced-architecture-topics"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-6">Phase 6 — System Design Mastery</a></li><li>/</li><li aria-current="page" class="text-ink">Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress interviewer với SNAKE framework.</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế"><article class="prose-ui"><h1 id="real-interview-strategy-áp-dụng-framework-vào-case-thực-tế">Real Interview Strategy: Áp Dụng Framework Vào Case Thực Tế</h1>
+<p>Sau khi học SNAKE framework và trade-off thinking, nhiều người hỏi tôi:</p>
+<p><em>&quot;Framework thì hiểu rồi, nhưng apply vào Twitter, YouTube... thế nào?&quot;</em></p>
+<p>Đó là câu hỏi đúng.</p>
+<p>Tôi đã làm 50+ system design interviews (cả interviewer lẫn candidate). Tôi nhận ra một pattern:</p>
+<p><strong>Candidates fail không phải vì thiếu kiến thức. Mà vì không biết interviewer muốn gì.</strong></p>
+<p>Mỗi type system có một &quot;story&quot; mà interviewer expect. Nếu bạn hiểu story đó, bạn sẽ structure answer perfectly.</p>
+<p>Lesson này sẽ teach: <strong>How to approach các system design problems phổ biến nhất.</strong></p>
+<p>Không phải detailed architecture (bạn đã học Phase 5). Mà là <strong>interview strategy</strong>.</p>
+<h2 id="tại-sao-cần-strategy-riêng-cho-mỗi-system">Tại Sao Cần Strategy Riêng Cho Mỗi System?</h2>
+<h3 id="the-pattern-behind-questions">The Pattern Behind Questions</h3>
+<p><strong>Interviewers không random pick systems.</strong></p>
+<p>Mỗi system test một set of skills cụ thể:</p>
+<pre><code>Twitter/Social Feed:
+→ Test: Fanout, eventual consistency, write amplification
+→ Story: &quot;How to distribute content to millions?&quot;
+
+YouTube/Video Platform:
+→ Test: CDN, encoding pipeline, storage optimization
+→ Story: &quot;How to deliver video globally?&quot;
+
+WhatsApp/Messaging:
+→ Test: Real-time communication, delivery guarantees, encryption
+→ Story: &quot;How to ensure message delivery?&quot;
+
+Google Drive/Storage:
+→ Test: File sync, conflict resolution, chunking
+→ Story: &quot;How to sync files across devices?&quot;
+</code></pre>
+<p><strong>Nếu bạn hiểu &quot;story&quot;, bạn biết nên focus vào đâu.</strong></p>
+<h3 id="common-mistake-treating-all-systems-same">Common Mistake: Treating All Systems Same</h3>
+<pre><code>Bad approach:
+&quot;Every system cần load balancer, cache, database, message queue...&quot;
+
+→ Generic answer
+→ Miss specific challenges
+→ No depth
+
+Good approach:
+&quot;Twitter&#x27;s challenge là fanout to millions followers.
+YouTube&#x27;s challenge là video encoding và CDN.
+WhatsApp&#x27;s challenge là real-time delivery guarantees.
+Each needs different focus.&quot;
+
+→ Specific to problem
+→ Shows understanding
+→ Demonstrates depth
+</code></pre>
+<h2 id="strategy-1-design-twitter-social-feed-system">Strategy 1: Design Twitter (Social Feed System)</h2>
+<h3 id="what-interviewer-wants-to-hear">What Interviewer Wants To Hear</h3>
+<p><strong>Core challenge:</strong> Distribute posts to millions of followers efficiently</p>
+<p><strong>Key topics to cover:</strong></p>
+<ol>
+<li>Fanout strategy (this is THE critical part)</li>
+<li>Timeline generation</li>
+<li>Read vs write optimization</li>
+<li>Celebrity problem</li>
+<li>Eventual consistency trade-offs</li>
+</ol>
+<h3 id="snake-application">SNAKE Application</h3>
+<p><strong>S - Scope (5 min)</strong></p>
+<pre><code>&quot;Let me clarify requirements:
+
+Core features:
+✓ Post tweets (280 chars)
+✓ Follow users
+✓ View home timeline
+✓ Like, retweet
+
+Out of scope:
+✗ Direct messages
+✗ Trending topics
+✗ Search
+
+Scale:
+- 500M users
+- 100M daily active
+- 200M tweets/day
+- Read-heavy (95% reads)
+
+Correct?&quot;
+</code></pre>
+<p><strong>Critical clarification:</strong></p>
+<pre><code>&quot;For timeline generation, should I optimize for:
+a) Fast writes (post tweet returns immediately)
+b) Fast reads (timeline loads &lt; 100ms)
+
+I&#x27;m assuming (b) - optimize for read speed?
+
+→ This shows you understand the core trade-off
+→ Interviewer will confirm/correct
+</code></pre>
+<p><strong>N - Numbers (5 min)</strong></p>
+<pre><code>&quot;Let me calculate scale:
+
+Write traffic:
+200M tweets/day / 86400s ≈ 2,300 tweets/second
+
+Read traffic:
+100M users × 10 timeline loads/day = 1B loads/day
+≈ 12,000 requests/second
+
+Read:Write ratio = 12K:2.3K ≈ 5:1
+→ Read-heavy, caching critical
+
+Storage (5 years):
+200M tweets/day × 365 × 5 = 365B tweets
+× 1KB per tweet = 365TB
+
+Fanout calculation:
+Average followers: 200
+Write amplification: 2,300 tweets/s × 200 = 460K timeline updates/second
+→ This is the bottleneck to solve!&quot;
+
+→ Shows you identified THE critical challenge
+</code></pre>
+<p><strong>A - API (5 min)</strong></p>
+<pre><code>Core APIs:
+
+POST /v1/tweets
+{
+  &quot;content&quot;: &quot;Hello world!&quot;,
+  &quot;media_urls&quot;: []
+}
+
+GET /v1/timeline?cursor={cursor}&amp;limit=20
+
+POST /v1/tweets/{id}/like
+
+POST /v1/users/{id}/follow
+</code></pre>
+<p><strong>K - Key Components (15 min)</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    CLIENT[Clients]
+    LB[Load Balancer]
+    API[API Servers]
+    POST[Post Service]
+    FANOUT[Fanout Service]
+    TIMELINE[Timeline Service]
+    CACHE[Redis Timeline Cache]
+    DB[(PostgreSQL)]
+    QUEUE[Kafka Queue]
+    
+    CLIENT --&gt; LB
+    LB --&gt; API
+    API --&gt; POST
+    API --&gt; TIMELINE
+    POST --&gt; DB
+    POST --&gt; QUEUE
+    QUEUE --&gt; FANOUT
+    FANOUT --&gt; CACHE
+    TIMELINE --&gt; CACHE
+    TIMELINE --&gt; DB
+    
+    style FANOUT fill:#ff6b6b
+    style CACHE fill:#51cf66</code></pre>
+<p><em>Twitter architecture: Focus vào Fanout Service và Timeline Cache</em></p>
+<p><strong>Critical discussion (spend most time here):</strong></p>
+<pre><code>&quot;The core challenge is fanout. Let me explain my approach:
+
+Hybrid Fanout Strategy:
+
+Normal users (&lt; 10K followers):
+- Fanout on write
+- When user posts → Push to all followers&#x27; timelines
+- Pre-computed feeds = fast reads
+
+Celebrities (&gt; 10K followers):
+- Fanout on read
+- Don&#x27;t push to millions of timelines
+- Pull when followers load feed
+
+Trade-offs:
+Fast reads for most users (&lt; 50ms from cache)
+Avoid celebrity fanout explosion
+Slight delay for celebrity tweets (acceptable)
+Mixed approach = more complexity
+
+Timeline cache structure:
+- Redis sorted set per user
+- Key: timeline:{user_id}
+- Score: timestamp
+- Members: tweet IDs
+- Keep 1000 recent tweets
+
+Why this works:
+- 90% of timeline loads hit cache
+- Pre-computed for fast UX
+- Celebrity tweets merge on-demand&quot;
+
+→ This is what interviewer wants to hear
+→ Shows deep understanding
+→ Addresses the core challenge
+</code></pre>
+<p><strong>E - Elaborate (15 min)</strong></p>
+<p><strong>Pick 2-3 areas for deep dive:</strong></p>
+<pre><code>1. Fanout implementation details
+&quot;Let me show fanout worker logic:
+
+When tweet published:
+- Async job via Kafka
+- Worker fetches follower list
+- Batch insert to Redis timelines (100 followers/batch)
+- If follower count &gt; 10K → Skip fanout, mark as celebrity
+
+This handles 460K updates/second with:
+- 100 fanout workers
+- Each processes 4,600 updates/s
+- Batching reduces Redis ops&quot;
+
+2. Celebrity problem solution
+&quot;For Taylor Swift (100M followers):
+- Don&#x27;t fanout on write
+- When followers load timeline:
+  → Fetch pre-computed feed (normal users)
+  → Merge celebrity tweets (on-demand query)
+  → Sort by timestamp
+  → Apply ranking&quot;
+
+3. Failure handling
+&quot;If Kafka queue backs up:
+- Circuit breaker stops new fanout jobs
+- Prioritize VIP users
+- Degrade to pull-based for all during high load&quot;
+</code></pre>
+<h3 id="what-makes-this-answer-strong">What Makes This Answer Strong</h3>
+<pre><code>✓ Identified core challenge (fanout)
+✓ Proposed specific solution (hybrid)
+✓ Explained trade-offs clearly
+✓ Showed scalability thinking
+✓ Demonstrated depth on critical parts
+</code></pre>
+<h2 id="strategy-2-design-youtube-video-platform">Strategy 2: Design YouTube (Video Platform)</h2>
+<h3 id="what-interviewer-wants-to-hear-1">What Interviewer Wants To Hear</h3>
+<p><strong>Core challenge:</strong> Encode, store, and deliver video globally at massive scale</p>
+<p><strong>Key topics to cover:</strong></p>
+<ol>
+<li>Video upload pipeline</li>
+<li>Encoding strategy (multiple resolutions)</li>
+<li>CDN for global delivery</li>
+<li>Storage optimization</li>
+<li>Recommendation system (high-level)</li>
+</ol>
+<h3 id="snake-application-focus">SNAKE Application Focus</h3>
+<p><strong>S - Scope</strong></p>
+<pre><code>&quot;Let me clarify:
+
+Core features:
+✓ Upload videos
+✓ Watch videos
+✓ Search videos
+✓ Recommendations (high-level only)
+
+Out of scope:
+✗ Live streaming
+✗ Comments system
+✗ Monetization
+
+Scale assumptions:
+- 500M users
+- 1B video views/day
+- 100M hours watched/day
+- 500K video uploads/day
+
+Correct?&quot;
+</code></pre>
+<p><strong>N - Numbers (Critical for YouTube)</strong></p>
+<pre><code>&quot;Let me calculate storage and bandwidth:
+
+Upload storage:
+500K uploads/day
+Average: 10 min video at 1080p = 1GB
+Daily: 500K × 1GB = 500TB/day
+Yearly: 500TB × 365 = 180PB/year
+→ Need distributed object storage (S3)
+
+But we encode multiple resolutions:
+- 360p (100MB)
+- 720p (300MB)
+- 1080p (1GB)
+- 4K (4GB) - optional
+Total per video: ~5GB
+→ 500K × 5GB = 2.5PB/day storage!
+
+Bandwidth (delivery):
+1B views/day
+Average watch time: 6 minutes
+Average bitrate: 5 Mbps
+Total: 1B × 6 min × 5 Mbps = 3 exabytes/month
+→ CDN absolutely critical!&quot;
+
+→ Numbers show you understand scale
+</code></pre>
+<p><strong>K - Key Components (Focus Areas)</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    USER[User]
+    UPLOAD[Upload Service]
+    S3[S3 Storage]
+    ENCODE[Encoding Pipeline]
+    CDN[CDN]
+    METADATA[(Metadata DB)]
+    SEARCH[Search Service]
+    RECOMMEND[Recommendation]
+    
+    USER --&gt;|Upload| UPLOAD
+    UPLOAD --&gt; S3
+    UPLOAD --&gt; ENCODE
+    ENCODE --&gt; S3
+    ENCODE --&gt; METADATA
+    
+    USER --&gt;|Watch| CDN
+    CDN --&gt; S3
+    
+    USER --&gt;|Search| SEARCH
+    SEARCH --&gt; METADATA
+    
+    USER --&gt;|Get recommendations| RECOMMEND
+    RECOMMEND --&gt; METADATA
+    
+    style ENCODE fill:#ff6b6b
+    style CDN fill:#51cf66</code></pre>
+<p><em>YouTube: Focus vào Encoding Pipeline và CDN delivery</em></p>
+<p><strong>Critical discussions:</strong></p>
+<pre><code>1. Upload and Encoding Pipeline:
+
+&quot;Upload flow:
+1. User uploads raw video → Upload Service
+2. Store original in S3 (cold storage)
+3. Trigger encoding pipeline (async)
+4. Encode multiple resolutions in parallel:
+   - 360p, 720p, 1080p, 4K
+   - Different codecs (H.264, VP9, AV1)
+5. Generate thumbnails
+6. Update metadata database
+7. Notify user
+
+Encoding takes time:
+- 10 min video → 30 min to encode all formats
+- User doesn&#x27;t wait (async processing)
+- Shows &#x27;Processing&#x27; status
+
+Why multiple resolutions:
+- Adaptive bitrate streaming
+- User with slow connection → 360p
+- User with fast connection → 4K
+- Seamless quality switching&quot;
+
+2. CDN Strategy:
+
+&quot;CDN is critical:
+- 3 exabytes/month = $300K+ without CDN
+- With CDN: $50K (5x savings!)
+
+How it works:
+- Video stored in S3 (origin)
+- CDN caches popular videos at edge
+- User request → Nearest CDN edge
+- Edge miss → Fetch from origin
+
+Cache strategy:
+- Top 10% videos (trending) → Cache aggressively
+- Long tail → On-demand caching
+- Cache eviction: LRU
+
+Why this matters:
+- Low latency (&lt; 100ms to start playback)
+- Handle viral videos (millions concurrent)
+- Cost optimization&quot;
+</code></pre>
+<h3 id="what-makes-this-answer-strong-1">What Makes This Answer Strong</h3>
+<pre><code>✓ Massive scale numbers (exabytes!)
+✓ Encoding pipeline detailed
+✓ CDN strategy with cost analysis
+✓ Adaptive streaming explained
+✓ Async processing pattern
+</code></pre>
+<h2 id="strategy-3-design-whatsapp-messaging-system">Strategy 3: Design WhatsApp (Messaging System)</h2>
+<h3 id="what-interviewer-wants-to-hear-2">What Interviewer Wants To Hear</h3>
+<p><strong>Core challenge:</strong> Deliver messages reliably in real-time with high availability</p>
+<p><strong>Key topics to cover:</strong></p>
+<ol>
+<li>Real-time delivery (WebSocket)</li>
+<li>Message delivery guarantees</li>
+<li>Offline message handling</li>
+<li>Group messaging</li>
+<li>End-to-end encryption (conceptual)</li>
+</ol>
+<h3 id="snake-application-focus-1">SNAKE Application Focus</h3>
+<p><strong>S - Scope</strong></p>
+<pre><code>&quot;Let me clarify:
+
+Core features:
+✓ 1-on-1 messaging
+✓ Group messaging (&lt; 256 members)
+✓ Delivery receipts (sent, delivered, read)
+✓ Offline message storage
+
+Out of scope:
+✗ Voice/video calls
+✗ Status updates
+✗ Payment features
+
+Scale:
+- 2B users
+- 100B messages/day
+- Need real-time delivery
+- 99.99% delivery guarantee
+
+Correct?&quot;
+</code></pre>
+<p><strong>N - Numbers</strong></p>
+<pre><code>&quot;Message traffic:
+100B messages/day / 86400s ≈ 1.1M messages/second
+Peak (3x): 3.3M messages/second
+
+Storage:
+Average message: 100 bytes
+100B messages/day × 365 × 2 years = 73 trillion messages
+× 100 bytes = 7.3 PB
+→ Need distributed storage
+
+Connection load:
+100M concurrent users online
+Each maintains WebSocket connection
+= 100M persistent connections
+→ Need connection pooling, multiple servers&quot;
+</code></pre>
+<p><strong>K - Key Components</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    CLIENT[Mobile Clients]
+    WS[WebSocket Servers]
+    MSG[Message Service]
+    QUEUE[Message Queue]
+    STORAGE[(Message Storage)]
+    PRESENCE[Presence Service]
+    
+    CLIENT &lt;--&gt;|WebSocket| WS
+    WS --&gt; MSG
+    MSG --&gt; QUEUE
+    MSG --&gt; STORAGE
+    WS --&gt; PRESENCE
+    
+    style WS fill:#ff6b6b
+    style QUEUE fill:#51cf66</code></pre>
+<p><em>WhatsApp: Focus vào WebSocket layer và Message Queue</em></p>
+<p><strong>Critical discussions:</strong></p>
+<pre><code>1. Real-time Delivery:
+
+&quot;WebSocket connection per user:
+- Persistent connection maintained
+- Low latency (&lt; 50ms)
+- Bidirectional communication
+
+Message flow:
+1. Sender → WebSocket Server A
+2. Server A → Message Service
+3. Message Service → Check recipient online
+4. If online:
+   → Forward to recipient&#x27;s WebSocket Server
+   → Deliver immediately
+5. If offline:
+   → Store in message queue
+   → Deliver when recipient comes online
+
+Why this works:
+- Real-time for online users
+- Guaranteed delivery for offline users
+- Scales horizontally (multiple WS servers)&quot;
+
+2. Delivery Guarantees:
+
+&quot;At-least-once delivery:
+- Message stored in queue until confirmed
+- Client sends ACK when received
+- Retry if no ACK within 30s
+- Persistent queue (Kafka)
+
+Three checkmarks:
+✓ Sent: Message left sender&#x27;s device
+✓✓ Delivered: Message reached recipient&#x27;s device
+✓✓✓ Read: Recipient opened chat
+
+Implementation:
+- Each status update is separate message
+- Delivered via same WebSocket channel
+- Store in database for history&quot;
+
+3. Offline Handling:
+
+&quot;When user offline:
+- Messages queued in persistent storage
+- Retained for 30 days
+- When user comes online:
+  → Fetch queued messages
+  → Deliver in order
+  → Mark as delivered
+  → Delete from queue
+
+Why queue-based:
+- Guaranteed delivery
+- Handle network interruptions
+- Support multiple devices&quot;
+</code></pre>
+<p><strong>E - Elaborate</strong></p>
+<pre><code>Group Messaging:
+
+&quot;Challenge: Deliver to 256 members efficiently
+
+Naive approach:
+- Send 256 individual messages
+- Fanout problem similar to Twitter
+
+Better approach:
+- Single message stored once
+- 256 pointers to same message
+- Deliver to online members (WebSocket)
+- Queue for offline members
+
+Trade-off:
+Storage efficient
+Consistent message
+Complex read logic (need follow pointers)&quot;
+
+Encryption:
+
+&quot;End-to-end encryption (high-level):
+- Messages encrypted on sender device
+- Server cannot decrypt (zero-knowledge)
+- Only recipient can decrypt
+
+Implication:
+- Search must be client-side
+- Backup encrypted
+- Server just routes encrypted bytes&quot;
+</code></pre>
+<h3 id="what-makes-this-answer-strong-2">What Makes This Answer Strong</h3>
+<pre><code>✓ Real-time focus (WebSocket)
+✓ Delivery guarantees detailed
+✓ Offline handling strategy
+✓ Scalability numbers
+✓ Group messaging optimized
+</code></pre>
+<h2 id="strategy-4-design-google-drive-cloud-storage">Strategy 4: Design Google Drive (Cloud Storage)</h2>
+<h3 id="what-interviewer-wants-to-hear-3">What Interviewer Wants To Hear</h3>
+<p><strong>Core challenge:</strong> Sync files across devices reliably with conflict resolution</p>
+<p><strong>Key topics to cover:</strong></p>
+<ol>
+<li>File sync algorithm</li>
+<li>Chunking strategy</li>
+<li>Conflict resolution</li>
+<li>Delta sync (only changed parts)</li>
+<li>Collaboration (real-time editing)</li>
+</ol>
+<h3 id="snake-application-focus-2">SNAKE Application Focus</h3>
+<p><strong>S - Scope</strong></p>
+<pre><code>&quot;Let me clarify:
+
+Core features:
+✓ Upload/download files
+✓ Sync across devices
+✓ File versioning
+✓ Sharing (read/write permissions)
+
+Out of scope:
+✗ Real-time collaborative editing (Google Docs)
+✗ Third-party app integrations
+✗ Advanced search
+
+Scale:
+- 1B users
+- 10B files stored
+- Average file size: 5MB
+- 1M active syncs/minute
+
+Correct?&quot;
+</code></pre>
+<p><strong>N - Numbers</strong></p>
+<pre><code>&quot;Storage:
+10B files × 5MB = 50 exabytes
+→ Need distributed object storage
+
+Sync traffic:
+1M syncs/minute
+Average: 2 files changed per sync
+= 2M file operations/minute
+= 33K operations/second
+
+Bandwidth:
+33K ops × 5MB = 165 GB/second
+→ Need chunking to reduce bandwidth!&quot;
+</code></pre>
+<p><strong>K - Key Components</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>graph TB
+    CLIENT[Desktop/Mobile Client]
+    SYNC[Sync Service]
+    METADATA[(Metadata DB)]
+    STORAGE[Object Storage S3]
+    CHUNK[Chunking Service]
+    NOTIF[Notification Service]
+    
+    CLIENT --&gt; SYNC
+    SYNC --&gt; METADATA
+    SYNC --&gt; CHUNK
+    CHUNK --&gt; STORAGE
+    SYNC --&gt; NOTIF
+    NOTIF --&gt; CLIENT
+    
+    style CHUNK fill:#ff6b6b
+    style SYNC fill:#51cf66</code></pre>
+<p><em>Google Drive: Focus vào Sync Service và Chunking</em></p>
+<p><strong>Critical discussions:</strong></p>
+<pre><code>1. Chunking Strategy:
+
+&quot;Why chunking:
+- 1GB file uploaded
+- User edits 1 line
+- Without chunking: Re-upload 1GB
+- With chunking: Upload only changed chunk
+
+Implementation:
+- Split file into 4MB chunks
+- Hash each chunk (SHA-256)
+- Upload only chunks with changed hashes
+
+Example:
+1GB file = 250 chunks
+User edits → 1 chunk changed
+Upload: 4MB instead of 1GB
+→ 250x bandwidth savings!
+
+Deduplication:
+- Same chunk hash = same content
+- Store once, reference multiple times
+- Saves storage (many users upload same files)&quot;
+
+2. Sync Algorithm:
+
+&quot;Sync flow:
+1. Client monitors file changes
+2. Change detected → Compute chunk hashes
+3. Compare with server hashes
+4. Upload only changed chunks
+5. Server reconstructs file
+6. Notify other clients
+
+Conflict detection:
+- Last-write-wins? (can lose data)
+- Better: Version history
+- User modifies file offline on 2 devices
+- Both upload when online
+- Server detects conflict
+- Keeps both versions
+- Let user merge manually&quot;
+
+3. Metadata Structure:
+
+&quot;File metadata:
+{
+  file_id: &quot;abc123&quot;,
+  name: &quot;document.pdf&quot;,
+  size: 5242880,
+  chunks: [
+    {chunk_id: &quot;ch1&quot;, hash: &quot;a1b2...&quot;, offset: 0},
+    {chunk_id: &quot;ch2&quot;, hash: &quot;c3d4...&quot;, offset: 4194304}
+  ],
+  version: 5,
+  modified_by: &quot;user_id&quot;,
+  modified_at: &quot;2024-03-15T10:30:00Z&quot;
+}
+
+Why this structure:
+- Reconstruct file from chunks
+- Detect changes (hash comparison)
+- Version history
+- Deduplication possible&quot;
+</code></pre>
+<p><strong>E - Elaborate</strong></p>
+<pre><code>Real-time Notifications:
+
+&quot;When file synced:
+- Server pushes notification to all connected clients
+- WebSocket or long-polling
+- Client checks if local file outdated
+- Auto-download if needed
+
+Why real-time:
+- User on laptop edits file
+- User on phone sees update immediately
+- Seamless cross-device experience
+
+Offline Support:
+
+&quot;Challenge: User edits offline, another user edits same file
+
+Solution:
+- Each edit creates new version
+- When online, upload as new version
+- Server detects multiple versions
+- UI shows: &#x27;Conflicted copy (User 2&#x27;s device)&#x27;
+- User manually merges
+
+Trade-off:
+Never lose data
+User in control
+Manual merge required (rare case)&quot;
+</code></pre>
+<h3 id="what-makes-this-answer-strong-3">What Makes This Answer Strong</h3>
+<pre><code>✓ Chunking strategy detailed
+✓ Delta sync explained
+✓ Conflict resolution addressed
+✓ Bandwidth optimization shown
+✓ Metadata structure designed
+</code></pre>
+<h2 id="interview-mindset-what-interviewers-really-want">Interview Mindset: What Interviewers Really Want</h2>
+<h3 id="beyond-technical-knowledge">Beyond Technical Knowledge</h3>
+<p><strong>Interviewers evaluate:</strong></p>
+<pre><code>1. Problem Understanding (30%)
+   - Do you clarify requirements?
+   - Do you identify core challenges?
+   
+2. System Design Skills (40%)
+   - Can you design scalable architecture?
+   - Do you consider trade-offs?
+   - Can you estimate capacity?
+   
+3. Communication (20%)
+   - Can you explain clearly?
+   - Do you think out loud?
+   - Are you collaborative?
+   
+4. Depth of Knowledge (10%)
+   - Do you understand technologies deeply?
+   - Can you discuss alternatives?
+</code></pre>
+<h3 id="red-flags-that-fail-interviews">Red Flags That Fail Interviews</h3>
+<pre><code>Jump to solution without clarifying
+Generic architecture (no customization to problem)
+No scale calculations
+No trade-off discussions
+Silent design (not thinking out loud)
+Defensive when challenged
+Buzzword heavy, no depth
+</code></pre>
+<h3 id="green-flags-that-pass-interviews">Green Flags That Pass Interviews</h3>
+<pre><code>Ask clarifying questions
+Calculate scale (shows data-driven thinking)
+Explain trade-offs (&quot;I chose X over Y because...&quot;)
+Think out loud
+Adjust based on feedback
+Show depth on 2-3 areas
+Discuss failure scenarios
+Propose monitoring strategy
+</code></pre>
+<h2 id="practice-strategy">Practice Strategy</h2>
+<h3 id="how-to-prepare">How To Prepare</h3>
+<p><strong>Step 1: Master SNAKE Framework (1 week)</strong></p>
+<ul>
+<li>Practice 5 different problems với strict time limit</li>
+<li>Get comfortable với flow</li>
+</ul>
+<p><strong>Step 2: Study 4 Major Categories (2 weeks)</strong></p>
+<ul>
+<li>Social systems (Twitter, Facebook, Instagram)</li>
+<li>Video systems (YouTube, Netflix, TikTok)</li>
+<li>Messaging systems (WhatsApp, Slack, Discord)</li>
+<li>Storage systems (Google Drive, Dropbox, S3)</li>
+</ul>
+<p><strong>Step 3: Mock Interviews (2-4 weeks)</strong></p>
+<ul>
+<li>Practice với peers</li>
+<li>Record yourself</li>
+<li>Get feedback</li>
+<li>Iterate</li>
+</ul>
+<h3 id="practice-problems-by-category">Practice Problems By Category</h3>
+<pre><code>Social Feed:
+- Design Twitter
+- Design Instagram
+- Design LinkedIn feed
+- Design Reddit
+
+Video Platform:
+- Design YouTube
+- Design Netflix
+- Design Twitch
+- Design TikTok
+
+Messaging:
+- Design WhatsApp
+- Design Slack
+- Design Discord
+- Design Telegram
+
+Storage/Sync:
+- Design Google Drive
+- Design Dropbox
+- Design iCloud
+- Design S3
+
+E-commerce:
+- Design Amazon
+- Design Uber
+- Design Airbnb
+- Design food delivery
+
+Infrastructure:
+- Design URL shortener
+- Design rate limiter
+- Design web crawler
+- Design distributed cache
+</code></pre>
+<h3 id="time-management-template">Time Management Template</h3>
+<pre><code>0-7 min:   Scope (requirements clarity)
+7-14 min:  Numbers (capacity estimation)
+14-21 min: API (interface design)
+21-33 min: Key Components (architecture)
+33-45 min: Elaborate (deep dives)
+
+Practice với timer!
+Discipline là key
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<p><strong>Each system type has a &quot;story&quot;:</strong></p>
+<pre><code>Twitter = Fanout problem
+YouTube = Encoding + CDN
+WhatsApp = Real-time delivery
+Google Drive = Sync + conflict resolution
+
+Know the story → Know where to focus
+</code></pre>
+<p><strong>Interview success formula:</strong></p>
+<pre><code>Technical knowledge × Communication × Structure = Success
+
+You can be technically strong but fail without structure
+You can have perfect structure but fail without depth
+You need both!
+
+SNAKE framework provides structure
+Practice provides technical depth
+Mock interviews improve communication
+</code></pre>
+<p><strong>What interviewers want:</strong></p>
+<pre><code>Not perfection
+Not all details
+Not memorized solutions
+
+But:
+✓ Clear thinking process
+✓ Trade-off awareness
+✓ Scalability mindset
+✓ Communication clarity
+✓ Depth where it matters
+</code></pre>
+<p><strong>Practice strategy:</strong></p>
+<pre><code>Week 1: Master SNAKE framework
+Week 2-3: Study system categories
+Week 4-6: Mock interviews
+Week 7+: Real interviews
+
+Consistent practice &gt; Cramming
+45 minutes × 30 problems = Ready
+</code></pre>
+<p><strong>Final advice:</strong></p>
+<pre><code>In interview:
+- Breathe (you know this!)
+- Clarify before designing
+- Think out loud
+- Show trade-offs
+- Be collaborative
+- Have fun (seriously!)
+
+Remember:
+You&#x27;ve studied hard
+You understand systems
+You have a framework
+You&#x27;re ready
+
+Trust your preparation
+</code></pre>
+<p>Bạn đã có knowledge (6 phases). Bạn đã có framework (SNAKE). Bạn đã có strategy (lesson này).</p>
+<p><strong>Giờ là lúc practice và ace those interviews!</strong></p>
+<hr/>
+<p><strong>Congratulations!</strong> Bạn đã hoàn thành toàn bộ System Design From Zero to Hero.</p>
+<p><strong>From Phase 0 (Mental Model Shift) to Phase 6 (System Design Mastery), you&#x27;ve transformed from developer to architect.</strong></p>
+<p>Keep practicing. Keep building. Keep growing.</p>
+<p><strong>You&#x27;re ready. Go ace those interviews! 🚀</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect</a><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto" href="/phase/phase-6/lesson/lesson-5-advanced-architecture-topics">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-6\",\"lesson\",\"lesson-4-real-interview-strategy\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-6\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-4-real-interview-strategy\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 6 — System Design Mastery\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress interviewer với SNAKE framework.\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-system-design-thinking-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-1-system-design-thinking-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\"}]]}]}],[\"$\",\"li\",\"lesson-2-snake-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-2-snake-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"SNAKE Framework - Methodology Để Ace System Design Interview\"}]]}]}],[\"$\",\"li\",\"lesson-3-trade-offs-and-architecture-decision-making\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\"}]]}]}],[\"$\",\"li\",\"lesson-4-real-interview-strategy\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-4-real-interview-strategy\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\"}]]}]}],[\"$\",\"li\",\"lesson-5-advanced-architecture-topics\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"}]]}]}],[\"$\",\"li\",\"lesson-6-architect-mindset-production-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[\"$L24\",\"$L25\"]}]}]]}]]}],\"$L26\"]}],\"$L27\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\"}]\n26:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"hover:text-ink\",\"children\":\"Phase 6 — System Design Mastery\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress interviewer với SNAKE framework.\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-6/lesson/lesson-4-real-interview-strategy\",\"title\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\",\"description\":\"Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress interviewer với SNAKE framework.\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\",\"children\":\"$L29\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\"]}],[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm ml-auto\",\"children\":[\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\",[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-right h-4 w-4\",\"children\":[[\"$\",\"path\",\"1ays0h\",{\"d\":\"M5 12h14\"}],[\"$\",\"path\",\"xquz4c\",{\"d\":\"m12 5 7 7-7 7\"}],\"$undefined\"]}]]}]]}],null,null]}]]}]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"real-interview-strategy-áp-dụng-framework-vào-case-thực-tế\",\"children\":\"Real Interview Strategy: Áp Dụng Framework Vào Case Thực Tế\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Sau khi học SNAKE framework và trade-off thinking, nhiều người hỏi tôi:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"\\\"Framework thì hiểu rồi, nhưng apply vào Twitter, YouTube... thế nào?\\\"\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Đó là câu hỏi đúng.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Tôi đã làm 50+ system design interviews (cả interviewer lẫn candidate). Tôi nhận ra một pattern:\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Candidates fail không phải vì thiếu kiến thức. Mà vì không biết interviewer muốn gì.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Mỗi type system có một \\\"story\\\" mà interviewer expect. Nếu bạn hiểu story đó, bạn sẽ structure answer perfectly.\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Lesson này sẽ teach: \",[\"$\",\"strong\",null,{\"children\":\"How to approach các system design problems phổ biến nhất.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Không phải detailed architecture (bạn đã học Phase 5). Mà là \",[\"$\",\"strong\",null,{\"children\":\"interview strategy\"}],\".\"]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"tại-sao-cần-strategy-riêng-cho-mỗi-system\",\"children\":\"Tại Sao Cần Strategy Riêng Cho Mỗi System?\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-pattern-behind-questions\",\"children\":\"The Pattern Behind Questions\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Interviewers không random pick systems.\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":\"Mỗi system test một set of skills cụ thể:\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Twitter/Social Feed:\\n→ Test: Fanout, eventual consistency, write amplification\\n→ Story: \\\"How to distribute content to millions?\\\"\\n\\nYouTube/Video Platform:\\n→ Test: CDN, encoding pipeline, storage optimization\\n→ Story: \\\"How to deliver video globally?\\\"\\n\\nWhatsApp/Messaging:\\n→ Test: Real-time communication, delivery guarantees, encryption\\n→ Story: \\\"How to ensure message delivery?\\\"\\n\\nGoogle Drive/Storage:\\n→ Test: File sync, conflict resolution, chunking\\n→ Story: \\\"How to sync files across devices?\\\"\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Nếu bạn hiểu \\\"story\\\", bạn biết nên focus vào đâu.\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"common-mistake-treating-all-systems-same\",\"children\":\"Common Mistake: Treating All Systems Same\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad approach:\\n\\\"Every system cần load balancer, cache, database, message queue...\\\"\\n\\n→ Generic answer\\n→ Miss specific challenges\\n→ No depth\\n\\nGood approach:\\n\\\"Twitter's challenge là fanout to millions followers.\\nYouTube's challenge là video encoding và CDN.\\nWhatsApp's challenge là real-time delivery guarantees.\\nEach needs different focus.\\\"\\n\\n→ Specific to problem\\n→ Shows understanding\\n→ Demonstrates depth\\n\"}]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"strategy-1-design-twitter-social-feed-system\",\"children\":\"Strategy 1: Design Twitter (Social Feed System)\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"what-interviewer-wants-to-hear\",\"children\":\"What Interviewer Wants To Hear\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Core challenge:\"}],\" Distribute posts to millions of followers efficiently\"]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key topics to cover:\"}]}],\"\\n\",[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Fanout strategy (this is THE critical part)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Timeline generation\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Read vs write optimization\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Celebrity problem\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Eventual consistency trade-offs\"}],\"\\n\"]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"snake-application\",\"children\":\"SNAKE Application\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"S - Scope (5 min)\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Let me clarify requirements:\\n\\nCore features:\\n✓ Post tweets (280 chars)\\n✓ Follow users\\n✓ View home timeline\\n✓ Like, retweet\\n\\nOut of scope:\\n✗ Direct messages\\n✗ Trending topics\\n✗ Search\\n\\nScale:\\n- 500M users\\n- 100M daily active\\n- 200M tweets/day\\n- Read-heavy (95% reads)\\n\\nCorrect?\\\"\\n\"}]}],\"\\n\",\"$L2a\",\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\"]}]\n"])</script><script>self.__next_f.push([1,"97:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n2a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Critical clarification:\"}]}]\n2b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"For timeline generation, should I optimize for:\\na) Fast writes (post tweet returns immediately)\\nb) Fast reads (timeline loads \u003c 100ms)\\n\\nI'm assuming (b) - optimize for read speed?\\n\\n→ This shows you understand the core trade-off\\n→ Interviewer will confirm/correct\\n\"}]}]\n2c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"N - Numbers (5 min)\"}]}]\n2d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Let me calculate scale:\\n\\nWrite traffic:\\n200M tweets/day / 86400s ≈ 2,300 tweets/second\\n\\nRead traffic:\\n100M users × 10 timeline loads/day = 1B loads/day\\n≈ 12,000 requests/second\\n\\nRead:Write ratio = 12K:2.3K ≈ 5:1\\n→ Read-heavy, caching critical\\n\\nStorage (5 years):\\n200M tweets/day × 365 × 5 = 365B tweets\\n× 1KB per tweet = 365TB\\n\\nFanout calculation:\\nAverage followers: 200\\nWrite amplification: 2,300 tweets/s × 200 = 460K timeline updates/second\\n→ This is the bottleneck to solve!\\\"\\n\\n→ Shows you identified THE critical challenge\\n\"}]}]\n2e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"A - API (5 min)\"}]}]\n2f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Core APIs:\\n\\nPOST /v1/tweets\\n{\\n  \\\"content\\\": \\\"Hello world!\\\",\\n  \\\"media_urls\\\": []\\n}\\n\\nGET /v1/timeline?cursor={cursor}\u0026limit=20\\n\\nPOST /v1/tweets/{id}/like\\n\\nPOST /v1/users/{id}/follow\\n\"}]}]\n30:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"K - Key Components (15 min)\"}]}]\n31:[\"$\",\"$L97\",null,{\"chart\":\"graph TB\\n    CLIENT[Clients]\\n    LB[Load Balancer]\\n    API[API Servers]\\n    POST[Post Service]\\n    FANOUT[Fanout Service]\\n    TIMELINE[Timeline Service]\\n    CACHE[Redis Timeline Cache]\\n    DB[(PostgreSQL)]\\n    QUEUE[Kafka Queue]\\n    \\n    CLIENT --\u003e LB\\n    LB --\u003e API\\n    API --\u003e POST\\n    API --\u003e TIMELINE\\n    POST --\u003e DB\\n    POST --\u003e QUEUE\\n    QUEUE --\u003e FANOUT\\n    FANOUT --\u003e CACHE\\n    TIMELINE --\u003e CACHE\\n    TIMELINE --\u003e DB\\n    \\n    style FANOUT fill:#ff6b6b\\n    style CACHE fill:#51cf66\"}]\n32:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Twitter architecture: Focus vào Fanout Service và Timeline Cache\"}]}]\n33:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Critical discussion (spend most time here):\"}]}]\n34:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"The core challenge is fanout. Let me explain my approach:\\n\\nHybrid Fanout Strategy:\\n\\nNormal users (\u003c 10K followers):\\n- Fanout on write\\n- When user posts → Push to all followers' timelines\\n- Pre-computed feeds = fast reads\\n\\nCelebrities (\u003e 10K followers):\\n- Fanout on read\\n- Don't push to millions of timelines\\n- Pull when followers load feed\\n\\nTrade-offs:\\nFast reads for most users (\u003c 50ms from cache)\\nAvoid celebrity fanout explosion\\nSlight delay for celebrity tweets (acceptable)\\nMixed approach = more complexity\\n\\nTimeline cache structure:\\n- Redis sorted set per user\\n- Key: timeline:{user_id}\\n- Score: timestamp\\n- Members: tweet IDs\\n- Keep 1000 recent tweets\\n\\nWhy this works:\\n- 90% of timeline loads hit cache\\n- Pre-computed for fast UX\\n- Celebrity tweets merge on-demand\\\"\\n\\n→ This is what interviewer wants to hear\\n→ Shows deep understanding\\n→ Addresses the core challenge\\n\"}]}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"E - Elaborate (15 min)\"}]}]\n36:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Pick 2-3 areas for deep dive:\"}]}]\n37:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code"])</script><script>self.__next_f.push([1,"\",null,{\"children\":\"1. Fanout implementation details\\n\\\"Let me show fanout worker logic:\\n\\nWhen tweet published:\\n- Async job via Kafka\\n- Worker fetches follower list\\n- Batch insert to Redis timelines (100 followers/batch)\\n- If follower count \u003e 10K → Skip fanout, mark as celebrity\\n\\nThis handles 460K updates/second with:\\n- 100 fanout workers\\n- Each processes 4,600 updates/s\\n- Batching reduces Redis ops\\\"\\n\\n2. Celebrity problem solution\\n\\\"For Taylor Swift (100M followers):\\n- Don't fanout on write\\n- When followers load timeline:\\n  → Fetch pre-computed feed (normal users)\\n  → Merge celebrity tweets (on-demand query)\\n  → Sort by timestamp\\n  → Apply ranking\\\"\\n\\n3. Failure handling\\n\\\"If Kafka queue backs up:\\n- Circuit breaker stops new fanout jobs\\n- Prioritize VIP users\\n- Degrade to pull-based for all during high load\\\"\\n\"}]}]\n38:[\"$\",\"h3\",null,{\"id\":\"what-makes-this-answer-strong\",\"children\":\"What Makes This Answer Strong\"}]\n39:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Identified core challenge (fanout)\\n✓ Proposed specific solution (hybrid)\\n✓ Explained trade-offs clearly\\n✓ Showed scalability thinking\\n✓ Demonstrated depth on critical parts\\n\"}]}]\n3a:[\"$\",\"h2\",null,{\"id\":\"strategy-2-design-youtube-video-platform\",\"children\":\"Strategy 2: Design YouTube (Video Platform)\"}]\n3b:[\"$\",\"h3\",null,{\"id\":\"what-interviewer-wants-to-hear-1\",\"children\":\"What Interviewer Wants To Hear\"}]\n3c:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Core challenge:\"}],\" Encode, store, and deliver video globally at massive scale\"]}]\n3d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key topics to cover:\"}]}]\n3e:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Video upload pipeline\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Encoding strategy (multiple resolutions)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"CDN for global delivery\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Storage optimization\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Recommendation system (high-level)\"}],\"\\n\"]}]\n3f:[\"$\",\"h3\",null,{\"id\":\"snake-application-focus\",\"children\":\"SNAKE Application Focus\"}]\n40:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"S - Scope\"}]}]\n41:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Let me clarify:\\n\\nCore features:\\n✓ Upload videos\\n✓ Watch videos\\n✓ Search videos\\n✓ Recommendations (high-level only)\\n\\nOut of scope:\\n✗ Live streaming\\n✗ Comments system\\n✗ Monetization\\n\\nScale assumptions:\\n- 500M users\\n- 1B video views/day\\n- 100M hours watched/day\\n- 500K video uploads/day\\n\\nCorrect?\\\"\\n\"}]}]\n42:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"N - Numbers (Critical for YouTube)\"}]}]\n43:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Let me calculate storage and bandwidth:\\n\\nUpload storage:\\n500K uploads/day\\nAverage: 10 min video at 1080p = 1GB\\nDaily: 500K × 1GB = 500TB/day\\nYearly: 500TB × 365 = 180PB/year\\n→ Need distributed object storage (S3)\\n\\nBut we encode multiple resolutions:\\n- 360p (100MB)\\n- 720p (300MB)\\n- 1080p (1GB)\\n- 4K (4GB) - optional\\nTotal per video: ~5GB\\n→ 500K × 5GB = 2.5PB/day storage!\\n\\nBandwidth (delivery):\\n1B views/day\\nAverage watch time: 6 minutes\\nAverage bitrate: 5 Mbps\\nTotal: 1B × 6 min × 5 Mbps = 3 exabytes/month\\n→ CDN absolutely critical!\\\"\\n\\n→ Numbers show you understand scale\\n\"}]}]\n44:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"K - Key Components (Focus Areas)\"}]}]\n45:[\"$\",\"$L97\",null,{\"chart\":\"graph TB\\n    USER[User]\\n    UPLOAD[Upload Service]\\n    S3[S3 Storage]\\n    ENCODE[Encoding Pipeline]\\n    CDN[CDN]\\n    METADATA[(Metadata DB)]\\n    SEARCH[Search Service]\\n    RECOMMEND[Recommendation]\\n    \\n    USER --\u003e|Upload| UPLOAD\\n    UPLOAD --\u003e S3\\n    UPLOAD --\u003e ENCODE\\n    ENCODE --\u003e S3\\n    ENCODE --\u003e METADATA\\n    \\n    USER --\u003e|Watch| CDN\\n    CDN --\u003e S3\\n    \\n    USER --\u003e|Search| SEARCH\\n    SEARCH --\u003e METADATA\\n    \\n    USER --\u003e|Get recommendations| RECOMMEND\\n    RECOMMEND --\u003e METADATA\\n    \\n    style ENCODE fill:#ff6b6b\\n    style CDN fill:#51"])</script><script>self.__next_f.push([1,"cf66\"}]\n46:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"YouTube: Focus vào Encoding Pipeline và CDN delivery\"}]}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Critical discussions:\"}]}]\n98:T47e,1. Upload and Encoding Pipeline:\n\n\"Upload flow:\n1. User uploads raw video → Upload Service\n2. Store original in S3 (cold storage)\n3. Trigger encoding pipeline (async)\n4. Encode multiple resolutions in parallel:\n   - 360p, 720p, 1080p, 4K\n   - Different codecs (H.264, VP9, AV1)\n5. Generate thumbnails\n6. Update metadata database\n7. Notify user\n\nEncoding takes time:\n- 10 min video → 30 min to encode all formats\n- User doesn't wait (async processing)\n- Shows 'Processing' status\n\nWhy multiple resolutions:\n- Adaptive bitrate streaming\n- User with slow connection → 360p\n- User with fast connection → 4K\n- Seamless quality switching\"\n\n2. CDN Strategy:\n\n\"CDN is critical:\n- 3 exabytes/month = $300K+ without CDN\n- With CDN: $50K (5x savings!)\n\nHow it works:\n- Video stored in S3 (origin)\n- CDN caches popular videos at edge\n- User request → Nearest CDN edge\n- Edge miss → Fetch from origin\n\nCache strategy:\n- Top 10% videos (trending) → Cache aggressively\n- Long tail → On-demand caching\n- Cache eviction: LRU\n\nWhy this matters:\n- Low latency (\u003c 100ms to start playback)\n- Handle viral videos (millions concurrent)\n- Cost optimization\"\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"$98\"}]}]\n49:[\"$\",\"h3\",null,{\"id\":\"what-makes-this-answer-strong-1\",\"children\":\"What Makes This Answer Strong\"}]\n4a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Massive scale numbers (exabytes!)\\n✓ Encoding pipeline detailed\\n✓ CDN strategy with cost analysis\\n✓ Adaptive streaming explained\\n✓ Async processing pattern\\n\"}]}]\n4b:[\"$\",\"h2\",null,{\"id\":\"strategy-3-design-whatsapp-messaging-system\",\"children\":\"Strategy 3: Design WhatsApp (Messaging System)\"}]\n4c:[\"$\",\"h3\",null,{\"id\":\"what-interviewer-wants-to-hear-2\",\"children\":\"What Interviewer Wants To Hear\"}]\n4d:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Core challenge:\"}],\" Deliver messages reliably in real-time with high availability\"]}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key topics to cover:\"}]}]\n4f:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Real-time delivery (WebSocket)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Message delivery guarantees\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Offline message handling\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Group messaging\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"End-to-end encryption (conceptual)\"}],\"\\n\"]}]\n50:[\"$\",\"h3\",null,{\"id\":\"snake-application-focus-1\",\"children\":\"SNAKE Application Focus\"}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"S - Scope\"}]}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Let me clarify:\\n\\nCore features:\\n✓ 1-on-1 messaging\\n✓ Group messaging (\u003c 256 members)\\n✓ Delivery receipts (sent, delivered, read)\\n✓ Offline message storage\\n\\nOut of scope:\\n✗ Voice/video calls\\n✗ Status updates\\n✗ Payment features\\n\\nScale:\\n- 2B users\\n- 100B messages/day\\n- Need real-time delivery\\n- 99.99% delivery guarantee\\n\\nCorrect?\\\"\\n\"}]}]\n53:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"N - Numbers\"}]}]\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Message traffic:\\n100B messages/day / 86400s ≈ 1.1M messages/second\\nPeak (3x): 3.3M messages/second\\n\\nStorage:\\nAverage message: 100 bytes\\n100B messages/day × 365 × 2 years = 73 trillion messages\\n× 100 bytes = 7.3 PB\\n→ Need distributed storage\\n\\nConnection load:\\n100M concurrent users online\\nEach maintains WebSocket connection\\n= 100M persistent connections\\n→ Need connection pooling, multiple servers\\\"\\n\"}]}]\n55:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"K - Key Components\"}]}]\n56:[\"$\",\"$L97\",null,{\"chart\":\"graph TB\\n    CLIENT[Mobile Clients]\\n    WS[WebSocket Servers]\\n    MSG[Message Service]\\n    QUEUE[Message Queue]\\n    STORAGE[(Message Storage)]\\n    PRESENCE[Presence Service]\\n    \\n    CLIENT \u003c"])</script><script>self.__next_f.push([1,"--\u003e|WebSocket| WS\\n    WS --\u003e MSG\\n    MSG --\u003e QUEUE\\n    MSG --\u003e STORAGE\\n    WS --\u003e PRESENCE\\n    \\n    style WS fill:#ff6b6b\\n    style QUEUE fill:#51cf66\"}]\n57:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"WhatsApp: Focus vào WebSocket layer và Message Queue\"}]}]\n58:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Critical discussions:\"}]}]\n99:T558,1. Real-time Delivery:\n\n\"WebSocket connection per user:\n- Persistent connection maintained\n- Low latency (\u003c 50ms)\n- Bidirectional communication\n\nMessage flow:\n1. Sender → WebSocket Server A\n2. Server A → Message Service\n3. Message Service → Check recipient online\n4. If online:\n   → Forward to recipient's WebSocket Server\n   → Deliver immediately\n5. If offline:\n   → Store in message queue\n   → Deliver when recipient comes online\n\nWhy this works:\n- Real-time for online users\n- Guaranteed delivery for offline users\n- Scales horizontally (multiple WS servers)\"\n\n2. Delivery Guarantees:\n\n\"At-least-once delivery:\n- Message stored in queue until confirmed\n- Client sends ACK when received\n- Retry if no ACK within 30s\n- Persistent queue (Kafka)\n\nThree checkmarks:\n✓ Sent: Message left sender's device\n✓✓ Delivered: Message reached recipient's device\n✓✓✓ Read: Recipient opened chat\n\nImplementation:\n- Each status update is separate message\n- Delivered via same WebSocket channel\n- Store in database for history\"\n\n3. Offline Handling:\n\n\"When user offline:\n- Messages queued in persistent storage\n- Retained for 30 days\n- When user comes online:\n  → Fetch queued messages\n  → Deliver in order\n  → Mark as delivered\n  → Delete from queue\n\nWhy queue-based:\n- Guaranteed delivery\n- Handle network interruptions\n- Support multiple devices\"\n59:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"$99\"}]}]\n5a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"E - Elaborate\"}]}]\n5b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Group Messaging:\\n\\n\\\"Challenge: Deliver to 256 members efficiently\\n\\nNaive approach:\\n- Send 256 individual messages\\n- Fanout problem similar to Twitter\\n\\nBetter approach:\\n- Single message stored once\\n- 256 pointers to same message\\n- Deliver to online members (WebSocket)\\n- Queue for offline members\\n\\nTrade-off:\\nStorage efficient\\nConsistent message\\nComplex read logic (need follow pointers)\\\"\\n\\nEncryption:\\n\\n\\\"End-to-end encryption (high-level):\\n- Messages encrypted on sender device\\n- Server cannot decrypt (zero-knowledge)\\n- Only recipient can decrypt\\n\\nImplication:\\n- Search must be client-side\\n- Backup encrypted\\n- Server just routes encrypted bytes\\\"\\n\"}]}]\n5c:[\"$\",\"h3\",null,{\"id\":\"what-makes-this-answer-strong-2\",\"children\":\"What Makes This Answer Strong\"}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Real-time focus (WebSocket)\\n✓ Delivery guarantees detailed\\n✓ Offline handling strategy\\n✓ Scalability numbers\\n✓ Group messaging optimized\\n\"}]}]\n5e:[\"$\",\"h2\",null,{\"id\":\"strategy-4-design-google-drive-cloud-storage\",\"children\":\"Strategy 4: Design Google Drive (Cloud Storage)\"}]\n5f:[\"$\",\"h3\",null,{\"id\":\"what-interviewer-wants-to-hear-3\",\"children\":\"What Interviewer Wants To Hear\"}]\n60:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Core challenge:\"}],\" Sync files across devices reliably with conflict resolution\"]}]\n61:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Key topics to cover:\"}]}]\n62:[\"$\",\"ol\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"File sync algorithm\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Chunking strategy\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Conflict resolution\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Delta sync (only changed parts)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Collaboration (real-time editing)\"}],\"\\n\"]}]\n63:[\"$\",\"h3\",null,{\"id\":\"snake-application-focus-2\",\"children\":\"SNAKE Application Focus\"}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"S - Scope\"}]}]\n65:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Let me clarify:\\n\\nCore features:\\n✓ Upload/download files\\n✓ Sync across devices\\n"])</script><script>self.__next_f.push([1,"✓ File versioning\\n✓ Sharing (read/write permissions)\\n\\nOut of scope:\\n✗ Real-time collaborative editing (Google Docs)\\n✗ Third-party app integrations\\n✗ Advanced search\\n\\nScale:\\n- 1B users\\n- 10B files stored\\n- Average file size: 5MB\\n- 1M active syncs/minute\\n\\nCorrect?\\\"\\n\"}]}]\n66:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"N - Numbers\"}]}]\n67:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"Storage:\\n10B files × 5MB = 50 exabytes\\n→ Need distributed object storage\\n\\nSync traffic:\\n1M syncs/minute\\nAverage: 2 files changed per sync\\n= 2M file operations/minute\\n= 33K operations/second\\n\\nBandwidth:\\n33K ops × 5MB = 165 GB/second\\n→ Need chunking to reduce bandwidth!\\\"\\n\"}]}]\n68:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"K - Key Components\"}]}]\n69:[\"$\",\"$L97\",null,{\"chart\":\"graph TB\\n    CLIENT[Desktop/Mobile Client]\\n    SYNC[Sync Service]\\n    METADATA[(Metadata DB)]\\n    STORAGE[Object Storage S3]\\n    CHUNK[Chunking Service]\\n    NOTIF[Notification Service]\\n    \\n    CLIENT --\u003e SYNC\\n    SYNC --\u003e METADATA\\n    SYNC --\u003e CHUNK\\n    CHUNK --\u003e STORAGE\\n    SYNC --\u003e NOTIF\\n    NOTIF --\u003e CLIENT\\n    \\n    style CHUNK fill:#ff6b6b\\n    style SYNC fill:#51cf66\"}]\n6a:[\"$\",\"p\",null,{\"children\":[\"$\",\"em\",null,{\"children\":\"Google Drive: Focus vào Sync Service và Chunking\"}]}]\n6b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Critical discussions:\"}]}]\n9a:T582,"])</script><script>self.__next_f.push([1,"1. Chunking Strategy:\n\n\"Why chunking:\n- 1GB file uploaded\n- User edits 1 line\n- Without chunking: Re-upload 1GB\n- With chunking: Upload only changed chunk\n\nImplementation:\n- Split file into 4MB chunks\n- Hash each chunk (SHA-256)\n- Upload only chunks with changed hashes\n\nExample:\n1GB file = 250 chunks\nUser edits → 1 chunk changed\nUpload: 4MB instead of 1GB\n→ 250x bandwidth savings!\n\nDeduplication:\n- Same chunk hash = same content\n- Store once, reference multiple times\n- Saves storage (many users upload same files)\"\n\n2. Sync Algorithm:\n\n\"Sync flow:\n1. Client monitors file changes\n2. Change detected → Compute chunk hashes\n3. Compare with server hashes\n4. Upload only changed chunks\n5. Server reconstructs file\n6. Notify other clients\n\nConflict detection:\n- Last-write-wins? (can lose data)\n- Better: Version history\n- User modifies file offline on 2 devices\n- Both upload when online\n- Server detects conflict\n- Keeps both versions\n- Let user merge manually\"\n\n3. Metadata Structure:\n\n\"File metadata:\n{\n  file_id: \"abc123\",\n  name: \"document.pdf\",\n  size: 5242880,\n  chunks: [\n    {chunk_id: \"ch1\", hash: \"a1b2...\", offset: 0},\n    {chunk_id: \"ch2\", hash: \"c3d4...\", offset: 4194304}\n  ],\n  version: 5,\n  modified_by: \"user_id\",\n  modified_at: \"2024-03-15T10:30:00Z\"\n}\n\nWhy this structure:\n- Reconstruct file from chunks\n- Detect changes (hash comparison)\n- Version history\n- Deduplication possible\"\n"])</script><script>self.__next_f.push([1,"6c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"$9a\"}]}]\n6d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"E - Elaborate\"}]}]\n6e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Real-time Notifications:\\n\\n\\\"When file synced:\\n- Server pushes notification to all connected clients\\n- WebSocket or long-polling\\n- Client checks if local file outdated\\n- Auto-download if needed\\n\\nWhy real-time:\\n- User on laptop edits file\\n- User on phone sees update immediately\\n- Seamless cross-device experience\\n\\nOffline Support:\\n\\n\\\"Challenge: User edits offline, another user edits same file\\n\\nSolution:\\n- Each edit creates new version\\n- When online, upload as new version\\n- Server detects multiple versions\\n- UI shows: 'Conflicted copy (User 2's device)'\\n- User manually merges\\n\\nTrade-off:\\nNever lose data\\nUser in control\\nManual merge required (rare case)\\\"\\n\"}]}]\n6f:[\"$\",\"h3\",null,{\"id\":\"what-makes-this-answer-strong-3\",\"children\":\"What Makes This Answer Strong\"}]\n70:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"✓ Chunking strategy detailed\\n✓ Delta sync explained\\n✓ Conflict resolution addressed\\n✓ Bandwidth optimization shown\\n✓ Metadata structure designed\\n\"}]}]\n71:[\"$\",\"h2\",null,{\"id\":\"interview-mindset-what-interviewers-really-want\",\"children\":\"Interview Mindset: What Interviewers Really Want\"}]\n72:[\"$\",\"h3\",null,{\"id\":\"beyond-technical-knowledge\",\"children\":\"Beyond Technical Knowledge\"}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Interviewers evaluate:\"}]}]\n74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Problem Understanding (30%)\\n   - Do you clarify requirements?\\n   - Do you identify core challenges?\\n   \\n2. System Design Skills (40%)\\n   - Can you design scalable architecture?\\n   - Do you consider trade-offs?\\n   - Can you estimate capacity?\\n   \\n3. Communication (20%)\\n   - Can you explain clearly?\\n   - Do you think out loud?\\n   - Are you collaborative?\\n   \\n4. Depth of Knowledge (10%)\\n   - Do you understand technologies deeply?\\n   - Can you discuss alternatives?\\n\"}]}]\n75:[\"$\",\"h3\",null,{\"id\":\"red-flags-that-fail-interviews\",\"children\":\"Red Flags That Fail Interviews\"}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Jump to solution without clarifying\\nGeneric architecture (no customization to problem)\\nNo scale calculations\\nNo trade-off discussions\\nSilent design (not thinking out loud)\\nDefensive when challenged\\nBuzzword heavy, no depth\\n\"}]}]\n77:[\"$\",\"h3\",null,{\"id\":\"green-flags-that-pass-interviews\",\"children\":\"Green Flags That Pass Interviews\"}]\n78:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Ask clarifying questions\\nCalculate scale (shows data-driven thinking)\\nExplain trade-offs (\\\"I chose X over Y because...\\\")\\nThink out loud\\nAdjust based on feedback\\nShow depth on 2-3 areas\\nDiscuss failure scenarios\\nPropose monitoring strategy\\n\"}]}]\n79:[\"$\",\"h2\",null,{\"id\":\"practice-strategy\",\"children\":\"Practice Strategy\"}]\n7a:[\"$\",\"h3\",null,{\"id\":\"how-to-prepare\",\"children\":\"How To Prepare\"}]\n7b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Step 1: Master SNAKE Framework (1 week)\"}]}]\n7c:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Practice 5 different problems với strict time limit\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Get comfortable với flow\"}],\"\\n\"]}]\n7d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Step 2: Study 4 Major Categories (2 weeks)\"}]}]\n7e:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Social systems (Twitter, Facebook, Instagram)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Video systems (YouTube, Netflix, TikTok)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Messaging systems (WhatsApp, Slack, Discord)\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Storage systems (Google Drive, Dropbox, S3)\"}],\"\\n\"]}]\n7f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Step 3: Mock Interviews (2-4 weeks)\"}]}]\n80:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Practice với peers\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Record yourself\"}],\"\\n\",[\"$"])</script><script>self.__next_f.push([1,"\",\"li\",null,{\"children\":\"Get feedback\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Iterate\"}],\"\\n\"]}]\n81:[\"$\",\"h3\",null,{\"id\":\"practice-problems-by-category\",\"children\":\"Practice Problems By Category\"}]\n82:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Social Feed:\\n- Design Twitter\\n- Design Instagram\\n- Design LinkedIn feed\\n- Design Reddit\\n\\nVideo Platform:\\n- Design YouTube\\n- Design Netflix\\n- Design Twitch\\n- Design TikTok\\n\\nMessaging:\\n- Design WhatsApp\\n- Design Slack\\n- Design Discord\\n- Design Telegram\\n\\nStorage/Sync:\\n- Design Google Drive\\n- Design Dropbox\\n- Design iCloud\\n- Design S3\\n\\nE-commerce:\\n- Design Amazon\\n- Design Uber\\n- Design Airbnb\\n- Design food delivery\\n\\nInfrastructure:\\n- Design URL shortener\\n- Design rate limiter\\n- Design web crawler\\n- Design distributed cache\\n\"}]}]\n83:[\"$\",\"h3\",null,{\"id\":\"time-management-template\",\"children\":\"Time Management Template\"}]\n84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"0-7 min:   Scope (requirements clarity)\\n7-14 min:  Numbers (capacity estimation)\\n14-21 min: API (interface design)\\n21-33 min: Key Components (architecture)\\n33-45 min: Elaborate (deep dives)\\n\\nPractice với timer!\\nDiscipline là key\\n\"}]}]\n85:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Each system type has a \\\"story\\\":\"}]}]\n87:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Twitter = Fanout problem\\nYouTube = Encoding + CDN\\nWhatsApp = Real-time delivery\\nGoogle Drive = Sync + conflict resolution\\n\\nKnow the story → Know where to focus\\n\"}]}]\n88:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Interview success formula:\"}]}]\n89:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Technical knowledge × Communication × Structure = Success\\n\\nYou can be technically strong but fail without structure\\nYou can have perfect structure but fail without depth\\nYou need both!\\n\\nSNAKE framework provides structure\\nPractice provides technical depth\\nMock interviews improve communication\\n\"}]}]\n8a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"What interviewers want:\"}]}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Not perfection\\nNot all details\\nNot memorized solutions\\n\\nBut:\\n✓ Clear thinking process\\n✓ Trade-off awareness\\n✓ Scalability mindset\\n✓ Communication clarity\\n✓ Depth where it matters\\n\"}]}]\n8c:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Practice strategy:\"}]}]\n8d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Week 1: Master SNAKE framework\\nWeek 2-3: Study system categories\\nWeek 4-6: Mock interviews\\nWeek 7+: Real interviews\\n\\nConsistent practice \u003e Cramming\\n45 minutes × 30 problems = Ready\\n\"}]}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Final advice:\"}]}]\n8f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"In interview:\\n- Breathe (you know this!)\\n- Clarify before designing\\n- Think out loud\\n- Show trade-offs\\n- Be collaborative\\n- Have fun (seriously!)\\n\\nRemember:\\nYou've studied hard\\nYou understand systems\\nYou have a framework\\nYou're ready\\n\\nTrust your preparation\\n\"}]}]\n90:[\"$\",\"p\",null,{\"children\":\"Bạn đã có knowledge (6 phases). Bạn đã có framework (SNAKE). Bạn đã có strategy (lesson này).\"}]\n91:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Giờ là lúc practice và ace those interviews!\"}]}]\n92:[\"$\",\"hr\",null,{}]\n93:[\"$\",\"p\",null,{\"children\":[[\"$\",\"strong\",null,{\"children\":\"Congratulations!\"}],\" Bạn đã hoàn thành toàn bộ System Design From Zero to Hero.\"]}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"From Phase 0 (Mental Model Shift) to Phase 6 (System Design Mastery), you've transformed from developer to architect.\"}]}]\n95:[\"$\",\"p\",null,{\"children\":\"Keep practicing. Keep building. Keep growing.\"}]\n96:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"You're ready. Go ace those interviews! 🚀\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"9b:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế | Phase 6 — System Design Mastery | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress inte\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-4-real-interview-strategy\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress inte\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-4-real-interview-strategy\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Master cách approach Twitter, YouTube, WhatsApp, Google Drive trong system design interview. Học strategy, focus areas, và cách structure answer để impress inte\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$L9b\",\"14\",{}]]\n"])</script></body></html>

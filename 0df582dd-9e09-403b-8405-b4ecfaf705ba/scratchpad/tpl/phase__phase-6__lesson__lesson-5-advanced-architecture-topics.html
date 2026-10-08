@@ -1,0 +1,864 @@
+<article class="prose-ui"><h1 id="advanced-architecture-topics---kiến-thức-differentiate-senior-vs-staff-engineer">§§SEG0§§</h1>
+<p>§§SEG1§§</p>
+<p>§§SEG2§§</p>
+<p>§§SEG3§§</p>
+<h2 id="tại-sao-các-topics-này-lại-advanced">§§SEG4§§</h2>
+<h3 id="reality-check">§§SEG5§§</h3>
+<p>§§SEG6§§</p>
+<ul>
+<li>§§SEG7§§</li>
+<li>§§SEG8§§</li>
+<li>§§SEG9§§</li>
+<li>§§SEG10§§</li>
+<li>§§SEG11§§</li>
+<li>§§SEG12§§</li>
+<li>§§SEG13§§</li>
+</ul>
+<p>§§SEG14§§</p>
+<h2 id="1-event-sourcing---store-events-not-state">§§SEG15§§</h2>
+<h3 id="vấn-đề-của-traditional-state-storage">§§SEG16§§</h3>
+<pre><code>§§SEG17§§</code></pre>
+<h3 id="event-sourcing-approach">§§SEG18§§</h3>
+<p>§§SEG19§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG20§§</code></pre>
+<pre><code>§§SEG21§§</code></pre>
+<h3 id="tại-sao-event-sourcing">§§SEG22§§</h3>
+<p>§§SEG23§§</p>
+<ul>
+<li>§§SEG24§§</li>
+<li>§§SEG25§§</li>
+</ul>
+<p>§§SEG26§§</p>
+<ul>
+<li>§§SEG27§§</li>
+<li>§§SEG28§§</li>
+</ul>
+<p>§§SEG29§§</p>
+<ul>
+<li>§§SEG30§§</li>
+<li>§§SEG31§§</li>
+</ul>
+<p>§§SEG32§§</p>
+<ul>
+<li>§§SEG33§§</li>
+<li>§§SEG34§§</li>
+</ul>
+<h3 id="trade-offs">§§SEG35§§</h3>
+<p>§§SEG36§§</p>
+<ul>
+<li>§§SEG37§§</li>
+<li>§§SEG38§§</li>
+<li>§§SEG39§§</li>
+<li>§§SEG40§§</li>
+</ul>
+<p>§§SEG41§§</p>
+<ul>
+<li>§§SEG42§§</li>
+<li>§§SEG43§§</li>
+<li>§§SEG44§§</li>
+<li>§§SEG45§§</li>
+<li>§§SEG46§§</li>
+</ul>
+<h3 id="khi-nào-dùng-event-sourcing">§§SEG47§§</h3>
+<p>§§SEG48§§</p>
+<ul>
+<li>§§SEG49§§</li>
+<li>§§SEG50§§</li>
+<li>§§SEG51§§</li>
+<li>§§SEG52§§</li>
+</ul>
+<p>§§SEG53§§</p>
+<ul>
+<li>§§SEG54§§</li>
+<li>§§SEG55§§</li>
+<li>§§SEG56§§</li>
+<li>§§SEG57§§</li>
+</ul>
+<h2 id="2-cqrs---command-query-responsibility-segregation">§§SEG58§§</h2>
+<h3 id="core-concept">§§SEG59§§</h3>
+<p>§§SEG60§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG61§§</code></pre>
+<h3 id="tại-sao-cqrs">§§SEG62§§</h3>
+<p>§§SEG63§§</p>
+<pre><code>§§SEG64§§</code></pre>
+<h3 id="example-e-commerce-product-page">§§SEG65§§</h3>
+<p>§§SEG66§§</p>
+<pre><code class="language-sql">-- Mỗi lần load product page:
+SELECT p.*, c.name as category_name, 
+       AVG(r.rating) as avg_rating,
+       COUNT(r.id) as review_count,
+       i.quantity as stock
+FROM products p
+JOIN categories c ON p.category_id = c.id
+LEFT JOIN reviews r ON p.id = r.product_id
+LEFT JOIN inventory i ON p.id = i.product_id
+WHERE p.id = ?
+GROUP BY p.id
+
+-- Slow vì phải join nhiều tables mỗi request
+</code></pre>
+<p>§§SEG67§§</p>
+<pre><code class="language-javascript">// Write Side (normalized)
+await db.products.update({ id, name, price })
+await eventBus.publish('ProductUpdated', { id, name, price })
+
+// Read Side (denormalized view)
+await cache.set(`product:${id}`, {
+  id, name, price,
+  category: 'Electronics',
+  avgRating: 4.5,
+  reviewCount: 1203,
+  stock: 50
+})
+
+// Read cực nhanh - chỉ 1 cache lookup
+const product = await cache.get(`product:${id}`)
+</code></pre>
+<h3 id="cqrs--event-sourcing-combo">§§SEG68§§</h3>
+<pre><code>§§SEG69§§</code></pre>
+<h3 id="trade-offs-1">§§SEG70§§</h3>
+<p>§§SEG71§§</p>
+<ul>
+<li>§§SEG72§§</li>
+<li>§§SEG73§§</li>
+<li>§§SEG74§§</li>
+<li>§§SEG75§§</li>
+</ul>
+<p>§§SEG76§§</p>
+<ul>
+<li>§§SEG77§§</li>
+<li>§§SEG78§§</li>
+<li>§§SEG79§§</li>
+<li>§§SEG80§§</li>
+</ul>
+<h3 id="khi-nào-dùng-cqrs">§§SEG81§§</h3>
+<p>§§SEG82§§</p>
+<ul>
+<li>§§SEG83§§</li>
+<li>§§SEG84§§</li>
+<li>§§SEG85§§</li>
+<li>§§SEG86§§</li>
+</ul>
+<p>§§SEG87§§</p>
+<ul>
+<li>§§SEG88§§</li>
+<li>§§SEG89§§</li>
+<li>§§SEG90§§</li>
+</ul>
+<h2 id="3-service-mesh---infrastructure-layer-for-service-communication">§§SEG91§§</h2>
+<h3 id="vấn-đề-của-microservices-communication">§§SEG92§§</h3>
+<p>§§SEG93§§</p>
+<pre><code>§§SEG94§§</code></pre>
+<h3 id="service-mesh-solution">§§SEG95§§</h3>
+<p>§§SEG96§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG97§§</code></pre>
+<p>§§SEG98§§</p>
+<pre><code>§§SEG99§§</code></pre>
+<h3 id="service-mesh-features">§§SEG100§§</h3>
+<p>§§SEG101§§</p>
+<ul>
+<li>§§SEG102§§</li>
+<li>§§SEG103§§</li>
+<li>§§SEG104§§</li>
+<li>§§SEG105§§</li>
+</ul>
+<p>§§SEG106§§</p>
+<ul>
+<li>§§SEG107§§</li>
+<li>§§SEG108§§</li>
+<li>§§SEG109§§</li>
+</ul>
+<p>§§SEG110§§</p>
+<ul>
+<li>§§SEG111§§</li>
+<li>§§SEG112§§</li>
+<li>§§SEG113§§</li>
+</ul>
+<p>§§SEG114§§</p>
+<ul>
+<li>§§SEG115§§</li>
+<li>§§SEG116§§</li>
+<li>§§SEG117§§</li>
+</ul>
+<h3 id="popular-service-meshes">§§SEG118§§</h3>
+<ul>
+<li>§§SEG119§§</li>
+<li>§§SEG120§§</li>
+<li>§§SEG121§§</li>
+</ul>
+<h3 id="trade-offs-2">§§SEG122§§</h3>
+<p>§§SEG123§§</p>
+<ul>
+<li>§§SEG124§§</li>
+<li>§§SEG125§§</li>
+<li>§§SEG126§§</li>
+<li>§§SEG127§§</li>
+</ul>
+<p>§§SEG128§§</p>
+<ul>
+<li>§§SEG129§§</li>
+<li>§§SEG130§§</li>
+<li>§§SEG131§§</li>
+<li>§§SEG132§§</li>
+</ul>
+<h3 id="khi-nào-cần-service-mesh">§§SEG133§§</h3>
+<p>§§SEG134§§</p>
+<ul>
+<li>§§SEG135§§</li>
+<li>§§SEG136§§</li>
+<li>§§SEG137§§</li>
+<li>§§SEG138§§</li>
+</ul>
+<p>§§SEG139§§</p>
+<ul>
+<li>§§SEG140§§</li>
+<li>§§SEG141§§</li>
+<li>§§SEG142§§</li>
+<li>§§SEG143§§</li>
+</ul>
+<h2 id="4-chaos-engineering---break-things-on-purpose">§§SEG144§§</h2>
+<h3 id="core-philosophy">§§SEG145§§</h3>
+<p>§§SEG146§§</p>
+<pre><code>§§SEG147§§</code></pre>
+<h3 id="netflixs-chaos-monkey">§§SEG148§§</h3>
+<p>§§SEG149§§</p>
+<pre><code>§§SEG150§§</code></pre>
+<h3 id="chaos-engineering-principles">§§SEG151§§</h3>
+<p>§§SEG152§§</p>
+<pre><code>§§SEG153§§</code></pre>
+<p>§§SEG154§§</p>
+<pre><code>§§SEG155§§</code></pre>
+<p>§§SEG156§§</p>
+<pre><code class="language-javascript">// Automated chaos experiment
+const experiment = {
+  name: 'Database Failover',
+  hypothesis: 'System handles DB failure gracefully',
+  blast_radius: '10% traffic',
+  
+  fault: {
+    type: 'database_failure',
+    duration: '5 minutes'
+  },
+  
+  steady_state: {
+    metric: 'api_success_rate',
+    threshold: '&gt; 99%'
+  }
+}
+
+// Run weekly tự động
+</code></pre>
+<h3 id="common-chaos-experiments">§§SEG157§§</h3>
+<p>§§SEG158§§</p>
+<ul>
+<li>§§SEG159§§</li>
+<li>§§SEG160§§</li>
+<li>§§SEG161§§</li>
+</ul>
+<p>§§SEG162§§</p>
+<ul>
+<li>§§SEG163§§</li>
+<li>§§SEG164§§</li>
+<li>§§SEG165§§</li>
+</ul>
+<p>§§SEG166§§</p>
+<ul>
+<li>§§SEG167§§</li>
+<li>§§SEG168§§</li>
+<li>§§SEG169§§</li>
+</ul>
+<p>§§SEG170§§</p>
+<ul>
+<li>§§SEG171§§</li>
+<li>§§SEG172§§</li>
+<li>§§SEG173§§</li>
+</ul>
+<h3 id="tools">§§SEG174§§</h3>
+<ul>
+<li>§§SEG175§§</li>
+<li>§§SEG176§§</li>
+<li>§§SEG177§§</li>
+<li>§§SEG178§§</li>
+</ul>
+<h3 id="trade-offs-3">§§SEG179§§</h3>
+<p>§§SEG180§§</p>
+<ul>
+<li>§§SEG181§§</li>
+<li>§§SEG182§§</li>
+<li>§§SEG183§§</li>
+<li>§§SEG184§§</li>
+</ul>
+<p>§§SEG185§§</p>
+<ul>
+<li>§§SEG186§§</li>
+<li>§§SEG187§§</li>
+<li>§§SEG188§§</li>
+<li>§§SEG189§§</li>
+</ul>
+<h3 id="khi-nào-áp-dụng-chaos-engineering">§§SEG190§§</h3>
+<p>§§SEG191§§</p>
+<ul>
+<li>§§SEG192§§</li>
+<li>§§SEG193§§</li>
+<li>§§SEG194§§</li>
+<li>§§SEG195§§</li>
+</ul>
+<p>§§SEG196§§</p>
+<ul>
+<li>§§SEG197§§</li>
+<li>§§SEG198§§</li>
+<li>§§SEG199§§</li>
+</ul>
+<h2 id="5-idempotency---handle-duplicate-requests-safely">§§SEG200§§</h2>
+<h3 id="vấn-đề-network-unreliable">§§SEG201§§</h3>
+<pre><code>§§SEG202§§</code></pre>
+<h3 id="core-concept-1">§§SEG203§§</h3>
+<p>§§SEG204§§</p>
+<pre><code>§§SEG205§§</code></pre>
+<h3 id="implementation-strategies">§§SEG206§§</h3>
+<p>§§SEG207§§</p>
+<pre><code class="language-javascript">// Client generates unique key
+const idempotencyKey = uuidv4()
+
+await api.post('/payments', {
+  amount: 100,
+  idempotency_key: idempotencyKey
+})
+
+// Server side
+async function processPayment(request) {
+  const { amount, idempotency_key } = request
+  
+  // Check if already processed
+  const cached = await cache.get(idempotency_key)
+  if (cached) {
+    return cached.result  // Return previous result
+  }
+  
+  // Process payment
+  const result = await chargeCard(amount)
+  
+  // Cache result
+  await cache.set(idempotency_key, { result }, { ttl: 86400 })
+  
+  return result
+}
+</code></pre>
+<p>§§SEG208§§</p>
+<pre><code class="language-javascript">// Idempotent by design
+PUT /users/123
+{
+  "name": "John",
+  "email": "john@example.com"
+}
+
+// Calling nhiều lần → same state
+</code></pre>
+<p>§§SEG209§§</p>
+<pre><code class="language-sql">CREATE UNIQUE INDEX idx_payment_idempotency 
+ON payments(idempotency_key);
+
+-- Duplicate insert sẽ fail → retry-safe
+</code></pre>
+<h3 id="idempotency-levels">§§SEG210§§</h3>
+<p>§§SEG211§§</p>
+<pre><code>§§SEG212§§</code></pre>
+<p>§§SEG213§§</p>
+<pre><code class="language-javascript">// Check database state
+const existingOrder = await db.orders.findOne({ 
+  userId, productId 
+})
+
+if (existingOrder) {
+  return existingOrder  // Already exists
+}
+
+// Create new
+return await db.orders.create({ userId, productId })
+</code></pre>
+<p>§§SEG214§§</p>
+<pre><code>§§SEG215§§</code></pre>
+<h3 id="real-world-examples">§§SEG216§§</h3>
+<p>§§SEG217§§</p>
+<pre><code class="language-javascript">await stripe.charges.create({
+  amount: 1000,
+  currency: 'usd',
+  source: 'tok_visa',
+  idempotency_key: '123e4567-e89b-12d3'
+})
+
+// Retry with same key → returns original charge
+</code></pre>
+<p>§§SEG218§§</p>
+<pre><code class="language-javascript">// Consumer with deduplication
+async function processMessage(message) {
+  const messageId = message.id
+  
+  const processed = await db.processed_messages
+    .findOne({ messageId })
+  
+  if (processed) {
+    return  // Already processed
+  }
+  
+  // Process message
+  await handleMessage(message)
+  
+  // Mark as processed
+  await db.processed_messages.insert({ 
+    messageId, 
+    processedAt: Date.now() 
+  })
+}
+</code></pre>
+<h3 id="trade-offs-4">§§SEG219§§</h3>
+<p>§§SEG220§§</p>
+<ul>
+<li>§§SEG221§§</li>
+<li>§§SEG222§§</li>
+<li>§§SEG223§§</li>
+</ul>
+<p>§§SEG224§§</p>
+<ul>
+<li>§§SEG225§§</li>
+<li>§§SEG226§§</li>
+<li>§§SEG227§§</li>
+</ul>
+<h2 id="6-circuit-breaker---stop-cascading-failures">§§SEG228§§</h2>
+<h3 id="vấn-đề-cascading-failures">§§SEG229§§</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG230§§</code></pre>
+<pre><code>§§SEG231§§</code></pre>
+<h3 id="circuit-breaker-pattern">§§SEG232§§</h3>
+<p>§§SEG233§§</p>
+<pre><code>§§SEG234§§</code></pre>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG235§§</code></pre>
+<h3 id="implementation">§§SEG236§§</h3>
+<pre><code class="language-javascript">class CircuitBreaker {
+  constructor(options) {
+    this.failureThreshold = options.failureThreshold || 5
+    this.timeout = options.timeout || 60000  // 1 minute
+    this.failures = 0
+    this.state = 'CLOSED'
+    this.nextAttempt = null
+  }
+  
+  async call(fn) {
+    if (this.state === 'OPEN') {
+      if (Date.now() &lt; this.nextAttempt) {
+        throw new Error('Circuit breaker OPEN')
+      }
+      // Try half-open
+      this.state = 'HALF-OPEN'
+    }
+    
+    try {
+      const result = await fn()
+      this.onSuccess()
+      return result
+    } catch (error) {
+      this.onFailure()
+      throw error
+    }
+  }
+  
+  onSuccess() {
+    this.failures = 0
+    this.state = 'CLOSED'
+  }
+  
+  onFailure() {
+    this.failures++
+    if (this.failures &gt;= this.failureThreshold) {
+      this.state = 'OPEN'
+      this.nextAttempt = Date.now() + this.timeout
+    }
+  }
+}
+
+// Usage
+const breaker = new CircuitBreaker({ 
+  failureThreshold: 5, 
+  timeout: 60000 
+})
+
+try {
+  const data = await breaker.call(() =&gt; 
+    fetch('https://api.example.com/data')
+  )
+} catch (error) {
+  // Circuit open hoặc call failed
+  return fallbackData
+}
+</code></pre>
+<h3 id="circuit-breaker--fallback">§§SEG237§§</h3>
+<pre><code class="language-javascript">async function getUserProfile(userId) {
+  try {
+    return await circuitBreaker.call(() =&gt; 
+      userService.getProfile(userId)
+    )
+  } catch (error) {
+    // Circuit open → use fallback
+    return {
+      id: userId,
+      name: 'User',
+      avatar: 'default-avatar.png',
+      _fallback: true
+    }
+  }
+}
+</code></pre>
+<h3 id="advanced-bulkhead-pattern">§§SEG238§§</h3>
+<p>§§SEG239§§</p>
+<pre><code class="language-javascript">// Separate thread pools cho từng service
+const paymentPool = createThreadPool({ size: 10 })
+const userPool = createThreadPool({ size: 20 })
+const searchPool = createThreadPool({ size: 30 })
+
+// Payment service down → only payment pool exhausted
+// User và search services still working
+</code></pre>
+<h3 id="monitoring-circuit-breaker">§§SEG240§§</h3>
+<pre><code class="language-javascript">// Metrics quan trọng
+circuitBreaker.on('open', () =&gt; {
+  metrics.increment('circuit_breaker.opened', {
+    service: 'payment_service'
+  })
+  alert.send('Circuit breaker opened: payment_service')
+})
+
+circuitBreaker.on('half-open', () =&gt; {
+  metrics.increment('circuit_breaker.half_open')
+})
+
+circuitBreaker.on('closed', () =&gt; {
+  metrics.increment('circuit_breaker.closed')
+})
+</code></pre>
+<h3 id="trade-offs-5">§§SEG241§§</h3>
+<p>§§SEG242§§</p>
+<ul>
+<li>§§SEG243§§</li>
+<li>§§SEG244§§</li>
+<li>§§SEG245§§</li>
+<li>§§SEG246§§</li>
+</ul>
+<p>§§SEG247§§</p>
+<ul>
+<li>§§SEG248§§</li>
+<li>§§SEG249§§</li>
+<li>§§SEG250§§</li>
+<li>§§SEG251§§</li>
+</ul>
+<h2 id="7-distributed-tracing---debug-across-services">§§SEG252§§</h2>
+<h3 id="vấn-đề-debugging-microservices">§§SEG253§§</h3>
+<pre><code>§§SEG254§§</code></pre>
+<h3 id="traditional-logging-approach">§§SEG255§§</h3>
+<pre><code class="language-javascript">// Service A
+logger.info('Calling Service B')
+
+// Service B
+logger.info('Processing request')
+
+// Service C
+logger.info('Query database')
+
+// Problem: Không biết logs nào belong to cùng request
+</code></pre>
+<h3 id="distributed-tracing-solution">§§SEG256§§</h3>
+<p>§§SEG257§§</p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>§§SEG258§§</code></pre>
+<p>§§SEG259§§</p>
+<ul>
+<li>§§SEG260§§</li>
+<li>§§SEG261§§</li>
+<li>§§SEG262§§</li>
+</ul>
+<pre><code>§§SEG263§§</code></pre>
+<h3 id="implementation-with-opentelemetry">§§SEG264§§</h3>
+<pre><code class="language-javascript">const { trace } = require('@opentelemetry/api')
+const tracer = trace.getTracer('cart-service')
+
+async function processCheckout(request) {
+  // Start span
+  const span = tracer.startSpan('checkout.process')
+  
+  try {
+    // Add context
+    span.setAttribute('user_id', request.userId)
+    span.setAttribute('cart_size', request.items.length)
+    
+    // Call other services (trace propagates automatically)
+    const inventory = await checkInventory(request.items)
+    const payment = await processPayment(request)
+    
+    span.setStatus({ code: SpanStatusCode.OK })
+    return { success: true }
+  } catch (error) {
+    span.recordException(error)
+    span.setStatus({ code: SpanStatusCode.ERROR })
+    throw error
+  } finally {
+    span.end()
+  }
+}
+</code></pre>
+<h3 id="trace-context-propagation">§§SEG265§§</h3>
+<pre><code class="language-javascript">// HTTP headers automatically include trace context
+const response = await fetch('https://payment-service/charge', {
+  headers: {
+    'traceparent': '00-abc123-def456-01',
+    'tracestate': 'vendor=value'
+  }
+})
+
+// Next service continues same trace
+</code></pre>
+<h3 id="distributed-tracing-tools">§§SEG266§§</h3>
+<p>§§SEG267§§</p>
+<ul>
+<li>§§SEG268§§</li>
+<li>§§SEG269§§</li>
+<li>§§SEG270§§</li>
+<li>§§SEG271§§</li>
+<li>§§SEG272§§</li>
+</ul>
+<h3 id="tracing--metrics--logs--observability">§§SEG273§§</h3>
+<pre><code>§§SEG274§§</code></pre>
+<h3 id="sampling-strategy">§§SEG275§§</h3>
+<p>§§SEG276§§</p>
+<pre><code class="language-javascript">// Solution: Sample intelligently
+const sampler = {
+  // Always trace errors
+  shouldSample: (context) =&gt; {
+    if (context.hasError) return true
+    
+    // Sample 1% normal requests
+    if (Math.random() &lt; 0.01) return true
+    
+    // Always trace slow requests
+    if (context.duration &gt; 1000) return true
+    
+    return false
+  }
+}
+</code></pre>
+<h3 id="trade-offs-6">§§SEG277§§</h3>
+<p>§§SEG278§§</p>
+<ul>
+<li>§§SEG279§§</li>
+<li>§§SEG280§§</li>
+<li>§§SEG281§§</li>
+<li>§§SEG282§§</li>
+</ul>
+<p>§§SEG283§§</p>
+<ul>
+<li>§§SEG284§§</li>
+<li>§§SEG285§§</li>
+<li>§§SEG286§§</li>
+<li>§§SEG287§§</li>
+</ul>
+<h2 id="8-observability-mindset---you-cannot-fix-what-you-cannot-see">§§SEG288§§</h2>
+<h3 id="observability-vs-monitoring">§§SEG289§§</h3>
+<pre><code>§§SEG290§§</code></pre>
+<h3 id="three-pillars-of-observability">§§SEG291§§</h3>
+<p>§§SEG292§§</p>
+<pre><code class="language-javascript">// Counters
+requests_total{service="api", status="200"} 1024
+requests_total{service="api", status="500"} 12
+
+// Gauges
+active_connections{service="api"} 45
+
+// Histograms
+request_duration_seconds{service="api", le="0.1"} 800
+request_duration_seconds{service="api", le="1.0"} 950
+</code></pre>
+<p>§§SEG293§§</p>
+<pre><code class="language-json">{
+  "timestamp": "2024-01-15T10:30:00Z",
+  "level": "error",
+  "service": "payment",
+  "trace_id": "abc123",
+  "message": "Payment failed",
+  "error": "Insufficient funds",
+  "user_id": "user_456",
+  "amount": 100
+}
+</code></pre>
+<p>§§SEG294§§</p>
+<pre><code>§§SEG295§§</code></pre>
+<h3 id="structured-logging-best-practices">§§SEG296§§</h3>
+<pre><code class="language-javascript">// Bad: Unstructured logs
+logger.info('User user_123 purchased item_456 for $100')
+
+// Good: Structured logs
+logger.info('purchase_completed', {
+  user_id: 'user_123',
+  item_id: 'item_456',
+  amount: 100,
+  currency: 'USD',
+  trace_id: context.traceId,
+  duration_ms: 250
+})
+
+// Query-able:
+// - All purchases by user_123
+// - All purchases &gt; $50
+// - All slow purchases (duration &gt; 1000ms)
+</code></pre>
+<h3 id="high-cardinality-data">§§SEG297§§</h3>
+<p>§§SEG298§§</p>
+<pre><code>§§SEG299§§</code></pre>
+<h3 id="observability-driven-development">§§SEG300§§</h3>
+<pre><code class="language-javascript">// Instrument code với context
+async function processOrder(order) {
+  const span = tracer.startSpan('process_order')
+  
+  // Rich context
+  span.setAttributes({
+    'order.id': order.id,
+    'order.value': order.total,
+    'order.items_count': order.items.length,
+    'user.tier': order.user.tier,
+    'user.country': order.user.country
+  })
+  
+  try {
+    // Business logic
+    const result = await processPayment(order)
+    
+    // Success metrics
+    metrics.increment('orders.processed', {
+      tier: order.user.tier,
+      payment_method: order.paymentMethod
+    })
+    
+    return result
+  } catch (error) {
+    // Error context
+    span.recordException(error)
+    logger.error('order_processing_failed', {
+      order_id: order.id,
+      error: error.message,
+      stack: error.stack
+    })
+    throw error
+  } finally {
+    span.end()
+  }
+}
+</code></pre>
+<h3 id="slis-slos-slas">§§SEG301§§</h3>
+<p>§§SEG302§§</p>
+<pre><code>§§SEG303§§</code></pre>
+<p>§§SEG304§§</p>
+<pre><code>§§SEG305§§</code></pre>
+<p>§§SEG306§§</p>
+<pre><code>§§SEG307§§</code></pre>
+<h3 id="error-budget">§§SEG308§§</h3>
+<pre><code>§§SEG309§§</code></pre>
+<h3 id="alerting-best-practices">§§SEG310§§</h3>
+<pre><code class="language-javascript">// Alert on symptoms, not causes
+alert: "CPU &gt; 80%"  // So what?
+
+// Alert on user impact
+alert: "Error rate &gt; 1% for 5 minutes"
+alert: "P95 latency &gt; 1s for 5 minutes"
+
+// Alert with context
+{
+  alert: "High Error Rate",
+  severity: "critical",
+  service: "payment",
+  error_rate: "5.2%",
+  affected_users: 1200,
+  trace_samples: ["abc123", "def456"],
+  runbook: "https://wiki/payment-errors"
+}
+</code></pre>
+<h3 id="modern-observability-platforms">§§SEG311§§</h3>
+<ul>
+<li>§§SEG312§§</li>
+<li>§§SEG313§§</li>
+<li>§§SEG314§§</li>
+<li>§§SEG315§§</li>
+<li>§§SEG316§§</li>
+</ul>
+<h2 id="key-takeaways">§§SEG317§§</h2>
+<h3 id="khi-nào-cần-advanced-topics">§§SEG318§§</h3>
+<p>§§SEG319§§</p>
+<ul>
+<li>§§SEG320§§</li>
+<li>§§SEG321§§</li>
+<li>§§SEG322§§</li>
+</ul>
+<p>§§SEG323§§</p>
+<ul>
+<li>§§SEG324§§</li>
+<li>§§SEG325§§</li>
+<li>§§SEG326§§</li>
+</ul>
+<p>§§SEG327§§</p>
+<ul>
+<li>§§SEG328§§</li>
+<li>§§SEG329§§</li>
+<li>§§SEG330§§</li>
+</ul>
+<p>§§SEG331§§</p>
+<ul>
+<li>§§SEG332§§</li>
+<li>§§SEG333§§</li>
+<li>§§SEG334§§</li>
+</ul>
+<p>§§SEG335§§</p>
+<ul>
+<li>§§SEG336§§</li>
+<li>§§SEG337§§</li>
+<li>§§SEG338§§</li>
+</ul>
+<p>§§SEG339§§</p>
+<ul>
+<li>
+<blockquote>
+<p>§§SEG340§§</p>
+</blockquote>
+</li>
+<li>§§SEG341§§</li>
+<li>§§SEG342§§</li>
+</ul>
+<p>§§SEG343§§</p>
+<ul>
+<li>§§SEG344§§</li>
+<li>§§SEG345§§</li>
+</ul>
+<h3 id="progression-path">§§SEG346§§</h3>
+<pre><code>§§SEG347§§</code></pre>
+<h3 id="practical-advice">§§SEG348§§</h3>
+<p>§§SEG349§§</p>
+<ul>
+<li>§§SEG350§§</li>
+<li>§§SEG351§§</li>
+<li>§§SEG352§§</li>
+</ul>
+<p>§§SEG353§§</p>
+<ul>
+<li>§§SEG354§§</li>
+<li>§§SEG355§§</li>
+<li>§§SEG356§§</li>
+</ul>
+<p>§§SEG357§§</p>
+<ul>
+<li>§§SEG358§§</li>
+<li>§§SEG359§§</li>
+<li>§§SEG360§§</li>
+</ul>
+<p>§§SEG361§§</p>
+<ul>
+<li>§§SEG362§§</li>
+<li>§§SEG363§§</li>
+<li>§§SEG364§§</li>
+</ul>
+<h3 id="final-thought">§§SEG365§§</h3>
+<p>§§SEG366§§</p>
+<p>§§SEG367§§</p>
+<p>§§SEG368§§</p></article>

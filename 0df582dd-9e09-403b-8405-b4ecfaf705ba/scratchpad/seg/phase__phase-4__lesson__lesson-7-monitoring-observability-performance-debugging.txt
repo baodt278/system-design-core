@@ -1,0 +1,903 @@
+@0 h1
+Monitoring, Observability & Performance Debugging - Measure To Scale
+@1 p
+Bạn deploy hệ thống production. Mọi thứ chạy tốt... hoặc ít nhất bạn nghĩ vậy.
+@2 p
+Rồi user complain: "Site chậm". Bạn check:
+@3 li
+Server CPU: 30% ✅
+@4 li
+Memory: 50%
+@5 li
+Disk: 40% ✅
+@6 p
+Metrics nhìn OK. Vậy tại sao user nói chậm?
+@7 p
+**Vấn đề:** Bạn đang measure wrong things.
+@8 p
+CPU 30% không nói lên gì về user experience. Có thể:
+@9 li
+API response time 5 seconds (user đợi lâu)
+@10 li
+Database queries timeout
+@11 li
+3rd party API calls fail 50% requests
+@12 p
+**Không measure đúng = không biết system thực sự hoạt động như thế nào.**
+@13 p
+**Mental model quan trọng nhất:** **If you cannot measure, you cannot scale.**
+@14 p
+Lesson này dạy bạn:
+@15 li
+Metrics nào thực sự quan trọng
+@16 li
+Percentiles (p50, p95, p99) và tại sao
+@17 li
+Alert strategy (không spam, không miss critical)
+@18 li
+Distributed tracing cho microservices
+@19 li
+Logging best practices
+@20 li
+SLO/SLA/Error budgets
+@21 h2
+Tại Sao Monitoring Là Critical?
+@22 h3
+1. Detect Problems Before Users
+@23 p
+**Proactive > Reactive.**
+@24 pre
+Without monitoring:
+  User complains → investigate → find issue → fix
+  Mean time to detect (MTTD): Hours to days
+
+With monitoring:
+  Alert fires → investigate → fix → user không notice
+  MTTD: Seconds to minutes
+
+@25 p
+**Good monitoring = user không biết có issues.**
+@26 h3
+2. Understand System Behavior
+@27 p
+**Capacity planning:**
+@28 pre
+Current: 1000 req/s, CPU 40%
+Question: Can handle 5000 req/s?
+Answer: Need data to extrapolate
+
+@29 p
+Without metrics, guessing. With metrics, informed decisions.
+@30 h3
+3. Debug Performance Issues
+@31 p
+**User:** "Site slow at 3 PM daily."
+@32 p
+**Without monitoring:** No idea why.
+@33 p
+**With monitoring:**
+@34 pre
+Check metrics at 3 PM:
+- Database query time spike 10x
+- Slow query log: daily report generation
+→ Move report to off-peak hours
+
+@35 h3
+4. Validate Optimizations
+@36 p
+**You:** "Added caching, should be faster."
+@37 p
+**Reality check:**
+@38 pre
+Before: p95 latency 800ms
+After:  p95 latency 150ms
+→ 5x improvement confirmed ✅
+
+@39 p
+**Measure to prove impact.**
+@40 h3
+5. Meet SLAs
+@41 p
+**Contract:** "99.9% uptime, p99 latency < 500ms"
+@42 p
+**How to know if meeting?** Monitor 24/7.
+@43 h2
+The Three Pillars Of Observability
+@44 p
+**Observability = ability to understand system internal state từ external outputs.**
+@45 pre
+flowchart TB
+    System[Distributed System]
+    
+    subgraph Pillars["Three Pillars"]
+        Metrics[Metrics<br/>What's happening?]
+        Logs[Logs<br/>Why it happened?]
+        Traces[Traces<br/>Where in the flow?]
+    end
+    
+    System --> Metrics
+    System --> Logs
+    System --> Traces
+    
+    Metrics --> Understand[Understand System]
+    Logs --> Understand
+    Traces --> Understand
+@46 p
+**Metrics:** Aggregated numbers (CPU, latency, error rate)\n
+**Logs:** Discrete events (errors, warnings, debug info)\n
+**Traces:** Request flow across services
+@47 p
+**Cần cả ba để full visibility.**
+@48 h2
+Metrics - What To Measure
+@49 h3
+Golden Signals (Google SRE)
+@50 p
+**4 metrics quan trọng nhất:**
+@51 h4
+1. Latency
+@52 p
+**Time to serve a request.**
+@53 p
+**Track:**
+@54 li
+Overall API latency
+@55 li
+Per-endpoint latency
+@56 li
+Database query time
+@57 li
+External API call time
+@58 p
+**Why:** Direct impact on user experience.
+@59 h4
+2. Traffic
+@60 p
+**Requests per second (throughput).**
+@61 p
+**Track:**
+@62 li
+Total requests/second
+@63 li
+Requests per endpoint
+@64 li
+Read vs write ratio
+@65 p
+**Why:** Understand load patterns, capacity planning.
+@66 h4
+3. Errors
+@67 p
+**Failed requests rate.**
+@68 p
+**Track:**
+@69 li
+4xx errors (client errors)
+@70 li
+5xx errors (server errors)
+@71 li
+Error rate (%)
+@72 p
+**Why:** Reliability indicator, alert trigger.
+@73 h4
+4. Saturation
+@74 p
+**How "full" your service is.**
+@75 p
+**Track:**
+@76 li
+CPU usage
+@77 li
+Memory usage
+@78 li
+Disk usage
+@79 li
+Connection pool utilization
+@80 li
+Queue depth
+@81 p
+**Why:** Predict when system will hit limits.
+@82 h3
+RED Method (For Services)
+@83 p
+**Rate, Errors, Duration.**
+@84 p
+**Simple, covers essentials.**
+@85 h3
+USE Method (For Resources)
+@86 p
+**Utilization, Saturation, Errors.**
+@87 p
+**For infrastructure monitoring.**
+@88 h2
+Percentiles - Why They Matter More Than Averages
+@89 h3
+The Problem With Averages
+@90 p
+**Scenario:**
+@91 pre
+API latencies:
+  99 requests: 100ms
+  1 request:   10,000ms (10 seconds!)
+
+Average: (99 * 100 + 10,000) / 100 = 199ms
+
+@92 p
+**Average says 199ms - looks OK!**
+@93 p
+**Reality: 1% users wait 10 seconds - terrible experience.**
+@94 p
+**Averages hide outliers.**
+@95 h3
+Percentiles Reveal True Story
+@96 p
+**p50 (median):** 50% requests faster, 50% slower\n
+**p95:** 95% requests faster than this\n
+**p99:** 99% requests faster than this\n
+**p99.9:** 99.9% requests faster than this
+@97 pre
+Example distribution:
+  p50:  100ms  (typical experience)
+  p95:  200ms  (most users)
+  p99:  500ms  (edge cases)
+  p99.9: 2000ms (rare outliers)
+
+@98 p
+**p95, p99 show worst-case user experience.**
+@99 h3
+Why p99 Matters
+@100 p
+**Amazon study:** p99 latency directly correlates với revenue.
+@101 pre
+p99 latency = 1 second
+→ Slow for 1% users
+→ At 1M requests/day = 10,000 bad experiences
+→ Bad reviews, lost sales
+
+@102 p
+**Optimize for p99, not average.**
+@103 h3
+Tracking Percentiles
+@104 p
+**Prometheus query:**
+@105 h3
+Service Level Indicators (SLI)
+@106 p
+**Measured percentiles become SLIs.**
+@107 pre
+SLI: p99 latency < 500ms
+SLI: p95 availability > 99.9%
+SLI: p99 error rate < 0.1%
+
+@108 p
+**Objective, measurable targets.**
+@109 h2
+Alert Strategy - Signal vs Noise
+@110 h3
+The Alert Fatigue Problem
+@111 p
+**Bad alerting:**
+@112 pre
+03:00 - Alert: CPU > 80%
+03:05 - Alert: CPU > 80%
+03:10 - Alert: CPU > 80%
+...
+→ 100 alerts/night
+→ Engineers ignore alerts
+→ Real issue missed
+
+@113 p
+**Alert fatigue kills reliability.**
+@114 h3
+Good Alert Principles
+@115 p
+**1. Alert on symptoms, not causes**
+@116 p
+**Bad:**
+@117 pre
+Alert: Database CPU > 80%
+
+@118 p
+**Good:**
+@119 pre
+Alert: API p99 latency > 1 second
+
+@120 p
+**Why:** CPU high có thể OK nếu latency fine. Latency high = user impacted = real problem.
+@121 p
+**2. Alert on user impact**
+@122 p
+**Bad:**
+@123 pre
+Alert: 1 server down (out of 10)
+
+@124 p
+**Good:**
+@125 pre
+Alert: Error rate > 5%
+(Only if user experience affected)
+
+@126 p
+**3. Actionable alerts only**
+@127 p
+**Every alert phải có clear action.**
+@128 pre
+Alert: Database slow queries detected
+
+Action:
+1. Check slow query log
+2. Check database load
+3. Kill long-running queries if needed
+4. Page DB team if persists > 15 min
+
+@129 p
+**Không có action = không nên alert.**
+@130 p
+**4. Use thresholds wisely**
+@131 p
+**Static threshold:**
+@132 p
+Problem: Normal load varies. 90% at 2 AM = problem. 90% at peak = normal.
+@133 p
+**Dynamic threshold:**
+@134 p
+Adapts to normal patterns.
+@135 p
+**5. Alert priority levels**
+@136 p
+**P0 (Critical):** System down, revenue impact\n
+ → Page on-call immediately
+@137 p
+**P1 (High):** Degraded performance, affecting users\n
+ → Alert on-call, expect response within 30 min
+@138 p
+**P2 (Medium):** Non-critical issues\n
+ → Ticket, handle during business hours
+@139 p
+**P3 (Low):** Informational\n
+ → Log only, no alert
+@140 h3
+Alert Runbooks
+@141 p
+**Mỗi alert cần runbook.**
+@142 pre
+## Alert: High API Error Rate
+
+### Symptom
+API error rate > 5% for 5 minutes
+
+### Impact
+Users experiencing failures, potential revenue loss
+
+### Investigation Steps
+1. Check error dashboard: ${dashboard_link}
+2. Check error logs: `kubectl logs -l app=api --tail=100`
+3. Check dependent services status
+4. Check recent deployments
+
+### Remediation
+1. If bad deployment: rollback immediately
+2. If database issue: check DB health, consider read replica
+3. If 3rd party issue: enable circuit breaker, use fallback
+
+### Escalation
+If unresolved after 15 minutes: page @backend-lead
+
+@143 p
+**Reduces MTTR (Mean Time To Resolve).**
+@144 h2
+Distributed Tracing - Debug Across Services
+@145 h3
+The Microservices Problem
+@146 p
+**Monolith:**
+@147 pre
+User request → Single codebase → Easy to debug
+
+@148 p
+**Microservices:**
+@149 pre
+User request → Service A → Service B → Service C
+                      ↓
+                  Service D
+
+@150 p
+**Where is bottleneck? Hard to tell.**
+@151 h3
+Distributed Tracing Solution
+@152 p
+**Trace = full request journey across services.**
+@153 pre
+sequenceDiagram
+    participant User
+    participant API
+    participant Auth
+    participant DB
+    participant Cache
+    
+    User->>API: GET /profile (TraceID: abc123)
+    Note over API: Span: api-handler (50ms)
+    
+    API->>Auth: Verify token
+    Note over Auth: Span: auth-verify (20ms)
+    Auth-->>API: OK
+    
+    API->>Cache: Get user
+    Note over Cache: Span: cache-lookup (5ms)
+    Cache-->>API: Cache miss
+    
+    API->>DB: Query user
+    Note over DB: Span: db-query (200ms)
+    DB-->>API: User data
+    
+    API->>Cache: Store user
+    API-->>User: Response
+    
+    Note over User,Cache: Total: 275ms<br/>Bottleneck: DB query (200ms)
+@154 p
+**Mỗi operation = span. Collection of spans = trace.**
+@155 h3
+Implementing Tracing
+@156 p
+**OpenTelemetry (standard):**
+@157 p
+**Propagate trace context across services:**
+@158 p
+**Downstream service continues trace:**
+@159 h3
+Tracing Tools
+@160 p
+**Jaeger:**
+@161 li
+Open source
+@162 li
+Uber-developed
+@163 li
+Simple to deploy
+@164 li
+Good for small-medium systems
+@165 p
+**Zipkin:**
+@166 li
+Open source
+@167 li
+Twitter-developed
+@168 li
+Similar to Jaeger
+@169 li
+Large community
+@170 p
+**Datadog APM:**
+@171 li
+Commercial
+@172 li
+Full-featured
+@173 li
+Automatic instrumentation
+@174 li
+Integrated with metrics/logs
+@175 p
+**AWS X-Ray:**
+@176 li
+AWS-native
+@177 li
+Easy AWS integration
+@178 li
+Pay-per-use
+@179 h3
+What Tracing Reveals
+@180 p
+**1. Slow dependencies**
+@181 pre
+Service A: 10ms
+Service B: 500ms ← Bottleneck!
+Service C: 5ms
+
+Total: 515ms
+
+@182 p
+**2. N+1 queries**
+@183 pre
+get_users: 10ms
+  ↳ get_orders (user 1): 50ms
+  ↳ get_orders (user 2): 50ms
+  ↳ get_orders (user 3): 50ms
+  ...
+
+@184 p
+**3. Unnecessary calls**
+@185 pre
+get_profile:
+  ↳ get_user
+  ↳ get_preferences (not used!)
+  ↳ get_settings (not used!)
+
+@186 p
+**4. Cascade failures**
+@187 pre
+Service A timeout (30s)
+  ↳ Service B timeout (30s)
+    ↳ Service C timeout (30s)
+
+Total: 90s failure!
+
+@188 h2
+Logging Strategy - Debug The Details
+@189 h3
+Log Levels
+@190 p
+**FATAL:** System unusable\n
+**ERROR:** Error events, need attention\n
+**WARN:** Potentially harmful situations\n
+**INFO:** Informational messages\n
+**DEBUG:** Detailed diagnostic info\n
+**TRACE:** Very detailed (too much for production)
+@191 p
+**Production: INFO and above.**\n
+**Staging: DEBUG.**\n
+**Development: TRACE.**
+@192 h3
+Structured Logging
+@193 p
+**Bad (unstructured):**
+@194 p
+**Hard to parse, query, aggregate.**
+@195 p
+**Good (structured):**
+@196 p
+**JSON output:**
+@197 p
+**Easy to query:**
+@198 pre
+SELECT COUNT(*) FROM logs 
+WHERE event = 'purchase' 
+  AND price > 500
+  AND timestamp > now() - interval '1 hour'
+
+@199 h3
+What To Log
+@200 p
+**Log:**
+@201 li
+Errors and exceptions
+@202 li
+Important state changes
+@203 li
+Security events (login, permission changes)
+@204 li
+External API calls (request/response)
+@205 li
+Business events (purchase, signup)
+@206 p
+**Don't log:**
+@207 li
+Passwords, tokens, PII
+@208 li
+High-frequency debug (every query)
+@209 li
+Large payloads (entire responses)
+@210 h3
+Correlation IDs
+@211 p
+**Track request across services.**
+@212 p
+**Search logs by request_id = full request flow.**
+@213 h3
+Log Aggregation
+@214 p
+**Centralized logging system.**
+@215 p
+**ELK Stack:**
+@216 li
+Elasticsearch (storage + search)
+@217 li
+Logstash (collection + processing)
+@218 li
+Kibana (visualization)
+@219 p
+**Grafana Loki:**
+@220 li
+Lightweight
+@221 li
+Integrates with Prometheus
+@222 li
+Good for cloud-native
+@223 p
+**Datadog Logs:**
+@224 li
+Commercial
+@225 li
+Integrated platform
+@226 li
+Auto-parsing
+@227 p
+**CloudWatch Logs:**
+@228 li
+AWS-native
+@229 li
+Serverless-friendly
+@230 li
+Pay-per-GB
+@231 p
+**Ship logs:**
+@232 h2
+SLO, SLA, Error Budgets - Reliability Framework
+@233 h3
+Definitions
+@234 p
+**SLI (Service Level Indicator):**
+Measured metric.
+@235 pre
+Example: API p99 latency = 450ms
+
+@236 p
+**SLO (Service Level Objective):**
+Target for SLI.
+@237 pre
+Example: API p99 latency < 500ms
+
+@238 p
+**SLA (Service Level Agreement):**
+Contract with customers, consequences nếu miss.
+@239 pre
+Example: 99.9% uptime, or refund 10% monthly fee
+
+@240 p
+**Error Budget:**
+Allowed downtime để meet SLO.
+@241 pre
+SLO: 99.9% uptime
+Error budget: 0.1% downtime = 43 minutes/month
+
+@242 h3
+Setting Good SLOs
+@243 p
+**SMART criteria:**
+@244 p
+**Specific:** "p99 latency < 500ms"\n
+ (not "fast response time")
+@245 p
+**Measurable:** Can track với metrics
+@246 p
+**Achievable:** Not "100% uptime" (impossible)
+@247 p
+**Relevant:** Impacts user experience
+@248 p
+**Time-bound:** "Over 30-day window"
+@249 p
+**Example SLOs:**
+@250 h3
+Error Budgets In Practice
+@251 p
+**Error budget = allowed failures.**
+@252 pre
+SLO: 99.9% success rate
+Total requests/month: 10M
+Error budget: 0.1% * 10M = 10,000 failed requests
+
+@253 p
+**Spend error budget on:**
+@254 li
+Deployments (controlled risk)
+@255 li
+Experiments (new features)
+@256 li
+Incidents (unavoidable)
+@257 p
+**Track burn rate:**
+@258 p
+**Alert on budget burn rate:**
+@259 p
+**Decision framework:**
+@260 pre
+Error budget remaining: 80% ✅
+→ Safe to deploy new feature
+
+Error budget remaining: 20% ⚠️
+→ Pause risky changes, focus on stability
+
+Error budget exhausted: 0% ❌
+→ Freeze all deployments
+→ Fix reliability issues only
+
+@261 h3
+Benefits
+@262 p
+**1. Quantify reliability**
+@263 p
+Objective measure, not subjective "feels stable".
+@264 p
+**2. Balance innovation vs stability**
+@265 p
+Error budget allows controlled risk-taking.
+@266 p
+**3. Prioritize work**
+@267 p
+Budget low? Focus on reliability.\n
+ Budget high? Focus on features.
+@268 p
+**4. Align teams**
+@269 p
+SRE + Dev agree on reliability targets.
+@270 h2
+Monitoring Stack Example
+@271 p
+**Complete observability setup:**
+@272 pre
+flowchart TB
+    subgraph Apps["Applications"]
+        App1[Service A]
+        App2[Service B]
+        App3[Service C]
+    end
+    
+    subgraph Collection["Collection Layer"]
+        Prom[Prometheus<br/>Metrics]
+        Jaeger[Jaeger<br/>Traces]
+        Loki[Loki<br/>Logs]
+    end
+    
+    subgraph Viz["Visualization"]
+        Grafana[Grafana<br/>Dashboards + Alerts]
+    end
+    
+    App1 -->|Metrics| Prom
+    App1 -->|Traces| Jaeger
+    App1 -->|Logs| Loki
+    
+    App2 -->|Metrics| Prom
+    App2 -->|Traces| Jaeger
+    App2 -->|Logs| Loki
+    
+    App3 -->|Metrics| Prom
+    App3 -->|Traces| Jaeger
+    App3 -->|Logs| Loki
+    
+    Prom --> Grafana
+    Jaeger --> Grafana
+    Loki --> Grafana
+@273 p
+**Unified view trong Grafana:**
+@274 li
+Metrics charts
+@275 li
+Log explorer
+@276 li
+Trace viewer
+@277 li
+Alert manager
+@278 h2
+Practical Recommendations
+@279 h3
+1. Start With Golden Signals
+@280 p
+**Don't try to monitor everything.**
+@281 p
+**4 metrics cover most problems.**
+@282 h3
+2. Build Dashboards
+@283 p
+**One dashboard per service:**
+@284 pre
+Service Dashboard
+├── Golden Signals (top row)
+│   ├── Request rate
+│   ├── Error rate
+│   ├── p99 latency
+│   └── Saturation
+├── Detailed Metrics (middle)
+│   ├── Per-endpoint latency
+│   ├── Database query time
+│   ├── Cache hit rate
+│   └── Queue depth
+└── System Resources (bottom)
+    ├── CPU usage
+    ├── Memory usage
+    └── Disk I/O
+
+@285 p
+**Standardize across services - easier comparison.**
+@286 h3
+3. Instrument Libraries
+@287 p
+**Don't reinvent wheel.**
+@288 p
+**Less code, more coverage.**
+@289 h3
+4. Set Up Synthetic Monitoring
+@290 p
+**Proactive checks.**
+@291 p
+**Detect issues before users do.**
+@292 h3
+5. Practice Debugging
+@293 p
+**Incident simulation:**
+@294 p
+**Practice:**
+@295 li
+Detect latency spike in dashboard
+@296 li
+Check traces - find slow endpoint
+@297 li
+Check logs - understand why
+@298 li
+Fix issue
+@299 li
+Verify improvement
+@300 p
+**Muscle memory for real incidents.**
+@301 h2
+Mental Model: If You Cannot Measure, You Cannot Scale
+@302 p
+**Core insight:**
+@303 p
+**Scaling decisions require data. Without measurement, you're flying blind.**
+@304 pre
+Without metrics:
+  "System slow" → Guess solution → May not help
+  
+With metrics:
+  "p99 latency 2s" → Check traces → DB bottleneck
+  → Add read replica → p99 latency 200ms ✅
+
+@305 p
+**Measure → Understand → Optimize → Measure again.**
+@306 p
+**Architect decisions backed by data:**
+@307 pre
+Should we add caching?
+→ Check: Cache hit rate would be X%
+→ Impact: Reduce DB load by Y%
+→ Decision: Yes/No based on numbers
+
+Should we shard database?
+→ Check: Current load Z req/s
+→ Capacity: Single DB handles W req/s
+→ Decision: Shard when Z > 0.8W
+
+@308 p
+**Good architects measure first, optimize second.**
+@309 h2
+Key Takeaways
+@310 p
+**1. Monitor Golden Signals: Latency, Traffic, Errors, Saturation**
+@311 p
+4 metrics cover most production issues.
+@312 p
+**2. Percentiles > Averages**
+@313 p
+p95, p99 reveal worst-case user experience. Optimize for tail latency.
+@314 p
+**3. Alert on symptoms, not causes**
+@315 p
+Alert on user impact, not resource utilization.
+@316 p
+**4. Distributed tracing critical for microservices**
+@317 p
+Understand request flow, find bottlenecks across services.
+@318 p
+**5. Structured logging enables analysis**
+@319 p
+JSON logs = queryable data, not just text.
+@320 p
+**6. Set SLOs based on user expectations**
+@321 p
+Define reliability targets, track error budgets.
+@322 p
+**7. Correlation IDs track requests**
+@323 p
+Debug full request flow across services.
+@324 p
+**8. Error budgets balance reliability vs innovation**
+@325 p
+Controlled risk-taking based on data.
+@326 p
+**9. Start simple, add complexity as needed**
+@327 p
+Golden Signals first, advanced monitoring later.
+@328 p
+**10. Practice debugging before incidents**
+@329 p
+Simulate failures, build muscle memory.
+@330 p
+**Remember: You cannot improve what you cannot measure. Good monitoring is not optional - it's the foundation of reliable, scalable systems. Invest in observability early, not after production incidents.**

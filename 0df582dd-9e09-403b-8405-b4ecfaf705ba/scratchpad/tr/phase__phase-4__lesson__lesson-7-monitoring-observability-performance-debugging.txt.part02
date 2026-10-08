@@ -1,0 +1,448 @@
+@161
+Mã nguồn mở
+@162
+Do Uber phát triển
+@163
+Dễ ⟦triển khai|deploy⟧
+@164
+Phù hợp với hệ thống vừa và nhỏ
+@165
+**Zipkin:**
+@166
+Mã nguồn mở
+@167
+Do Twitter phát triển
+@168
+Tương tự Jaeger
+@169
+Cộng đồng lớn
+@170
+**Datadog APM:**
+@171
+Thương mại
+@172
+Đầy đủ tính năng
+@173
+⟦Gắn đo đạc|Instrumentation⟧ tự động
+@174
+Tích hợp với ⟦số liệu đo|metrics⟧/log
+@175
+**AWS X-Ray:**
+@176
+Gốc AWS
+@177
+Dễ tích hợp với AWS
+@178
+Trả tiền theo mức sử dụng
+@179
+⟦Truy Vết|Tracing⟧ Tiết Lộ Điều Gì
+@180
+**1. Các ⟦phụ thuộc|dependencies⟧ chậm**
+@181
+Service A: 10ms
+Service B: 500ms ← Điểm nghẽn!
+Service C: 5ms
+
+Tổng: 515ms
+
+@182
+**2. ⟦Truy vấn N+1|N+1 queries⟧**
+@183
+get_users: 10ms
+  ↳ get_orders (người dùng 1): 50ms
+  ↳ get_orders (người dùng 2): 50ms
+  ↳ get_orders (người dùng 3): 50ms
+  ...
+
+@184
+**3. Các lời gọi không cần thiết**
+@185
+get_profile:
+  ↳ get_user
+  ↳ get_preferences (không dùng tới!)
+  ↳ get_settings (không dùng tới!)
+
+@186
+**4. ⟦Lỗi dây chuyền|Cascade failures⟧**
+@187
+Service A hết thời gian chờ (30s)
+  ↳ Service B hết thời gian chờ (30s)
+    ↳ Service C hết thời gian chờ (30s)
+
+Tổng: thất bại sau 90s!
+
+@188
+⟦Chiến Lược Ghi Log|Logging Strategy⟧ - Gỡ Lỗi Đến Từng Chi Tiết
+@189
+Các ⟦Mức Log|Log Levels⟧
+@190
+**FATAL:** Hệ thống không thể sử dụng được\n
+**ERROR:** Các sự kiện lỗi, cần được chú ý\n
+**WARN:** Các tình huống có khả năng gây hại\n
+**INFO:** Các thông điệp mang tính thông tin\n
+**DEBUG:** Thông tin chẩn đoán chi tiết\n
+**TRACE:** Cực kỳ chi tiết (quá nhiều cho ⟦môi trường thực tế|production⟧)
+@191
+**⟦Môi trường thực tế|Production⟧: INFO trở lên.**\n
+**⟦Môi trường thử nghiệm|Staging⟧: DEBUG.**\n
+**⟦Môi trường phát triển|Development⟧: TRACE.**
+@192
+⟦Log Có Cấu Trúc|Structured Logging⟧
+@193
+**Tồi (không có cấu trúc):**
+@194
+**Khó phân tích cú pháp, truy vấn, tổng hợp.**
+@195
+**Tốt (có cấu trúc):**
+@196
+**Đầu ra JSON:**
+@197
+**Dễ truy vấn:**
+@199
+Nên Ghi Log Những Gì
+@200
+**Nên ghi log:**
+@201
+Lỗi và ⟦ngoại lệ|exceptions⟧
+@202
+Các thay đổi trạng thái quan trọng
+@203
+Các sự kiện bảo mật (đăng nhập, thay đổi quyền)
+@204
+Các lời gọi API bên ngoài (⟦yêu cầu|request⟧/⟦phản hồi|response⟧)
+@205
+Các sự kiện nghiệp vụ (mua hàng, đăng ký)
+@206
+**Không nên ghi log:**
+@207
+Mật khẩu, token, ⟦thông tin định danh cá nhân|PII⟧
+@208
+Log gỡ lỗi tần suất cao (mọi truy vấn)
+@209
+⟦Dữ liệu gửi kèm|Payloads⟧ lớn (toàn bộ phản hồi)
+@210
+⟦ID Tương Quan|Correlation IDs⟧
+@211
+**Theo dõi yêu cầu xuyên suốt các ⟦dịch vụ|services⟧.**
+@212
+**Tìm log theo request_id = thấy toàn bộ luồng của yêu cầu.**
+@213
+⟦Tổng Hợp Log|Log Aggregation⟧
+@214
+**Hệ thống ghi log tập trung.**
+@215
+**ELK Stack:**
+@216
+Elasticsearch (⟦lưu trữ|storage⟧ + tìm kiếm)
+@217
+Logstash (thu thập + xử lý)
+@218
+Kibana (trực quan hoá)
+@219
+**Grafana Loki:**
+@220
+Gọn nhẹ
+@221
+Tích hợp với Prometheus
+@222
+Phù hợp cho ⟦môi trường đám mây gốc|cloud-native⟧
+@223
+**Datadog Logs:**
+@224
+Thương mại
+@225
+Nền tảng tích hợp
+@226
+Tự động phân tích cú pháp
+@227
+**CloudWatch Logs:**
+@228
+Gốc AWS
+@229
+Thân thiện với ⟦kiến trúc phi máy chủ|serverless⟧
+@230
+Trả tiền theo GB
+@231
+**Đẩy log đi:**
+@232
+SLO, SLA, ⟦Ngân Sách Lỗi|Error Budgets⟧ - ⟦Khung Tư Duy|Framework⟧ Về ⟦Độ Tin Cậy|Reliability⟧
+@233
+Định Nghĩa
+@234
+**SLI (⟦Chỉ số mức dịch vụ|Service Level Indicator⟧):**
+Chỉ số đo được.
+@235
+Ví dụ: độ trễ p99 của API = 450ms
+
+@236
+**SLO (⟦Mục tiêu mức dịch vụ|Service Level Objective⟧):**
+Mục tiêu đặt ra cho SLI.
+@237
+Ví dụ: độ trễ p99 của API < 500ms
+
+@238
+**SLA (⟦Thoả thuận mức dịch vụ|Service Level Agreement⟧):**
+Hợp đồng với khách hàng, có hậu quả nếu không đạt.
+@239
+Ví dụ: thời gian hoạt động 99.9%, nếu không sẽ hoàn lại 10% phí hằng tháng
+
+@240
+**⟦Ngân sách lỗi|Error Budget⟧:**
+⟦Thời gian ngừng hoạt động|Downtime⟧ được phép mà vẫn đạt SLO.
+@241
+SLO: thời gian hoạt động 99.9%
+Ngân sách lỗi: 0.1% thời gian ngừng hoạt động = 43 phút/tháng
+
+@242
+Đặt SLO Tốt
+@243
+**Tiêu chí SMART:**
+@244
+**Specific (Cụ thể):** "độ trễ p99 < 500ms"\n
+ (không phải "thời gian phản hồi nhanh")
+@245
+**Measurable (Đo lường được):** Có thể theo dõi bằng số liệu đo
+@246
+**Achievable (Khả thi):** Không phải "100% thời gian hoạt động" (bất khả thi)
+@247
+**Relevant (Liên quan):** Ảnh hưởng tới trải nghiệm người dùng
+@248
+**Time-bound (Có thời hạn):** "Trong cửa sổ 30 ngày"
+@249
+**Ví dụ về SLO:**
+@250
+⟦Ngân Sách Lỗi|Error Budgets⟧ Trong Thực Tế
+@251
+**⟦Ngân sách lỗi|Error budget⟧ = số lỗi được phép.**
+@252
+SLO: tỷ lệ thành công 99.9%
+Tổng số yêu cầu/tháng: 10M
+Ngân sách lỗi: 0.1% * 10M = 10,000 yêu cầu thất bại
+
+@253
+**Chi tiêu ngân sách lỗi cho:**
+@254
+Các lần ⟦triển khai|deployments⟧ (rủi ro có kiểm soát)
+@255
+Các thử nghiệm (tính năng mới)
+@256
+Các ⟦sự cố|incidents⟧ (không thể tránh)
+@257
+**Theo dõi ⟦tốc độ tiêu hao|burn rate⟧:**
+@258
+**Cảnh báo dựa trên tốc độ tiêu hao ngân sách:**
+@259
+**⟦Khung ra quyết định|Decision framework⟧:**
+@260
+Ngân sách lỗi còn lại: 80% ✅
+→ An toàn để triển khai tính năng mới
+
+Ngân sách lỗi còn lại: 20% ⚠️
+→ Tạm dừng các thay đổi rủi ro, tập trung vào sự ổn định
+
+Ngân sách lỗi đã cạn: 0% ❌
+→ Đóng băng mọi lần triển khai
+→ Chỉ sửa các vấn đề về độ tin cậy
+
+@261
+Lợi Ích
+@262
+**1. Định lượng ⟦độ tin cậy|reliability⟧**
+@263
+Thước đo khách quan, không phải cảm giác chủ quan kiểu "thấy có vẻ ổn định".
+@264
+**2. Cân bằng giữa đổi mới và ổn định**
+@265
+⟦Ngân sách lỗi|Error budget⟧ cho phép chấp nhận rủi ro có kiểm soát.
+@266
+**3. Ưu tiên công việc**
+@267
+Ngân sách thấp? Tập trung vào độ tin cậy.\n
+ Ngân sách cao? Tập trung vào tính năng.
+@268
+**4. Gắn kết các ⟦nhóm|teams⟧**
+@269
+SRE và nhóm phát triển thống nhất về các mục tiêu độ tin cậy.
+@270
+Ví Dụ Về Bộ Công Cụ ⟦Giám Sát|Monitoring⟧
+@271
+**Thiết lập ⟦khả năng quan sát|observability⟧ hoàn chỉnh:**
+@272
+flowchart TB
+    subgraph Apps["Ứng dụng"]
+        App1[Service A]
+        App2[Service B]
+        App3[Service C]
+    end
+
+    subgraph Collection["Tầng thu thập"]
+        Prom[Prometheus<br/>Số liệu đo]
+        Jaeger[Jaeger<br/>Vết truy vết]
+        Loki[Loki<br/>Log]
+    end
+
+    subgraph Viz["Trực quan hoá"]
+        Grafana[Grafana<br/>Bảng điều khiển + Cảnh báo]
+    end
+
+    App1 -->|Số liệu đo| Prom
+    App1 -->|Vết truy vết| Jaeger
+    App1 -->|Log| Loki
+
+    App2 -->|Số liệu đo| Prom
+    App2 -->|Vết truy vết| Jaeger
+    App2 -->|Log| Loki
+
+    App3 -->|Số liệu đo| Prom
+    App3 -->|Vết truy vết| Jaeger
+    App3 -->|Log| Loki
+
+    Prom --> Grafana
+    Jaeger --> Grafana
+    Loki --> Grafana
+@273
+**Góc nhìn hợp nhất trong Grafana:**
+@274
+Biểu đồ số liệu đo
+@275
+Trình khám phá log
+@276
+Trình xem vết truy vết
+@277
+Trình quản lý cảnh báo
+@278
+Khuyến Nghị Thực Tế
+@279
+1. Bắt Đầu Với ⟦Tín Hiệu Vàng|Golden Signals⟧
+@280
+**Đừng cố giám sát mọi thứ.**
+@281
+**4 chỉ số này bao quát phần lớn các vấn đề.**
+@282
+2. Xây Dựng ⟦Bảng Điều Khiển|Dashboards⟧
+@283
+**Mỗi ⟦dịch vụ|service⟧ một ⟦bảng điều khiển|dashboard⟧:**
+@284
+Bảng điều khiển dịch vụ
+├── Tín hiệu vàng (hàng trên cùng)
+│   ├── Tần suất yêu cầu
+│   ├── Tỷ lệ lỗi
+│   ├── Độ trễ p99
+│   └── Độ bão hòa
+├── Số liệu chi tiết (ở giữa)
+│   ├── Độ trễ theo từng endpoint
+│   ├── Thời gian truy vấn CSDL
+│   ├── Tỷ lệ trúng bộ nhớ đệm
+│   └── Độ sâu hàng đợi
+└── Tài nguyên hệ thống (dưới cùng)
+    ├── Mức sử dụng CPU
+    ├── Mức sử dụng bộ nhớ
+    └── Disk I/O
+
+@285
+**Chuẩn hoá giữa các dịch vụ - dễ so sánh hơn.**
+@286
+3. Dùng Thư Viện ⟦Gắn Đo Đạc|Instrument⟧ Sẵn Có
+@287
+**Đừng phát minh lại bánh xe.**
+@288
+**Ít mã hơn, độ bao phủ nhiều hơn.**
+@289
+4. Thiết Lập ⟦Giám Sát Tổng Hợp|Synthetic Monitoring⟧
+@290
+**Kiểm tra chủ động.**
+@291
+**Phát hiện vấn đề trước khi người dùng gặp phải.**
+@292
+5. Luyện Tập ⟦Gỡ Lỗi|Debugging⟧
+@293
+**Mô phỏng ⟦sự cố|incident⟧:**
+@294
+**Luyện tập:**
+@295
+Phát hiện độ trễ ⟦tăng đột biến|spike⟧ trên bảng điều khiển
+@296
+Kiểm tra các ⟦vết|traces⟧ - tìm ra ⟦điểm cuối|endpoint⟧ chậm
+@297
+Kiểm tra log - hiểu nguyên nhân
+@298
+Sửa vấn đề
+@299
+Xác minh sự cải thiện
+@300
+**Tạo phản xạ cơ bắp cho các sự cố thật.**
+@301
+⟦Mô Hình Tư Duy|Mental Model⟧: Nếu Không Đo Được, Bạn Không Thể Mở Rộng
+@302
+**Nhận thức cốt lõi:**
+@303
+**Các quyết định ⟦mở rộng|scaling⟧ đòi hỏi dữ liệu. Không đo lường, bạn đang bay mù.**
+@304
+Không có số liệu đo:
+  "Hệ thống chậm" → Đoán giải pháp → Có thể chẳng giúp gì
+
+Có số liệu đo:
+  "Độ trễ p99 là 2s" → Kiểm tra vết truy vết → Điểm nghẽn ở CSDL
+  → Thêm bản sao chỉ đọc → Độ trễ p99 còn 200ms ✅
+
+@305
+**Đo lường → Hiểu → Tối ưu → Đo lại.**
+@306
+**Quyết định của ⟦kiến trúc sư|architect⟧ dựa trên dữ liệu:**
+@307
+Có nên thêm bộ nhớ đệm?
+→ Kiểm tra: Tỷ lệ trúng bộ nhớ đệm sẽ là X%
+→ Tác động: Giảm tải CSDL Y%
+→ Quyết định: Có/Không dựa trên con số
+
+Có nên phân mảnh CSDL?
+→ Kiểm tra: Tải hiện tại Z req/s
+→ Năng lực: Một CSDL chịu được W req/s
+→ Quyết định: Phân mảnh khi Z > 0.8W
+
+@308
+**Kiến trúc sư giỏi đo lường trước, tối ưu sau.**
+@309
+Những Điểm Cốt Lõi
+@310
+**1. Giám sát ⟦Tín hiệu vàng|Golden Signals⟧: ⟦Độ trễ|Latency⟧, ⟦Lưu lượng|Traffic⟧, Lỗi, ⟦Độ bão hòa|Saturation⟧**
+@311
+4 chỉ số này bao quát phần lớn các vấn đề trong ⟦môi trường thực tế|production⟧.
+@312
+**2. ⟦Bách phân vị|Percentiles⟧ > Giá trị trung bình**
+@313
+p95, p99 hé lộ trải nghiệm người dùng trong trường hợp xấu nhất. Hãy tối ưu cho ⟦độ trễ đuôi|tail latency⟧.
+@314
+**3. Cảnh báo dựa trên triệu chứng, không phải nguyên nhân**
+@315
+Cảnh báo dựa trên tác động tới người dùng, không phải mức sử dụng tài nguyên.
+@316
+**4. ⟦Truy vết phân tán|Distributed tracing⟧ là tối quan trọng với ⟦vi dịch vụ|microservices⟧**
+@317
+Hiểu luồng đi của yêu cầu, tìm ra ⟦điểm nghẽn|bottlenecks⟧ xuyên suốt các dịch vụ.
+@318
+**5. ⟦Log có cấu trúc|Structured logging⟧ giúp phân tích được**
+@319
+Log dạng JSON = dữ liệu truy vấn được, không chỉ là văn bản.
+@320
+**6. Đặt SLO dựa trên kỳ vọng của người dùng**
+@321
+Xác định các mục tiêu ⟦độ tin cậy|reliability⟧, theo dõi ⟦ngân sách lỗi|error budgets⟧.
+@322
+**7. ⟦ID tương quan|Correlation IDs⟧ giúp theo dõi yêu cầu**
+@323
+Gỡ lỗi toàn bộ luồng của yêu cầu xuyên suốt các dịch vụ.
+@324
+**8. ⟦Ngân sách lỗi|Error budgets⟧ cân bằng giữa độ tin cậy và đổi mới**
+@325
+Chấp nhận rủi ro có kiểm soát dựa trên dữ liệu.
+@326
+**9. Bắt đầu đơn giản, chỉ thêm ⟦độ phức tạp|complexity⟧ khi cần**
+@327
+Tín hiệu vàng trước, giám sát nâng cao sau.
+@328
+**10. Luyện tập gỡ lỗi trước khi có sự cố**
+@329
+Mô phỏng ⟦sự cố|failures⟧, xây dựng phản xạ cơ bắp.
+@330
+**Hãy nhớ: Bạn không thể cải thiện thứ mà bạn không đo được. Giám sát tốt không phải là tuỳ chọn - nó là nền tảng của những hệ thống đáng tin cậy và có khả năng mở rộng. Hãy đầu tư vào ⟦khả năng quan sát|observability⟧ từ sớm, đừng đợi đến khi gặp sự cố trên ⟦môi trường thực tế|production⟧.**

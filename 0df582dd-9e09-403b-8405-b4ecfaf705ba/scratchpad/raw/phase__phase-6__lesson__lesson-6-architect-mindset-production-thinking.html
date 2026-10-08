@@ -1,0 +1,1215 @@
+<!DOCTYPE html><!--odmYO1MXhxB_zwMaj43P8--><html lang="vi"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/chunks/8ec1d2130addac51.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/538c6f1fdc57b776.js"/><script src="/_next/static/chunks/82abf2d65f5428ae.js" async=""></script><script src="/_next/static/chunks/e9db456e6febb5bf.js" async=""></script><script src="/_next/static/chunks/bb2058c00d695a3e.js" async=""></script><script src="/_next/static/chunks/turbopack-cc35eb25ec2c8b7c.js" async=""></script><script src="/_next/static/chunks/d2b86e8e56f52aa1.js" async=""></script><script src="/_next/static/chunks/2aeac92579e59d89.js" async=""></script><script src="/_next/static/chunks/ff1a16fafef87110.js" async=""></script><script src="/_next/static/chunks/7f52f8900b256e8a.js" async=""></script><script src="/_next/static/chunks/417b0cc86c2cf9f1.js" async=""></script><script src="/_next/static/chunks/6716c4894e74365d.js" async=""></script><script src="/_next/static/chunks/5eac621951969859.js" async=""></script><script src="/_next/static/chunks/913090e41affe6ba.js" async=""></script><script src="/_next/static/chunks/89ebb4231102677a.js" async=""></script><script src="/_next/static/chunks/de9c5219846f92bb.js" async=""></script><script src="/_next/static/chunks/f1f8594d5ec7b93e.js" async=""></script><script src="/_next/static/chunks/6f4c5a75f38f686b.js" async=""></script><script src="/_next/static/chunks/a4eab16b7dcd4e33.js" async=""></script><link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-BQTYYTRNWN" as="script"/><meta name="next-size-adjust" content=""/><title>Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect | Phase 6 — System Design Mastery | System Design Core</title><meta name="description" content="Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical lead"/><meta name="keywords" content="system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core"/><meta name="robots" content="index, follow"/><link rel="canonical" href="https://systemdesigncore.site/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking"/><meta property="og:title" content="Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect | Phase 6 — System Design Mastery"/><meta property="og:description" content="Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical lead"/><meta property="og:url" content="https://systemdesigncore.site/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking"/><meta property="og:site_name" content="System Design Core"/><meta property="og:type" content="article"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect | Phase 6 — System Design Mastery"/><meta name="twitter:description" content="Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical lead"/><link rel="icon" href="/favicon.ico?favicon.1dddc283.ico" sizes="48x48" type="image/x-icon"/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased"><div hidden=""><!--$--><!--/$--></div><div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]"></div><header class="sticky top-0 z-50 border-b border-white/60 bg-canvas/80 backdrop-blur-xl"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="flex h-16 items-center justify-between"><a class="text-sm font-semibold uppercase tracking-[0.16em] text-ink" href="/">SystemDesign Core</a><nav class="hidden items-center gap-7 md:flex"><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/roadmap">Roadmap</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/docs/getting-started">Docs</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/blog">Blog</a><a class="text-sm font-medium text-ink-dim transition hover:text-ink" href="/about">About</a></nav><div class="hidden md:block"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm" href="/docs/getting-started">Bắt đầu học</a></div><button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></div></header><main><!--$--><!--$?--><template id="B:0"></template><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20" aria-busy="true" aria-live="polite"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3"></div></div><div class="glass-card p-5"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32"></div><div class="mt-4 space-y-3"><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5"></div></div><div class="rounded-xl border border-line bg-surface-soft p-3"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4"></div></div></div></div><div class="h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><div class="mb-6 flex flex-wrap items-center gap-2"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40"></div></div><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0 flex-1"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6"></div></div><div class="h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0"></div></div></header><article class="space-y-4"><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]"></div><div class="pt-3"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-full"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]"></div><div class="h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]"></div></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70"></div><div class="h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto"></div></div><div class="mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70"></div></div></div></div></div></section><!--/$--><!--/$--></main><footer class="border-t border-line bg-surface/60 py-10"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><p class="text-sm text-ink-dim">© <!-- -->2026<!-- --> System Design Core. All rights reserved.</p><div class="flex items-center gap-5 text-sm text-ink-dim"><a class="hover:text-ink" href="/roadmap">Roadmap</a><a class="hover:text-ink" href="/docs/getting-started">Docs</a><a class="hover:text-ink" href="https://github.com/steve-bang">GitHub</a></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/538c6f1fdc57b776.js" id="_R_" async=""></script><div hidden id="S:0"><section class="py-14 md:py-20 pt-16 pb-20 md:pt-20"><div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8"><div class="grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]"><aside class="space-y-4 lg:sticky lg:top-24 lg:self-start"><div class="glass-card p-5"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Phase 6 — System Design Mastery</p><p class="mt-3 text-xl font-semibold text-ink">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect</p><p class="mt-3 text-sm leading-7 text-ink-dim">Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical leadership - từ engineer đến trusted architect</p></div><div class="glass-card p-5"><h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]">Bài học trong phase</h2><ul class="mt-4 space-y-3"><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-1-system-design-thinking-framework"><p class="text-xs text-ink-dim">Bài <!-- -->1</p><p class="mt-1 text-sm font-medium text-ink">System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-2-snake-framework"><p class="text-xs text-ink-dim">Bài <!-- -->2</p><p class="mt-1 text-sm font-medium text-ink">SNAKE Framework - Methodology Để Ace System Design Interview</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making"><p class="text-xs text-ink-dim">Bài <!-- -->3</p><p class="mt-1 text-sm font-medium text-ink">Trade-offs &amp; Architecture Decision Making - Tư Duy Senior Architect</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-4-real-interview-strategy"><p class="text-xs text-ink-dim">Bài <!-- -->4</p><p class="mt-1 text-sm font-medium text-ink">Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế</p></a></li><li><a class="block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white" href="/phase/phase-6/lesson/lesson-5-advanced-architecture-topics"><p class="text-xs text-ink-dim">Bài <!-- -->5</p><p class="mt-1 text-sm font-medium text-ink">Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</p></a></li><li><a class="block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft" href="/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking"><p class="text-xs text-ink-dim">Bài <!-- -->6</p><p class="mt-1 text-sm font-medium text-ink">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect</p></a></li></ul></div><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full" href="/phase/phase-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Tổng quan phase</a></aside><div class="glass-card min-w-0 overflow-hidden p-6 md:p-10"><nav aria-label="Lesson breadcrumb" class="mb-6 text-xs text-ink-dim"><ol class="flex flex-wrap items-center gap-2"><li><a class="hover:text-ink" href="/roadmap">Roadmap</a></li><li>/</li><li><a class="hover:text-ink" href="/phase/phase-6">Phase 6 — System Design Mastery</a></li><li>/</li><li aria-current="page" class="text-ink">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect</li></ol></nav><header class="mb-8 border-b border-line pb-5"><div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div class="min-w-0"><h1 class="text-2xl font-semibold leading-tight text-ink md:text-3xl">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect</h1><p class="mt-3 text-sm leading-7 text-ink-dim md:text-base">Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical leadership - từ engineer đến trusted architect</p></div><div class="relative inline-flex w-full flex-col sm:w-auto sm:shrink-0"><button type="button" aria-label="Mở tùy chọn chia sẻ bài học" aria-haspopup="menu" aria-expanded="false" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink transition hover:bg-surface-soft active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 sm:h-10 sm:w-auto sm:justify-start sm:px-3.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 h-4 w-4"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Share</span></button><div role="menu" aria-label="Tùy chọn chia sẻ" class="absolute left-0 right-0 top-full z-30 mt-2 w-full origin-top rounded-xl border border-line bg-surface p-2 shadow-[0_16px_32px_rgba(14,21,40,0.12)] transition-all duration-150 sm:left-auto sm:right-0 sm:w-64 sm:origin-top-right pointer-events-none -translate-y-1 opacity-0"><div class="mb-1 flex items-center justify-between px-2 py-1"><p class="text-xs font-medium text-ink-dim">Chia sẻ bài học</p><button type="button" aria-label="Đóng menu chia sẻ" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-ink-dim hover:bg-surface-soft hover:text-ink"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div><div class="space-y-1"><button type="button" role="menuitem" aria-label="Share to Facebook" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-4 w-4"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg><span>Share to Facebook</span></button><button type="button" role="menuitem" aria-label="Share to Twitter (X)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-4 w-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg><span>Share to Twitter (X)</span></button><button type="button" role="menuitem" aria-label="Share to LinkedIn" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-4 w-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg><span>Share to LinkedIn</span></button><button type="button" role="menuitem" aria-label="Sao chép liên kết bài học" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink transition hover:bg-surface-soft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Copy link</span></button></div></div><p aria-live="polite" class="mt-1 min-h-4 text-xs text-ink-dim"></p></div></div></header><article aria-label="Nội dung bài học Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect"><article class="prose-ui"><h1 id="architect-mindset--production-thinking---from-engineer-to-trusted-architect">Architect Mindset &amp; Production Thinking - From Engineer To Trusted Architect</h1>
+<p>Sau khi master tất cả technical knowledge - patterns, distributed systems, scalability - câu hỏi cuối cùng là: <strong>&quot;Điều gì tạo nên một trusted architect?&quot;</strong></p>
+<p>Câu trả lời không phải technical skill. Mà là <strong>mindset shift từ &quot;write code&quot; sang &quot;own the system&quot;.</strong></p>
+<p>Engineer viết code để solve problem. Architect design system và <strong>chịu tr책nhiệm khi production down lúc 3AM.</strong></p>
+<p>Lesson này không dạy thêm patterns. Nó dạy cách <strong>thinking như người phải on-call, phải explain outage cho CEO, phải plan migration cho 100M users.</strong></p>
+<h2 id="reality-check-you-own-the-system">Reality Check: You Own The System</h2>
+<h3 id="engineer-vs-architect-mindset">Engineer vs Architect Mindset</h3>
+<pre><code>Engineer thinking:
+&quot;Feature works on my laptop ✅&quot;
+&quot;Passed all tests ✅&quot;
+&quot;Deployed to production ✅&quot;
+→ Move to next ticket
+
+Architect thinking:
+&quot;Will this work under 10x load?&quot;
+&quot;What if database fails?&quot;
+&quot;How do we rollback?&quot;
+&quot;What&#x27;s monitoring strategy?&quot;
+&quot;Who&#x27;s on-call when this breaks?&quot;
+→ System ownership
+</code></pre>
+<p><strong>Core difference: Architects think beyond the happy path.</strong></p>
+<h3 id="the-3am-test">The 3AM Test</h3>
+<pre><code>Scenario: Production alert at 3AM
+
+Engineer response:
+&quot;Not my code, not my problem&quot;
+&quot;Let&#x27;s check tomorrow&quot;
+
+Architect response:
+&quot;What&#x27;s user impact?&quot;
+&quot;How do we mitigate now?&quot;
+&quot;Root cause analysis tomorrow&quot;
+&quot;How do we prevent this?&quot;
+</code></pre>
+<p><strong>Architect mindset = Ownership mindset.</strong></p>
+<h2 id="1-production-incident-thinking---expect-failure">1. Production Incident Thinking - Expect Failure</h2>
+<h3 id="everything-will-fail">Everything Will Fail</h3>
+<p><strong>Fundamental truth: All systems fail. Your job is minimizing impact.</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    Normal[Normal Operation] --&gt; Incident[Incident Detected]
+    Incident --&gt; Assess[Assess Impact]
+    Assess --&gt; Mitigate[Mitigate ASAP]
+    Mitigate --&gt; RCA[Root Cause Analysis]
+    RCA --&gt; Prevent[Prevention Measures]
+    Prevent --&gt; Normal</code></pre>
+<h3 id="incident-response-framework">Incident Response Framework</h3>
+<p><strong>Phase 1: Detection (Minutes matter)</strong></p>
+<pre><code class="language-javascript">// Bad: Discover từ user complaints
+User tweet: &quot;Your site is down!&quot;
+→ 30 minutes before team knows
+
+// Good: Proactive monitoring
+Alert: &quot;API error rate: 5% (threshold: 1%)&quot;
+Slack: &quot;@oncall immediate action required&quot;
+→ Team knows trong 2 minutes
+</code></pre>
+<p><strong>Phase 2: Assessment (Understand before act)</strong></p>
+<pre><code>Critical questions:
+1. User impact? (How many users affected?)
+2. Business impact? (Revenue loss? SLA breach?)
+3. Scope? (One service? Entire system?)
+4. Trend? (Getting worse? Stable?)
+
+Example:
+- 15% of checkout requests failing
+- ~500 users affected
+- Payment service only
+- Error rate stable last 10 min
+→ High severity, contained scope
+</code></pre>
+<p><strong>Phase 3: Mitigation (Fix now, understand later)</strong></p>
+<pre><code>Priority: Stop the bleeding
+
+Options (in order):
+1. Rollback (safest, fastest)
+2. Feature flag off (disable new code)
+3. Traffic routing (shift to healthy instances)
+4. Graceful degradation (disable non-critical features)
+5. Emergency fix (last resort)
+
+Example:
+Payment service down?
+→ Rollback to previous version (5 min)
+Not: Debug root cause in production (hours)
+</code></pre>
+<p><strong>Phase 4: Communication (Keep stakeholders informed)</strong></p>
+<pre><code>Incident update template:
+
+Status: INVESTIGATING
+Impact: 15% checkout failures
+Started: 14:30 UTC
+Current action: Rolling back payment service to v2.3.1
+Next update: 14:45 UTC
+
+Audience:
+- Internal team (Slack #incidents)
+- Support team (brief customers)
+- Management (business impact)
+- Customers if needed (status page)
+</code></pre>
+<p><strong>Phase 5: Root Cause Analysis (Learn from failure)</strong></p>
+<pre><code class="language-markdown"># Post-Mortem: Payment Service Outage
+Date: 2024-02-15
+Duration: 14:30 - 14:52 UTC (22 minutes)
+Impact: 15% checkout failures, ~500 affected users
+
+## Timeline
+14:30 - Deployed v2.3.2 with new retry logic
+14:32 - Error rate started climbing
+14:35 - Alerts fired
+14:37 - Oncall acknowledged
+14:40 - Decision to rollback
+14:45 - Rollback completed
+14:52 - Service recovered
+
+## Root Cause
+Retry logic introduced infinite loop on certain errors.
+Under load, exhausted connection pool.
+
+## Impact
+- 500 users experienced checkout failures
+- Estimated revenue loss: $5,000
+- No data loss or corruption
+
+## Action Items
+[ ] Add circuit breaker to retry logic (Owner: @alice, Due: 2/20)
+[ ] Load testing for retry scenarios (Owner: @bob, Due: 2/22)
+[ ] Connection pool monitoring (Owner: @carol, Due: 2/18)
+[ ] Review deployment checklist (Owner: @dave, Due: 2/25)
+
+## What Went Well
+- Fast detection (2 min from deploy to alert)
+- Clear rollback procedure
+- Good communication
+
+## What To Improve
+- Load testing didn&#x27;t catch this scenario
+- Retry logic not reviewed carefully enough
+- Need better connection pool visibility
+</code></pre>
+<h3 id="blameless-culture">Blameless Culture</h3>
+<pre><code>Bad post-mortem:
+&quot;Bob deployed buggy code&quot;
+&quot;Alice didn&#x27;t review properly&quot;
+→ People hide mistakes
+
+Good post-mortem:
+&quot;Deployment process didn&#x27;t catch infinite loop&quot;
+&quot;Need better load testing coverage&quot;
+&quot;Review checklist should include retry logic patterns&quot;
+→ Focus on system improvements
+</code></pre>
+<h2 id="2-failure-mindset---design-for-failure">2. Failure Mindset - Design For Failure</h2>
+<h3 id="murphys-law-for-architects">Murphy&#x27;s Law For Architects</h3>
+<p><strong>&quot;Everything that can go wrong, will go wrong.&quot;</strong></p>
+<pre><code>Architect&#x27;s job: Assume failure, design resilience
+
+Common failures:
+- Server crash
+- Network partition
+- Database slow/down
+- Disk full
+- Memory leak
+- Dependency timeout
+- Data corruption
+- Config error
+- Human error (deployment)
+- DDoS attack
+</code></pre>
+<h3 id="failure-mode-analysis">Failure Mode Analysis</h3>
+<p><strong>Before designing system, list failure scenarios:</strong></p>
+<pre><code class="language-markdown"># E-commerce Checkout - Failure Scenarios
+
+## Component Failures
+- Payment gateway down → Retry + queue
+- Inventory service slow → Circuit breaker + cache
+- Database connection pool exhausted → Connection limits
+- Redis cache down → Fallback to database
+
+## Network Failures
+- Timeout to payment service → Async processing
+- Packet loss → Retry with exponential backoff
+- Network partition → Eventual consistency
+
+## Data Failures
+- Duplicate payment → Idempotency keys
+- Race condition on inventory → Optimistic locking
+- Data corruption → Checksums + validation
+
+## Operational Failures
+- Bad deployment → Gradual rollout + rollback plan
+- Config change error → Config validation + dry-run
+- Certificate expiry → Automated renewal + alerting
+</code></pre>
+<h3 id="design-for-degradation">Design For Degradation</h3>
+<p><strong>Not all features equally critical:</strong></p>
+<pre><code class="language-javascript">// Example: E-commerce homepage
+
+Critical (must work):
+- Browse products ✅
+- Search ✅
+- Add to cart ✅
+- Checkout ✅
+
+Non-critical (can degrade):
+- Recommendations ⚠️ → Show static list
+- Reviews ⚠️ → Hide section
+- Personalization ⚠️ → Generic experience
+- Real-time inventory ⚠️ → Show &quot;In stock&quot; always
+
+// Implementation
+async function getHomepage() {
+  const products = await getProducts() // Critical
+  
+  let recommendations = []
+  try {
+    recommendations = await getRecommendations()
+  } catch (error) {
+    // Degrade gracefully
+    recommendations = DEFAULT_RECOMMENDATIONS
+    logger.warn(&#x27;Recommendations service down, using defaults&#x27;)
+  }
+  
+  return { products, recommendations }
+}
+</code></pre>
+<h3 id="blast-radius-thinking">Blast Radius Thinking</h3>
+<p><strong>Limit failure impact:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    subgraph &quot;Small Blast Radius ✅&quot;
+    S1[Service A] --&gt; S2[Service B]
+    S3[Service C] --&gt; S4[Service D]
+    end
+    
+    subgraph &quot;Large Blast Radius ❌&quot;
+    S5[Service E] --&gt; S6[Central DB]
+    S7[Service F] --&gt; S6
+    S8[Service G] --&gt; S6
+    S9[Service H] --&gt; S6
+    end</code></pre>
+<pre><code>Small blast radius:
+- Service B fails → only Service A affected
+- Isolated failure domain
+
+Large blast radius:
+- Central DB fails → ALL services down
+- Single point of failure
+</code></pre>
+<p><strong>Strategies to reduce blast radius:</strong></p>
+<ul>
+<li>Microservices isolation</li>
+<li>Database sharding</li>
+<li>Multi-region deployment</li>
+<li>Bulkhead pattern</li>
+<li>Circuit breakers</li>
+</ul>
+<h2 id="3-monitoring--alerting-strategy---know-before-users-do">3. Monitoring &amp; Alerting Strategy - Know Before Users Do</h2>
+<h3 id="monitoring-pyramid">Monitoring Pyramid</h3>
+<pre><code>              Alerts
+              /    \
+         Dashboards  \
+         /      \     \
+    Metrics   Logs   Traces
+    
+Bottom: Collect everything
+Middle: Visualize important
+Top: Alert critical only
+</code></pre>
+<h3 id="what-to-monitor">What To Monitor</h3>
+<p><strong>1. User-Facing Metrics (Most Important)</strong></p>
+<pre><code class="language-javascript">// These affect users directly
+const userMetrics = {
+  availability: &#x27;99.9%&#x27;,        // Can users access?
+  latency_p50: &#x27;100ms&#x27;,         // How fast?
+  latency_p95: &#x27;300ms&#x27;,         // Slow requests?
+  latency_p99: &#x27;1000ms&#x27;,        // Worst case?
+  error_rate: &#x27;0.1%&#x27;,           // How many failures?
+  success_rate: &#x27;99.9%&#x27;         // Overall health
+}
+</code></pre>
+<p><strong>2. System Health Metrics</strong></p>
+<pre><code class="language-javascript">const systemMetrics = {
+  cpu_usage: &#x27;45%&#x27;,
+  memory_usage: &#x27;60%&#x27;,
+  disk_usage: &#x27;70%&#x27;,
+  network_io: &#x27;500 Mbps&#x27;,
+  connection_pool: &#x27;80/100 active&#x27;
+}
+</code></pre>
+<p><strong>3. Business Metrics</strong></p>
+<pre><code class="language-javascript">const businessMetrics = {
+  orders_per_minute: 150,
+  revenue_per_hour: &#x27;$5000&#x27;,
+  active_users: 2500,
+  checkout_conversion: &#x27;3.2%&#x27;
+}
+</code></pre>
+<h3 id="the-golden-signals-google-sre">The Golden Signals (Google SRE)</h3>
+<p><strong>Monitor these 4 metrics for every service:</strong></p>
+<pre><code>1. Latency - How long requests take?
+2. Traffic - How much demand?
+3. Errors - How many failures?
+4. Saturation - How &quot;full&quot; is the system?
+
+Example: API service
+- Latency: p95 = 200ms
+- Traffic: 1000 req/s
+- Errors: 0.5% error rate
+- Saturation: CPU 60%, memory 70%
+</code></pre>
+<h3 id="alerting-philosophy">Alerting Philosophy</h3>
+<p><strong>Alert on symptoms, not causes:</strong></p>
+<pre><code>Bad alerts (causes):
+- CPU &gt; 80%
+- Memory &gt; 90%
+- Disk &gt; 85%
+
+Why bad? Users don&#x27;t care about CPU.
+
+Good alerts (symptoms):
+- Error rate &gt; 1% for 5 minutes
+- P95 latency &gt; 1s for 5 minutes
+- Availability &lt; 99.9% last hour
+
+Why good? These affect users.
+</code></pre>
+<h3 id="alert-fatigue-prevention">Alert Fatigue Prevention</h3>
+<pre><code class="language-javascript">// Problem: Too many alerts
+Alert: CPU &gt; 80%  // Every day, not actionable
+Alert: Disk &gt; 70%  // Not urgent
+Alert: Memory &gt; 60%  // Normal
+
+Team: Ignores all alerts
+
+// Solution: Alert only on user impact
+const alertConfig = {
+  error_rate: {
+    threshold: &#x27;1%&#x27;,
+    duration: &#x27;5 minutes&#x27;,
+    severity: &#x27;critical&#x27;,
+    action: &#x27;Page on-call immediately&#x27;
+  },
+  
+  latency_p95: {
+    threshold: &#x27;1000ms&#x27;,
+    duration: &#x27;10 minutes&#x27;,
+    severity: &#x27;warning&#x27;,
+    action: &#x27;Slack notification&#x27;
+  }
+}
+</code></pre>
+<h3 id="runbooks-for-common-issues">Runbooks For Common Issues</h3>
+<pre><code class="language-markdown"># Runbook: High Error Rate Alert
+
+## Alert
+Error rate &gt; 1% for 5 minutes
+
+## Immediate Actions
+1. Check status page: https://status.company.com
+2. Check recent deployments (last 2 hours)
+3. Check dependency health (payment, database)
+
+## Diagnosis Steps
+1. View error logs: 
+   `kubectl logs -l app=api --tail=100 | grep ERROR`
+2. Check traces for slow requests
+3. Review metrics dashboard
+
+## Common Causes
+- Recent deployment → Rollback
+- Dependency timeout → Circuit breaker activated?
+- Database slow → Check slow query log
+- Rate limit hit → Check traffic spike
+
+## Mitigation
+- Rollback: `./scripts/rollback.sh`
+- Disable feature: `feature-flag payment-v2 off`
+- Scale up: `kubectl scale deployment api --replicas=10`
+
+## Escalation
+If not resolved in 15 minutes:
+- Escalate to @architect
+- Update incident channel
+- Contact vendors if dependency issue
+</code></pre>
+<h2 id="4-capacity-planning---scale-before-you-need-to">4. Capacity Planning - Scale Before You Need To</h2>
+<h3 id="growth-projection">Growth Projection</h3>
+<pre><code class="language-javascript">// Current metrics (Feb 2024)
+const current = {
+  daily_users: 100_000,
+  peak_requests_per_second: 1_000,
+  database_size: &#x27;500 GB&#x27;,
+  monthly_cost: &#x27;$10_000&#x27;
+}
+
+// Growth rate: 20% per month
+const projections = {
+  &#x27;3_months&#x27;: {
+    users: 172_000,    // 1.2^3 = 1.72x
+    rps: 1_720,
+    db_size: &#x27;860 GB&#x27;,
+    cost: &#x27;$17_200&#x27;
+  },
+  
+  &#x27;6_months&#x27;: {
+    users: 298_000,    // 1.2^6 = 2.98x
+    rps: 2_980,
+    db_size: &#x27;1.5 TB&#x27;,
+    cost: &#x27;$29_800&#x27;
+  },
+  
+  &#x27;12_months&#x27;: {
+    users: 890_000,    // 1.2^12 = 8.9x
+    rps: 8_900,
+    db_size: &#x27;4.5 TB&#x27;,
+    cost: &#x27;$89_000&#x27;
+  }
+}
+</code></pre>
+<h3 id="resource-planning-matrix">Resource Planning Matrix</h3>
+<pre><code class="language-markdown"># Capacity Plan - Next 6 Months
+
+## Current Capacity
+- API servers: 10 instances, 60% CPU avg
+- Database: 1 primary + 2 replicas, 70% connections
+- Cache: 50GB Redis, 40% memory
+- Max capacity: ~1500 RPS before degradation
+
+## 6-Month Projection
+- Expected load: 3000 RPS (2x current max)
+- Peak traffic: 4500 RPS (holiday season)
+
+## Action Plan
+| Timeline | Action | Cost | Owner |
+|----------|--------|------|-------|
+| Month 1 | Add 10 API instances | +$2k/mo | DevOps |
+| Month 2 | Database read replicas (2 → 4) | +$3k/mo | DBA |
+| Month 2 | Redis cluster upgrade (50GB → 100GB) | +$1k/mo | DevOps |
+| Month 3 | Database sharding preparation | $0 | Backend |
+| Month 4 | Implement database sharding | $0 | Backend |
+| Month 5 | CDN upgrade for static assets | +$1k/mo | Frontend |
+| Month 6 | Load test at 5000 RPS | $0 | QA |
+
+## Risk Assessment
+- ⚠️ Database sharding complex, allow 2 months
+- ⚠️ Need load testing environment
+- API scaling straightforward
+</code></pre>
+<h3 id="load-testing-strategy">Load Testing Strategy</h3>
+<pre><code class="language-javascript">// Gradual load test
+const loadTest = {
+  baseline: {
+    users: 1000,
+    duration: &#x27;10 minutes&#x27;,
+    expected: &#x27;p95 &lt; 200ms, 0% errors&#x27;
+  },
+  
+  target: {
+    users: 3000,
+    duration: &#x27;30 minutes&#x27;,
+    expected: &#x27;p95 &lt; 500ms, &lt; 0.1% errors&#x27;
+  },
+  
+  stress: {
+    users: 5000,
+    duration: &#x27;10 minutes&#x27;,
+    expected: &#x27;Find breaking point&#x27;
+  },
+  
+  spike: {
+    users: &#x27;0 → 5000 in 1 minute&#x27;,
+    duration: &#x27;15 minutes&#x27;,
+    expected: &#x27;System recovers gracefully&#x27;
+  }
+}
+
+// What to monitor during load test
+const metrics = [
+  &#x27;Response time (p50, p95, p99)&#x27;,
+  &#x27;Error rate&#x27;,
+  &#x27;CPU, memory, disk usage&#x27;,
+  &#x27;Database connections&#x27;,
+  &#x27;Queue depth&#x27;,
+  &#x27;Cache hit rate&#x27;
+]
+</code></pre>
+<h3 id="budget-for-growth">Budget For Growth</h3>
+<pre><code>Rule of thumb: Infrastructure cost = 5-10% of revenue
+
+Example:
+- Monthly revenue: $1M
+- Acceptable infra cost: $50k-$100k
+- Current cost: $30k
+- Room for growth: $20k-$70k
+
+Strategy:
+- Optimize before scale (reduce cost 20%)
+- Plan gradual increases
+- Reserve budget for incidents
+</code></pre>
+<h2 id="5-migration-strategy---change-production-safely">5. Migration Strategy - Change Production Safely</h2>
+<h3 id="migration-challenges">Migration Challenges</h3>
+<pre><code>Why migrations are risky:
+- Zero downtime requirement
+- Large data volume
+- Can&#x27;t rollback easily
+- User impact if failed
+- Business pressure (revenue)
+
+Example scenarios:
+- Database migration (PostgreSQL → MySQL)
+- Cloud migration (AWS → GCP)
+- Architecture change (monolith → microservices)
+- Data model change (schema evolution)
+</code></pre>
+<h3 id="strangler-fig-pattern">Strangler Fig Pattern</h3>
+<p><strong>Gradually replace old system với new system:</strong></p>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart LR
+    Users --&gt; Router{Router}
+    Router --&gt;|Old Features| Old[Old System]
+    Router --&gt;|New Features| New[New System]
+    Old -.Data Sync.-&gt; New</code></pre>
+<pre><code>Phase 1: Build new system alongside old
+Phase 2: Route new traffic to new system
+Phase 3: Migrate old data gradually
+Phase 4: Redirect more traffic to new
+Phase 5: Deprecate old system
+
+Timeline: Months to years, không phải big-bang
+</code></pre>
+<h3 id="database-migration-example">Database Migration Example</h3>
+<pre><code class="language-javascript">// Phase 1: Dual Write
+async function updateUser(userId, data) {
+  // Write to old database
+  await oldDB.users.update(userId, data)
+  
+  // Also write to new database
+  try {
+    await newDB.users.update(userId, data)
+  } catch (error) {
+    // Log but don&#x27;t fail
+    logger.error(&#x27;New DB write failed&#x27;, error)
+  }
+}
+
+// Phase 2: Verify Data Consistency
+async function verifyData() {
+  const oldData = await oldDB.users.find(userId)
+  const newData = await newDB.users.find(userId)
+  
+  if (!isEqual(oldData, newData)) {
+    alert(&#x27;Data inconsistency detected&#x27;)
+  }
+}
+
+// Phase 3: Dual Read (verify new DB)
+async function getUser(userId) {
+  const data = await oldDB.users.find(userId)
+  
+  // Compare with new DB
+  const newData = await newDB.users.find(userId)
+  if (!isEqual(data, newData)) {
+    logger.warn(&#x27;Data mismatch&#x27;, { userId, oldData: data, newData })
+  }
+  
+  return data  // Still return old DB data
+}
+
+// Phase 4: Switch Reads to New DB
+async function getUser(userId) {
+  const data = await newDB.users.find(userId)
+  
+  // Fallback to old DB if failed
+  if (!data) {
+    logger.error(&#x27;New DB read failed, falling back&#x27;)
+    return await oldDB.users.find(userId)
+  }
+  
+  return data
+}
+
+// Phase 5: Stop Writing to Old DB
+async function updateUser(userId, data) {
+  await newDB.users.update(userId, data)
+  // Old DB write removed
+}
+
+// Phase 6: Deprecate Old DB
+// Remove old database entirely
+</code></pre>
+<h3 id="feature-flag-for-migration">Feature Flag for Migration</h3>
+<pre><code class="language-javascript">const featureFlags = {
+  use_new_payment_service: {
+    enabled: true,
+    rollout: &#x27;10%&#x27;,  // Start with 10% traffic
+    rules: [
+      { segment: &#x27;internal_users&#x27;, enabled: true },
+      { segment: &#x27;beta_testers&#x27;, enabled: true }
+    ]
+  }
+}
+
+async function processPayment(order) {
+  if (featureFlags.use_new_payment_service.enabled) {
+    if (shouldEnableForUser(order.userId)) {
+      try {
+        return await newPaymentService.process(order)
+      } catch (error) {
+        // Fallback to old service
+        logger.error(&#x27;New payment failed, fallback&#x27;, error)
+        return await oldPaymentService.process(order)
+      }
+    }
+  }
+  
+  return await oldPaymentService.process(order)
+}
+</code></pre>
+<h3 id="migration-checklist">Migration Checklist</h3>
+<pre><code class="language-markdown"># Migration Checklist
+
+## Pre-Migration
+[ ] Load test new system at expected traffic
+[ ] Feature flags implemented
+[ ] Rollback plan documented
+[ ] Data validation scripts ready
+[ ] Monitoring dashboards prepared
+[ ] On-call team briefed
+[ ] Stakeholders notified
+[ ] Maintenance window scheduled (if needed)
+
+## During Migration
+[ ] Start with 1% traffic
+[ ] Monitor error rates closely
+[ ] Verify data consistency every hour
+[ ] Gradual rollout: 1% → 5% → 10% → 25% → 50% → 100%
+[ ] Each step: monitor 24-48 hours before next
+[ ] Document any issues encountered
+
+## Post-Migration
+[ ] Full monitoring for 1 week
+[ ] Data validation report
+[ ] Performance comparison (old vs new)
+[ ] Post-mortem meeting
+[ ] Document lessons learned
+[ ] Plan deprecation of old system
+</code></pre>
+<h2 id="6-technical-leadership---influence-without-authority">6. Technical Leadership - Influence Without Authority</h2>
+<h3 id="architect-as-leader">Architect As Leader</h3>
+<pre><code>Technical leadership ≠ Management
+
+You don&#x27;t have authority to:
+- Assign tasks
+- Fire people
+- Approve budget
+
+You DO have influence through:
+- Technical expertise
+- Earned trust
+- Clear communication
+- Good decisions track record
+</code></pre>
+<h3 id="build-trust-through-delivery">Build Trust Through Delivery</h3>
+<pre><code>How to earn trust as architect:
+
+Deliver results:
+- Designs that actually work in production
+- Solutions that scale when needed
+- Smooth migrations without incidents
+
+Be reliable:
+- Available during incidents
+- Follow through on commitments
+- Respond to questions quickly
+
+Admit mistakes:
+- &quot;I was wrong about X&quot;
+- &quot;Better approach is Y&quot;
+- Learn publicly
+
+Give credit:
+- &quot;Sarah&#x27;s idea to use caching saved us&quot;
+- Highlight team contributions
+- Share success
+</code></pre>
+<h3 id="technical-decision-making">Technical Decision Making</h3>
+<p><strong>Framework for architecture decisions:</strong></p>
+<pre><code class="language-markdown"># Architecture Decision Record (ADR)
+
+## Context
+We need to redesign our notification system. 
+Current system:
+- Sends 1M notifications/day
+- Growing 50% per quarter
+- Frequent delays and failures
+
+## Decision
+Adopt event-driven architecture with Kafka
+
+## Alternatives Considered
+1. **RabbitMQ + workers** 
+   - Pros: Team familiar, simpler
+   - Cons: Scale limitations, no replay
+   
+2. **AWS SNS/SQS**
+   - Pros: Managed, reliable
+   - Cons: Vendor lock-in, cost at scale
+   
+3. **Kafka** (CHOSEN)
+   - Pros: High throughput, replay, ecosystem
+   - Cons: Operational complexity, learning curve
+
+## Consequences
+Positive:
+- Handle 10M+ notifications/day
+- Message replay for debugging
+- Real-time analytics possible
+
+Negative:
+- Team needs Kafka training
+- More operational overhead
+- Migration takes 3 months
+
+## Timeline
+- Month 1: Kafka setup + training
+- Month 2: Build new notification service
+- Month 3: Gradual migration
+</code></pre>
+<h3 id="influence-through-data">Influence Through Data</h3>
+<pre><code class="language-javascript">// Instead of: &quot;We need to rewrite this!&quot;
+// Use data to make the case:
+
+const currentMetrics = {
+  deployment_frequency: &#x27;1/week&#x27;,
+  lead_time: &#x27;2 weeks&#x27;,
+  mttr: &#x27;4 hours&#x27;,
+  change_failure_rate: &#x27;15%&#x27;
+}
+
+const industryBenchmark = {
+  elite_performers: {
+    deployment_frequency: &#x27;Multiple/day&#x27;,
+    lead_time: &#x27;&lt; 1 day&#x27;,
+    mttr: &#x27;&lt; 1 hour&#x27;,
+    change_failure_rate: &#x27;0-15%&#x27;
+  }
+}
+
+const proposal = `
+Problem: Our lead time is 14x slower than elite teams
+Impact: Competitors ship features faster
+Solution: Move to microservices + CI/CD
+Expected improvement: Lead time 2 weeks → 2 days
+Cost: 3 months, 4 engineers
+ROI: Ship 7x faster, competitive advantage
+`
+</code></pre>
+<h3 id="communication-skills">Communication Skills</h3>
+<p><strong>Explain technical to non-technical:</strong></p>
+<pre><code>Technical jargon:
+&quot;We need to implement horizontal pod autoscaling 
+with Kubernetes HPA based on custom metrics from 
+Prometheus to handle traffic spikes&quot;
+
+Business language:
+&quot;Currently, traffic spikes crash our site. 
+This causes lost revenue.
+Solution: Automatically add servers when busy.
+Cost: $5k/month
+Benefit: No more outages, protect $50k/hour revenue&quot;
+</code></pre>
+<p><strong>Write clear technical docs:</strong></p>
+<pre><code class="language-markdown"># Bad Documentation
+Uses Redis for caching. Configure TTL appropriately.
+
+# Good Documentation
+## Caching Strategy
+
+We use Redis to cache API responses, reducing database load by 80%.
+
+### When to Cache
+- Cache: User profiles, product lists (rarely change)
+- Don&#x27;t cache: Real-time inventory, prices (change often)
+
+### TTL Guidelines
+- User profiles: 1 hour (okay if slightly stale)
+- Product lists: 5 minutes (update regularly)
+- Search results: 30 seconds (balance fresh vs performance)
+
+### Example
+```javascript
+await redis.set(`user:${id}`, data, { ttl: 3600 })
+```
+
+### Monitoring
+- Hit rate: https://dashboard/redis
+- Alert if hit rate &lt; 80%
+</code></pre>
+<h3 id="code-review-excellence">Code Review Excellence</h3>
+<pre><code class="language-javascript">// Bad review
+&quot;This is wrong. Use Redis instead.&quot;
+
+// Good review
+/*
+Concern: In-memory cache won&#x27;t scale across multiple instances.
+
+Issue:
+- Each instance has separate cache
+- Cache miss rate will be high
+- Duplicated memory usage
+
+Suggestion:
+Consider shared Redis cache:
+- Single source of truth
+- Better hit rate
+- Scales horizontally
+
+If Redis not possible:
+- Document limitations
+- Add metrics for cache hit rate
+- Plan migration when needed
+
+Happy to discuss trade-offs!
+*/
+</code></pre>
+<h3 id="mentoring-engineers">Mentoring Engineers</h3>
+<pre><code>Junior engineer: &quot;Should I use MongoDB or PostgreSQL?&quot;
+
+Bad answer:
+&quot;Use PostgreSQL, it&#x27;s better.&quot;
+
+Good answer:
+&quot;Great question! Let&#x27;s think through trade-offs:
+
+What&#x27;s your data like?
+- Structured, relations? → PostgreSQL
+- Unstructured, flexible schema? → MongoDB
+
+What operations?
+- Complex queries, joins? → PostgreSQL
+- Simple CRUD, fast writes? → MongoDB
+
+What&#x27;s your team familiar with?
+- SQL experience? → PostgreSQL easier
+
+For your use case (user profiles with relations),
+I&#x27;d recommend PostgreSQL because:
+1. You have structured data
+2. Need join queries (users + orders)
+3. Team knows SQL
+
+But either could work. Want to prototype both?&quot;
+</code></pre>
+<h2 id="7-architecture-review-process---prevent-problems-early">7. Architecture Review Process - Prevent Problems Early</h2>
+<h3 id="review-triggers">Review Triggers</h3>
+<pre><code>When to require architecture review:
+
+Always review:
+- New service/system
+- Major refactor
+- Database schema change
+- New technology adoption
+- Security-sensitive changes
+- Cross-team dependencies
+
+⚠️ Consider review:
+- Performance-critical path
+- Complex algorithms
+- External API integration
+
+No review needed:
+- Bug fixes
+- UI changes
+- Copy updates
+- Small refactors
+</code></pre>
+<h3 id="review-template">Review Template</h3>
+<pre><code class="language-markdown"># Architecture Review: Payment Service Redesign
+
+## Requestor
+Sarah Chen, Backend Lead
+
+## Overview
+Redesign payment service to support international payments
+
+## Current System
+- Single payment provider (Stripe)
+- USD only
+- Synchronous processing
+- ~1000 transactions/day
+
+## Proposed System
+- Multiple payment providers (Stripe, PayPal, Adyen)
+- Multi-currency support
+- Async processing via Kafka
+- Expected 10k transactions/day
+
+## Architecture Diagram
+[Insert diagram]
+
+## Key Design Decisions
+
+### 1. Multiple Payment Providers
+Decision: Support 3+ providers
+Rationale: Regional preferences, redundancy
+Trade-off: Complexity vs flexibility
+
+### 2. Async Processing
+Decision: Use Kafka for payment events
+Rationale: Decouple, handle spikes, retry
+Trade-off: Eventual consistency
+
+### 3. Provider Abstraction
+Decision: Abstract provider behind interface
+Rationale: Easy to add/remove providers
+Trade-off: Extra abstraction layer
+
+## Concerns &amp; Risks
+1. **Currency conversion**
+   - Risk: Exchange rate changes during processing
+   - Mitigation: Lock rate at checkout
+
+2. **Provider failover**
+   - Risk: Primary provider down
+   - Mitigation: Automatic fallback to secondary
+
+3. **Data consistency**
+   - Risk: Event lost in Kafka
+   - Mitigation: At-least-once delivery, idempotency
+
+## Scale Considerations
+- Current: 1k transactions/day
+- 1 year: 50k transactions/day (50x)
+- Design handles: 100k transactions/day
+
+## Security
+- PCI compliance maintained
+- No card data stored
+- Provider tokens encrypted
+- Audit logging
+
+## Monitoring
+- Transaction success rate per provider
+- Latency p95, p99
+- Currency conversion accuracy
+- Failed payment alerts
+
+## Timeline
+- Week 1-2: Build provider abstraction
+- Week 3-4: Integrate providers
+- Week 5-6: Kafka setup + event handlers
+- Week 7-8: Migration + testing
+- Week 9: Gradual rollout
+
+## Questions for Reviewers
+1. Provider abstraction too complex?
+2. Kafka overkill for current scale?
+3. Missing failure scenarios?
+
+## Reviewers
+- @architect-alice (infra)
+- @architect-bob (security)
+- @devops-lead (operations)
+</code></pre>
+<h3 id="review-guidelines">Review Guidelines</h3>
+<p><strong>For Reviewers:</strong></p>
+<pre><code>Focus on:
+- Failure scenarios missed?
+- Scale considerations?
+- Security issues?
+- Operational complexity?
+- Better alternatives?
+
+Avoid:
+- Bikeshedding (naming, formatting)
+- &quot;I would do it differently&quot; without reasoning
+- Perfectionism (&quot;This isn&#x27;t optimal&quot;)
+
+🎯 Goal:
+Help improve design, not block progress
+</code></pre>
+<p><strong>For Design Author:</strong></p>
+<pre><code>Be open to:
+- Critical feedback
+- Alternative approaches
+- Simpler solutions
+
+Avoid:
+- Defensive reactions
+- &quot;Trust me, it will work&quot;
+- Dismissing concerns
+
+🎯 Goal:
+Learn, improve design, build consensus
+</code></pre>
+<h3 id="approval-criteria">Approval Criteria</h3>
+<pre><code class="language-markdown">## Definition of Approved
+
+Design can be approved when:
+- [ ] Failure scenarios identified and mitigated
+- [ ] Scale considerations addressed
+- [ ] Security reviewed
+- [ ] Operational impact understood
+- [ ] Monitoring strategy defined
+- [ ] Rollback plan exists
+- [ ] 2+ architects approved
+- [ ] No blocking concerns
+
+⚠️ Approved with conditions:
+- Minor concerns to address during implementation
+- Follow-up reviews scheduled
+
+Not approved:
+- Major risks not mitigated
+- Scale concerns not addressed
+- Blocking security issues
+</code></pre>
+<h2 id="8-final-mindset---you-own-the-system">8. Final Mindset - You Own The System</h2>
+<h3 id="production-ownership-principles">Production Ownership Principles</h3>
+<p><strong>1. Think Long-Term</strong></p>
+<pre><code>Code you write today:
+- You&#x27;ll maintain for years
+- Others will extend
+- Will run at 10x scale
+- Will fail eventually
+
+Write code you&#x27;re proud to own.
+</code></pre>
+<p><strong>2. Empathy For Oncall</strong></p>
+<pre><code>Before merging:
+&quot;Will this wake someone at 3AM?&quot;
+&quot;Is this debuggable?&quot;
+&quot;Can it be rolled back?&quot;
+&quot;Are errors actionable?&quot;
+
+If answer is &quot;maybe&quot; → improve design.
+</code></pre>
+<p><strong>3. Documentation As Love Letter</strong></p>
+<pre><code>Document for your future self (6 months later):
+- Why this design?
+- What are trade-offs?
+- How to debug?
+- How to scale?
+
+You&#x27;ll thank yourself.
+</code></pre>
+<p><strong>4. Measure Everything</strong></p>
+<pre><code>&quot;In God we trust. All others must bring data.&quot;
+- W. Edwards Deming
+
+No metrics = No visibility = Cannot improve
+
+Add metrics first, optimize later.
+</code></pre>
+<p><strong>5. Automate Toil</strong></p>
+<pre><code>Repetitive tasks:
+- Deployments
+- Rollbacks
+- Scaling
+- Monitoring setup
+- Incident response
+
+Automate once, benefit forever.
+</code></pre>
+<h3 id="career-growth-path">Career Growth Path</h3>
+<pre class="overflow-x-auto rounded-2xl border border-[#1a2440] bg-[#0f172e] p-5 text-sm text-[#d8e7ff]"><code>flowchart TB
+    Junior[Junior Engineer&lt;br/&gt;Write code] --&gt; Mid[Mid Engineer&lt;br/&gt;Own features]
+    Mid --&gt; Senior[Senior Engineer&lt;br/&gt;Design systems]
+    Senior --&gt; Staff[Staff Engineer&lt;br/&gt;Cross-team impact]
+    Staff --&gt; Principal[Principal Engineer&lt;br/&gt;Company-wide strategy]</code></pre>
+<p><strong>Each level:</strong></p>
+<pre><code>Junior → Mid:
+- Code quality
+- Feature ownership
+- Learn system design
+
+Mid → Senior:
+- Design systems
+- Trade-off thinking
+- Mentor others
+
+Senior → Staff:
+- Cross-team impact
+- Production thinking
+- Technical strategy
+
+Staff → Principal:
+- Company-wide architecture
+- Hire &amp; build teams
+- Set technical direction
+</code></pre>
+<h3 id="what-differentiates-great-architects">What Differentiates Great Architects</h3>
+<pre><code>Average Architect:
+- Knows patterns
+- Follows best practices
+- Designs systems
+
+Great Architect:
+- Thinks about failure
+- Simplifies complexity
+- Enables others
+- Owns production
+- Communicates clearly
+- Earns trust
+- Ships results
+</code></pre>
+<h3 id="the-10-commandments-of-production-systems">The 10 Commandments of Production Systems</h3>
+<pre><code class="language-markdown">1. **Monitor everything** - You cannot improve what you cannot measure
+
+2. **Design for failure** - Everything will fail. Plan for it.
+
+3. **Start simple** - Add complexity only when needed
+
+4. **Think in trade-offs** - No perfect solution. Choose wisely.
+
+5. **Document decisions** - Future you will ask &quot;Why?&quot;
+
+6. **Automate toil** - Humans for thinking, machines for repetition
+
+7. **Security by default** - Easier to relax than tighten later
+
+8. **Test at scale** - Load test before users do it for you
+
+9. **Gradual rollouts** - Big bang deployments = big bang failures
+
+10. **Own your code** - You build it, you run it
+</code></pre>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<h3 id="engineer--architect-mindset-shifts">Engineer → Architect Mindset Shifts</h3>
+<p><strong>1. From Code → System</strong></p>
+<ul>
+<li>Engineer: &quot;Feature works on my machine&quot;</li>
+<li>Architect: &quot;System works at scale in production&quot;</li>
+</ul>
+<p><strong>2. From Happy Path → Failure Scenarios</strong></p>
+<ul>
+<li>Engineer: &quot;If everything works...&quot;</li>
+<li>Architect: &quot;When things fail...&quot;</li>
+</ul>
+<p><strong>3. From Solo → Team</strong></p>
+<ul>
+<li>Engineer: Write code alone</li>
+<li>Architect: Enable team to succeed</li>
+</ul>
+<p><strong>4. From Build → Own</strong></p>
+<ul>
+<li>Engineer: Ship and move on</li>
+<li>Architect: Own it in production</li>
+</ul>
+<p><strong>5. From Technical → Business</strong></p>
+<ul>
+<li>Engineer: &quot;This is technically better&quot;</li>
+<li>Architect: &quot;This provides business value&quot;</li>
+</ul>
+<h3 id="production-thinking-checklist">Production Thinking Checklist</h3>
+<pre><code class="language-markdown">Before shipping to production:
+
+[ ] What&#x27;s the blast radius if this fails?
+[ ] Can we rollback in under 5 minutes?
+[ ] Do we have monitoring for this?
+[ ] Are errors actionable?
+[ ] Did we load test at 2x expected traffic?
+[ ] Is there a runbook for common issues?
+[ ] Can the oncall engineer debug this at 3AM?
+[ ] What&#x27;s the impact if this service is down?
+[ ] Do we have a gradual rollout plan?
+[ ] Have we considered all failure modes?
+</code></pre>
+<h3 id="technical-leadership-principles">Technical Leadership Principles</h3>
+<p><strong>Communication:</strong></p>
+<ul>
+<li>Explain technical in business terms</li>
+<li>Write docs others can understand</li>
+<li>Overcommunicate in incidents</li>
+</ul>
+<p><strong>Decision Making:</strong></p>
+<ul>
+<li>Use data, not opinions</li>
+<li>Document trade-offs</li>
+<li>Include team in decisions</li>
+</ul>
+<p><strong>Influence:</strong></p>
+<ul>
+<li>Build trust through delivery</li>
+<li>Give credit, take blame</li>
+<li>Mentor generously</li>
+</ul>
+<p><strong>Ownership:</strong></p>
+<ul>
+<li>Available during incidents</li>
+<li>Follow through on commitments</li>
+<li>Think long-term</li>
+</ul>
+<h3 id="final-thought">Final Thought</h3>
+<p><strong>The journey from engineer to architect is not about learning more patterns. It&#x27;s about taking ownership.</strong></p>
+<p>You don&#x27;t need to know every technology. You need to:</p>
+<ul>
+<li>Think in trade-offs</li>
+<li>Design for failure</li>
+<li>Own production</li>
+<li>Enable your team</li>
+<li>Communicate clearly</li>
+<li>Ship results</li>
+</ul>
+<p><strong>Great architects are not built in a day. They&#x27;re built through:</strong></p>
+<ul>
+<li>Responding to production incidents</li>
+<li>Making mistakes and learning</li>
+<li>Earning trust over time</li>
+<li>Shipping systems that scale</li>
+<li>Helping others succeed</li>
+</ul>
+<p><strong>You&#x27;re ready when you realize: The system is yours. Own it.</strong></p></article></article><div class="mt-10 border-t border-line pt-6"><div class="flex flex-wrap gap-3"><a class="inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm" href="/phase/phase-6/lesson/lesson-5-advanced-architecture-topics"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer</a></div><a class="inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-center bg-gradient-to-r from-rose-500 to-orange-500 px-6 shadow-[0_16px_36px_rgba(244,63,94,0.35)] hover:from-rose-600 hover:to-orange-600" target="_blank" rel="noreferrer" href="https://www.paypal.com/ncp/payment/TX3ENV3LUJDWG"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart h-5 w-5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Donate / Ủng hộ dự án</a></div></div></div></div></section><!--$--><!--/$--></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[62319,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"Navbar\"]\n3:I[39756,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n4:I[37457,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"default\"]\n5:I[22016,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"\"]\n10:I[68027,[],\"default\"]\n:HL[\"/_next/static/chunks/8ec1d2130addac51.css\",\"style\"]\n:HL[\"/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/3c285486269019b7-s.p.f6eddd95.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/53e45098eac42afb-s.p.cedabf29.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/625a092f804baad3-s.p.75ecebf5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/6f42e0a3b0519c4d-s.p.7183773d.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8f46d218c8f79e34-s.p.12435988.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/8ffc259da9d23054-s.p.8ab0ac6e.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a3bcb02a0e9e5d11-s.p.5d07ebb5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/a4f4f75ad654963f-s.p.bab09490.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"odmYO1MXhxB-zwMaj43P8\",\"c\":[\"\",\"phase\",\"phase-6\",\"lesson\",\"lesson-6-architect-mindset-production-thinking\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"phase\",{\"children\":[[\"slug\",\"phase-6\",\"d\"],{\"children\":[\"lesson\",{\"children\":[[\"lessonSlug\",\"lesson-6-architect-mindset-production-thinking\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8ec1d2130addac51.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/2aeac92579e59d89.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"vi\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"be_vietnam_pro_ddd9d30-module__f5spzq__variable space_grotesk_bcb0af64-module__Skw7iW__variable bg-canvas text-ink antialiased\",\"children\":[[\"$\",\"div\",null,{\"className\":\"pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(52,122,255,0.18),transparent_55%),radial-gradient(900px_450px_at_100%_0%,rgba(99,102,241,0.12),transparent_50%)]\"}],[\"$\",\"$L2\",null,{}],[\"$\",\"main\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"section\",null,{\"className\":\"md:py-20 min-h-[calc(100vh-8rem)] py-0\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex min-h-[calc(100vh-8rem)] items-center justify-center\",\"children\":[\"$\",\"main\",null,{\"className\":\"w-full max-w-2xl text-center\",\"role\":\"main\",\"aria-labelledby\":\"not-found-title\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.16em] text-[#3f537e]\",\"children\":\"Error 404\"}],[\"$\",\"h1\",null,{\"id\":\"not-found-title\",\"className\":\"mt-3 text-6xl font-semibold tracking-tight text-ink sm:text-7xl\",\"children\":\"404\"}],[\"$\",\"h2\",null,{\"className\":\"mt-5 text-2xl font-semibold text-ink sm:text-3xl\",\"children\":\"Page not found\"}],[\"$\",\"p\",null,{\"className\":\"mx-auto mt-4 max-w-xl text-base leading-8 text-ink-dim\",\"children\":\"Trang bạn đang tìm không tồn tại, có thể đã được đổi đường dẫn hoặc xóa khỏi hệ thống.\"}],[\"$\",\"div\",null,{\"className\":\"mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 bg-brand text-white shadow-[0_12px_26px_rgba(47,107,255,0.3)] hover:bg-[#2659d6] h-11 px-5 text-sm\",\"aria-label\":\"Back to Home\",\"children\":\"Back to Home\"}],[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"aria-label\":\"Go to Roadmap\",\"children\":\"Go to Roadmap\"}]]}],[\"$\",\"p\",null,{\"className\":\"mt-6 text-sm text-ink-dim\",\"children\":\"Nếu bạn mở liên kết từ tài liệu cũ, hãy kiểm tra lại URL hoặc quay về trang chủ.\"}]]}]}]}],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"footer\",null,{\"className\":\"border-t border-line bg-surface/60 py-10\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-sm text-ink-dim\",\"children\":[\"© \",2026,\" System Design Core. All rights reserved.\"]}],[\"$\",\"div\",null,{\"className\":\"flex items-center gap-5 text-sm text-ink-dim\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}],[\"$\",\"$L5\",null,{\"href\":\"/docs/getting-started\",\"className\":\"hover:text-ink\",\"children\":\"Docs\"}],\"$L6\"]}]]}]}],\"$L7\"]}]}]]}],{\"children\":[\"$L8\",{\"children\":[\"$L9\",{\"children\":[\"$La\",{\"children\":[\"$Lb\",{\"children\":[\"$Lc\",{},null,false,false]},[\"$Ld\",[],[]],false,false]},null,false,false]},null,false,false]},null,false,false]},[\"$Le\",[],[]],false,false],\"$Lf\",false]],\"m\":\"$undefined\",\"G\":[\"$10\",[]],\"S\":true}\n"])</script><script>self.__next_f.push([1,"11:I[54576,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\"],\"GoogleAnalytics\"]\n13:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"OutletBoundary\"]\n14:\"$Sreact.suspense\"\n20:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"ViewportBoundary\"]\n22:I[97367,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"MetadataBoundary\"]\n6:[\"$\",\"$L5\",null,{\"href\":\"https://github.com/steve-bang\",\"className\":\"hover:text-ink\",\"children\":\"GitHub\"}]\n7:[\"$\",\"$L11\",null,{\"gaId\":\"G-BQTYYTRNWN\"}]\n8:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n9:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\na:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nb:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\nc:[\"$\",\"$1\",\"c\",{\"children\":[\"$L12\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/6716c4894e74365d.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/5eac621951969859.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/913090e41affe6ba.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/89ebb4231102677a.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/de9c5219846f92bb.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-8\",{\"src\":\"/_next/static/chunks/a4eab16b7dcd4e33.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L13\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@15\"}]}]]}]\n"])</script><script>self.__next_f.push([1,"d:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L16\",\"$L17\",\"$L18\",\"$L19\"]}],\"$L1a\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"e:[\"$\",\"section\",\"l\",{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"aria-busy\":\"true\",\"aria-live\":\"polite\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-24\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-3 h-7 w-4/5\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-2/3\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-32\"}],[\"$\",\"div\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-4/5\"}]]}],[\"$\",\"div\",null,{\"className\":\"rounded-xl border border-line bg-surface-soft p-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-12\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-3/4\"}]]}]]}]]}],[\"$\",\"div\",null,{\"className\":\"h-11 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"div\",null,{\"className\":\"mb-6 flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-16\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-20\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-1\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-3 w-40\"}]]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0 flex-1\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-8 w-4/5 md:h-9\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-4 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 mt-2 w-5/6\"}]]}],[\"$\",\"div\",null,{\"className\":\"h-10 w-full animate-pulse rounded-xl border border-line bg-slate-200/70 sm:w-32 sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"className\":\"space-y-4\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-3/4\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[92%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[88%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-2/3\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[90%]\"}],[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[86%]\"}],[\"$\",\"div\",null,{\"className\":\"pt-3\"}],\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"]}],\"$L1f\"]}]]}]}]}]\n"])</script><script>self.__next_f.push([1,"f:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L20\",null,{\"children\":\"$L21\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L22\",null,{\"children\":[\"$\",\"$14\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L23\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n"])</script><script>self.__next_f.push([1,"16:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n17:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n18:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n19:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1a:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n1b:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 h-5 w-1/2\"}]\n1c:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-full\"}]\n1d:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[94%]\"}]\n1e:[\"$\",\"div\",null,{\"className\":\"h-4 animate-pulse rounded-md bg-slate-200/80 w-[82%]\"}]\n1f:[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70\"}],[\"$\",\"div\",null,{\"className\":\"h-11 w-36 animate-pulse rounded-2xl border border-line bg-slate-200/70 sm:ml-auto\"}]]}],[\"$\",\"div\",null,{\"className\":\"mt-4 h-12 w-full animate-pulse rounded-2xl border border-line bg-slate-200/70\"}]]}]\n"])</script><script>self.__next_f.push([1,"12:[\"$\",\"section\",null,{\"className\":\"py-14 md:py-20 pt-16 pb-20 md:pt-20\",\"children\":[\"$\",\"div\",null,{\"className\":\"mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid gap-6 md:gap-8 lg:grid-cols-[300px_1fr]\",\"children\":[[\"$\",\"aside\",null,{\"className\":\"space-y-4 lg:sticky lg:top-24 lg:self-start\",\"children\":[[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Phase 6 — System Design Mastery\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-xl font-semibold text-ink\",\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim\",\"children\":\"Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical leadership - từ engineer đến trusted architect\"}]]}],[\"$\",\"div\",null,{\"className\":\"glass-card p-5\",\"children\":[[\"$\",\"h2\",null,{\"className\":\"text-sm font-semibold uppercase tracking-[0.14em] text-[#3f537e]\",\"children\":\"Bài học trong phase\"}],[\"$\",\"ul\",null,{\"className\":\"mt-4 space-y-3\",\"children\":[[\"$\",\"li\",\"lesson-1-system-design-thinking-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-1-system-design-thinking-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",1]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"System Design Thinking Framework - Từ Pattern Đến Problem-Solving Mindset\"}]]}]}],[\"$\",\"li\",\"lesson-2-snake-framework\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-2-snake-framework\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",2]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"SNAKE Framework - Methodology Để Ace System Design Interview\"}]]}]}],[\"$\",\"li\",\"lesson-3-trade-offs-and-architecture-decision-making\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-3-trade-offs-and-architecture-decision-making\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",3]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Trade-offs \u0026 Architecture Decision Making - Tư Duy Senior Architect\"}]]}]}],[\"$\",\"li\",\"lesson-4-real-interview-strategy\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-4-real-interview-strategy\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",4]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Real Interview Strategy - Áp Dụng SNAKE Vào System Design Thực Tế\"}]]}]}],[\"$\",\"li\",\"lesson-5-advanced-architecture-topics\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\",\"className\":\"block rounded-xl border border-line bg-surface-soft p-3 transition hover:border-brand/40 hover:bg-white\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",5]}],[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"}]]}]}],[\"$\",\"li\",\"lesson-6-architect-mindset-production-thinking\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking\",\"className\":\"block rounded-xl border p-3 transition hover:border-brand/40 hover:bg-white border-brand/50 bg-brand-soft\",\"children\":[\"$L24\",\"$L25\"]}]}]]}]]}],\"$L26\"]}],\"$L27\"]}]}]}]\n"])</script><script>self.__next_f.push([1,"28:I[4494,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"ShareButton\"]\n24:[\"$\",\"p\",null,{\"className\":\"text-xs text-ink-dim\",\"children\":[\"Bài \",6]}]\n25:[\"$\",\"p\",null,{\"className\":\"mt-1 text-sm font-medium text-ink\",\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\"}]\n26:[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm w-full\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Tổng quan phase\"]}]\n"])</script><script>self.__next_f.push([1,"27:[\"$\",\"div\",null,{\"className\":\"glass-card min-w-0 overflow-hidden p-6 md:p-10\",\"children\":[[\"$\",\"nav\",null,{\"aria-label\":\"Lesson breadcrumb\",\"className\":\"mb-6 text-xs text-ink-dim\",\"children\":[\"$\",\"ol\",null,{\"className\":\"flex flex-wrap items-center gap-2\",\"children\":[[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/roadmap\",\"className\":\"hover:text-ink\",\"children\":\"Roadmap\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"children\":[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6\",\"className\":\"hover:text-ink\",\"children\":\"Phase 6 — System Design Mastery\"}]}],[\"$\",\"li\",null,{\"children\":\"/\"}],[\"$\",\"li\",null,{\"aria-current\":\"page\",\"className\":\"text-ink\",\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\"}]]}]}],[\"$\",\"header\",null,{\"className\":\"mb-8 border-b border-line pb-5\",\"children\":[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"min-w-0\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"text-2xl font-semibold leading-tight text-ink md:text-3xl\",\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\"}],[\"$\",\"p\",null,{\"className\":\"mt-3 text-sm leading-7 text-ink-dim md:text-base\",\"children\":\"Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical leadership - từ engineer đến trusted architect\"}]]}],[\"$\",\"$L28\",null,{\"path\":\"/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking\",\"title\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\",\"description\":\"Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical leadership - từ engineer đến trusted architect\",\"className\":\"sm:shrink-0\"}]]}]}],[\"$\",\"article\",null,{\"aria-label\":\"Nội dung bài học Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\",\"children\":\"$L29\"}],[\"$\",\"div\",null,{\"className\":\"mt-10 border-t border-line pt-6\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-wrap gap-3\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/phase/phase-6/lesson/lesson-5-advanced-architecture-topics\",\"className\":\"inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 border border-line bg-surface text-ink hover:bg-surface-soft h-11 px-5 text-sm\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-arrow-left h-4 w-4\",\"children\":[[\"$\",\"path\",\"1l729n\",{\"d\":\"m12 19-7-7 7-7\"}],[\"$\",\"path\",\"x3x0zl\",{\"d\":\"M19 12H5\"}],\"$undefined\"]}],\"Advanced Architecture Topics - Kiến Thức Differentiate Senior vs Staff Engineer\"]}],null]}],null,[\"$\",\"$L5\",null,{\"href\":\"https://www.paypal.com/ncp/payment/TX3ENV3LUJDWG\",\"className\":\"inline-flex items-center gap-2 rounded-2xl font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 disabled:pointer-events-none disabled:opacity-60 text-white hover:bg-[#2659d6] h-12 text-[15px] mt-4 w-full justify-center bg-gradient-to-r from-rose-500 to-orange-500 px-6 shadow-[0_16px_36px_rgba(244,63,94,0.35)] hover:from-rose-600 hover:to-orange-600\",\"target\":\"_blank\",\"rel\":\"noreferrer\",\"children\":[[\"$\",\"svg\",null,{\"ref\":\"$undefined\",\"xmlns\":\"http://www.w3.org/2000/svg\",\"width\":24,\"height\":24,\"viewBox\":\"0 0 24 24\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":2,\"strokeLinecap\":\"round\",\"strokeLinejoin\":\"round\",\"className\":\"lucide lucide-heart h-5 w-5\",\"children\":[[\"$\",\"path\",\"c3ymky\",{\"d\":\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"}],\"$undefined\"]}],\"Donate / Ủng hộ dự án\"]}]]}]]}]\n"])</script><script>self.__next_f.push([1,"2a:I[46472,[\"/_next/static/chunks/d2b86e8e56f52aa1.js\",\"/_next/static/chunks/2aeac92579e59d89.js\",\"/_next/static/chunks/417b0cc86c2cf9f1.js\",\"/_next/static/chunks/6716c4894e74365d.js\",\"/_next/static/chunks/5eac621951969859.js\",\"/_next/static/chunks/913090e41affe6ba.js\",\"/_next/static/chunks/89ebb4231102677a.js\",\"/_next/static/chunks/de9c5219846f92bb.js\",\"/_next/static/chunks/f1f8594d5ec7b93e.js\",\"/_next/static/chunks/6f4c5a75f38f686b.js\",\"/_next/static/chunks/a4eab16b7dcd4e33.js\"],\"MermaidDiagram\"]\n"])</script><script>self.__next_f.push([1,"29:[\"$\",\"article\",null,{\"className\":\"prose-ui\",\"children\":[[\"$\",\"h1\",null,{\"id\":\"architect-mindset--production-thinking---from-engineer-to-trusted-architect\",\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Sau khi master tất cả technical knowledge - patterns, distributed systems, scalability - câu hỏi cuối cùng là: \",[\"$\",\"strong\",null,{\"children\":\"\\\"Điều gì tạo nên một trusted architect?\\\"\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Câu trả lời không phải technical skill. Mà là \",[\"$\",\"strong\",null,{\"children\":\"mindset shift từ \\\"write code\\\" sang \\\"own the system\\\".\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Engineer viết code để solve problem. Architect design system và \",[\"$\",\"strong\",null,{\"children\":\"chịu tr책nhiệm khi production down lúc 3AM.\"}]]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"Lesson này không dạy thêm patterns. Nó dạy cách \",[\"$\",\"strong\",null,{\"children\":\"thinking như người phải on-call, phải explain outage cho CEO, phải plan migration cho 100M users.\"}]]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"reality-check-you-own-the-system\",\"children\":\"Reality Check: You Own The System\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"engineer-vs-architect-mindset\",\"children\":\"Engineer vs Architect Mindset\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Engineer thinking:\\n\\\"Feature works on my laptop ✅\\\"\\n\\\"Passed all tests ✅\\\"\\n\\\"Deployed to production ✅\\\"\\n→ Move to next ticket\\n\\nArchitect thinking:\\n\\\"Will this work under 10x load?\\\"\\n\\\"What if database fails?\\\"\\n\\\"How do we rollback?\\\"\\n\\\"What's monitoring strategy?\\\"\\n\\\"Who's on-call when this breaks?\\\"\\n→ System ownership\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Core difference: Architects think beyond the happy path.\"}]}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"the-3am-test\",\"children\":\"The 3AM Test\"}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Scenario: Production alert at 3AM\\n\\nEngineer response:\\n\\\"Not my code, not my problem\\\"\\n\\\"Let's check tomorrow\\\"\\n\\nArchitect response:\\n\\\"What's user impact?\\\"\\n\\\"How do we mitigate now?\\\"\\n\\\"Root cause analysis tomorrow\\\"\\n\\\"How do we prevent this?\\\"\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Architect mindset = Ownership mindset.\"}]}],\"\\n\",[\"$\",\"h2\",null,{\"id\":\"1-production-incident-thinking---expect-failure\",\"children\":\"1. Production Incident Thinking - Expect Failure\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"everything-will-fail\",\"children\":\"Everything Will Fail\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Fundamental truth: All systems fail. Your job is minimizing impact.\"}]}],\"\\n\",[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    Normal[Normal Operation] --\u003e Incident[Incident Detected]\\n    Incident --\u003e Assess[Assess Impact]\\n    Assess --\u003e Mitigate[Mitigate ASAP]\\n    Mitigate --\u003e RCA[Root Cause Analysis]\\n    RCA --\u003e Prevent[Prevention Measures]\\n    Prevent --\u003e Normal\"}],\"\\n\",[\"$\",\"h3\",null,{\"id\":\"incident-response-framework\",\"children\":\"Incident Response Framework\"}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Phase 1: Detection (Minutes matter)\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Bad: Discover từ user complaints\\nUser tweet: \\\"Your site is down!\\\"\\n→ 30 minutes before team knows\\n\\n// Good: Proactive monitoring\\nAlert: \\\"API error rate: 5% (threshold: 1%)\\\"\\nSlack: \\\"@oncall immediate action required\\\"\\n→ Team knows trong 2 minutes\\n\"}]}],\"\\n\",[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Phase 2: Assessment (Understand before act)\"}]}],\"\\n\",[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Critical questions:\\n1. User impact? (How many users affected?)\\n2. Business impact? (Revenue loss? SLA breach?)\\n3. Scope? (One service? Entire system?)\\n4. Trend? (Getting worse? Stable?)\\n\\nExample:\\n- 15% of checkout requests failing\\n- ~500 users affected\\n- Payment service only\\n- Error rate stable last 10 min\\n→ High severity, contained scope\\n\"}]}],\"\\n\",\"$L2b\",\"\\n\",\"$L2c\",\"\\n\",\"$L2d\",\"\\n\",\"$L2e\",\"\\n\",\"$L2f\",\"\\n\",\"$L30\",\"\\n\",\"$L31\",\"\\n\",\"$L32\",\"\\n\",\"$L33\",\"\\n\",\"$L34\",\"\\n\",\"$L35\",\"\\n\",\"$L36\",\"\\n\",\"$L37\",\"\\n\",\"$L38\",\"\\n\",\"$L39\",\"\\n\",\"$L3a\",\"\\n\",\"$L3b\",\"\\n\",\"$L3c\",\"\\n\",\"$L3d\",\"\\n\",\"$L3e\",\"\\n\",\"$L3f\",\"\\n\",\"$L40\",\"\\n\",\"$L41\",\"\\n\",\"$L42\",\"\\n\",\"$L43\",\"\\n\",\"$L44\",\"\\n\",\"$L45\",\"\\n\",\"$L46\",\"\\n\",\"$L47\",\"\\n\",\"$L48\",\"\\n\",\"$L49\",\"\\n\",\"$L4a\",\"\\n\",\"$L4b\",\"\\n\",\"$L4c\",\"\\n\",\"$L4d\",\"\\n\",\"$L4e\",\"\\n\",\"$L4f\",\"\\n\",\"$L50\",\"\\n\",\"$L51\",\"\\n\",\"$L52\",\"\\n\",\"$L53\",\"\\n\",\"$L54\",\"\\n\",\"$L55\",\"\\n\",\"$L56\",\"\\n\",\"$L57\",\"\\n\",\"$L58\",\"\\n\",\"$L59\",\"\\n\",\"$L5a\",\"\\n\",\"$L5b\",\"\\n\",\"$L5c\",\"\\n\",\"$L5d\",\"\\n\",\"$L5e\",\"\\n\",\"$L5f\",\"\\n\",\"$L60\",\"\\n\",\"$L61\",\"\\n\",\"$L62\",\"\\n\",\"$L63\",\"\\n\",\"$L64\",\"\\n\",\"$L65\",\"\\n\",\"$L66\",\"\\n\",\"$L67\",\"\\n\",\"$L68\",\"\\n\",\"$L69\",\"\\n\",\"$L6a\",\"\\n\",\"$L6b\",\"\\n\",\"$L6c\",\"\\n\",\"$L6d\",\"\\n\",\"$L6e\",\"\\n\",\"$L6f\",\"\\n\",\"$L70\",\"\\n\",\"$L71\",\"\\n\",\"$L72\",\"\\n\",\"$L73\",\"\\n\",\"$L74\",\"\\n\",\"$L75\",\"\\n\",\"$L76\",\"\\n\",\"$L77\",\"\\n\",\"$L78\",\"\\n\",\"$L79\",\"\\n\",\"$L7a\",\"\\n\",\"$L7b\",\"\\n\",\"$L7c\",\"\\n\",\"$L7d\",\"\\n\",\"$L7e\",\"\\n\",\"$L7f\",\"\\n\",\"$L80\",\"\\n\",\"$L81\",\"\\n\",\"$L82\",\"\\n\",\"$L83\",\"\\n\",\"$L84\",\"\\n\",\"$L85\",\"\\n\",\"$L86\",\"\\n\",\"$L87\",\"\\n\",\"$L88\",\"\\n\",\"$L89\",\"\\n\",\"$L8a\",\"\\n\",\"$L8b\",\"\\n\",\"$L8c\",\"\\n\",\"$L8d\",\"\\n\",\"$L8e\",\"\\n\",\"$L8f\",\"\\n\",\"$L90\",\"\\n\",\"$L91\",\"\\n\",\"$L92\",\"\\n\",\"$L93\",\"\\n\",\"$L94\",\"\\n\",\"$L95\",\"\\n\",\"$L96\",\"\\n\",\"$L97\",\"\\n\",\"$L98\",\"\\n\",\"$L99\",\"\\n\",\"$L9a\",\"\\n\",\"$L9b\",\"\\n\",\"$L9c\",\"\\n\",\"$L9d\",\"\\n\",\"$L9e\",\"\\n\",\"$L9f\",\"\\n\",\"$La0\",\"\\n\",\"$La1\",\"\\n\",\"$La2\",\"\\n\",\"$La3\",\"\\n\",\"$La4\",\"\\n\",\"$La5\",\"\\n\",\"$La6\",\"\\n\",\"$La7\",\"\\n\",\"$La8\",\"\\n\",\"$La9\",\"\\n\",\"$Laa\",\"\\n\",\"$Lab\",\"\\n\",\"$Lac\",\"\\n\",\"$Lad\",\"\\n\",\"$Lae\",\"\\n\",\"$Laf\",\"\\n\",\"$Lb0\",\"\\n\",\"$Lb1\",\"\\n\",\"$Lb2\",\"\\n\",\"$Lb3\",\"\\n\",\"$Lb4\",\"\\n\",\"$Lb5\",\"\\n\",\"$Lb6\",\"\\n\",\"$Lb7\",\"\\n\",\"$Lb8\",\"\\n\",\"$Lb9\",\"\\n\",\"$Lba\",\"\\n\",\"$Lbb\",\"\\n\",\"$Lbc\",\"\\n\",\"$Lbd\"]}]\n"])</script><script>self.__next_f.push([1,"2b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Phase 3: Mitigation (Fix now, understand later)\"}]}]\n2c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Priority: Stop the bleeding\\n\\nOptions (in order):\\n1. Rollback (safest, fastest)\\n2. Feature flag off (disable new code)\\n3. Traffic routing (shift to healthy instances)\\n4. Graceful degradation (disable non-critical features)\\n5. Emergency fix (last resort)\\n\\nExample:\\nPayment service down?\\n→ Rollback to previous version (5 min)\\nNot: Debug root cause in production (hours)\\n\"}]}]\n2d:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Phase 4: Communication (Keep stakeholders informed)\"}]}]\n2e:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Incident update template:\\n\\nStatus: INVESTIGATING\\nImpact: 15% checkout failures\\nStarted: 14:30 UTC\\nCurrent action: Rolling back payment service to v2.3.1\\nNext update: 14:45 UTC\\n\\nAudience:\\n- Internal team (Slack #incidents)\\n- Support team (brief customers)\\n- Management (business impact)\\n- Customers if needed (status page)\\n\"}]}]\n2f:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Phase 5: Root Cause Analysis (Learn from failure)\"}]}]\nbe:T45e,# Post-Mortem: Payment Service Outage\nDate: 2024-02-15\nDuration: 14:30 - 14:52 UTC (22 minutes)\nImpact: 15% checkout failures, ~500 affected users\n\n## Timeline\n14:30 - Deployed v2.3.2 with new retry logic\n14:32 - Error rate started climbing\n14:35 - Alerts fired\n14:37 - Oncall acknowledged\n14:40 - Decision to rollback\n14:45 - Rollback completed\n14:52 - Service recovered\n\n## Root Cause\nRetry logic introduced infinite loop on certain errors.\nUnder load, exhausted connection pool.\n\n## Impact\n- 500 users experienced checkout failures\n- Estimated revenue loss: $5,000\n- No data loss or corruption\n\n## Action Items\n[ ] Add circuit breaker to retry logic (Owner: @alice, Due: 2/20)\n[ ] Load testing for retry scenarios (Owner: @bob, Due: 2/22)\n[ ] Connection pool monitoring (Owner: @carol, Due: 2/18)\n[ ] Review deployment checklist (Owner: @dave, Due: 2/25)\n\n## What Went Well\n- Fast detection (2 min from deploy to alert)\n- Clear rollback procedure\n- Good communication\n\n## What To Improve\n- Load testing didn't catch this scenario\n- Retry logic not reviewed carefully enough\n- Need better connection pool visibility\n30:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"$be\"}]}]\n31:[\"$\",\"h3\",null,{\"id\":\"blameless-culture\",\"children\":\"Blameless Culture\"}]\n32:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad post-mortem:\\n\\\"Bob deployed buggy code\\\"\\n\\\"Alice didn't review properly\\\"\\n→ People hide mistakes\\n\\nGood post-mortem:\\n\\\"Deployment process didn't catch infinite loop\\\"\\n\\\"Need better load testing coverage\\\"\\n\\\"Review checklist should include retry logic patterns\\\"\\n→ Focus on system improvements\\n\"}]}]\n33:[\"$\",\"h2\",null,{\"id\":\"2-failure-mindset---design-for-failure\",\"children\":\"2. Failure Mindset - Design For Failure\"}]\n34:[\"$\",\"h3\",null,{\"id\":\"murphys-law-for-architects\",\"children\":\"Murphy's Law For Architects\"}]\n35:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"\\\"Everything that can go wrong, will go wrong.\\\"\"}]}]\n36:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Architect's job: Assume failure, design resilience\\n\\nCommon failures:\\n- Server crash\\n- Network partition\\n- Database slow/down\\n- Disk full\\n- Memory leak\\n- Dependency timeout\\n- Data corruption\\n- Config error\\n- Human error (deployment)\\n- DDoS attack\\n\"}]}]\n37:[\"$\",\"h3\",null,{\"id\":\"failure-mode-analysis\",\"children\":\"Failure Mode Analysis\"}]\n38:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Before designing system, list failure scenarios:\"}]}]\n39:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"# E-commerce Checkout - Failure Scenarios\\n\\n## Component Failures\\n- Payment gateway down → Retry + queue\\n- Inventory service slow → Circuit breaker + cache\\n- Database connection pool exhausted → Connection limits\\n- Redis cache down → Fallback to datab"])</script><script>self.__next_f.push([1,"ase\\n\\n## Network Failures\\n- Timeout to payment service → Async processing\\n- Packet loss → Retry with exponential backoff\\n- Network partition → Eventual consistency\\n\\n## Data Failures\\n- Duplicate payment → Idempotency keys\\n- Race condition on inventory → Optimistic locking\\n- Data corruption → Checksums + validation\\n\\n## Operational Failures\\n- Bad deployment → Gradual rollout + rollback plan\\n- Config change error → Config validation + dry-run\\n- Certificate expiry → Automated renewal + alerting\\n\"}]}]\n3a:[\"$\",\"h3\",null,{\"id\":\"design-for-degradation\",\"children\":\"Design For Degradation\"}]\n3b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Not all features equally critical:\"}]}]\n3c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Example: E-commerce homepage\\n\\nCritical (must work):\\n- Browse products ✅\\n- Search ✅\\n- Add to cart ✅\\n- Checkout ✅\\n\\nNon-critical (can degrade):\\n- Recommendations ⚠️ → Show static list\\n- Reviews ⚠️ → Hide section\\n- Personalization ⚠️ → Generic experience\\n- Real-time inventory ⚠️ → Show \\\"In stock\\\" always\\n\\n// Implementation\\nasync function getHomepage() {\\n  const products = await getProducts() // Critical\\n  \\n  let recommendations = []\\n  try {\\n    recommendations = await getRecommendations()\\n  } catch (error) {\\n    // Degrade gracefully\\n    recommendations = DEFAULT_RECOMMENDATIONS\\n    logger.warn('Recommendations service down, using defaults')\\n  }\\n  \\n  return { products, recommendations }\\n}\\n\"}]}]\n3d:[\"$\",\"h3\",null,{\"id\":\"blast-radius-thinking\",\"children\":\"Blast Radius Thinking\"}]\n3e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Limit failure impact:\"}]}]\n3f:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    subgraph \\\"Small Blast Radius ✅\\\"\\n    S1[Service A] --\u003e S2[Service B]\\n    S3[Service C] --\u003e S4[Service D]\\n    end\\n    \\n    subgraph \\\"Large Blast Radius ❌\\\"\\n    S5[Service E] --\u003e S6[Central DB]\\n    S7[Service F] --\u003e S6\\n    S8[Service G] --\u003e S6\\n    S9[Service H] --\u003e S6\\n    end\"}]\n40:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Small blast radius:\\n- Service B fails → only Service A affected\\n- Isolated failure domain\\n\\nLarge blast radius:\\n- Central DB fails → ALL services down\\n- Single point of failure\\n\"}]}]\n41:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Strategies to reduce blast radius:\"}]}]\n42:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Microservices isolation\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Database sharding\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Multi-region deployment\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Bulkhead pattern\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Circuit breakers\"}],\"\\n\"]}]\n43:[\"$\",\"h2\",null,{\"id\":\"3-monitoring--alerting-strategy---know-before-users-do\",\"children\":\"3. Monitoring \u0026 Alerting Strategy - Know Before Users Do\"}]\n44:[\"$\",\"h3\",null,{\"id\":\"monitoring-pyramid\",\"children\":\"Monitoring Pyramid\"}]\n45:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"              Alerts\\n              /    \\\\\\n         Dashboards  \\\\\\n         /      \\\\     \\\\\\n    Metrics   Logs   Traces\\n    \\nBottom: Collect everything\\nMiddle: Visualize important\\nTop: Alert critical only\\n\"}]}]\n46:[\"$\",\"h3\",null,{\"id\":\"what-to-monitor\",\"children\":\"What To Monitor\"}]\n47:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. User-Facing Metrics (Most Important)\"}]}]\n48:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// These affect users directly\\nconst userMetrics = {\\n  availability: '99.9%',        // Can users access?\\n  latency_p50: '100ms',         // How fast?\\n  latency_p95: '300ms',         // Slow requests?\\n  latency_p99: '1000ms',        // Worst case?\\n  error_rate: '0.1%',           // How many failures?\\n  success_rate: '99.9%'         // Overall health\\n}\\n\"}]}]\n49:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. System Health Metrics\"}]}]\n4a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javasc"])</script><script>self.__next_f.push([1,"ript\",\"children\":\"const systemMetrics = {\\n  cpu_usage: '45%',\\n  memory_usage: '60%',\\n  disk_usage: '70%',\\n  network_io: '500 Mbps',\\n  connection_pool: '80/100 active'\\n}\\n\"}]}]\n4b:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Business Metrics\"}]}]\n4c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"const businessMetrics = {\\n  orders_per_minute: 150,\\n  revenue_per_hour: '$5000',\\n  active_users: 2500,\\n  checkout_conversion: '3.2%'\\n}\\n\"}]}]\n4d:[\"$\",\"h3\",null,{\"id\":\"the-golden-signals-google-sre\",\"children\":\"The Golden Signals (Google SRE)\"}]\n4e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Monitor these 4 metrics for every service:\"}]}]\n4f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"1. Latency - How long requests take?\\n2. Traffic - How much demand?\\n3. Errors - How many failures?\\n4. Saturation - How \\\"full\\\" is the system?\\n\\nExample: API service\\n- Latency: p95 = 200ms\\n- Traffic: 1000 req/s\\n- Errors: 0.5% error rate\\n- Saturation: CPU 60%, memory 70%\\n\"}]}]\n50:[\"$\",\"h3\",null,{\"id\":\"alerting-philosophy\",\"children\":\"Alerting Philosophy\"}]\n51:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Alert on symptoms, not causes:\"}]}]\n52:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Bad alerts (causes):\\n- CPU \u003e 80%\\n- Memory \u003e 90%\\n- Disk \u003e 85%\\n\\nWhy bad? Users don't care about CPU.\\n\\nGood alerts (symptoms):\\n- Error rate \u003e 1% for 5 minutes\\n- P95 latency \u003e 1s for 5 minutes\\n- Availability \u003c 99.9% last hour\\n\\nWhy good? These affect users.\\n\"}]}]\n53:[\"$\",\"h3\",null,{\"id\":\"alert-fatigue-prevention\",\"children\":\"Alert Fatigue Prevention\"}]\n54:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Problem: Too many alerts\\nAlert: CPU \u003e 80%  // Every day, not actionable\\nAlert: Disk \u003e 70%  // Not urgent\\nAlert: Memory \u003e 60%  // Normal\\n\\nTeam: Ignores all alerts\\n\\n// Solution: Alert only on user impact\\nconst alertConfig = {\\n  error_rate: {\\n    threshold: '1%',\\n    duration: '5 minutes',\\n    severity: 'critical',\\n    action: 'Page on-call immediately'\\n  },\\n  \\n  latency_p95: {\\n    threshold: '1000ms',\\n    duration: '10 minutes',\\n    severity: 'warning',\\n    action: 'Slack notification'\\n  }\\n}\\n\"}]}]\n55:[\"$\",\"h3\",null,{\"id\":\"runbooks-for-common-issues\",\"children\":\"Runbooks For Common Issues\"}]\n56:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"# Runbook: High Error Rate Alert\\n\\n## Alert\\nError rate \u003e 1% for 5 minutes\\n\\n## Immediate Actions\\n1. Check status page: https://status.company.com\\n2. Check recent deployments (last 2 hours)\\n3. Check dependency health (payment, database)\\n\\n## Diagnosis Steps\\n1. View error logs: \\n   `kubectl logs -l app=api --tail=100 | grep ERROR`\\n2. Check traces for slow requests\\n3. Review metrics dashboard\\n\\n## Common Causes\\n- Recent deployment → Rollback\\n- Dependency timeout → Circuit breaker activated?\\n- Database slow → Check slow query log\\n- Rate limit hit → Check traffic spike\\n\\n## Mitigation\\n- Rollback: `./scripts/rollback.sh`\\n- Disable feature: `feature-flag payment-v2 off`\\n- Scale up: `kubectl scale deployment api --replicas=10`\\n\\n## Escalation\\nIf not resolved in 15 minutes:\\n- Escalate to @architect\\n- Update incident channel\\n- Contact vendors if dependency issue\\n\"}]}]\n57:[\"$\",\"h2\",null,{\"id\":\"4-capacity-planning---scale-before-you-need-to\",\"children\":\"4. Capacity Planning - Scale Before You Need To\"}]\n58:[\"$\",\"h3\",null,{\"id\":\"growth-projection\",\"children\":\"Growth Projection\"}]\n59:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Current metrics (Feb 2024)\\nconst current = {\\n  daily_users: 100_000,\\n  peak_requests_per_second: 1_000,\\n  database_size: '500 GB',\\n  monthly_cost: '$10_000'\\n}\\n\\n// Growth rate: 20% per month\\nconst projections = {\\n  '3_months': {\\n    users: 172_000,    // 1.2^3 = 1.72x\\n    rps: 1_720,\\n    db_size: '860 GB',\\n    cost: '$17_200'\\n  },\\n  \\n  '6_months': {\\n    users: 298_000,    // 1.2^6"])</script><script>self.__next_f.push([1," = 2.98x\\n    rps: 2_980,\\n    db_size: '1.5 TB',\\n    cost: '$29_800'\\n  },\\n  \\n  '12_months': {\\n    users: 890_000,    // 1.2^12 = 8.9x\\n    rps: 8_900,\\n    db_size: '4.5 TB',\\n    cost: '$89_000'\\n  }\\n}\\n\"}]}]\n5a:[\"$\",\"h3\",null,{\"id\":\"resource-planning-matrix\",\"children\":\"Resource Planning Matrix\"}]\n5b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"# Capacity Plan - Next 6 Months\\n\\n## Current Capacity\\n- API servers: 10 instances, 60% CPU avg\\n- Database: 1 primary + 2 replicas, 70% connections\\n- Cache: 50GB Redis, 40% memory\\n- Max capacity: ~1500 RPS before degradation\\n\\n## 6-Month Projection\\n- Expected load: 3000 RPS (2x current max)\\n- Peak traffic: 4500 RPS (holiday season)\\n\\n## Action Plan\\n| Timeline | Action | Cost | Owner |\\n|----------|--------|------|-------|\\n| Month 1 | Add 10 API instances | +$2k/mo | DevOps |\\n| Month 2 | Database read replicas (2 → 4) | +$3k/mo | DBA |\\n| Month 2 | Redis cluster upgrade (50GB → 100GB) | +$1k/mo | DevOps |\\n| Month 3 | Database sharding preparation | $0 | Backend |\\n| Month 4 | Implement database sharding | $0 | Backend |\\n| Month 5 | CDN upgrade for static assets | +$1k/mo | Frontend |\\n| Month 6 | Load test at 5000 RPS | $0 | QA |\\n\\n## Risk Assessment\\n- ⚠️ Database sharding complex, allow 2 months\\n- ⚠️ Need load testing environment\\n- API scaling straightforward\\n\"}]}]\n5c:[\"$\",\"h3\",null,{\"id\":\"load-testing-strategy\",\"children\":\"Load Testing Strategy\"}]\n5d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Gradual load test\\nconst loadTest = {\\n  baseline: {\\n    users: 1000,\\n    duration: '10 minutes',\\n    expected: 'p95 \u003c 200ms, 0% errors'\\n  },\\n  \\n  target: {\\n    users: 3000,\\n    duration: '30 minutes',\\n    expected: 'p95 \u003c 500ms, \u003c 0.1% errors'\\n  },\\n  \\n  stress: {\\n    users: 5000,\\n    duration: '10 minutes',\\n    expected: 'Find breaking point'\\n  },\\n  \\n  spike: {\\n    users: '0 → 5000 in 1 minute',\\n    duration: '15 minutes',\\n    expected: 'System recovers gracefully'\\n  }\\n}\\n\\n// What to monitor during load test\\nconst metrics = [\\n  'Response time (p50, p95, p99)',\\n  'Error rate',\\n  'CPU, memory, disk usage',\\n  'Database connections',\\n  'Queue depth',\\n  'Cache hit rate'\\n]\\n\"}]}]\n5e:[\"$\",\"h3\",null,{\"id\":\"budget-for-growth\",\"children\":\"Budget For Growth\"}]\n5f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Rule of thumb: Infrastructure cost = 5-10% of revenue\\n\\nExample:\\n- Monthly revenue: $1M\\n- Acceptable infra cost: $50k-$100k\\n- Current cost: $30k\\n- Room for growth: $20k-$70k\\n\\nStrategy:\\n- Optimize before scale (reduce cost 20%)\\n- Plan gradual increases\\n- Reserve budget for incidents\\n\"}]}]\n60:[\"$\",\"h2\",null,{\"id\":\"5-migration-strategy---change-production-safely\",\"children\":\"5. Migration Strategy - Change Production Safely\"}]\n61:[\"$\",\"h3\",null,{\"id\":\"migration-challenges\",\"children\":\"Migration Challenges\"}]\n62:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Why migrations are risky:\\n- Zero downtime requirement\\n- Large data volume\\n- Can't rollback easily\\n- User impact if failed\\n- Business pressure (revenue)\\n\\nExample scenarios:\\n- Database migration (PostgreSQL → MySQL)\\n- Cloud migration (AWS → GCP)\\n- Architecture change (monolith → microservices)\\n- Data model change (schema evolution)\\n\"}]}]\n63:[\"$\",\"h3\",null,{\"id\":\"strangler-fig-pattern\",\"children\":\"Strangler Fig Pattern\"}]\n64:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Gradually replace old system với new system:\"}]}]\n65:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart LR\\n    Users --\u003e Router{Router}\\n    Router --\u003e|Old Features| Old[Old System]\\n    Router --\u003e|New Features| New[New System]\\n    Old -.Data Sync.-\u003e New\"}]\n66:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Phase 1: Build new system alongside old\\nPhase 2: Route new traffic to new system\\nPhase 3: Migrate old data gradually\\nPhase 4: Redirect more traffic to new\\nPhase 5: Deprecate old system\\n\\nTimeline: Months to years, không phải big-bang\\n\"}]}]\n67:["])</script><script>self.__next_f.push([1,"\"$\",\"h3\",null,{\"id\":\"database-migration-example\",\"children\":\"Database Migration Example\"}]\nbf:T584,"])</script><script>self.__next_f.push([1,"// Phase 1: Dual Write\nasync function updateUser(userId, data) {\n  // Write to old database\n  await oldDB.users.update(userId, data)\n  \n  // Also write to new database\n  try {\n    await newDB.users.update(userId, data)\n  } catch (error) {\n    // Log but don't fail\n    logger.error('New DB write failed', error)\n  }\n}\n\n// Phase 2: Verify Data Consistency\nasync function verifyData() {\n  const oldData = await oldDB.users.find(userId)\n  const newData = await newDB.users.find(userId)\n  \n  if (!isEqual(oldData, newData)) {\n    alert('Data inconsistency detected')\n  }\n}\n\n// Phase 3: Dual Read (verify new DB)\nasync function getUser(userId) {\n  const data = await oldDB.users.find(userId)\n  \n  // Compare with new DB\n  const newData = await newDB.users.find(userId)\n  if (!isEqual(data, newData)) {\n    logger.warn('Data mismatch', { userId, oldData: data, newData })\n  }\n  \n  return data  // Still return old DB data\n}\n\n// Phase 4: Switch Reads to New DB\nasync function getUser(userId) {\n  const data = await newDB.users.find(userId)\n  \n  // Fallback to old DB if failed\n  if (!data) {\n    logger.error('New DB read failed, falling back')\n    return await oldDB.users.find(userId)\n  }\n  \n  return data\n}\n\n// Phase 5: Stop Writing to Old DB\nasync function updateUser(userId, data) {\n  await newDB.users.update(userId, data)\n  // Old DB write removed\n}\n\n// Phase 6: Deprecate Old DB\n// Remove old database entirely\n"])</script><script>self.__next_f.push([1,"68:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"$bf\"}]}]\n69:[\"$\",\"h3\",null,{\"id\":\"feature-flag-for-migration\",\"children\":\"Feature Flag for Migration\"}]\n6a:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"const featureFlags = {\\n  use_new_payment_service: {\\n    enabled: true,\\n    rollout: '10%',  // Start with 10% traffic\\n    rules: [\\n      { segment: 'internal_users', enabled: true },\\n      { segment: 'beta_testers', enabled: true }\\n    ]\\n  }\\n}\\n\\nasync function processPayment(order) {\\n  if (featureFlags.use_new_payment_service.enabled) {\\n    if (shouldEnableForUser(order.userId)) {\\n      try {\\n        return await newPaymentService.process(order)\\n      } catch (error) {\\n        // Fallback to old service\\n        logger.error('New payment failed, fallback', error)\\n        return await oldPaymentService.process(order)\\n      }\\n    }\\n  }\\n  \\n  return await oldPaymentService.process(order)\\n}\\n\"}]}]\n6b:[\"$\",\"h3\",null,{\"id\":\"migration-checklist\",\"children\":\"Migration Checklist\"}]\n6c:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"# Migration Checklist\\n\\n## Pre-Migration\\n[ ] Load test new system at expected traffic\\n[ ] Feature flags implemented\\n[ ] Rollback plan documented\\n[ ] Data validation scripts ready\\n[ ] Monitoring dashboards prepared\\n[ ] On-call team briefed\\n[ ] Stakeholders notified\\n[ ] Maintenance window scheduled (if needed)\\n\\n## During Migration\\n[ ] Start with 1% traffic\\n[ ] Monitor error rates closely\\n[ ] Verify data consistency every hour\\n[ ] Gradual rollout: 1% → 5% → 10% → 25% → 50% → 100%\\n[ ] Each step: monitor 24-48 hours before next\\n[ ] Document any issues encountered\\n\\n## Post-Migration\\n[ ] Full monitoring for 1 week\\n[ ] Data validation report\\n[ ] Performance comparison (old vs new)\\n[ ] Post-mortem meeting\\n[ ] Document lessons learned\\n[ ] Plan deprecation of old system\\n\"}]}]\n6d:[\"$\",\"h2\",null,{\"id\":\"6-technical-leadership---influence-without-authority\",\"children\":\"6. Technical Leadership - Influence Without Authority\"}]\n6e:[\"$\",\"h3\",null,{\"id\":\"architect-as-leader\",\"children\":\"Architect As Leader\"}]\n6f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Technical leadership ≠ Management\\n\\nYou don't have authority to:\\n- Assign tasks\\n- Fire people\\n- Approve budget\\n\\nYou DO have influence through:\\n- Technical expertise\\n- Earned trust\\n- Clear communication\\n- Good decisions track record\\n\"}]}]\n70:[\"$\",\"h3\",null,{\"id\":\"build-trust-through-delivery\",\"children\":\"Build Trust Through Delivery\"}]\n71:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"How to earn trust as architect:\\n\\nDeliver results:\\n- Designs that actually work in production\\n- Solutions that scale when needed\\n- Smooth migrations without incidents\\n\\nBe reliable:\\n- Available during incidents\\n- Follow through on commitments\\n- Respond to questions quickly\\n\\nAdmit mistakes:\\n- \\\"I was wrong about X\\\"\\n- \\\"Better approach is Y\\\"\\n- Learn publicly\\n\\nGive credit:\\n- \\\"Sarah's idea to use caching saved us\\\"\\n- Highlight team contributions\\n- Share success\\n\"}]}]\n72:[\"$\",\"h3\",null,{\"id\":\"technical-decision-making\",\"children\":\"Technical Decision Making\"}]\n73:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Framework for architecture decisions:\"}]}]\n74:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"# Architecture Decision Record (ADR)\\n\\n## Context\\nWe need to redesign our notification system. \\nCurrent system:\\n- Sends 1M notifications/day\\n- Growing 50% per quarter\\n- Frequent delays and failures\\n\\n## Decision\\nAdopt event-driven architecture with Kafka\\n\\n## Alternatives Considered\\n1. **RabbitMQ + workers** \\n   - Pros: Team familiar, simpler\\n   - Cons: Scale limitations, no replay\\n   \\n2. **AWS SNS/SQS**\\n   - Pros: Managed, reliable\\n   - Cons: Vendor lock-in, cost at scale\\n   \\n3. **Kafka** (CHOSEN)\\n   - Pros: High throughput, replay, ecosystem\\n   - Cons: Operational complexity, learn"])</script><script>self.__next_f.push([1,"ing curve\\n\\n## Consequences\\nPositive:\\n- Handle 10M+ notifications/day\\n- Message replay for debugging\\n- Real-time analytics possible\\n\\nNegative:\\n- Team needs Kafka training\\n- More operational overhead\\n- Migration takes 3 months\\n\\n## Timeline\\n- Month 1: Kafka setup + training\\n- Month 2: Build new notification service\\n- Month 3: Gradual migration\\n\"}]}]\n75:[\"$\",\"h3\",null,{\"id\":\"influence-through-data\",\"children\":\"Influence Through Data\"}]\n76:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Instead of: \\\"We need to rewrite this!\\\"\\n// Use data to make the case:\\n\\nconst currentMetrics = {\\n  deployment_frequency: '1/week',\\n  lead_time: '2 weeks',\\n  mttr: '4 hours',\\n  change_failure_rate: '15%'\\n}\\n\\nconst industryBenchmark = {\\n  elite_performers: {\\n    deployment_frequency: 'Multiple/day',\\n    lead_time: '\u003c 1 day',\\n    mttr: '\u003c 1 hour',\\n    change_failure_rate: '0-15%'\\n  }\\n}\\n\\nconst proposal = `\\nProblem: Our lead time is 14x slower than elite teams\\nImpact: Competitors ship features faster\\nSolution: Move to microservices + CI/CD\\nExpected improvement: Lead time 2 weeks → 2 days\\nCost: 3 months, 4 engineers\\nROI: Ship 7x faster, competitive advantage\\n`\\n\"}]}]\n77:[\"$\",\"h3\",null,{\"id\":\"communication-skills\",\"children\":\"Communication Skills\"}]\n78:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Explain technical to non-technical:\"}]}]\n79:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Technical jargon:\\n\\\"We need to implement horizontal pod autoscaling \\nwith Kubernetes HPA based on custom metrics from \\nPrometheus to handle traffic spikes\\\"\\n\\nBusiness language:\\n\\\"Currently, traffic spikes crash our site. \\nThis causes lost revenue.\\nSolution: Automatically add servers when busy.\\nCost: $5k/month\\nBenefit: No more outages, protect $50k/hour revenue\\\"\\n\"}]}]\n7a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Write clear technical docs:\"}]}]\n7b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"# Bad Documentation\\nUses Redis for caching. Configure TTL appropriately.\\n\\n# Good Documentation\\n## Caching Strategy\\n\\nWe use Redis to cache API responses, reducing database load by 80%.\\n\\n### When to Cache\\n- Cache: User profiles, product lists (rarely change)\\n- Don't cache: Real-time inventory, prices (change often)\\n\\n### TTL Guidelines\\n- User profiles: 1 hour (okay if slightly stale)\\n- Product lists: 5 minutes (update regularly)\\n- Search results: 30 seconds (balance fresh vs performance)\\n\\n### Example\\n```javascript\\nawait redis.set(`user:${id}`, data, { ttl: 3600 })\\n```\\n\\n### Monitoring\\n- Hit rate: https://dashboard/redis\\n- Alert if hit rate \u003c 80%\\n\"}]}]\n7c:[\"$\",\"h3\",null,{\"id\":\"code-review-excellence\",\"children\":\"Code Review Excellence\"}]\n7d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-javascript\",\"children\":\"// Bad review\\n\\\"This is wrong. Use Redis instead.\\\"\\n\\n// Good review\\n/*\\nConcern: In-memory cache won't scale across multiple instances.\\n\\nIssue:\\n- Each instance has separate cache\\n- Cache miss rate will be high\\n- Duplicated memory usage\\n\\nSuggestion:\\nConsider shared Redis cache:\\n- Single source of truth\\n- Better hit rate\\n- Scales horizontally\\n\\nIf Redis not possible:\\n- Document limitations\\n- Add metrics for cache hit rate\\n- Plan migration when needed\\n\\nHappy to discuss trade-offs!\\n*/\\n\"}]}]\n7e:[\"$\",\"h3\",null,{\"id\":\"mentoring-engineers\",\"children\":\"Mentoring Engineers\"}]\n7f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Junior engineer: \\\"Should I use MongoDB or PostgreSQL?\\\"\\n\\nBad answer:\\n\\\"Use PostgreSQL, it's better.\\\"\\n\\nGood answer:\\n\\\"Great question! Let's think through trade-offs:\\n\\nWhat's your data like?\\n- Structured, relations? → PostgreSQL\\n- Unstructured, flexible schema? → MongoDB\\n\\nWhat operations?\\n- Complex queries, joins? → PostgreSQL\\n- Simple CRUD, fast writes? → MongoDB\\n\\nWhat's your team familiar with?\\n- SQL experience? → PostgreSQL easier\\n\\nFor your use case (user profiles with relatio"])</script><script>self.__next_f.push([1,"ns),\\nI'd recommend PostgreSQL because:\\n1. You have structured data\\n2. Need join queries (users + orders)\\n3. Team knows SQL\\n\\nBut either could work. Want to prototype both?\\\"\\n\"}]}]\n80:[\"$\",\"h2\",null,{\"id\":\"7-architecture-review-process---prevent-problems-early\",\"children\":\"7. Architecture Review Process - Prevent Problems Early\"}]\n81:[\"$\",\"h3\",null,{\"id\":\"review-triggers\",\"children\":\"Review Triggers\"}]\n82:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"When to require architecture review:\\n\\nAlways review:\\n- New service/system\\n- Major refactor\\n- Database schema change\\n- New technology adoption\\n- Security-sensitive changes\\n- Cross-team dependencies\\n\\n⚠️ Consider review:\\n- Performance-critical path\\n- Complex algorithms\\n- External API integration\\n\\nNo review needed:\\n- Bug fixes\\n- UI changes\\n- Copy updates\\n- Small refactors\\n\"}]}]\n83:[\"$\",\"h3\",null,{\"id\":\"review-template\",\"children\":\"Review Template\"}]\nc0:T816,"])</script><script>self.__next_f.push([1,"# Architecture Review: Payment Service Redesign\n\n## Requestor\nSarah Chen, Backend Lead\n\n## Overview\nRedesign payment service to support international payments\n\n## Current System\n- Single payment provider (Stripe)\n- USD only\n- Synchronous processing\n- ~1000 transactions/day\n\n## Proposed System\n- Multiple payment providers (Stripe, PayPal, Adyen)\n- Multi-currency support\n- Async processing via Kafka\n- Expected 10k transactions/day\n\n## Architecture Diagram\n[Insert diagram]\n\n## Key Design Decisions\n\n### 1. Multiple Payment Providers\nDecision: Support 3+ providers\nRationale: Regional preferences, redundancy\nTrade-off: Complexity vs flexibility\n\n### 2. Async Processing\nDecision: Use Kafka for payment events\nRationale: Decouple, handle spikes, retry\nTrade-off: Eventual consistency\n\n### 3. Provider Abstraction\nDecision: Abstract provider behind interface\nRationale: Easy to add/remove providers\nTrade-off: Extra abstraction layer\n\n## Concerns \u0026 Risks\n1. **Currency conversion**\n   - Risk: Exchange rate changes during processing\n   - Mitigation: Lock rate at checkout\n\n2. **Provider failover**\n   - Risk: Primary provider down\n   - Mitigation: Automatic fallback to secondary\n\n3. **Data consistency**\n   - Risk: Event lost in Kafka\n   - Mitigation: At-least-once delivery, idempotency\n\n## Scale Considerations\n- Current: 1k transactions/day\n- 1 year: 50k transactions/day (50x)\n- Design handles: 100k transactions/day\n\n## Security\n- PCI compliance maintained\n- No card data stored\n- Provider tokens encrypted\n- Audit logging\n\n## Monitoring\n- Transaction success rate per provider\n- Latency p95, p99\n- Currency conversion accuracy\n- Failed payment alerts\n\n## Timeline\n- Week 1-2: Build provider abstraction\n- Week 3-4: Integrate providers\n- Week 5-6: Kafka setup + event handlers\n- Week 7-8: Migration + testing\n- Week 9: Gradual rollout\n\n## Questions for Reviewers\n1. Provider abstraction too complex?\n2. Kafka overkill for current scale?\n3. Missing failure scenarios?\n\n## Reviewers\n- @architect-alice (infra)\n- @architect-bob (security)\n- @devops-lead (operations)\n"])</script><script>self.__next_f.push([1,"84:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"$c0\"}]}]\n85:[\"$\",\"h3\",null,{\"id\":\"review-guidelines\",\"children\":\"Review Guidelines\"}]\n86:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"For Reviewers:\"}]}]\n87:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Focus on:\\n- Failure scenarios missed?\\n- Scale considerations?\\n- Security issues?\\n- Operational complexity?\\n- Better alternatives?\\n\\nAvoid:\\n- Bikeshedding (naming, formatting)\\n- \\\"I would do it differently\\\" without reasoning\\n- Perfectionism (\\\"This isn't optimal\\\")\\n\\n🎯 Goal:\\nHelp improve design, not block progress\\n\"}]}]\n88:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"For Design Author:\"}]}]\n89:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Be open to:\\n- Critical feedback\\n- Alternative approaches\\n- Simpler solutions\\n\\nAvoid:\\n- Defensive reactions\\n- \\\"Trust me, it will work\\\"\\n- Dismissing concerns\\n\\n🎯 Goal:\\nLearn, improve design, build consensus\\n\"}]}]\n8a:[\"$\",\"h3\",null,{\"id\":\"approval-criteria\",\"children\":\"Approval Criteria\"}]\n8b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"## Definition of Approved\\n\\nDesign can be approved when:\\n- [ ] Failure scenarios identified and mitigated\\n- [ ] Scale considerations addressed\\n- [ ] Security reviewed\\n- [ ] Operational impact understood\\n- [ ] Monitoring strategy defined\\n- [ ] Rollback plan exists\\n- [ ] 2+ architects approved\\n- [ ] No blocking concerns\\n\\n⚠️ Approved with conditions:\\n- Minor concerns to address during implementation\\n- Follow-up reviews scheduled\\n\\nNot approved:\\n- Major risks not mitigated\\n- Scale concerns not addressed\\n- Blocking security issues\\n\"}]}]\n8c:[\"$\",\"h2\",null,{\"id\":\"8-final-mindset---you-own-the-system\",\"children\":\"8. Final Mindset - You Own The System\"}]\n8d:[\"$\",\"h3\",null,{\"id\":\"production-ownership-principles\",\"children\":\"Production Ownership Principles\"}]\n8e:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. Think Long-Term\"}]}]\n8f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Code you write today:\\n- You'll maintain for years\\n- Others will extend\\n- Will run at 10x scale\\n- Will fail eventually\\n\\nWrite code you're proud to own.\\n\"}]}]\n90:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. Empathy For Oncall\"}]}]\n91:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Before merging:\\n\\\"Will this wake someone at 3AM?\\\"\\n\\\"Is this debuggable?\\\"\\n\\\"Can it be rolled back?\\\"\\n\\\"Are errors actionable?\\\"\\n\\nIf answer is \\\"maybe\\\" → improve design.\\n\"}]}]\n92:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. Documentation As Love Letter\"}]}]\n93:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Document for your future self (6 months later):\\n- Why this design?\\n- What are trade-offs?\\n- How to debug?\\n- How to scale?\\n\\nYou'll thank yourself.\\n\"}]}]\n94:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. Measure Everything\"}]}]\n95:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"\\\"In God we trust. All others must bring data.\\\"\\n- W. Edwards Deming\\n\\nNo metrics = No visibility = Cannot improve\\n\\nAdd metrics first, optimize later.\\n\"}]}]\n96:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. Automate Toil\"}]}]\n97:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Repetitive tasks:\\n- Deployments\\n- Rollbacks\\n- Scaling\\n- Monitoring setup\\n- Incident response\\n\\nAutomate once, benefit forever.\\n\"}]}]\n98:[\"$\",\"h3\",null,{\"id\":\"career-growth-path\",\"children\":\"Career Growth Path\"}]\n99:[\"$\",\"$L2a\",null,{\"chart\":\"flowchart TB\\n    Junior[Junior Engineer\u003cbr/\u003eWrite code] --\u003e Mid[Mid Engineer\u003cbr/\u003eOwn features]\\n    Mid --\u003e Senior[Senior Engineer\u003cbr/\u003eDesign systems]\\n    Senior --\u003e Staff[Staff Engineer\u003cbr/\u003eCross-team impact]\\n    Staff --\u003e Principal[Principal Engineer\u003cbr/\u003eCompany-wide strategy]\"}]\n9a:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Each level:\"}]}]\n9b:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Junior → Mid:\\n- Cod"])</script><script>self.__next_f.push([1,"e quality\\n- Feature ownership\\n- Learn system design\\n\\nMid → Senior:\\n- Design systems\\n- Trade-off thinking\\n- Mentor others\\n\\nSenior → Staff:\\n- Cross-team impact\\n- Production thinking\\n- Technical strategy\\n\\nStaff → Principal:\\n- Company-wide architecture\\n- Hire \u0026 build teams\\n- Set technical direction\\n\"}]}]\n9c:[\"$\",\"h3\",null,{\"id\":\"what-differentiates-great-architects\",\"children\":\"What Differentiates Great Architects\"}]\n9d:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"children\":\"Average Architect:\\n- Knows patterns\\n- Follows best practices\\n- Designs systems\\n\\nGreat Architect:\\n- Thinks about failure\\n- Simplifies complexity\\n- Enables others\\n- Owns production\\n- Communicates clearly\\n- Earns trust\\n- Ships results\\n\"}]}]\n9e:[\"$\",\"h3\",null,{\"id\":\"the-10-commandments-of-production-systems\",\"children\":\"The 10 Commandments of Production Systems\"}]\n9f:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"1. **Monitor everything** - You cannot improve what you cannot measure\\n\\n2. **Design for failure** - Everything will fail. Plan for it.\\n\\n3. **Start simple** - Add complexity only when needed\\n\\n4. **Think in trade-offs** - No perfect solution. Choose wisely.\\n\\n5. **Document decisions** - Future you will ask \\\"Why?\\\"\\n\\n6. **Automate toil** - Humans for thinking, machines for repetition\\n\\n7. **Security by default** - Easier to relax than tighten later\\n\\n8. **Test at scale** - Load test before users do it for you\\n\\n9. **Gradual rollouts** - Big bang deployments = big bang failures\\n\\n10. **Own your code** - You build it, you run it\\n\"}]}]\na0:[\"$\",\"h2\",null,{\"id\":\"key-takeaways\",\"children\":\"Key Takeaways\"}]\na1:[\"$\",\"h3\",null,{\"id\":\"engineer--architect-mindset-shifts\",\"children\":\"Engineer → Architect Mindset Shifts\"}]\na2:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"1. From Code → System\"}]}]\na3:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Engineer: \\\"Feature works on my machine\\\"\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Architect: \\\"System works at scale in production\\\"\"}],\"\\n\"]}]\na4:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"2. From Happy Path → Failure Scenarios\"}]}]\na5:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Engineer: \\\"If everything works...\\\"\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Architect: \\\"When things fail...\\\"\"}],\"\\n\"]}]\na6:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"3. From Solo → Team\"}]}]\na7:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Engineer: Write code alone\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Architect: Enable team to succeed\"}],\"\\n\"]}]\na8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"4. From Build → Own\"}]}]\na9:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Engineer: Ship and move on\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Architect: Own it in production\"}],\"\\n\"]}]\naa:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"5. From Technical → Business\"}]}]\nab:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Engineer: \\\"This is technically better\\\"\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Architect: \\\"This provides business value\\\"\"}],\"\\n\"]}]\nac:[\"$\",\"h3\",null,{\"id\":\"production-thinking-checklist\",\"children\":\"Production Thinking Checklist\"}]\nad:[\"$\",\"pre\",null,{\"children\":[\"$\",\"code\",null,{\"className\":\"language-markdown\",\"children\":\"Before shipping to production:\\n\\n[ ] What's the blast radius if this fails?\\n[ ] Can we rollback in under 5 minutes?\\n[ ] Do we have monitoring for this?\\n[ ] Are errors actionable?\\n[ ] Did we load test at 2x expected traffic?\\n[ ] Is there a runbook for common issues?\\n[ ] Can the oncall engineer debug this at 3AM?\\n[ ] What's the impact if this service is down?\\n[ ] Do we have a gradual rollout plan?\\n[ ] Have we considered all failure modes?\\n\"}]}]\nae:[\"$\",\"h3\",null,{\"id\":\"technical-leadership-principles\",\"children\":\"Technical Leadership Principles\"}]\naf:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Communication:\"}]}]\nb0:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"chil"])</script><script>self.__next_f.push([1,"dren\":\"Explain technical in business terms\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Write docs others can understand\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Overcommunicate in incidents\"}],\"\\n\"]}]\nb1:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Decision Making:\"}]}]\nb2:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Use data, not opinions\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Document trade-offs\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Include team in decisions\"}],\"\\n\"]}]\nb3:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Influence:\"}]}]\nb4:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Build trust through delivery\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Give credit, take blame\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Mentor generously\"}],\"\\n\"]}]\nb5:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Ownership:\"}]}]\nb6:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Available during incidents\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Follow through on commitments\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Think long-term\"}],\"\\n\"]}]\nb7:[\"$\",\"h3\",null,{\"id\":\"final-thought\",\"children\":\"Final Thought\"}]\nb8:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"The journey from engineer to architect is not about learning more patterns. It's about taking ownership.\"}]}]\nb9:[\"$\",\"p\",null,{\"children\":\"You don't need to know every technology. You need to:\"}]\nba:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Think in trade-offs\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Design for failure\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Own production\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Enable your team\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Communicate clearly\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Ship results\"}],\"\\n\"]}]\nbb:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"Great architects are not built in a day. They're built through:\"}]}]\nbc:[\"$\",\"ul\",null,{\"children\":[\"\\n\",[\"$\",\"li\",null,{\"children\":\"Responding to production incidents\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Making mistakes and learning\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Earning trust over time\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Shipping systems that scale\"}],\"\\n\",[\"$\",\"li\",null,{\"children\":\"Helping others succeed\"}],\"\\n\"]}]\nbd:[\"$\",\"p\",null,{\"children\":[\"$\",\"strong\",null,{\"children\":\"You're ready when you realize: The system is yours. Own it.\"}]}]\n"])</script><script>self.__next_f.push([1,"21:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n"])</script><script>self.__next_f.push([1,"c1:I[27201,[\"/_next/static/chunks/ff1a16fafef87110.js\",\"/_next/static/chunks/7f52f8900b256e8a.js\"],\"IconMark\"]\n15:null\n"])</script><script>self.__next_f.push([1,"23:[[\"$\",\"title\",\"0\",{\"children\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect | Phase 6 — System Design Mastery | System Design Core\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical lead\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"system design,lộ trình system design,phỏng vấn system design,backend architecture,distributed systems,System Design Core\"}],[\"$\",\"meta\",\"3\",{\"name\":\"robots\",\"content\":\"index, follow\"}],[\"$\",\"link\",\"4\",{\"rel\":\"canonical\",\"href\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical lead\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:url\",\"content\":\"https://systemdesigncore.site/phase/phase-6/lesson/lesson-6-architect-mindset-production-thinking\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:site_name\",\"content\":\"System Design Core\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:type\",\"content\":\"article\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"11\",{\"name\":\"twitter:title\",\"content\":\"Architect Mindset \u0026 Production Thinking - From Engineer To Trusted Architect | Phase 6 — System Design Mastery\"}],[\"$\",\"meta\",\"12\",{\"name\":\"twitter:description\",\"content\":\"Học cách thinking như một architect: production incident mindset, failure thinking, monitoring strategy, capacity planning, migration approach và technical lead\"}],[\"$\",\"link\",\"13\",{\"rel\":\"icon\",\"href\":\"/favicon.ico?favicon.1dddc283.ico\",\"sizes\":\"48x48\",\"type\":\"image/x-icon\"}],[\"$\",\"$Lc1\",\"14\",{}]]\n"])</script></body></html>

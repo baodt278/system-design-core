@@ -1,0 +1,1165 @@
+@0 h1
+Architecture Evolution Mindset - Start Simple, Scale Gradually
+@1 p
+Có một sai lầm phổ biến mà developer mắc phải khi học system design:
+@2 p
+**Học về microservices, Kubernetes, event-driven architecture → Nghĩ rằng mọi project đều cần những thứ này ngay từ đầu.**
+@3 p
+**Đây là over-engineering - và nó kills startups.**
+@4 p
+Bạn có biết:
+@5 li
+**Instagram:** Monolith Django app khi được Facebook mua với $1 billion
+@6 li
+**Shopify:** Monolith Rails app đến khi có hàng triệu merchants
+@7 li
+**Stack Overflow:** Monolith .NET app serve hàng tỷ requests/month
+@8 li
+**GitHub:** Monolith Rails app đến khi có 40+ million users
+@9 p
+**Họ không bắt đầu với microservices. Họ evolved từ simple đến complex khi CẦN THIẾT.**
+@10 p
+Lesson này - arguably quan trọng nhất trong Phase 5 - dạy bạn **architecture evolution mindset**:
+@11 li
+Khi nào dùng monolith, khi nào migrate
+@12 li
+Scale triggers thực tế
+@13 li
+Anti-patterns phải tránh
+@14 li
+Trade-off thinking
+@15 p
+**Mental model:** "Start simple, evolve gradually" - không phải "Start complex vì sợ scale sau này".
+@16 h2
+Architecture Evolution Stages
+@17 p
+**Architecture không phải binary choice (monolith hay microservices). Là spectrum.**
+@18 pre
+flowchart LR
+    MVP[MVP<br/>Monolith] --> Scaled[Scaled<br/>Monolith]
+    Scaled --> Modular[Modular<br/>Monolith]
+    Modular --> Micro[Microservices]
+    
+    style MVP fill:#90EE90
+    style Scaled fill:#FFD700
+    style Modular fill:#FFA500
+    style Micro fill:#FF6347
+@19 p
+**Mỗi stage phù hợp với scale và team size khác nhau.**
+@20 h3
+Stage 1: MVP Monolith (0-10K Users)
+@21 p
+**Single codebase, single database, single deployment.**
+@22 pre
+flowchart TB
+    Users[Users] --> LB[Load Balancer]
+    LB --> App[Application Server<br/>Rails/Django/Express]
+    App --> DB[(Database)]
+    App --> Cache[(Redis)]
+@23 p
+**Characteristics:**
+@24 p
+**Pros:**
+@25 li
+Fastest development velocity
+@26 li
+Simple deployment (git push)
+@27 li
+Easy debugging (1 codebase)
+@28 li
+No distributed system complexity
+@29 li
+Low operational overhead
+@30 p
+**Cons:**
+@31 li
+Single point of failure
+@32 li
+All code couples together
+@33 li
+Hard to scale specific parts
+@34 li
+One language/framework limitation
+@35 p
+**Tech stack example:**
+@36 pre
+Frontend: React/Vue (served by same server)
+Backend: Rails/Django/Laravel/Express
+Database: PostgreSQL/MySQL
+Cache: Redis
+Deployment: Heroku/Railway/single VPS
+
+@37 p
+**Khi nào dùng:**
+@38 li
+Pre-product-market-fit
+@39 li
+Startup <10 engineers
+@40 li
+Traffic <100 req/s
+@41 li
+Proving concept
+@42 p
+**Real examples:**
+@43 li
+Basecamp (still monolith at massive scale)
+@44 li
+Shopify (started monolith)
+@45 li
+GitHub (started monolith)
+@46 h3
+Stage 2: Scaled Monolith (10K-100K Users)
+@47 p
+**Same codebase, thêm servers + database optimization.**
+@48 pre
+flowchart TB
+    Users[Users] --> LB[Load Balancer]
+    
+    subgraph AppServers[Application Tier]
+        App1[App Server 1]
+        App2[App Server 2]
+        App3[App Server 3]
+    end
+    
+    LB --> App1
+    LB --> App2
+    LB --> App3
+    
+    App1 --> Primary[(Primary DB)]
+    App2 --> Primary
+    App3 --> Primary
+    
+    Primary -.Replicate.-> Replica1[(Read Replica 1)]
+    Primary -.Replicate.-> Replica2[(Read Replica 2)]
+    
+    App1 --> Replica1
+    App2 --> Replica2
+    App3 --> Replica1
+@49 p
+**Changes từ Stage 1:**
+@50 p
+**Infrastructure:**
+@51 li
+Horizontal scaling (multiple app servers)
+@52 li
+Database read replicas
+@53 li
+CDN cho static assets
+@54 li
+Redis cluster cho sessions
+@55 p
+**Code optimization:**
+@56 li
+Query optimization
+@57 li
+N+1 fixes
+@58 li
+Caching layer
+@59 li
+Background jobs (Sidekiq/Celery)
+@60 p
+**Still monolith, nhưng scaled.**
+@61 p
+**Khi nào migrate đến stage này:**
+@62 li
+Traffic 100-1000 req/s
+@63 li
+Single server CPU >70% consistently
+@64 li
+Response time degrading
+@65 li
+Team 10-30 engineers
+@66 p
+**Cost vs complexity:**
+@67 pre
+Stage 1: $50-200/month
+Stage 2: $500-2000/month
+Complexity: +20%
+
+@68 p
+**Reasonable trade-off cho growth.**
+@69 h3
+Stage 3: Modular Monolith (100K-1M Users)
+@70 p
+**Single deployment, nhưng code organized thành modules.**
+@71 pre
+flowchart TB
+    subgraph Monolith["Modular Monolith"]
+        Auth[Auth Module]
+        Users[Users Module]
+        Orders[Orders Module]
+        Payments[Payments Module]
+        
+        Auth -.->|Well-defined API| Users
+        Users -.->|Well-defined API| Orders
+        Orders -.->|Well-defined API| Payments
+    end
+    
+    Monolith --> DB[(Shared Database)]
+@72 p
+**Module structure:**
+@73 pre
+/app
+  /modules
+    /auth
+      - controllers/
+      - services/
+      - models/
+      - api.ts (public interface)
+    /users
+      - controllers/
+      - services/
+      - models/
+      - api.ts
+    /orders
+      - controllers/
+      - services/
+      - models/
+      - api.ts
+
+@74 p
+**Rules:**
+@75 li
+Modules communicate qua well-defined APIs
+@76 li
+No direct database access across modules
+@77 li
+Clear boundaries
+@78 li
+Preparation cho microservices (nếu cần)
+@79 p
+**Benefits:**
+@80 li
+Team ownership (team A owns auth module)
+@81 li
+Easier testing (isolated modules)
+@82 li
+Can extract to microservice later
+@83 li
+Still monolith simplicity
+@84 p
+**Khi nào dùng:**
+@85 li
+Team 30-100 engineers
+@86 li
+Complex domain logic
+@87 li
+Preparing for potential microservices
+@88 li
+Want team autonomy nhưng chưa ready cho microservices
+@89 p
+**Real examples:**
+@90 li
+Shopify (modular monolith trước khi microservices)
+@91 li
+Basecamp (current architecture)
+@92 h3
+Stage 4: Microservices (1M+ Users)
+@93 p
+**Multiple independent services, mỗi service có database riêng.**
+@94 pre
+flowchart TB
+    subgraph Gateway
+        API[API Gateway]
+    end
+    
+    subgraph Services
+        Auth[Auth Service]
+        Users[Users Service]
+        Orders[Orders Service]
+        Payments[Payment Service]
+    end
+    
+    subgraph Databases
+        AuthDB[(Auth DB)]
+        UsersDB[(Users DB)]
+        OrdersDB[(Orders DB)]
+        PaymentDB[(Payment DB)]
+    end
+    
+    API --> Auth
+    API --> Users
+    API --> Orders
+    API --> Payments
+    
+    Auth --> AuthDB
+    Users --> UsersDB
+    Orders --> OrdersDB
+    Payments --> PaymentDB
+    
+    Orders -.HTTP.-> Users
+    Orders -.HTTP.-> Payments
+@95 p
+**Characteristics:**
+@96 p
+**Pros:**
+@97 li
+Independent scaling
+@98 li
+Independent deployment
+@99 li
+Technology flexibility
+@100 li
+Team autonomy
+@101 li
+Fault isolation
+@102 p
+**Cons:**
+@103 li
+Distributed system complexity
+@104 li
+Network latency
+@105 li
+Data consistency challenges
+@106 li
+Operational overhead
+@107 li
+Testing complexity
+@108 li
+Deployment complexity
+@109 p
+**Khi nào migrate:**
+@110 p
+**Migrate khi:**
+@111 li
+Team >100 engineers
+@112 li
+Clear domain boundaries
+@113 li
+Different scaling needs per module
+@114 li
+Organizational bottleneck với monolith
+@115 li
+Budget + expertise cho complexity
+@116 p
+**KHÔNG migrate khi:**
+@117 li
+Team <30 engineers
+@118 li
+Vague domain boundaries
+@119 li
+Premature optimization
+@120 li
+Chưa có DevOps expertise
+@121 li
+Budget limited
+@122 p
+**Cost jump:**
+@123 pre
+Modular monolith: $2k-5k/month
+Microservices: $10k-50k+/month
+
+Infrastructure + DevOps team + monitoring + orchestration
+
+@124 p
+**Complexity jump: 10x.**
+@125 h2
+Scale Triggers - Khi Nào Evolve?
+@126 p
+**Không evolve vì trend. Evolve vì pain points.**
+@127 h3
+Trigger 1: Performance Bottleneck
+@128 p
+**Symptom:**
+@129 pre
+Single bottleneck component:
+- Image processing: 80% CPU
+- Rest of app: 20% CPU
+
+@130 p
+**Solution:** Extract image processing service.
+@131 pre
+Before: Monolith handles images
+After: Separate image service
+  → Scale independently
+  → Use GPU instances
+  → Don't waste resources on other parts
+
+@132 p
+**Decision criteria:**
+@133 li
+Bottleneck clearly isolated
+@134 li
+Different resource needs (CPU vs memory vs GPU)
+@135 li
+Extract giải quyết problem
+@136 h3
+Trigger 2: Team Scaling Bottleneck
+@137 p
+**Symptom:**
+@138 pre
+Team size: 50 engineers
+Deployment frequency: 1x/week
+Merge conflicts: Daily
+Waiting for deploys: Hours
+
+@139 p
+**Everyone stepping on each other's toes.**
+@140 p
+**Solution:** Split codebase theo team ownership.
+@141 pre
+Team Auth: Auth service
+Team Payments: Payment service
+Team Orders: Order service
+
+Each team deploys independently
+
+@142 p
+**Decision criteria:**
+@143 li
+Team >30-50 engineers
+@144 li
+Organizational structure clear
+@145 li
+Teams have distinct domains
+@146 h3
+Trigger 3: Different Scaling Requirements
+@147 p
+**Symptom:**
+@148 pre
+Orders service: 10 req/s
+Image processing: 1000 req/s
+Payment: 50 req/s
+
+@149 p
+**Scaling entire monolith wastes resources.**
+@150 p
+**Solution:** Extract high-traffic service.
+@151 pre
+Image processing → Separate service
+  → Scale to 20 instances
+Rest of app → 3 instances
+
+Cost saving + better performance
+
+@152 h3
+Trigger 4: Technology Limitations
+@153 p
+**Symptom:**
+@154 pre
+Main app: Ruby (good for CRUD)
+ML model: Need Python
+Real-time: Need Node.js/Go
+
+@155 p
+**Solution:** Polyglot architecture.
+@156 pre
+Main app: Ruby on Rails
+ML service: Python + TensorFlow
+WebSocket service: Node.js
+
+@157 p
+**Different tools cho different jobs.**
+@158 h3
+Non-Triggers (Không Nên Migrate)
+@159 p
+**"We might scale in the future"**
+@160 p
+Premature optimization. YAGNI (You Aren't Gonna Need It).
+@161 p
+**"Microservices are best practice"**
+@162 p
+Best practice cho who? Netflix? You're not Netflix.
+@163 p
+**"Resume-driven development"**
+@164 p
+Learning Kubernetes không justify project complexity.
+@165 p
+**"Monolith feels messy"**
+@166 p
+Clean up code structure. Modular monolith. Don't jump to microservices.
+@167 h2
+Migration Strategy - Evolve Gradually
+@168 p
+**NEVER rewrite toàn bộ hệ thống.**
+@169 h3
+Strangler Fig Pattern
+@170 p
+**Gradually replace monolith, piece by piece.**
+@171 pre
+flowchart TB
+    Users[Users]
+    Router[Router/Gateway]
+    
+    subgraph New["New Services"]
+        AuthNew[Auth Service<br/>Migrated]
+        PaymentNew[Payment Service<br/>Migrated]
+    end
+    
+    subgraph Old["Monolith"]
+        Users2[Users Module<br/>⏳ Not yet]
+        Orders2[Orders Module<br/>⏳ Not yet]
+    end
+    
+    Users --> Router
+    Router -->|/auth/*| AuthNew
+    Router -->|/payment/*| PaymentNew
+    Router -->|/users/*| Old
+    Router -->|/orders/*| Old
+@172 p
+**Process:**
+@173 p
+**Phase 1:** Pick module to extract (least coupled)
+@174 pre
+Candidate: Payment service
+Dependencies: Low
+Impact: High value
+
+@175 p
+**Phase 2:** Build new service
+@176 pre
+Replicate functionality
+Add tests
+Feature parity
+
+@177 p
+**Phase 3:** Route traffic gradually
+@178 pre
+Week 1: 5% traffic to new service
+Week 2: 25%
+Week 3: 50%
+Week 4: 100%
+
+@179 p
+**Phase 4:** Deprecate old code
+@180 pre
+Monitor for errors
+Remove from monolith
+Celebrate 🎉
+
+@181 p
+**Phase 5:** Repeat cho module tiếp theo
+@182 p
+**Benefits:**
+@183 li
+Low risk (gradual rollout)
+@184 li
+Easy rollback
+@185 li
+Learn from each migration
+@186 li
+Business continuity
+@187 h3
+Anti-Pattern: Big Bang Rewrite
+@188 p
+**KHÔNG LÀM:**
+@189 pre
+1. Stop feature development
+2. Rewrite everything to microservices
+3. Big bang deployment
+4. Hope it works
+
+@190 p
+**Tại sao fail:**
+@191 li
+6-12 months development freeze
+@192 li
+Business loses competitive edge
+@193 li
+Requirements change during rewrite
+@194 li
+Bugs in new system
+@195 li
+Can't rollback easily
+@196 p
+**Famous failures:**
+@197 li
+Netscape (rewrote browser, lost to IE)
+@198 li
+Friendster (rewrote, lost to Facebook)
+@199 p
+**Rule:** Evolve, don't rewrite.
+@200 h2
+Anti-Patterns - Tránh Những Sai Lầm Này
+@201 h3
+Anti-Pattern 1: Premature Microservices
+@202 p
+**Scenario:**
+@203 pre
+Startup: 3 engineers, 0 users
+Architecture: 15 microservices, Kubernetes, Kafka
+
+@204 p
+**Problem:**
+@205 li
+Development velocity: glacial
+@206 li
+Debugging: nightmare
+@207 li
+Operational overhead: overwhelming
+@208 li
+Product-market-fit: never found
+@209 p
+**Cost:**
+@210 li
+3 months setup infrastructure
+@211 li
+6 months fight with complexity
+@212 li
+Startup runs out of money
+@213 li
+Game over
+@214 p
+**Right approach:**
+@215 pre
+Startup: 3 engineers, 0 users
+Architecture: Monolith, Heroku, PostgreSQL
+
+Product-market-fit: 6 months
+Growth: Add features fast
+Scale: Later problem
+
+@216 h3
+Anti-Pattern 2: Kubernetes For Everything
+@217 p
+**Scenario:**
+@218 pre
+Traffic: 10 req/s
+Team: 5 engineers
+Stack: Kubernetes cluster
+
+@219 p
+**Problem:**
+@220 li
+Kubernetes learning curve: steep
+@221 li
+Operational complexity: high
+@222 li
+Cost: $500+/month (vs $50 Heroku)
+@223 li
+Value delivered: zero
+@224 p
+**When Kubernetes makes sense:**
+@225 li
+Traffic >1000 req/s
+@226 li
+Team with DevOps expertise
+@227 li
+Complex deployment requirements
+@228 li
+Multi-cloud strategy
+@229 p
+**Before Kubernetes, try:**
+@230 li
+Heroku/Railway/Render
+@231 li
+AWS Elastic Beanstalk
+@232 li
+Google App Engine
+@233 li
+Simple VPS + Docker Compose
+@234 h3
+Anti-Pattern 3: Shared Database Across Services
+@235 p
+**Scenario:**
+@236 pre
+Microservices architecture
+All services → Same database
+
+@237 p
+**Problem:**
+@238 li
+Tight coupling (defeats microservices purpose)
+@239 li
+Schema changes break everything
+@240 li
+Can't scale databases independently
+@241 li
+Transaction complexity
+@242 p
+**Right approach:**
+@243 pre
+Each service → Own database
+Communication via APIs/events
+
+@244 p
+**Nếu shared database → bạn không có microservices, có distributed monolith.**
+@245 h3
+Anti-Pattern 4: Nano-Services
+@246 p
+**Scenario:**
+@247 pre
+User service
+UserAuth service
+UserProfile service
+UserSettings service
+UserPreferences service
+
+@248 p
+**Too many tiny services.**
+@249 p
+**Problem:**
+@250 li
+Network overhead
+@251 li
+Operational complexity
+@252 li
+Hard to understand flow
+@253 li
+Deployment nightmare
+@254 p
+**Right granularity:**
+@255 pre
+User service (handles all user logic)
+  ↳ Auth
+  ↳ Profile
+  ↳ Settings
+  ↳ Preferences
+
+@256 p
+**Service boundary = business capability, not function.**
+@257 h3
+Anti-Pattern 5: Wrong Optimization
+@258 p
+**Scenario:**
+@259 pre
+Optimize: Sharding database
+Problem: Actually slow queries (missing indexes)
+
+Optimize: Add caching layer
+Problem: Actually N+1 queries
+
+Optimize: Microservices
+Problem: Actually monolith code mess
+
+@260 p
+**Measure first, optimize second.**
+@261 p
+**Process:**
+@262 li
+Identify bottleneck (metrics)
+@263 li
+Understand root cause (profiling)
+@264 li
+Pick simplest solution
+@265 li
+Measure improvement
+@266 li
+Repeat
+@267 p
+**KHÔNG skip step 1 và 2.**
+@268 h2
+System Design Thinking Flow
+@269 p
+**Structured approach cho architecture decisions.**
+@270 pre
+flowchart TD
+    Start[Problem Statement] --> Req[1. Requirements<br/>Functional + Non-functional]
+    Req --> Est[2. Estimation<br/>Scale + Storage + Bandwidth]
+    Est --> Bottle[3. Identify Bottlenecks<br/>Traffic + Data + Processing]
+    Bottle --> Trade[4. Trade-offs<br/>Consistency vs Availability<br/>Cost vs Performance]
+    Trade --> Design[5. Architecture Design<br/>Start simple<br/>Add complexity as needed]
+    Design --> Valid[6. Validate<br/>Does it solve problem?<br/>Can it scale?]
+    Valid -->|No| Trade
+    Valid -->|Yes| Final[Final Design]
+@271 h3
+Step 1: Requirements
+@272 p
+**Functional requirements:**
+@273 pre
+What the system does:
+- Users can upload photos
+- Users can view feed
+- Users can follow others
+
+@274 p
+**Non-functional requirements:**
+@275 pre
+How well it does it:
+- 10M daily active users
+- p99 latency < 200ms
+- 99.9% availability
+- Photo upload < 5 seconds
+
+@276 h3
+Step 2: Estimation
+@277 p
+**Back-of-envelope calculations:**
+@278 pre
+Traffic:
+- 10M DAU
+- Each user: 20 requests/day
+- Total: 200M requests/day
+- Peak: 200M / 86400 * 3 = ~7000 req/s
+
+Storage:
+- 1M photos uploaded/day
+- Average photo: 2MB
+- Daily storage: 2TB/day
+- Annual: 730TB
+
+Bandwidth:
+- Upload: 2TB/day = 23 MB/s
+- Read:write ratio: 10:1
+- Download: 230 MB/s
+
+@279 p
+**Informs architecture decisions.**
+@280 h3
+Step 3: Bottlenecks
+@281 p
+**Based on estimations:**
+@282 pre
+7000 req/s → Need load balancing
+2TB/day upload → Need object storage (S3)
+High read traffic → Need CDN + caching
+
+@283 p
+**Anticipate problems early.**
+@284 h3
+Step 4: Trade-offs
+@285 p
+**Every decision = trade-off.**
+@286 pre
+Cache photos?
+  Pros: Fast access, reduce load
+  Cons: Storage cost, cache invalidation
+  Decision: Yes, cache hot photos (20% photos = 80% traffic)
+
+Strong consistency?
+  Pros: Always correct data
+  Cons: Higher latency, complex
+  Decision: Eventual consistency OK (social feed)
+
+Microservices?
+  Pros: Independent scaling
+  Cons: Complexity, cost
+  Decision: Start monolith, extract later if needed
+
+@287 p
+**Explicit trade-off thinking.**
+@288 h3
+Step 5: Design
+@289 p
+**Start simple:**
+@290 pre
+MVP (0-100K users):
+  - Monolith (Rails/Django)
+  - PostgreSQL
+  - Redis cache
+  - S3 for photos
+  - CDN
+
+Evolution triggers:
+  - >1M users → Add read replicas
+  - >5M users → Consider modular monolith
+  - >10M users → Evaluate microservices
+
+@291 p
+**Plan evolution, don't build for 10M users on day 1.**
+@292 h3
+Step 6: Validate
+@293 p
+**Questions to ask:**
+@294 pre
+Does it meet requirements?
+  - Functional: ✅
+  - Non-functional: (at current scale)
+
+Can it scale?
+  - To 10x traffic: Yes (add servers)
+  - To 100x traffic: Need re-architecture
+
+Is it too complex?
+  - Team can build: ✅
+  - Team can operate: ✅
+
+Cost reasonable?
+  - MVP: $200/month ✅
+  - At scale: $5k/month ✅
+
+@295 h2
+Trade-off Mindset
+@296 p
+**Every architecture decision = trade-off. No perfect solution.**
+@297 h3
+Trade-off 1: Performance vs Complexity
+@298 p
+**Example: Caching**
+@299 pre
+No cache:
+  - Simple code
+  - Slow reads (every request → database)
+  - High database load
+
+With cache:
+  - Complex (cache invalidation)
+  - Fast reads (memory access)
+  - Lower database load
+
+@300 p
+**Decision framework:**
+@301 li
+Read-heavy? → Cache worth it
+@302 li
+Write-heavy? → Cache less value
+@303 li
+Budget for complexity? → Cache OK
+@304 li
+Team expertise? → Simple first
+@305 h3
+Trade-off 2: Consistency vs Availability
+@306 p
+**CAP theorem reminder:**
+@307 pre
+Strong consistency:
+  - Always correct data
+  - May be unavailable (wait for sync)
+  - Lower throughput
+
+Eventual consistency:
+  - High availability
+  - Temporarily stale data
+  - Higher throughput
+
+@308 p
+**Decision:**
+@309 li
+Bank account: Strong consistency
+@310 li
+Social media feed: Eventual consistency
+@311 li
+Shopping cart: Session-based (middle ground)
+@312 h3
+Trade-off 3: Cost vs Scale
+@313 p
+**Example: Database**
+@314 pre
+Single PostgreSQL:
+  - Cost: $50/month
+  - Scale: ~1000 req/s
+  - Simple
+
+Sharded PostgreSQL:
+  - Cost: $500/month
+  - Scale: ~10,000 req/s
+  - Complex
+
+Managed service (Aurora):
+  - Cost: $2000/month
+  - Scale: ~50,000 req/s
+  - Easier than sharding
+
+@315 p
+**Pick based on current needs + budget.**
+@316 h3
+Trade-off 4: Development Speed vs Flexibility
+@317 p
+**Framework choice:**
+@318 pre
+Rails/Django:
+  - Fast development
+  - Conventions (less decisions)
+  - Monolith-friendly
+
+Go/Node microservices:
+  - Slower initial development
+  - More flexibility
+  - Microservices-friendly
+
+@319 p
+**Early stage: Speed wins.**\n
+**Mature product: Flexibility matters.**
+@320 h3
+Trade-off Matrix
+@321 p
+**Common decisions:**
+@322 th
+Decision
+@323 th
+Simple
+@324 th
+Complex
+@325 th
+When Complex Worth It
+@326 td
+Monolith vs Microservices
+@327 td
+Monolith
+@328 td
+Microservices
+@329 td
+Team >50, clear domains
+@330 td
+SQL vs NoSQL
+@331 td
+SQL
+@332 td
+NoSQL
+@333 td
+Massive scale, flexible schema
+@334 td
+Sync vs Async
+@335 td
+Sync
+@336 td
+Async
+@337 td
+High latency operations
+@338 td
+Single DB vs Sharding
+@339 td
+Single
+@340 td
+Sharding
+@341 td
+>10K writes/s
+@342 td
+Self-hosted vs Managed
+@343 td
+Self
+@344 td
+Managed
+@345 td
+Team <10, focus on product
+@346 h2
+Mental Model: Start Simple, Evolve Gradually
+@347 p
+**Core principle của good architecture.**
+@348 h3
+The Principle
+@349 p
+**"Premature optimization is the root of all evil." - Donald Knuth**
+@350 p
+**Applied to architecture:**
+@351 pre
+Don't build for scale you don't have
+Don't solve problems you don't have yet
+Don't add complexity until pain is real
+
+@352 p
+**Why?**
+@353 p
+**1. Requirements change**
+@354 pre
+Week 1: Building Instagram clone
+Week 10: Pivot to B2B analytics
+Week 20: Pivot to AI chatbot
+
+Complex architecture → wasted effort
+
+@355 p
+**2. Scale assumptions wrong**
+@356 pre
+Plan: 1M users in year 1
+Reality: 10K users
+
+Over-engineered for ghost town
+
+@357 p
+**3. Team learning**
+@358 pre
+Monolith:
+  - Ship features fast
+  - Learn user needs
+  - Iterate quickly
+
+Microservices:
+  - Fight with infrastructure
+  - Slow feature development
+  - Miss market window
+
+@359 h3
+The Evolution Path
+@360 p
+**Healthy progression:**
+@361 pre
+Month 1-3: MVP monolith
+  → Validate idea
+  → Get users
+  
+Month 3-12: Scaled monolith
+  → Optimize performance
+  → Add infrastructure (CDN, cache, replicas)
+  
+Year 1-2: Modular monolith
+  → Clean up architecture
+  → Prepare for team scaling
+  
+Year 2+: Selective microservices
+  → Extract bottlenecks
+  → Independent scaling where needed
+
+@362 p
+**Unhealthy progression:**
+@363 pre
+Month 1: 15 microservices, Kubernetes
+Month 2: Fighting infrastructure
+Month 3: Out of money
+
+@364 h3
+Decision Framework
+@365 p
+**When faced with architecture choice:**
+@366 pre
+Question: Should we use [complex solution]?
+
+Ask:
+1. Do we have the problem it solves? (YES/NO)
+2. Have we tried simpler solutions? (YES/NO)
+3. Do we have expertise? (YES/NO)
+4. Do we have budget? (YES/NO)
+
+If ANY answer is NO → Don't do it yet
+
+@367 p
+**Examples:**
+@368 pre
+"Should we use Kubernetes?"
+- Have scaling problem? NO → Wait
+- Tried managed platforms? NO → Try Heroku first
+- Have DevOps expertise? NO → Learn on simpler platform
+- Have budget ($500+/month)? NO → Use cheaper options
+
+"Should we split to microservices?"
+- Have team scaling problem? NO → Wait
+- Tried modular monolith? NO → Refactor monolith first
+- Have clear service boundaries? NO → Not ready
+- Have budget for complexity? NO → Stay monolith
+
+@369 h2
+Key Takeaways
+@370 p
+**1. Architecture evolves: Monolith → Scaled → Modular → Microservices**
+@371 p
+Each stage appropriate cho scale và team size khác nhau.
+@372 p
+**2. Monolith không phải bad word**
+@373 p
+Shopify, GitHub, Basecamp scale massively với monolith. Start simple.
+@374 p
+**3. Migration triggers phải real pain, không speculation**
+@375 p
+Performance bottleneck, team scaling, different resource needs.
+@376 p
+**4. Strangler fig pattern > big bang rewrite**
+@377 p
+Migrate gradually, piece by piece. Low risk, easy rollback.
+@378 p
+**5. Anti-patterns: Premature microservices, Kubernetes overkill, shared databases**
+@379 p
+Avoid complexity không cần thiết. Measure problem trước khi solve.
+@380 p
+**6. System design flow: Requirements → Estimation → Bottlenecks → Trade-offs → Design**
+@381 p
+Structured thinking process cho architecture decisions.
+@382 p
+**7. Every decision = trade-off**
+@383 p
+Performance vs complexity, consistency vs availability, cost vs scale.
+@384 p
+**8. Start simple, evolve gradually**
+@385 p
+Don't build cho scale you don't have. YAGNI principle.
+@386 p
+**9. Validate assumptions với data**
+@387 p
+Measure traffic, profile performance, understand real bottlenecks.
+@388 p
+**10. Team expertise matters more than technology**
+@389 p
+Simple stack team knows > complex stack team struggles với.
+@390 p
+Nhưng luôn nhớ: **patterns là tools, không phải requirements. Dùng khi cần, không vì trend.**
+@391 p
+**Remember: Instagram was acquired for $1 billion as a monolith. Complexity doesn't create value - solving user problems does. Start simple, evolve when pain is real, and always question if added complexity is worth it.**

@@ -1,0 +1,874 @@
+@0
+⟦Trực Giác Về Quy Mô|Scale Intuition⟧: Xây Dựng Cảm Giác Về Các Con Số
+@1
+Tôi còn nhớ lần đầu tiên được hỏi trong một buổi ⟦phỏng vấn|interview⟧:
+@2
+*"Hệ thống của em cần xử lý bao nhiêu ⟦yêu cầu|requests⟧ mỗi giây?"*
+@3
+Tôi: *"Ừm... nhiều ạ?"*
+@4
+⟦Người phỏng vấn|Interviewer⟧: *"Nhiều là bao nhiêu? 10? 1.000? 1.000.000?"*
+@5
+Tôi: *"... Em không biết ạ."*
+@6
+**Tôi trượt câu hỏi đó.**
+@7
+Không phải vì không biết viết mã. Mà vì **không có ⟦trực giác về quy mô|scale intuition⟧**.
+@8
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ ngồi bên cạnh sau đó nói: *"Em biết không, khác biệt giữa 1 nghìn người dùng và 1 triệu người dùng không phải là 1000 lần. Nó là khác biệt giữa một chiếc xe đạp và một chiếc Boeing 747."*
+@9
+Đó là lúc tôi bắt đầu học về ⟦quy mô|scale⟧.
+@10
+Tại Sao ⟦Trực Giác Về Quy Mô|Scale Intuition⟧ Lại Quan Trọng?
+@11
+Vấn Đề: Các Con Số Quá Trừu Tượng
+@12
+Khi bạn nghe "1 triệu người dùng", bạn nghĩ gì?
+@13
+Hầu hết ⟦lập trình viên|developers⟧: *"Ồ, nhiều quá!"*
+@14
+Nhưng "nhiều" không giúp bạn ⟦thiết kế hệ thống|design system⟧.
+@15
+**Bạn cần biết:**
+@16
+1 triệu người dùng = bao nhiêu yêu cầu/giây?
+@17
+Cần bao nhiêu ⟦máy chủ|servers⟧?
+@18
+Cần bao nhiêu ⟦dung lượng cơ sở dữ liệu|database capacity⟧?
+@19
+Cần bao nhiêu ⟦lưu trữ|storage⟧?
+@20
+Tốn bao nhiêu ⟦chi phí|cost⟧?
+@21
+Giải Pháp: Rèn Luyện Trực Giác
+@22
+**⟦Trực giác về quy mô|Scale intuition⟧ = Khả năng ⟦ước lượng|estimate⟧ nhanh các yêu cầu của hệ thống**
+@23
+Kỹ năng: "Ước chừng 1 triệu người dùng cần 10 máy chủ ứng dụng, 2TB lưu trữ, chi phí ~$3K/tháng"
+
+Chứ không phải: "1 triệu người dùng... cần nhiều máy chủ... ừm..."
+
+Có trực giác → Thiết kế một cách tự tin
+Không có trực giác → Thiết kế bằng phỏng đoán
+
+@24
+**Bài này sẽ dạy bạn xây dựng trực giác đó.**
+@25
+Phổ Quy Mô: 1 Nghìn vs 1 Triệu vs 1 Tỷ Người Dùng
+@26
+Hình Dung Sự Khác Biệt
+@27
+graph LR
+    A[1K người dùng<br/>Xe đạp] --> B[10K người dùng<br/>Xe hơi]
+    B --> C[100K người dùng<br/>Xe buýt]
+    C --> D[1M người dùng<br/>Máy bay]
+    D --> E[10M người dùng<br/>Boeing 747]
+    E --> F[100M+ người dùng<br/>Hạm đội máy bay]
+
+    style A fill:#51cf66
+    style C fill:#ffd43b
+    style E fill:#ff6b6b
+@28
+*Mỗi bậc ⟦quy mô|scale⟧ là một thế giới hoàn toàn khác nhau*
+@29
+1.000 Người Dùng (MVP Của Công Ty Khởi Nghiệp)
+@30
+Người dùng hoạt động hằng ngày (DAU): ~500
+Người dùng đồng thời: ~50
+Số yêu cầu mỗi giây: ~5-10
+
+Hạ tầng:
+- 1 máy chủ ứng dụng ($50/tháng)
+- 1 máy chủ cơ sở dữ liệu ($50/tháng)
+- Không cần bộ cân bằng tải
+- Không cần bộ nhớ đệm
+Tổng chi phí: ~$100/tháng
+
+Điểm nghẽn: Có lẽ là không có
+Kiến trúc: Hệ thống nguyên khối đơn giản
+Nhóm: 1-2 lập trình viên là đủ
+
+@31
+**Ví dụ thực tế:**
+@32
+Ứng dụng cho một quán cà phê địa phương:
+- 500 khách hàng
+- Mỗi người xem thực đơn 2 lần/ngày
+- 1.000 yêu cầu/ngày
+- 1.000 / 86.400 giây ≈ 0,01 yêu cầu/giây
+
+Chạy được trên Raspberry Pi! 😄
+
+@33
+10.000 Người Dùng (Công Ty Khởi Nghiệp Đang Tăng Trưởng)
+@34
+Người dùng hoạt động hằng ngày: ~5.000
+Người dùng đồng thời: ~500
+Số yêu cầu mỗi giây: ~50-100
+
+Hạ tầng:
+- 2-3 máy chủ ứng dụng ($150/tháng)
+- 1 máy chủ cơ sở dữ liệu ($100/tháng)
+- Bộ cân bằng tải ($50/tháng)
+- Bộ nhớ đệm Redis (tuỳ chọn) ($50/tháng)
+Tổng chi phí: ~$350/tháng
+
+Điểm nghẽn: Truy vấn cơ sở dữ liệu (thêm chỉ mục)
+Kiến trúc: Hệ thống nguyên khối + bộ nhớ đệm
+Nhóm: 2-5 lập trình viên
+
+@35
+**Khác biệt chính so với mốc 1 nghìn:**
+@36
+Cần ⟦bộ cân bằng tải|load balancer⟧ (⟦tính sẵn sàng cao|high availability⟧)
+@37
+⟦Chỉ mục|Indexes⟧ ⟦cơ sở dữ liệu|database⟧ trở nên quan trọng
+@38
+⟦Giám sát|Monitoring⟧ bắt đầu trở nên quan trọng
+@39
+100.000 Người Dùng (Sản Phẩm Đã Có Chỗ Đứng)
+@40
+Người dùng hoạt động hằng ngày: ~50.000
+Người dùng đồng thời: ~5.000
+Số yêu cầu mỗi giây: ~500-1.000
+
+Hạ tầng:
+- 10 máy chủ ứng dụng ($500/tháng)
+- Cơ sở dữ liệu với bản sao chỉ đọc ($500/tháng)
+- Bộ cân bằng tải ($100/tháng)
+- Cụm Redis ($300/tháng)
+- CDN ($100/tháng)
+Tổng chi phí: ~$1.500/tháng
+
+Điểm nghẽn: Ghi vào cơ sở dữ liệu, vô hiệu hoá bộ nhớ đệm
+Kiến trúc: Hệ thống nguyên khối dạng mô-đun hoặc vi dịch vụ đơn giản
+Nhóm: 10-20 lập trình viên
+
+@41
+**Khác biệt chính so với mốc 10 nghìn:**
+@42
+Cần có ⟦bản sao chỉ đọc|read replicas⟧ cho ⟦cơ sở dữ liệu|database⟧
+@43
+⟦Lưu đệm|Caching⟧ trở nên sống còn
+@44
+CDN cho ⟦tài nguyên tĩnh|static assets⟧
+@45
+⟦Tự động mở rộng|Auto-scaling⟧ bắt đầu có ý nghĩa
+@46
+1.000.000 Người Dùng (Quy Mô Lớn)
+@47
+Người dùng hoạt động hằng ngày: ~500.000
+Người dùng đồng thời: ~50.000
+Số yêu cầu mỗi giây: ~5.000-10.000
+
+Hạ tầng:
+- 50+ máy chủ ứng dụng ($2.500/tháng)
+- Cụm cơ sở dữ liệu đã phân mảnh ($2.000/tháng)
+- Nhiều bộ cân bằng tải ($300/tháng)
+- Bộ nhớ đệm phân tán ($1.000/tháng)
+- CDN ($500/tháng)
+- Hàng đợi thông điệp ($200/tháng)
+Tổng chi phí: ~$6.500/tháng trở lên
+
+Điểm nghẽn: Mọi thứ! Cần cách tiếp cận phân tán
+Kiến trúc: Nhiều khả năng là vi dịch vụ
+Nhóm: 50+ lập trình viên, có nhóm vận hành chuyên trách
+
+@48
+**Khác biệt chính so với mốc 100 nghìn:**
+@49
+Cần ⟦phân mảnh dữ liệu|sharding⟧ cho ⟦cơ sở dữ liệu|database⟧
+@50
+Những thách thức của ⟦hệ thống phân tán|distributed systems⟧
+@51
+Có nhóm DevOps/SRE chuyên trách
+@52
+⟦Giám sát|Monitoring⟧ và ⟦cảnh báo|alerting⟧ phức tạp
+@53
+⟦Quy Luật|The Pattern⟧
+@54
+Mỗi khi quy mô tăng 10 lần:
+- Chi phí tăng ~3-5 lần (không tuyến tính!)
+- Độ phức tạp tăng đáng kể
+- Quy mô nhóm tăng
+- Kiến trúc thay đổi về căn bản
+
+1K → 10K: Thêm máy chủ, tối ưu cơ bản
+10K → 100K: Thêm bộ nhớ đệm, bản sao chỉ đọc
+100K → 1M: Phân mảnh dữ liệu, vi dịch vụ, hệ thống phân tán
+1M → 10M: Phân bố theo địa lý, điện toán biên
+
+@55
+⟦Ước Tính Nhanh|Back-of-Envelope Calculations⟧
+@56
+**Kỹ năng cốt lõi: ⟦Ước lượng|Estimate⟧ nhanh các yêu cầu của hệ thống**
+@57
+⟦Khung Tính Toán|Calculation Framework⟧
+@58
+1. Bắt đầu với số người dùng
+2. Ước lượng thói quen sử dụng
+3. Tính số yêu cầu
+4. Ước lượng dung lượng lưu trữ
+5. Tính băng thông
+
+@59
+Bài tập 1: Trang Web Thương Mại Điện Tử
+@60
+**Dữ kiện:**
+@61
+1 triệu người dùng đã đăng ký
+@62
+20% hoạt động hằng ngày (200 nghìn DAU)
+@63
+Mỗi người dùng xem 10 trang sản phẩm/ngày
+@64
+Mỗi người dùng mua hàng 1 lần/tháng
+@65
+**Hãy tính:**
+@66
+**Số yêu cầu mỗi giây:**
+@67
+Lượt xem trang:
+200K người dùng × 10 trang/ngày = 2M lượt xem trang/ngày
+2M / 86.400 giây/ngày ≈ 23 yêu cầu/giây
+
+Lưu lượng cao điểm (giả sử gấp 3 lần trung bình):
+23 × 3 = 69 yêu cầu/giây
+
+Lời gọi API (giả sử 5 lời gọi API cho mỗi lượt xem trang):
+23 × 5 = 115 yêu cầu/giây
+Cao điểm: 345 yêu cầu/giây
+
+→ Cần xử lý ~350 req/s vào giờ cao điểm
+
+@68
+**Lưu trữ:**
+@69
+Danh mục sản phẩm:
+100K sản phẩm × 10KB mỗi sản phẩm = 1GB
+
+Ảnh sản phẩm:
+100K sản phẩm × 5 ảnh × 500KB = 250GB
+
+Dữ liệu người dùng:
+1M người dùng × 1KB = 1GB
+
+Đơn hàng (1 năm):
+1M người dùng × 12 lần mua/năm × 5KB = 60GB
+
+Tổng: ~312GB
+→ Một cơ sở dữ liệu xử lý dễ dàng
+→ Ảnh cần CDN/S3
+
+@70
+**Băng thông:**
+@71
+Lượt xem trang: 2M/ngày
+Kích thước trang trung bình: 2MB (HTML + ảnh + JS)
+
+Tổng băng thông: 2M × 2MB = 4TB/ngày
+
+Với bộ nhớ đệm CDN (tỷ lệ trúng bộ nhớ đệm 90%):
+4TB × 0,1 = 400GB/ngày từ máy chủ gốc
+= 16GB/giờ từ các máy chủ
+= Kiểm soát được nhờ CDN
+
+@72
+**Ước lượng hạ tầng:**
+@73
+Máy chủ ứng dụng:
+- Cao điểm 350 req/s
+- Mỗi máy chủ: ~100 req/s
+- Cần: 4 máy chủ (có dư phòng)
+
+Cơ sở dữ liệu:
+- 312GB dữ liệu (một máy chủ là ổn)
+- Thiên về đọc (thêm 2 bản sao chỉ đọc)
+
+CDN: Thiết yếu (90% lưu lượng)
+
+Tổng chi phí: ~$800/tháng
+
+@74
+Bài tập 2: Ứng Dụng Mạng Xã Hội
+@75
+**Dữ kiện:**
+@76
+10 triệu người dùng
+@77
+1 triệu người dùng hoạt động hằng ngày
+@78
+Mỗi người dùng đăng bài 2 lần/ngày
+@79
+Mỗi người dùng xem 100 bài đăng/ngày
+@80
+**Hãy tính:**
+@81
+**⟦Lưu lượng ghi|Write traffic⟧:**
+@82
+Số bài đăng được tạo:
+1M người dùng × 2 bài/ngày = 2M bài/ngày
+2M / 86.400 ≈ 23 lượt ghi/giây
+
+Cao điểm: 69 lượt ghi/giây
+→ Một cơ sở dữ liệu xử lý được
+
+@83
+**⟦Lưu lượng đọc|Read traffic⟧:**
+@84
+Số bài đăng được xem:
+1M người dùng × 100 bài/ngày = 100M lượt xem/ngày
+100M / 86.400 ≈ 1.157 lượt đọc/giây
+
+Cao điểm: 3.471 lượt đọc/giây
+→ Cần bộ nhớ đệm!
+
+@85
+**Tốc độ tăng ⟦lưu trữ|storage⟧:**
+@86
+Số bài đăng mỗi ngày: 2M
+Kích thước bài đăng: 500 byte (văn bản + siêu dữ liệu)
+Lưu trữ mỗi ngày: 2M × 500 byte = 1GB/ngày
+
+Ảnh (50% bài đăng có 1 ảnh):
+1M ảnh/ngày × 2MB = 2TB/ngày
+
+Tăng trưởng hằng năm:
+Văn bản: 1GB × 365 = 365GB
+Ảnh: 2TB × 365 = 730TB
+
+→ Cần lưu trữ phân tán (S3)
+→ Cơ sở dữ liệu: Phân mảnh sau 1-2 năm
+
+@87
+**Tỷ lệ Đọc:Ghi:**
+@88
+Đọc: 1.157/s
+Ghi: 23/s
+Tỷ lệ: 50:1
+
+→ Cần tối ưu mạnh cho việc đọc
+→ Chiến lược lưu đệm quyết liệt
+→ CDN cho nội dung đa phương tiện
+
+@89
+Trực Giác Về Số Yêu Cầu Mỗi Giây (RPS)
+@90
+Các Mức RPS Khác Nhau Có Ý Nghĩa Gì
+@91
+1-10 RPS:
+- Công cụ nội bộ nhỏ
+- Một máy chủ là đủ
+- Không cần tối ưu gì đặc biệt
+
+10-100 RPS:
+- Ứng dụng web nhỏ
+- 1-2 máy chủ
+- Lưu đệm cơ bản là có ích
+
+100-1.000 RPS:
+- Ứng dụng web cỡ vừa
+- 5-10 máy chủ
+- Lưu đệm là thiết yếu
+- Tối ưu cơ sở dữ liệu trở nên quan trọng
+
+1.000-10.000 RPS:
+- Ứng dụng web lớn
+- 20-50 máy chủ
+- Bộ nhớ đệm phân tán
+- Bản sao chỉ đọc cho cơ sở dữ liệu
+- Cân bằng tải là sống còn
+
+10.000-100.000 RPS:
+- Quy mô rất lớn
+- 100+ máy chủ
+- Phân mảnh cơ sở dữ liệu
+- Phân bố theo địa lý
+- Bắt buộc có CDN
+
+100.000+ RPS:
+- Quy mô khổng lồ (cỡ Google, Facebook)
+- Hàng nghìn máy chủ
+- Hạ tầng tự xây dựng
+- Điện toán biên
+- Tối ưu nâng cao ở mọi nơi
+
+@92
+Quy Tắc Kinh Nghiệm Về Năng Lực Máy Chủ
+@93
+Máy chủ web thông thường:
+- Truy vấn đơn giản: ~1.000 req/s
+- Độ phức tạp trung bình: ~500 req/s
+- Logic phức tạp: ~100 req/s
+
+Cơ sở dữ liệu:
+- Đọc đơn giản: ~10.000 req/s
+- Ghi đơn giản: ~5.000 req/s
+- Truy vấn phức tạp: ~100 req/s
+- Giao dịch: ~1.000 req/s
+
+Bộ nhớ đệm (Redis):
+- Đọc: ~100.000 req/s mỗi nút
+- Ghi: ~50.000 req/s mỗi nút
+
+@94
+**Dùng các con số này để ⟦ước lượng|estimate⟧:**
+@95
+Cần 5.000 req/s với độ phức tạp trung bình?
+5.000 / 500 = tối thiểu 10 máy chủ
+Thêm 50% dư phòng: 15 máy chủ
+
+Cơ sở dữ liệu không theo kịp?
+Dùng bộ nhớ đệm để giảm 90% tải lên CSDL
+5.000 × 0,1 = 500 req/s tới CSDL → Một CSDL là ổn
+
+@96
+Trực Giác Về Tốc Độ Tăng ⟦Lưu Trữ|Storage⟧
+@97
+Tính Toán ⟦Lưu Trữ|Storage⟧
+@98
+Kích thước dữ liệu phổ biến:
+
+Bản ghi người dùng: ~1KB
+- tên người dùng, email, mật khẩu đã băm, siêu dữ liệu
+
+Tweet/Bài đăng: ~500 byte
+- nội dung văn bản, user_id, dấu thời gian, siêu dữ liệu
+
+Ảnh (đã nén): ~2MB
+- JPEG, tối ưu cho web
+
+Video (1 phút, 720p): ~50MB
+- Nén H.264
+
+Một dòng log: ~200 byte
+- dấu thời gian, mức độ, thông điệp
+
+@99
+Ví Dụ Tính Toán Tăng Trưởng
+@100
+**Kịch bản: Ứng dụng chia sẻ ảnh**
+@101
+Người dùng: 1 triệu
+Hoạt động hằng ngày: 200K
+Số ảnh tải lên mỗi người dùng hoạt động: 2
+
+Lượt tải lên mỗi ngày:
+200K × 2 = 400K ảnh/ngày
+
+Lưu trữ mỗi ngày:
+400K × 2MB = 800GB/ngày
+
+Hằng tháng: 800GB × 30 = 24TB/tháng
+Hằng năm: 24TB × 12 = 288TB/năm
+
+Chi phí (AWS S3):
+$0,023/GB/tháng
+288TB = 288.000GB
+Chi phí: 288.000 × $0,023 = $6.624/tháng
+
+→ Đáng kể! Cần nén, CDN, phân tầng lưu trữ
+
+@102
+**Các chiến lược ⟦tối ưu|optimization⟧:**
+@103
+Tính toán ban đầu: 288TB/năm
+
+Sau khi tối ưu:
+1. Nén mạnh tay: -30% = 200TB
+2. Xoá ảnh cũ/không dùng: -20% = 160TB
+3. Dùng phân tầng lưu trữ (lưu trữ lạnh): -40% chi phí
+4. Tổng: 160TB với giá $0,014/GB = $2.240/tháng
+
+Tiết kiệm: $4.384/tháng (giảm 66%!)
+
+@104
+Mẫu Hình ⟦Thiên Về Đọc|Read Heavy⟧ và ⟦Thiên Về Ghi|Write Heavy⟧
+@105
+Nhận Diện ⟦Mẫu Hình|Pattern⟧
+@106
+graph TB
+    subgraph Read Heavy
+        R1[Bảng tin mạng xã hội<br/>99% đọc]
+        R2[Trang tin tức<br/>99.9% đọc]
+        R3[Wikipedia<br/>99.99% đọc]
+    end
+
+    subgraph Balanced
+        B1[Thương mại điện tử<br/>80% đọc]
+        B2[CRM<br/>70% đọc]
+    end
+
+    subgraph Write Heavy
+        W1[Phân tích dữ liệu<br/>80% ghi]
+        W2[Ghi log<br/>99% ghi]
+        W3[Dữ liệu IoT<br/>95% ghi]
+    end
+
+    style R1 fill:#51cf66
+    style B1 fill:#ffd43b
+    style W1 fill:#ff6b6b
+@107
+*Mỗi ⟦mẫu hình|pattern⟧ khác nhau cần một ⟦chiến lược tối ưu|optimization strategy⟧ khác nhau*
+@108
+Hệ Thống ⟦Thiên Về Đọc|Read-Heavy⟧ (90%+ Lượt Đọc)
+@109
+Ví dụ: Mạng xã hội, tin tức, blog, tài liệu
+
+Đặc điểm:
+- Nhiều người dùng xem cùng một nội dung
+- Nội dung không thay đổi thường xuyên
+- Tỷ lệ trúng bộ nhớ đệm rất cao
+
+Chiến lược tối ưu:
+✓ Lưu đệm quyết liệt (Redis, Memcached)
+✓ CDN cho nội dung tĩnh
+✓ Bản sao chỉ đọc cho cơ sở dữ liệu
+✓ Nhất quán cuối cùng là chấp nhận được
+✗ Đừng tối ưu việc ghi (không phải điểm nghẽn)
+
+Trọng tâm hạ tầng:
+- Tầng bộ nhớ đệm (quan trọng nhất)
+- CDN (cho nội dung đa phương tiện)
+- Nhiều bản sao chỉ đọc
+
+Ví dụ: Reddit
+- 1 bài đăng → 10.000 lượt xem
+- Lưu đệm bài đăng trong 5 phút
+- Tỷ lệ trúng bộ nhớ đệm 99,99%
+- Tải lên cơ sở dữ liệu rất nhỏ
+
+@110
+Hệ Thống ⟦Thiên Về Ghi|Write-Heavy⟧ (50%+ Lượt Ghi)
+@111
+Ví dụ: Phân tích dữ liệu, ghi log, cảm biến IoT, giao dịch tài chính
+
+Đặc điểm:
+- Dữ liệu được nạp vào liên tục
+- Việc đọc ít thường xuyên hơn
+- Dữ liệu thường là chuỗi thời gian
+
+Chiến lược tối ưu:
+✓ Cơ sở dữ liệu tối ưu cho ghi (Cassandra, CSDL chuỗi thời gian)
+✓ Ghi bất đồng bộ (dùng hàng đợi làm vùng đệm)
+✓ Xử lý theo lô
+✓ Phân mảnh/phân vùng dữ liệu
+✗ Lưu đệm kém hiệu quả hơn
+
+Trọng tâm hạ tầng:
+- Thông lượng ghi (cơ sở dữ liệu)
+- Hàng đợi thông điệp (vùng đệm)
+- Xử lý theo lô
+
+Ví dụ: Hệ thống giám sát
+- 10K máy chủ × 100 chỉ số/phút
+- 1M lượt ghi/phút = 16K/giây
+- Đọc: Một lần/ngày cho bảng điều khiển
+- Tối ưu cho thông lượng ghi
+
+@112
+Hệ Thống Cân Bằng (50-80% Lượt Đọc)
+@113
+Ví dụ: Thương mại điện tử, CRM, công cụ năng suất
+
+Đặc điểm:
+- Kết hợp cả đọc và ghi
+- Cần tối ưu cả hai
+- Các đánh đổi phức tạp hơn
+
+Chiến lược tối ưu:
+✓ Lưu đệm có chọn lọc (chỉ dữ liệu "nóng")
+✓ Tối ưu cơ sở dữ liệu (chỉ mục)
+✓ Bản sao chỉ đọc cho báo cáo
+✓ Tối ưu ghi cho các giao dịch
+
+Trọng tâm hạ tầng:
+- Cách tiếp cận cân bằng
+- Lưu đệm các luồng xử lý "nóng"
+- Tối ưu các truy vấn quan trọng
+
+@114
+Tư Duy Về ⟦Điểm Nghẽn|Bottleneck⟧
+@115
+**Nguyên tắc cốt lõi: Hệ thống chỉ nhanh bằng thành phần chậm nhất của nó**
+@116
+Chuỗi ⟦Điểm Nghẽn|Bottleneck⟧
+@117
+Luồng xử lý yêu cầu:
+Máy khách → (Mạng 50ms)
+      → Bộ cân bằng tải (5ms)
+      → Máy chủ ứng dụng (20ms)
+      → Truy vấn CSDL (500ms) ← ĐIỂM NGHẼN
+      → Máy chủ ứng dụng (10ms)
+      → Máy khách (50ms)
+
+Tổng: 635ms
+Điểm nghẽn: Cơ sở dữ liệu (79% thời gian)
+
+Thứ tự ưu tiên tối ưu:
+1. Cơ sở dữ liệu (tác động lớn nhất)
+2. Mạng (nếu không sửa được CSDL)
+3. Logic ứng dụng (tác động rất nhỏ)
+
+Đừng phí thời gian tối ưu máy chủ ứng dụng từ 20ms → 10ms
+khi cơ sở dữ liệu mất tới 500ms!
+
+@118
+Xác Định ⟦Điểm Nghẽn|Bottlenecks⟧
+@119
+Hãy đặt những câu hỏi sau:
+
+1. Cái gì tốn nhiều thời gian nhất?
+   - Đo từng thành phần
+   - Tìm ra thành phần chậm nhất
+
+2. Cái gì chịu tải cao nhất?
+   - Mức dùng CPU
+   - Mức dùng bộ nhớ
+   - Mạng bị bão hoà
+   - Disk I/O
+
+3. Cái gì hỏng đầu tiên khi tải tăng?
+   - Kết nối cơ sở dữ liệu đã chạm mức tối đa?
+   - Bộ nhớ máy chủ đầy?
+   - Băng thông mạng bị bão hoà?
+
+Điểm nghẽn là nơi bạn chạm giới hạn đầu tiên.
+
+@120
+Các ⟦Điểm Nghẽn|Bottlenecks⟧ Thường Gặp Theo Quy Mô
+@121
+1K người dùng:
+- Điểm nghẽn: Thường là không có
+- Nếu có: Truy vấn kém hiệu quả
+
+10K người dùng:
+- Điểm nghẽn: Truy vấn cơ sở dữ liệu
+- Cách khắc phục: Thêm chỉ mục, bộ nhớ đệm
+
+100K người dùng:
+- Điểm nghẽn: Ghi vào cơ sở dữ liệu
+- Cách khắc phục: Bản sao chỉ đọc, tối ưu
+
+1M người dùng:
+- Điểm nghẽn: Năng lực cơ sở dữ liệu
+- Cách khắc phục: Phân mảnh dữ liệu, bộ nhớ đệm phân tán
+
+10M+ người dùng:
+- Điểm nghẽn: Mọi thứ
+- Cách khắc phục: Kiến trúc phân tán, CDN, điện toán biên
+
+@122
+Bài Tập Thực Hành
+@123
+Bài tập 1: Ước Lượng Một Dịch Vụ Kiểu YouTube
+@124
+Dữ kiện:
+- 1 tỷ người dùng
+- 100 triệu người dùng hoạt động hằng ngày
+- Mỗi người dùng xem 10 video/ngày (trung bình 5 phút mỗi video)
+- 1% người dùng tải lên 1 video/ngày
+
+Hãy tính:
+1. Số lượt xem video mỗi giây
+2. Băng thông tải lên cần thiết
+3. Dung lượng lưu trữ tăng thêm mỗi ngày
+4. Chi phí hạ tầng ước chừng
+
+Hãy tự thử trước!
+
+@125
+**Đáp án:**
+@126
+1. Số lượt xem video mỗi giây:
+   100M người dùng × 10 video/ngày = 1B lượt xem/ngày
+   1B / 86.400 giây ≈ 11.574 lượt xem/giây
+
+2. Băng thông tải lên:
+   1M lượt tải lên/ngày (1% của 100M)
+   Video trung bình: 5 phút × 10MB/phút = 50MB
+   50MB × 1M = 50TB/ngày băng thông tải lên
+   50TB / 86.400s ≈ 580 MB/giây tải lên
+
+3. Dung lượng lưu trữ tăng thêm:
+   1M video/ngày × 50MB = 50TB/ngày dữ liệu thô
+   Nhiều độ phân giải (360p, 720p, 1080p): ×3
+   = 150TB/ngày
+   = 4,5PB/tháng
+
+4. Chi phí hạ tầng (ước chừng):
+   Lưu trữ: 4,5PB × $0,02/GB = $90.000/tháng
+   CDN: 1B lượt xem × 50MB = 50PB truyền tải
+   Chi phí CDN: ~$500.000/tháng
+   Tính toán: ~$200.000/tháng
+   Tổng: tối thiểu ~$800.000/tháng
+
+@127
+Bài tập 2: Ước Lượng Một Ứng Dụng Nhắn Tin
+@128
+Dữ kiện:
+- 500 triệu người dùng
+- 200 triệu người dùng hoạt động hằng ngày
+- Mỗi người dùng gửi 50 tin nhắn/ngày
+- Mỗi người dùng nhận 50 tin nhắn/ngày
+
+Hãy tính:
+1. Số tin nhắn mỗi giây
+2. Dung lượng lưu trữ mỗi ngày
+3. Số lượt ghi cơ sở dữ liệu mỗi giây
+4. Thách thức khi gửi tin theo thời gian thực
+
+Đến lượt bạn!
+
+@129
+**Đáp án:**
+@130
+1. Số tin nhắn mỗi giây:
+   200M người dùng × 50 tin nhắn = 10B tin nhắn/ngày
+   10B / 86.400 ≈ 115.740 tin nhắn/giây
+
+2. Dung lượng lưu trữ mỗi ngày:
+   10B tin nhắn × 100 byte = 1TB/ngày
+   (tin nhắn văn bản có kích thước nhỏ)
+
+3. Số lượt ghi cơ sở dữ liệu:
+   115.740 lượt ghi/giây
+   → Cần cơ sở dữ liệu phân tán hoặc vùng đệm cho việc ghi
+
+4. Gửi tin theo thời gian thực:
+   115.740 tin nhắn/giây cần được chuyển đi
+   Mỗi tin cần được đẩy qua WebSocket
+   → Cần hệ thống pub/sub hiệu quả
+   → Hàng đợi thông điệp là thiết yếu
+
+@131
+Xây Dựng Trực Giác: Hướng Dẫn Luyện Tập
+@132
+**Cách rèn luyện ⟦trực giác về quy mô|scale intuition⟧:**
+@133
+Bước 1: Ghi Nhớ Các Con Số Then Chốt
+@134
+Bắt buộc phải biết:
+- 1 triệu giây ≈ 12 ngày
+- 1 tỷ giây ≈ 32 năm
+- 1KB = 1.000 byte
+- 1MB = 1.000KB = 1 triệu byte
+- 1GB = 1.000MB = 1 tỷ byte
+- 1TB = 1.000GB
+
+Máy chủ thông thường:
+- 1.000 yêu cầu/giây
+- 16GB RAM
+- 1TB lưu trữ
+
+Chi phí thông thường:
+- Máy chủ: $50-500/tháng
+- Cơ sở dữ liệu: $50-1.000/tháng
+- CDN: $10-1.000/tháng
+- Lưu trữ: $0,02/GB/tháng
+
+@135
+Bước 2: Luyện ⟦Ước Lượng|Estimation⟧ Mỗi Ngày
+@136
+Mỗi ngày, hãy ước lượng:
+
+Thứ Hai: "Instagram có 500M DAU. Mỗi ngày có bao nhiêu ảnh được tải lên?"
+Thứ Ba: "Twitter xử lý bao nhiêu tweet/giây?"
+Thứ Tư: "Băng thông mỗi giây của Netflix là bao nhiêu?"
+Thứ Năm: "Google xử lý bao nhiêu lượt tìm kiếm mỗi giây?"
+Thứ Sáu: "Dung lượng lưu trữ của Facebook tăng bao nhiêu mỗi ngày?"
+
+Có công mài sắt, có ngày nên kim!
+
+@137
+Bước 3: Kiểm Chứng Các ⟦Ước Lượng|Estimates⟧ Của Bạn
+@138
+Sau khi ước lượng, hãy tìm hiểu con số thực tế:
+- Instagram: 95M ảnh/ngày
+- Twitter: 6.000 tweet/giây
+- Netflix: băng thông cao điểm 200Gbps
+- Google: 40.000 lượt tìm kiếm/giây
+
+So sánh với ước lượng của bạn
+Hiệu chỉnh lại trực giác của bạn
+
+@139
+Những Điểm Cốt Lõi
+@140
+**⟦Trực giác về quy mô|Scale intuition⟧ = ⟦Ước lượng|Estimate⟧ nhanh các yêu cầu của hệ thống**
+@141
+Kỹ năng then chốt cho:
+- Phỏng vấn thiết kế hệ thống
+- Lập kế hoạch kiến trúc
+- Hoạch định năng lực
+- Ước lượng chi phí
+
+@142
+**Phổ ⟦quy mô|scale⟧:**
+@143
+1K người dùng: Xe đạp (đơn giản)
+10K người dùng: Xe hơi (thêm cấu trúc)
+100K người dùng: Xe buýt (cần tối ưu)
+1M người dùng: Máy bay (hệ thống phân tán)
+10M+ người dùng: Hạm đội máy bay (hạ tầng phức tạp)
+
+Mỗi lần tăng 10 lần = kiến trúc khác biệt về căn bản
+
+@144
+**⟦Ước tính nhanh|Back-of-envelope calculations⟧:**
+@145
+Khung tư duy:
+1. Người dùng → Hoạt động → Yêu cầu
+2. Yêu cầu → Năng lực máy chủ
+3. Dữ liệu → Lưu trữ → Chi phí
+4. Xác định điểm nghẽn
+
+Luyện tập cho đến khi thành phản xạ!
+
+@146
+**Mẫu hình ⟦đọc|Read⟧ và ⟦ghi|Write⟧:**
+@147
+Thiên về đọc (90%+):
+→ Lưu đệm là vua
+→ CDN là thiết yếu
+→ Bản sao chỉ đọc
+
+Thiên về ghi (50%+):
+→ Tối ưu việc ghi
+→ Dùng hàng đợi làm vùng đệm
+→ Cơ sở dữ liệu chuyên dụng
+
+Biết mẫu hình của mình → Biết chiến lược của mình
+
+@148
+**Tư duy về ⟦điểm nghẽn|bottleneck⟧:**
+@149
+Tốc độ hệ thống = Tốc độ của thành phần chậm nhất
+
+Luôn tự hỏi:
+- Điểm nghẽn là gì?
+- Cái gì chạm giới hạn đầu tiên?
+- Nên tối ưu cái gì trước?
+
+Tối ưu điểm nghẽn, đừng tối ưu mọi thứ!
+
+@150
+**Xây dựng trực giác:**
+@151
+1. Ghi nhớ các con số then chốt
+2. Luyện ước lượng mỗi ngày
+3. Kiểm chứng với dữ liệu thực tế
+4. Hiệu chỉnh và cải thiện
+
+Sau 100 lần ước lượng, bạn sẽ có trực giác vững vàng
+
+@152
+**Hãy nhớ:**
+@153
+Trực giác không đến từ lý thuyết
+Trực giác đến từ thực hành
+
+Hãy tính toán mỗi ngày
+Sau 1 tháng, bạn sẽ "cảm" được quy mô
+

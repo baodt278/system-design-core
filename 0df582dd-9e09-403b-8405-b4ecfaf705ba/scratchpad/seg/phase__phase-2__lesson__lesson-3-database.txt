@@ -1,0 +1,655 @@
+@0 h1
+Database Scaling: Chiến Lược Scale Data Layer
+@1 p
+Tôi còn nhớ cái ngày database đầu tiên tôi thiết kế sụp đổ.
+@2 p
+Black Friday. Traffic tăng 10x. Database CPU lên 100%, queries timeout liên tục, response time từ 200ms lên 30 giây.
+@3 p
+3 giờ sáng, tôi gọi senior architect. Anh ấy hỏi đúng một câu: *"Em có mấy database?"*
+@4 p
+Tôi: *"Một cái ạ."*
+@5 p
+Anh ấy: *"Vậy là em chưa biết scale database."*
+@6 p
+Đó là đêm tôi học bài học đắt giá nhất về database scaling. Và đó là lesson này sẽ giúp bạn tránh được sai lầm đó.
+@7 h2
+Tại Sao Database Luôn Là Bottleneck Đầu Tiên?
+@8 p
+Trước khi học cách scale, hãy hiểu tại sao database luôn là điểm nghẽn.
+@9 p
+**Lý do 1: Disk I/O chậm nhất trong hệ thống**
+@10 pre
+RAM access:       100 nanoseconds
+SSD read:         150 microseconds  (1,500x chậm hơn RAM)
+HDD read:         10 milliseconds   (100,000x chậm hơn RAM)
+
+Database phải:
+- Đọc từ disk
+- Parse query
+- Execute query plan
+- Ghi kết quả
+
+→ Inherently slow
+
+@11 p
+**Lý do 2: State khó scale hơn stateless**
+@12 pre
+Application servers (stateless):
+- Không lưu data
+- Add thêm servers → Scale ngay
+- Easy!
+
+Database (stateful):
+- Lưu data
+- Data phải consistent
+- Hard!
+
+@13 p
+**Lý do 3: Single point of failure**
+@14 pre
+10 app servers, 1 database
+Database chết → Toàn bộ hệ thống chết
+
+@15 p
+**Key insight:** Database scaling phải được plan từ đầu, không phải khi production đã cháy.
+@16 h2
+Vertical Scaling: Đơn Giản Nhưng Có Giới Hạn
+@17 h3
+Định Nghĩa
+@18 p
+**Vertical scaling = Tăng sức mạnh của server hiện tại**
+@19 pre
+Hiện tại: 8 CPU, 16GB RAM, 500GB SSD
+Upgrade:  32 CPU, 128GB RAM, 2TB SSD
+
+@20 pre
+graph TB
+    A[Database Server<br/>8 CPU, 16GB RAM] -->|Upgrade Hardware| B[Database Server<br/>32 CPU, 128GB RAM]
+    
+    style A fill:#ff6b6b
+    style B fill:#51cf66
+@21 p
+*Vertical scaling: Nâng cấp hardware của cùng một server*
+@22 h3
+Ưu Điểm
+@23 p
+**1. Cực kỳ đơn giản**
+@24 pre
+No code changes
+No architecture changes  
+Click nút → Có thêm power
+10 phút implement
+
+@25 p
+**2. Không có distributed system complexity**
+@26 pre
+Vẫn là single database
+ACID transactions hoạt động bình thường
+No data consistency issues
+Queries vẫn như cũ
+
+@27 p
+**3. Immediate results**
+@28 pre
+Before: CPU 90%, queries 5 giây
+After:  CPU 30%, queries 200ms
+
+@29 h3
+Nhược Điểm
+@30 p
+**1. Có giới hạn vật lý**
+@31 pre
+Không thể mua CPU/RAM vô hạn
+Có ceiling tối đa
+Eventually phải sang horizontal scaling
+
+@32 p
+**2. Đắt với diminishing returns**
+@33 pre
+Cost scaling (real numbers từ AWS):
+
+16GB RAM → 32GB:  2x giá ($200 → $400/tháng)
+32GB RAM → 64GB:  3x giá ($400 → $1,200/tháng)  
+64GB RAM → 128GB: 5x giá ($1,200 → $6,000/tháng)
+128GB RAM → 256GB: 8x giá ($6,000 → $48,000/tháng)
+
+Giá tăng exponentially, performance chỉ tăng linearly
+
+@34 p
+**3. Single point of failure**
+@35 pre
+Server chết → Toàn bộ hệ thống chết
+Maintenance → Downtime
+No redundancy
+
+@36 p
+**4. Requires downtime**
+@37 pre
+Phải restart database
+5-30 phút downtime
+Không thể zero-downtime upgrade
+
+@38 h3
+Trade-off Matrix
+@39 pre
+Vertical Scaling:
+
+Simplicity:        ★★★★★
+Quick implement:   ★★★★★
+Consistency:       ★★★★★
+Cost efficiency:   ★★☆☆☆
+Availability:      ★★☆☆☆
+Scalability limit: ★★☆☆☆
+
+@40 h3
+Khi Nào Nên Dùng?
+@41 p
+**Sử dụng vertical scaling khi:**
+@42 pre
+✓ Startup/MVP (< 10K users)
+✓ Budget constraints
+✓ Small team (không có expertise distributed systems)
+✓ Traffic predictable và có ceiling
+✓ Data < 1TB
+✓ ACID transactions critical (banking, payments)
+
+@43 p
+**Ví dụ thực tế:**
+@44 p
+Tôi từng tư vấn cho một banking startup. Team muốn "microservices + sharded database từ đầu".
+@45 p
+Tôi nói không:
+@46 li
+5,000 users hiện tại
+@47 li
+PostgreSQL 16GB RAM handle được 50K users
+@48 li
+Simple = ship nhanh hơn
+@49 li
+Tiết kiệm budget cho marketing
+@50 p
+2 năm sau, 30K users, database vẫn ổn. Chỉ upgrade lên 32GB RAM (1 giờ downtime lúc 3am).
+@51 p
+**Đúng quyết định cho context đó.**
+@52 h3
+Lời Khuyên Cá Nhân
+@53 p
+**Luôn bắt đầu với vertical scaling.**
+@54 p
+Chỉ chuyển horizontal khi:
+@55 li
+Hit CPU/Memory limits (80%+ consistently)
+@56 li
+Cost quá cao
+@57 li
+Need high availability
+@58 p
+Don't prematurely optimize.
+@59 h2
+Horizontal Scaling: Phức Tạp Nhưng Unlimited
+@60 h3
+Định Nghĩa
+@61 p
+**Horizontal scaling = Thêm nhiều servers**
+@62 pre
+1 database xử lý 10,000 req/s
+→ 5 databases, mỗi cái xử lý 2,000 req/s
+
+@63 pre
+graph TB
+    A[Single Database<br/>10K req/s] -->|Scale Out| B[Multiple Databases]
+    B --> C[DB 1<br/>2K req/s]
+    B --> D[DB 2<br/>2K req/s]
+    B --> E[DB 3<br/>2K req/s]
+    B --> F[DB 4<br/>2K req/s]
+    B --> G[DB 5<br/>2K req/s]
+    
+    style A fill:#ff6b6b
+    style C fill:#51cf66
+    style D fill:#51cf66
+    style E fill:#51cf66
+    style F fill:#51cf66
+    style G fill:#51cf66
+@64 p
+*Horizontal scaling: Thêm nhiều database servers để phân tán load*
+@65 h3
+Ưu Điểm
+@66 pre
+Theoretically unlimited scale
+   - 10 servers → 10x capacity
+   - 100 servers → 100x capacity
+
+Cost-effective at scale
+   - Dùng commodity hardware
+   - Linear cost với capacity
+
+High availability
+   - 1 server chết → Còn lại continue
+   - No single point of failure
+
+No downtime scaling
+   - Add servers không cần restart existing
+
+@67 h3
+Nhược Điểm
+@68 pre
+Extreme complexity
+   - Data consistency challenges
+   - Distributed transactions nightmare
+   - Network partitions
+
+Application changes required
+   - Code phải shard-aware
+   - Cannot treat as single DB
+
+Operational overhead  
+   - Monitor nhiều servers
+   - Backup/restore phức tạp
+   - Resharding = nightmare
+
+@69 h2
+Read Replicas: Scale Reads Dễ Dàng
+@70 h3
+The Read/Write Pattern
+@71 p
+**Reality check:** Hầu hết applications là read-heavy.
+@72 pre
+Typical web app:
+90% reads (SELECT)
+10% writes (INSERT, UPDATE, DELETE)
+
+Social media:
+95% reads (xem posts, profiles)
+5% writes (tạo post, like)
+
+E-commerce:
+85% reads (browse products)
+15% writes (checkout, reviews)
+
+@73 p
+**Key insight:** Nếu tách reads và writes, có thể scale reads rất dễ.
+@74 h3
+Master-Slave Architecture
+@75 pre
+graph TB
+    APP[Application Servers]
+    
+    APP -->|All Writes| MASTER[Master Database<br/>Handle Writes]
+    
+    MASTER -.->|Replicate Async| SLAVE1[Slave 1<br/>Read Only]
+    MASTER -.->|Replicate Async| SLAVE2[Slave 2<br/>Read Only]
+    MASTER -.->|Replicate Async| SLAVE3[Slave 3<br/>Read Only]
+    
+    APP -->|Read Queries| LB[Load Balancer]
+    LB --> SLAVE1
+    LB --> SLAVE2
+    LB --> SLAVE3
+    
+    style MASTER fill:#ff6b6b
+    style SLAVE1 fill:#51cf66
+    style SLAVE2 fill:#51cf66
+    style SLAVE3 fill:#51cf66
+@76 p
+*Master xử lý writes, Slaves xử lý reads. Replication là async.*
+@77 p
+**Workflow:**
+@78 pre
+1. Application writes → Master database
+2. Master async replicate changes → Slaves  
+3. Application reads → Load balanced qua Slaves
+4. Slaves serve reads only, không nhận writes
+
+@79 h3
+Implementation Example
+@80 h3
+Replication Lag: Vấn Đề Quan Trọng Nhất
+@81 p
+**Problem:**
+@82 pre
+Timeline:
+10:00:00.000 - User update profile trên Master
+10:00:00.050 - Master replicate sang Slaves (50ms delay)
+10:00:00.010 - User refresh page, query đi Slave
+              → Slave chưa có new data!
+              → User thấy old data
+
+User confused: "Tôi vừa update sao không thấy thay đổi?"
+
+@83 p
+**Replication lag = Độ trễ giữa Master write và Slave có data**
+@84 pre
+Good:         < 100ms
+Acceptable:   < 1 second
+Problematic:  1-5 seconds
+Disaster:     > 5 seconds
+
+@85 h3
+Solutions for Replication Lag
+@86 p
+**Solution 1: Read-After-Write từ Master**
+@87 p
+**Solution 2: Session Stickiness**
+@88 p
+**Solution 3: Accept và Inform User**
+@89 h3
+Khi Nào Dùng Read Replicas?
+@90 pre
+Sử dụng khi:
+✓ Read-heavy workload (> 70% reads)
+✓ Replication lag acceptable (< 1s OK)
+✓ Master có thể handle all writes
+✓ Cần high availability cho reads
+
+Không dùng khi:
+✗ Write-heavy workload (> 40% writes)
+✗ Strong consistency required everywhere
+✗ Master already overloaded với writes
+
+@91 p
+**Personal experience:**
+@92 p
+Read replicas giải quyết 80% database scaling problems. Simple, effective, ít risk.
+@93 p
+Recommendation: Thử read replicas trước khi nghĩ đến sharding.
+@94 h2
+Sharding: Ultimate Scale, Ultimate Complexity
+@95 h3
+Vấn Đề Read Replicas Không Giải Quyết Được
+@96 pre
+Scenario:
+- Master xử lý 50,000 writes/second
+- Add 10 read replicas → Master vẫn phải handle 50K writes
+- Read replicas chỉ scale reads, KHÔNG scale writes
+
+Cũng như:
+- Database quá lớn: 10TB data
+- Single server không đủ storage
+- Queries chậm vì table billion rows
+
+@97 p
+**Read replicas scale reads. Sharding scale BOTH writes và data size.**
+@98 h3
+Sharding Concept
+@99 p
+**Sharding = Chia data thành nhiều databases, mỗi database lưu subset**
+@100 pre
+graph TB
+    APP[Application Layer]
+    
+    APP -->|Users 0-250K| SHARD1[Shard 1<br/>Users 0-250K]
+    APP -->|Users 250K-500K| SHARD2[Shard 2<br/>Users 250K-500K]
+    APP -->|Users 500K-750K| SHARD3[Shard 3<br/>Users 500K-750K]
+    APP -->|Users 750K-1M| SHARD4[Shard 4<br/>Users 750K-1M]
+    
+    style SHARD1 fill:#51cf66
+    style SHARD2 fill:#51cf66
+    style SHARD3 fill:#51cf66
+    style SHARD4 fill:#51cf66
+@101 p
+*Mỗi shard chứa subset của total data, hoạt động independent*
+@102 p
+**Key characteristics:**
+@103 pre
+- Mỗi shard là independent database
+- Mỗi shard chứa portion của total data
+- Không có shared state giữa shards
+- Application quyết định query đi shard nào
+
+@104 h3
+Shard Strategies
+@105 p
+**Strategy 1: Hash-Based Sharding**
+@106 pre
+Phân phối đều data
+Simple algorithm
+Predictable shard location
+
+Khó thay đổi num_shards (resharding nightmare)
+Range queries across shards khó
+Related data có thể ở different shards
+
+@107 p
+**Strategy 2: Range-Based Sharding**
+@108 pre
+Dễ add new shards (just add new range)
+Range queries trong 1 shard efficient
+Related data (sequential IDs) cùng shard
+
+Uneven distribution (shard mới ít data)
+Hotspots (new users vào shard mới nhất)
+Load không balanced
+
+@109 p
+**Strategy 3: Geography-Based Sharding**
+@110 pre
+Low latency (data gần users)
+Compliance (data residency requirements)
+Natural data isolation
+
+Cross-region queries expensive
+Uneven distribution nếu users không đều
+Complex nếu user travel
+
+@111 p
+**Strategy 4: Entity-Based Sharding**
+@112 pre
+Entity-specific optimization
+Clear data ownership
+Independent scaling per entity type
+
+JOIN across entities = disaster
+Transactions across entities hard
+More shards to manage
+
+@113 h3
+Sharding Challenges
+@114 p
+**Challenge 1: Cross-Shard Queries**
+@115 p
+**Challenge 2: Distributed Transactions**
+@116 p
+**Challenge 3: Resharding**
+@117 pre
+Scenario:
+- Bắt đầu với 4 shards
+- Cần tăng lên 8 shards
+- Phải move 50% data từ mỗi shard cũ
+
+Process:
+1. Create 4 shards mới
+2. Stop writes (downtime) hoặc dual-write (complexity)
+3. Copy data từ old → new shards
+4. Verify data consistency
+5. Switch traffic sang new shards
+6. Remove old shards
+
+Nightmare:
+- 10TB data → 1-2 tuần migration
+- Risk data loss
+- Downtime hoặc extreme complexity
+
+@118 p
+**Challenge 4: Auto-Increment IDs**
+@119 h3
+Khi Nào Dùng Sharding?
+@120 pre
+Chỉ dùng sharding khi:
+✓ Vertical scaling maxed out (512GB+ RAM)
+✓ Read replicas không đủ (writes quá nhiều)
+✓ Single database không đủ storage (>10TB)
+✓ Have experienced team (distributed systems expertise)
+✓ Budget cho operational complexity
+
+Tránh sharding khi:
+✗ < 1 million users
+✗ < 5TB data
+✗ Can still vertical scale
+✗ Team chưa có experience
+✗ Chưa thử read replicas + caching
+
+@121 h3
+Lời Khuyên Từ Kinh Nghiệm
+@122 p
+Tôi đã làm việc với 3 companies cố gắng shard database quá sớm. Cả 3 đều regret.
+@123 p
+**Company A:** 50K users, shard database. 6 tháng development, nhiều bugs, team exhausted.
+@124 p
+**Company B:** Đợi đến 2M users, vertical scale + read replicas. Chỉ shard khi thực sự cần (5M users).
+@125 p
+**Company C:** 100K users, architect khăng khăng shard. 1 năm sau, downsize về single database vì complexity không worth it.
+@126 p
+**My rule:**
+@127 pre
+Thứ tự scaling database:
+1. Vertical scaling (đầu tiên)
+2. Query optimization + indexing
+3. Caching layer
+4. Read replicas
+5. Sharding (cuối cùng, khi không còn cách)
+
+@128 p
+Sharding là **last resort**, không phải first choice.
+@129 h2
+Consistency Trade-offs
+@130 h3
+CAP Theorem Reminder
+@131 p
+Trong distributed database, chỉ chọn được 2/3:
+@132 pre
+C (Consistency):  Mọi người đọc cùng data
+A (Availability): Hệ thống luôn response
+P (Partition tolerance): Hoạt động khi network fail
+
+Network partition LUÔN xảy ra → Phải chọn C hoặc A
+
+@133 h3
+Consistency Models
+@134 p
+**Strong Consistency (CP)**
+@135 pre
+User A writes X = 10
+User B reads X → MUST see 10
+
+Banking app:
+- Transfer $100
+- Balance PHẢI reflect ngay
+- Không chấp nhận stale data
+
+Trade-off:
+Data accurate
+Slow (wait for all replicas)
+Lower availability
+
+@136 p
+**Eventual Consistency (AP)**
+@137 pre
+User A writes X = 10  
+User B reads X → Có thể thấy old value
+Sau vài giây → Mọi người thấy 10
+
+Social media:
+- Like post
+- Like count có thể delay vài giây
+- Acceptable
+
+Trade-off:
+Fast
+High availability
+Data có thể stale
+
+@138 h3
+Choosing Consistency Level
+@139 pre
+Cần Strong Consistency:
+✓ Financial transactions
+✓ Inventory management
+✓ User authentication
+✓ Critical business logic
+
+Chấp nhận Eventual Consistency:
+✓ Social media metrics (likes, views)
+✓ Recommendation systems
+✓ Analytics dashboards
+✓ Activity feeds
+
+@140 p
+**Framework:**
+@141 pre
+Tự hỏi:
+1. User bị ảnh hưởng nếu data sai vài giây không?
+2. Business loss nếu data inconsistent?
+3. Có thể compensate sau không?
+
+If any "yes" → Strong consistency
+All "no" → Eventual consistency OK
+
+@142 h2
+Key Takeaways
+@143 p
+**Database scaling hierarchy:**
+@144 pre
+Level 1: Vertical scaling
+- Simplest, start here
+- Good cho < 100K users
+
+Level 2: Query optimization + caching  
+- Giải quyết 70% problems
+- Low cost, high impact
+
+Level 3: Read replicas
+- Scale reads easily
+- Good cho read-heavy apps
+
+Level 4: Sharding
+- Last resort
+- Only khi thực sự cần
+- Extreme complexity
+
+@145 p
+**Shard strategies:**
+@146 pre
+Hash-based:      Đều, khó resize
+Range-based:     Dễ add shards, uneven distribution
+Geography-based: Low latency, compliance
+Entity-based:    Clear ownership, hard joins
+
+@147 p
+**Consistency trade-offs:**
+@148 pre
+Strong consistency: Accurate, slow, lower availability
+Eventual consistency: Fast, available, có thể stale
+
+Choose dựa trên business impact, không phải technical preference
+
+@149 p
+**Golden rules:**
+@150 li
+**Start simple:** Vertical scaling first
+@151 li
+**Measure first:** Prove bạn cần scale
+@152 li
+**Optimize before scale:** Query optimization > More servers
+@153 li
+**Read replicas before sharding:** 80% problems solved
+@154 li
+**Shard only when necessary:** Last resort
+@155 p
+**Câu hỏi tự kiểm tra:**
+@156 p
+Trước khi scale database, tự hỏi:
+@157 li
+*Tôi đã optimize queries chưa?*
+@158 li
+*Tôi đã dùng cache chưa?*
+@159 li
+*Tôi đã thử vertical scale chưa?*
+@160 li
+*Tôi đã thử read replicas chưa?*
+@161 li
+*Tôi có data/experience chứng minh cần sharding?*
+@162 p
+Nếu chưa "yes" cho 4 câu đầu, đừng nghĩ đến sharding.
+@163 p
+Database scaling không phải về sử dụng technology phức tạp nhất. Nó về chọn giải pháp **phù hợp** với scale và constraints của bạn.
+@164 p
+**Simple > Complex. Always.**
