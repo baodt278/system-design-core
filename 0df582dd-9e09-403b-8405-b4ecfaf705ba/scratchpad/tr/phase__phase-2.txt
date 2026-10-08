@@ -1,0 +1,106 @@
+@0
+1) Giới Thiệu Phần
+@1
+Phần 2 là nơi bạn học các khối hạ tầng cốt lõi đứng sau một hệ thống hiện đại.
+@2
+Trong ⟦môi trường vận hành thực tế|production⟧, ⟦khả năng mở rộng|scale⟧ không đến từ mã ứng dụng đơn thuần. Nó đến từ cách bạn phối hợp ⟦cân bằng tải|load balancing⟧, ⟦bộ nhớ đệm|cache⟧, ⟦cơ sở dữ liệu|database⟧ và ⟦xử lý bất đồng bộ|async processing⟧ thành một kiến trúc nhất quán.
+@3
+2) Vì Sao Phần Này Tồn Tại
+@4
+Một ứng dụng chạy được chưa phải là một hệ thống vận hành thực tế.
+@5
+Hệ thống ở quy mô thật cần:
+@6
+Lớp hạ tầng để xử lý ⟦lưu lượng|traffic⟧ tăng đột biến.
+@7
+Lớp tối ưu ⟦hiệu năng|performance⟧ để giảm ⟦độ trễ|latency⟧ và giảm tải cho backend.
+@8
+Cơ chế tách rời dịch vụ để giảm ⟦liên kết|coupling⟧ và tăng độ bền vững.
+@9
+Cách kết hợp các ⟦thành phần|component⟧ đúng đắn để giữ ⟦độ tin cậy|reliability⟧ khi ⟦mở rộng|scale⟧.
+@10
+Nắm chắc các ⟦khối xây dựng|building blocks⟧ ở phần này là điều kiện cần trước khi đi vào ⟦hệ thống phân tán|distributed systems⟧ ở phần sau.
+@11
+3) Mục Tiêu Học Tập
+@12
+Hiểu các thành phần hạ tầng cốt lõi trong hệ thống hiện đại.
+@13
+Hiểu các lớp tối ưu ⟦hiệu năng|performance⟧ trong môi trường vận hành thực tế.
+@14
+Hiểu cơ chế ⟦tách rời|decoupling⟧ dịch vụ bằng ⟦xử lý bất đồng bộ|async processing⟧.
+@15
+Hiểu cách xử lý dữ liệu và ⟦lưu lượng|traffic⟧ khi hệ thống tăng trưởng.
+@16
+Hiểu cách tích hợp các ⟦thành phần|component⟧ và đánh giá ⟦sự đánh đổi|trade-off⟧ tổng thể.
+@17
+4) Bạn Sẽ Học Gì Trong Phần Này
+@18
+**Phân phối ⟦lưu lượng|Traffic⟧:** phân phối tải để tăng độ ổn định và ⟦khả năng mở rộng|scalability⟧.
+@19
+**Lớp ⟦lưu đệm|Caching⟧:** dùng ⟦bộ nhớ đệm|cache⟧ để giảm ⟦độ trễ|latency⟧ và bảo vệ backend.
+@20
+**Mở rộng dữ liệu:** chọn chiến lược mở rộng dữ liệu theo ⟦mẫu truy cập|access pattern⟧.
+@21
+**⟦Xử lý bất đồng bộ|Async processing⟧:** tách luồng đồng bộ và bất đồng bộ phù hợp với ⟦khối lượng công việc|workload⟧.
+@22
+**⟦Tách rời dịch vụ|Service decoupling⟧:** giảm phụ thuộc trực tiếp giữa các dịch vụ.
+@23
+**Tích hợp các ⟦thành phần|Component⟧:** ghép các khối hạ tầng thành một hệ thống có thể vận hành.
+@24
+**⟦Đánh đổi|Trade-offs⟧ ở cấp hệ thống:** cân bằng ⟦hiệu năng|performance⟧, chi phí, độ phức tạp và tính ổn định.
+@25
+5) Tổng Quan Các Bài Học
+@26
+Bài 1 — ⟦Cân Bằng Tải|Load Balancing⟧ — Phân Phối ⟦Lưu Lượng|Traffic⟧ Trong ⟦Hệ Thống Phân Tán|Distributed Systems⟧
+@27
+**Mục tiêu:** hiểu cách phân phối ⟦yêu cầu|request⟧ giữa nhiều ⟦phiên bản chạy|instance⟧/dịch vụ.
+@28
+**Bạn nhận được:** tư duy chọn chiến lược cân bằng tải theo ⟦mẫu lưu lượng|traffic pattern⟧ và ⟦độ tin cậy|reliability⟧.
+@29
+Bài 2 — ⟦Lưu Đệm|Caching⟧ (Lớp ⟦Hiệu Năng|Performance⟧)
+@30
+**Mục tiêu:** hiểu ⟦bộ nhớ đệm|cache⟧ như một lớp hiệu năng trong kiến trúc vận hành thực tế.
+@31
+**Bạn nhận được:** cách giảm ⟦độ trễ|latency⟧, giảm tải cho ⟦cơ sở dữ liệu|database⟧ và kiểm soát việc ⟦vô hiệu hoá|invalidation⟧ hợp lý.
+@32
+Bài 3 — ⟦Mở Rộng Cơ Sở Dữ Liệu|Database Scaling⟧
+@33
+**Mục tiêu:** nắm các hướng mở rộng dữ liệu theo mức tăng trưởng thực tế.
+@34
+**Bạn nhận được:** nền tảng để chọn giữa ⟦mở rộng theo chiều dọc|vertical scaling⟧/⟦theo chiều ngang|horizontal scaling⟧ và tối ưu việc truy cập dữ liệu.
+@35
+Bài 4 — ⟦Hàng Đợi Thông Điệp|Message Queues⟧ & ⟦Xử Lý Bất Đồng Bộ|Async Processing⟧ — ⟦Tách Rời Dịch Vụ|Decoupling Services⟧
+@36
+**Mục tiêu:** hiểu cách dùng ⟦hàng đợi|queue⟧ để tách luồng xử lý và giảm ⟦liên kết|coupling⟧.
+@37
+**Bạn nhận được:** tư duy thiết kế ⟦đường ống|pipeline⟧ xử lý bất đồng bộ có khả năng chịu tải tốt hơn.
+@38
+Bài 5 — Tích Hợp & Tư Duy ⟦Đánh Đổi|Trade-off⟧ — Kết Hợp Các ⟦Thành Phần|Components⟧ Thành Hệ Thống
+@39
+**Mục tiêu:** học cách phối hợp nhiều ⟦khối xây dựng|building block⟧ thành một kiến trúc thống nhất.
+@40
+**Bạn nhận được:** khả năng đánh giá ⟦sự đánh đổi|trade-off⟧ ở cấp hệ thống thay vì từng ⟦thành phần|component⟧ riêng lẻ.
+@41
+6) Kết Quả Sau Khi Hoàn Thành Phần 2
+@43
+Giải thích rõ vì sao chọn từng thành phần hạ tầng trong một thiết kế.
+@44
+Lập luận hướng mở rộng phù hợp với ⟦lưu lượng|traffic⟧ và dữ liệu.
+@45
+Đánh giá ⟦sự đánh đổi|trade-off⟧ về hiệu năng giữa ⟦bộ nhớ đệm|cache⟧, ⟦hàng đợi|queue⟧, ⟦cơ sở dữ liệu|database⟧ và ⟦ranh giới dịch vụ|service boundaries⟧.
+@46
+Hiểu cách các ⟦thành phần|component⟧ tương tác với nhau trong hệ thống vận hành thực tế.
+@47
+7) Chuẩn Bị Cho Phần 3
+@48
+Phần 2 cho bạn nền tảng hạ tầng và tư duy tích hợp các ⟦thành phần|component⟧.
+@49
+Sang **Phần 3 — Nền Tảng Hệ Thống Phân Tán**, bạn sẽ đi sâu vào:
+@50
+các ⟦mô hình nhất quán|consistency model⟧,
+@51
+⟦khả năng chịu lỗi|fault tolerance⟧,
+@52
+⟦phối hợp phân tán|distributed coordination⟧,
+@53
+và các thách thức về ⟦độ tin cậy|reliability⟧ trong ⟦hệ phân tán|distributed system⟧.

@@ -1,0 +1,549 @@
+@0
+Các Thành Phần Trong Một Hệ Thống Web
+@1
+Chào mừng bạn đến với Phần 1 — Nền Tảng: Tư Duy Theo Hệ Thống.
+@2
+Sau Phần 0, bạn đã thay đổi tư duy. Giờ là lúc xây dựng nền tảng thực sự: **Hiểu các ⟦khối xây dựng|building blocks⟧ của mọi hệ thống.**
+@3
+Tôi còn nhớ lần đầu ⟦gỡ lỗi|debug⟧ một sự cố trong ⟦môi trường vận hành thực tế|production⟧. API chậm. Nhưng chậm ở đâu?
+@4
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ vẽ sơ đồ:
+@5
+Máy khách → Bộ cân bằng tải → Máy chủ ứng dụng → Bộ nhớ đệm → CSDL
+
+@6
+Rồi hỏi: *"⟦Yêu cầu|Request⟧ đi qua bao nhiêu bước? Mỗi bước mất bao lâu?"*
+@7
+Đó là lần đầu tiên tôi hiểu ra: **Hệ thống là tập hợp các ⟦thành phần|components⟧ tương tác với nhau.** Hiểu từng thành phần = hiểu cả hệ thống.
+@8
+Tại Sao Phải Học Về Các ⟦Thành Phần|Components⟧?
+@9
+**Góc nhìn ở cấp độ mã nguồn:**
+@10
+Bạn thấy các hàm. Nhưng kiến trúc sư thấy:
+@11
+**Góc nhìn ở cấp độ hệ thống:**
+@12
+Máy khách (50ms)
+  ↓
+Bộ cân bằng tải (10ms)
+  ↓
+Máy chủ ứng dụng (20ms)
+  ↓
+Truy vấn CSDL (500ms) ← ĐIỂM NGHẼN
+  ↓
+Tổng: 580ms
+
+@13
+Tư duy ở cấp độ hệ thống giúp bạn:
+@14
+**Xác định ⟦điểm nghẽn|bottlenecks⟧** nhanh chóng
+@15
+**Thiết kế để ⟦mở rộng|scale⟧** ngay từ đầu
+@16
+**⟦Gỡ lỗi|Debug⟧ trong môi trường thực tế** hiệu quả
+@17
+**Giao tiếp** rõ ràng với nhóm
+@18
+Bạn không thể tối ưu thứ mà bạn không hiểu.
+@19
+Thành Phần 1: ⟦Máy Khách|Client⟧ (Trình Duyệt/Ứng Dụng Di Động)
+@20
+Vai Trò
+@21
+⟦Máy khách|Client⟧ là ⟦lớp trình bày|presentation layer⟧ — nơi người dùng tương tác với hệ thống.
+@22
+**Đặc điểm:**
+@23
+Không đáng tin cậy (người dùng có thể sửa mã)
+@24
+Không kiểm soát được môi trường (thiết bị, mạng)
+@25
+⟦Có trạng thái|Stateful⟧ (có thể lưu dữ liệu cục bộ)
+@26
+Các Quy Tắc Then Chốt
+@27
+**Quy tắc 1: KHÔNG BAO GIỜ tin tưởng ⟦máy khách|client⟧**
+@28
+**Tại sao?** Tôi từng thấy hacker sửa JavaScript, đổi giá từ $100 → $1 rồi gửi đi. ⟦Máy chủ|Server⟧ tin máy khách → Công ty mất tiền.
+@29
+**Quy tắc 2: Kiểm tra dữ liệu ở ⟦máy khách|client⟧ chỉ để cải thiện trải nghiệm người dùng (UX)**
+@30
+Các ⟦Sự Đánh Đổi|Trade-offs⟧
+@31
+ Ưu điểm:
+- Tương tác phong phú
+- Có thể hoạt động ngoại tuyến
+- Giảm tải cho máy chủ (kết xuất phía máy khách)
+
+ Nhược điểm:
+- Rủi ro bảo mật
+- Môi trường không đồng nhất
+- Khó cập nhật (người dùng không tải lại trang)
+
+@32
+Khi Nào Nên Tối Ưu ⟦Máy Khách|Client⟧?
+@33
+**Tối ưu khi:**
+@34
+Kích thước ⟦gói mã|bundle⟧ lớn (> 1MB)
+@35
+Thời gian ⟦hiển thị đầu tiên|first paint⟧ chậm (> 3s)
+@36
+Người dùng có thiết bị/mạng chậm
+@37
+**Các kỹ thuật:**
+@38
+⟦Chia nhỏ mã|Code splitting⟧
+@39
+⟦Tải lười|Lazy loading⟧
+@40
+⟦Service worker|Service workers⟧ (⟦lưu đệm|caching⟧)
+@41
+CDN cho ⟦tài nguyên tĩnh|static assets⟧
+@42
+Thành Phần 2: ⟦Bộ Cân Bằng Tải|Load Balancer⟧
+@43
+Vai Trò
+@44
+Phân phối ⟦lưu lượng|traffic⟧ đồng đều giữa nhiều ⟦máy chủ|servers⟧.
+@45
+Khi Nào Cần?
+@46
+Kịch bản 1: Một máy chủ duy nhất
+1 máy chủ xử lý 1.000 yêu cầu/giây
+Lưu lượng tăng lên 5.000 yêu cầu/giây
+→ Máy chủ quá tải → Chậm/sập
+
+Kịch bản 2: Nhiều máy chủ + Bộ cân bằng tải
+5 máy chủ, mỗi máy xử lý 1.000 yêu cầu/giây
+Bộ cân bằng tải phân phối đồng đều
+→ Hệ thống xử lý trơn tru 5.000 yêu cầu/giây
+
+@47
+**Cần ⟦bộ cân bằng tải|load balancer⟧ khi:**
+@48
+1 máy chủ không đủ ⟦năng lực xử lý|capacity⟧
+@49
+Cần ⟦tính sẵn sàng cao|high availability⟧ (1 máy chủ chết, các máy khác tiếp quản)
+@50
+⟦Triển khai cuốn chiếu|Rolling deployments⟧ (cập nhật từng máy chủ một)
+@51
+Khi Nào KHÔNG Cần?
+@52
+ Không cần khi:
+- < 1.000 người dùng
+- Công cụ nội bộ
+- MVP/Bản mẫu thử nghiệm
+- Ngân sách hạn chế
+
+Hãy bắt đầu đơn giản. Thêm LB khi đã chứng minh là cần thiết.
+
+@53
+Các Thuật Toán Cốt Lõi
+@54
+**Round Robin (xoay vòng):**
+@55
+Yêu cầu 1 → Máy chủ A
+Yêu cầu 2 → Máy chủ B
+Yêu cầu 3 → Máy chủ C
+Yêu cầu 4 → Máy chủ A (lặp lại)
+
+ Đơn giản, phân phối đều
+ Không xét đến tải của máy chủ
+
+@56
+**Least Connections (ít kết nối nhất):**
+@57
+Máy chủ A: 50 kết nối
+Máy chủ B: 20 kết nối ← Chọn máy này
+Máy chủ C: 35 kết nối
+
+ Cân bằng tải tốt hơn
+ Phức tạp hơn, phải theo dõi trạng thái
+
+@58
+**Weighted Round Robin (xoay vòng có trọng số):**
+@59
+Máy chủ A (16GB RAM): trọng số 2
+Máy chủ B (8GB RAM): trọng số 1
+
+A nhận 2 yêu cầu cho mỗi 1 yêu cầu gửi tới B
+
+ Tận dụng nhiều hơn các máy chủ mạnh
+ Phải cấu hình trọng số
+
+@60
+Các ⟦Sự Đánh Đổi|Trade-offs⟧
+@61
+ Được:
+- Tăng năng lực xử lý
+- Tính sẵn sàng cao
+- Triển khai không gián đoạn (zero-downtime)
+
+ Mất:
+- Thêm độ phức tạp
+- Có thể trở thành điểm lỗi duy nhất (chính LB)
+- Tăng độ trễ mạng (+10-50ms)
+
+@62
+Khuyến Nghị Cá Nhân
+@63
+Bắt đầu với Round Robin. Đơn giản và hiệu quả cho 80% trường hợp.
+@64
+Chỉ dùng Least Connections khi các ⟦yêu cầu|requests⟧ có thời gian xử lý rất khác nhau (WebSocket, tải tệp lên).
+@65
+Thành Phần 3: ⟦Máy Chủ Ứng Dụng|Application Server⟧
+@66
+Vai Trò
+@67
+Lớp ⟦logic nghiệp vụ|business logic⟧. Xử lý ⟦yêu cầu|requests⟧, điều phối ⟦luồng dữ liệu|data flow⟧.
+@68
+Quyết Định Then Chốt: ⟦Phi Trạng Thái|Stateless⟧ Hay ⟦Có Trạng Thái|Stateful⟧
+@69
+**Máy chủ ⟦phi trạng thái|stateless⟧:**
+@70
+**Máy chủ ⟦có trạng thái|stateful⟧:**
+@71
+Phân Tích ⟦Sự Đánh Đổi|Trade-off⟧
+@72
+Phi trạng thái:
+ Dễ mở rộng theo chiều ngang
+ Máy chủ nào cũng xử lý được mọi yêu cầu
+ Thân thiện với đám mây (máy chủ có thể chết)
+ Tốn thêm một lần gọi CSDL để lấy dữ liệu người dùng
+
+Có trạng thái:
+ Độ trễ thấp (không cần đi một vòng tới CSDL)
+ Có thể lưu đệm dữ liệu riêng của từng người dùng
+ Khó mở rộng (cần sticky session)
+ Mất phiên khi máy chủ khởi động lại
+
+@73
+Quan Điểm Mạnh Mẽ Của Tôi
+@74
+**Mặc định chọn ⟦phi trạng thái|stateless⟧.** Chỉ chọn ⟦có trạng thái|stateful⟧ khi có lý do thật sự chính đáng (kết nối WebSocket, máy chủ game).
+@75
+Hệ thống hiện đại với ⟦vi dịch vụ|microservices⟧? ⟦Phi trạng thái|Stateless⟧ là bắt buộc.
+@76
+Cấu Hình Máy Chủ
+@77
+**⟦Mô hình xử lý đồng thời|Concurrency model⟧ rất quan trọng:**
+@78
+Dựa trên luồng (Java, kiểu truyền thống):
+- 1 luồng cho mỗi yêu cầu
+- Bị giới hạn bởi kích thước thread pool
+- Tốt: Mô hình quen thuộc
+- Dở: Tốn bộ nhớ
+
+Vòng lặp sự kiện (Node.js, Python asyncio):
+- 1 luồng xử lý nhiều yêu cầu
+- I/O không chặn (non-blocking)
+- Tốt: Khả năng xử lý đồng thời cao
+- Dở: Tác vụ nặng CPU chặn tất cả
+
+Dựa trên worker (Gunicorn, uWSGI):
+- Tạo sẵn các worker (pre-fork)
+- Mỗi worker tự xử lý yêu cầu
+- Tốt: Cô lập sự cố
+- Dở: Tốn nhiều bộ nhớ hơn
+
+@79
+**Chọn theo ⟦khối lượng công việc|workload⟧:**
+@80
+Nặng về I/O (gọi API, truy vấn CSDL) → ⟦Vòng lặp sự kiện|Event-loop⟧
+@81
+Nặng về CPU (xử lý ảnh) → Dựa trên ⟦tiến trình xử lý|worker⟧
+@82
+Hỗn hợp → Dựa trên ⟦tiến trình xử lý|worker⟧, bên trong dùng ⟦bất đồng bộ|async⟧
+@83
+Thành Phần 4: Lớp ⟦Bộ Nhớ Đệm|Cache⟧
+@84
+Vai Trò
+@85
+Lưu dữ liệu được truy cập thường xuyên trong bộ nhớ (in-memory) để giảm tải cho CSDL.
+@86
+Câu Hỏi Nền Tảng
+@87
+**Có nên dùng ⟦bộ nhớ đệm|cache⟧ không?**
+@88
+Trả lời bằng lưu đồ:
+@89
+Có thiên về đọc không? (đọc:ghi > 10:1)
+  ↓ CÓ
+Dữ liệu có thay đổi thường xuyên không?
+  ↓ KHÔNG
+Truy vấn có tốn kém không? (> 100ms)
+  ↓ CÓ
+→ DÙNG BỘ NHỚ ĐỆM
+
+Có câu trả lời KHÔNG nào → Cân nhắc kỹ
+
+@90
+Các Chiến Lược ⟦Lưu Đệm|Cache⟧
+@91
+**Chiến lược 1: Cache-Aside (tải lười — Lazy Loading)**
+@92
+**Chiến lược 2: Write-Through (ghi xuyên)**
+@93
+**Chiến lược 3: Write-Behind (ghi sau)**
+@94
+⟦Vô Hiệu Hoá Bộ Nhớ Đệm|Cache Invalidation⟧ — Bài Toán Khó
+@95
+Phil Karlton: *"Trong khoa học máy tính chỉ có hai việc khó: vô hiệu hoá bộ nhớ đệm và đặt tên."*
+@96
+**Vấn đề:**
+@97
+1. Người dùng cập nhật hồ sơ → CSDL được cập nhật
+2. Bộ nhớ đệm vẫn giữ dữ liệu cũ
+3. Người dùng tải lại trang → Thấy dữ liệu cũ (trúng bộ nhớ đệm)
+4. Người dùng bối rối
+
+@98
+**Giải pháp:**
+@99
+**Phương án 1: TTL (Thời gian sống — Time To Live)**
+@100
+**Phương án 2: ⟦Vô hiệu hoá chủ động|Active Invalidation⟧**
+@101
+**Phương án 3: ⟦Hướng sự kiện|Event-Driven⟧**
+@102
+Quy Tắc Cá Nhân
+@103
+Bắt đầu với TTL. Đơn giản và hiệu quả.
+@104
+Thêm ⟦vô hiệu hoá chủ động|active invalidation⟧ khi độ mới của dữ liệu là yếu tố then chốt.
+@105
+Chỉ dùng cách ⟦hướng sự kiện|event-driven⟧ khi có nhiều ⟦dịch vụ|services⟧ cần phản ứng.
+@106
+Khi Nào KHÔNG Nên Dùng ⟦Bộ Nhớ Đệm|Cache⟧
+@107
+ Không lưu đệm:
+- Dữ liệu ghi nhiều (số lượng tồn kho thay đổi liên tục)
+- Dữ liệu thời gian thực (giá cổ phiếu)
+- Dữ liệu cá nhân hoá (khác nhau theo từng người, tỷ lệ trúng thấp)
+- Tập dữ liệu nhỏ (< 1000 bản ghi, CSDL đã đủ nhanh)
+
+@108
+Thành Phần 5: ⟦Cơ Sở Dữ Liệu|Database⟧
+@109
+Vai Trò
+@110
+⟦Lưu trữ bền vững|Persistent storage⟧. ⟦Nguồn dữ liệu gốc|Source of truth⟧.
+@111
+Vì Sao ⟦Cơ Sở Dữ Liệu|Database⟧ Thường Là ⟦Điểm Nghẽn|Bottleneck⟧
+@112
+Đọc từ bộ nhớ:  100 nano giây
+Đọc từ SSD:     150 micro giây  (chậm hơn 1.500 lần)
+Đọc từ HDD:     10 mili giây    (chậm hơn 100.000 lần)
+
+Cơ sở dữ liệu phải:
+- Đọc từ đĩa
+- Phân tích cú pháp truy vấn
+- Thực thi kế hoạch truy vấn
+- Trả về kết quả
+
+→ Về bản chất là chậm so với bộ nhớ
+
+@113
+Thứ Bậc Tối Ưu
+@114
+**Cấp 1: ⟦Tối ưu truy vấn|Query Optimization⟧ (Làm việc này trước)**
+@115
+**Cấp 2: ⟦Gộp kết nối|Connection Pooling⟧**
+@116
+**Cấp 3: ⟦Bản sao chỉ đọc|Read Replicas⟧**
+@117
+Máy chủ chính (Ghi)
+  ↓ nhân bản
+Bản sao 1, Bản sao 2, Bản sao 3 (Đọc)
+
+Ghi → Máy chủ chính
+Đọc → Cân bằng tải giữa các bản sao
+
+ Dễ dàng mở rộng khả năng đọc
+ Nhất quán cuối cùng (độ trễ nhân bản)
+
+@118
+**Cấp 4: ⟦Phân mảnh dữ liệu|Sharding⟧ (Phương án cuối cùng)**
+@119
+Chỉ khi:
+- Một CSDL không chịu nổi tải
+- Đã mở rộng theo chiều dọc tới mức tối đa
+- Dữ liệu quá lớn so với 1 máy
+
+Cái giá:
+- Rất phức tạp
+- Truy vấn xuyên mảnh rất khó
+- Phân mảnh lại là cơn ác mộng
+
+@120
+Các ⟦Sự Đánh Đổi|Trade-offs⟧: SQL Và NoSQL
+@121
+SQL (PostgreSQL, MySQL):
+ Giao dịch ACID
+ Truy vấn phong phú (JOIN, tổng hợp)
+ Toàn vẹn dữ liệu
+ Khó mở rộng theo chiều ngang
+ Thay đổi lược đồ tốn kém
+
+NoSQL (MongoDB, DynamoDB):
+ Dễ mở rộng theo chiều ngang
+ Lược đồ linh hoạt
+ Thông lượng ghi cao
+ Không có JOIN (phải xử lý ở tầng ứng dụng)
+ Nhất quán cuối cùng
+ Khả năng truy vấn hạn chế hơn
+
+@122
+**⟦Khung ra quyết định|Decision framework⟧:**
+@123
+Chọn SQL khi:
+- Cần giao dịch (ngân hàng, thương mại điện tử)
+- Quan hệ dữ liệu phức tạp
+- Truy vấn tuỳ biến (ad-hoc)
+- Toàn vẹn dữ liệu là then chốt
+
+Chọn NoSQL khi:
+- Cần quy mô cực lớn
+- Khối lượng công việc thiên về ghi
+- Lược đồ linh hoạt
+- Truy vấn đơn giản (tra cứu khoá–giá trị)
+
+@124
+Quan Điểm Của Tôi
+@125
+**Hãy bắt đầu với SQL (PostgreSQL).**
+@126
+Nó xử lý được 99% ⟦tình huống sử dụng|use cases⟧. Cột JSONB mang lại sự linh hoạt. Hãy ⟦mở rộng theo chiều dọc|scale vertically⟧ trước, thêm ⟦bản sao chỉ đọc|read replicas⟧ sau.
+@127
+Chỉ chuyển sang NoSQL khi đã chứng minh được SQL không chịu nổi tải.
+@128
+Ghép Tất Cả Lại Với Nhau: ⟦Luồng Yêu Cầu|Request Flow⟧
+@129
+Hãy lần theo một ⟦yêu cầu|request⟧ từ đầu đến cuối:
+@130
+Ví Dụ: Người Dùng Tải Trang Chủ
+@131
+1. Trình duyệt → Tra cứu DNS
+   Thời gian: 20ms
+
+2. Trình duyệt → HTTPS tới Bộ cân bằng tải
+   Thời gian: 50ms (TCP + TLS)
+
+3. Bộ cân bằng tải → Chọn máy chủ ứng dụng (Round Robin)
+   Thời gian: 5ms
+
+4. Máy chủ ứng dụng → Kiểm tra bộ nhớ đệm cho dữ liệu trang chủ
+   Thời gian: 2ms
+   Kết quả: TRÚNG bộ nhớ đệm
+
+5. Máy chủ ứng dụng → Trả HTML về LB
+   Thời gian: 5ms
+
+6. LB → Trả về trình duyệt
+   Thời gian: 10ms
+
+7. Trình duyệt → Phân tích và hiển thị
+   Thời gian: 200ms
+
+Tổng: ~292ms
+Điểm nghẽn: Trình duyệt hiển thị trang (200ms)
+
+@132
+Nếu ⟦Trượt Bộ Nhớ Đệm|Cache MISS⟧:
+@133
+4. Máy chủ ứng dụng → Kiểm tra bộ nhớ đệm
+   Kết quả: TRƯỢT
+
+5. Máy chủ ứng dụng → Truy vấn CSDL
+   Thời gian: 300ms ← ĐIỂM NGHẼN MỚI
+
+6. Máy chủ ứng dụng → Lưu vào bộ nhớ đệm
+   Thời gian: 2ms
+
+7. Máy chủ ứng dụng → Trả về HTML
+   Thời gian: 5ms
+
+Tổng: ~594ms (chậm gấp 2 lần)
+
+@134
+Chiến Lược Tối Ưu
+@135
+Điểm nghẽn hiện tại: CSDL (300ms)
+
+Các phương án:
+A. Thêm chỉ mục → 300ms → 50ms (nhanh gấp 6 lần, ít công sức)
+B. Tối ưu truy vấn → 50ms → 20ms (gấp 2,5 lần, công sức trung bình)
+C. Thêm lưu đệm → Giảm số lần truy cập CSDL xuống gần bằng 0
+
+Hành động: Làm A trước (lợi ích/chi phí cao nhất), rồi theo dõi.
+
+@136
+⟦Mô Hình Tư Duy|Mental Model⟧: Mọi Thứ Đều Là Một Hệ Thống
+@137
+Hãy áp dụng tư duy theo ⟦thành phần|component⟧ ở mọi nơi:
+@138
+**Nhà hàng:**
+@139
+⟦Máy khách|Client⟧: Thực khách
+@140
+⟦Bộ cân bằng tải|Load Balancer⟧: Nhân viên đón khách
+@141
+⟦Máy chủ|Servers⟧: Bồi bàn
+@142
+⟦Bộ nhớ đệm|Cache⟧: Hiểu biết về thực đơn
+@143
+⟦Cơ sở dữ liệu|Database⟧: Nhà bếp
+@144
+**⟦Điểm nghẽn|Bottleneck⟧?** Nhà bếp (mất 20 phút chuẩn bị món)
+@145
+**Giải pháp?** Thêm đầu bếp (⟦mở rộng theo chiều ngang|horizontal scaling⟧) hoặc trang bị thiết bị tốt hơn (⟦mở rộng theo chiều dọc|vertical scaling⟧).
+@146
+**Quán cà phê:**
+@147
+⟦Điểm nghẽn|Bottleneck⟧: 1 nhân viên pha chế, 10 khách hàng
+@148
+Giải pháp: Thêm nhân viên pha chế hoặc ki-ốt tự phục vụ
+@149
+Khi bạn nhìn ra được những ⟦mẫu|patterns⟧ này, bạn sẽ hiểu hệ thống một cách sâu sắc.
+@150
+Những Điểm Cốt Lõi
+@151
+**Mọi hệ thống web đều có 5 ⟦thành phần|components⟧ cơ bản:**
+@152
+**⟦Máy khách|Client⟧** — Trình bày, không đáng tin cậy
+@153
+**⟦Bộ cân bằng tải|Load Balancer⟧** — Phân phối ⟦lưu lượng|traffic⟧
+@154
+**⟦Máy chủ ứng dụng|Application Server⟧** — ⟦Logic nghiệp vụ|Business logic⟧, ưu tiên ⟦phi trạng thái|stateless⟧
+@155
+**⟦Bộ nhớ đệm|Cache⟧** — Đọc nhanh, nhưng ⟦vô hiệu hoá|invalidation⟧ rất khó
+@156
+**⟦Cơ sở dữ liệu|Database⟧** — ⟦Nguồn dữ liệu gốc|Source of truth⟧, thường là ⟦điểm nghẽn|bottleneck⟧
+@157
+**Nguyên tắc thiết kế:**
+@158
+**Bắt đầu đơn giản** — Đừng ⟦thiết kế thừa|over-engineer⟧
+@159
+**Đo lường trước** — Tìm ra ⟦điểm nghẽn|bottlenecks⟧ thật sự
+@160
+**Tối ưu ⟦điểm nghẽn|bottlenecks⟧** — Không phải tối ưu mọi thứ
+@161
+**Mở rộng dần dần** — Theo chiều dọc → Theo chiều ngang
+@162
+**Ý thức về ⟦sự đánh đổi|trade-off⟧:**
+@163
+Máy chủ ⟦phi trạng thái|stateless⟧ và ⟦có trạng thái|stateful⟧
+@164
+Độ phức tạp của ⟦bộ nhớ đệm|cache⟧ và ⟦hiệu năng|performance⟧
+@165
+⟦Tính nhất quán|Consistency⟧ của SQL và khả năng ⟦mở rộng|scale⟧ của NoSQL
+@166
+⟦Hệ thống nguyên khối|Monolith⟧ đơn giản và hệ thống ⟦phân tán|distributed⟧ phức tạp
+@167
+**Các bước tiếp theo:**
+@168
+Hãy thực hành với một hệ thống thật. Lần theo các ⟦yêu cầu|requests⟧. Xác định các ⟦thành phần|components⟧. Đo ⟦độ trễ|latency⟧. Tìm ⟦điểm nghẽn|bottlenecks⟧.
+@169
+Tư duy theo ⟦thành phần|component⟧ là nền móng. Hãy làm chủ nó trước khi học các ⟦mẫu|patterns⟧ phức tạp hơn.

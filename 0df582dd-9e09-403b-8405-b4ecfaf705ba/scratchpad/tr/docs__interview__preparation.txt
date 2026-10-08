@@ -1,0 +1,300 @@
+@0
+Chuẩn Bị Cho ⟦Phỏng Vấn Thiết Kế Hệ Thống|System Design Interview⟧
+@1
+Tài liệu này dành cho lập trình viên muốn chuẩn bị nghiêm túc cho **⟦phỏng vấn thiết kế hệ thống|system design interview⟧** ở cấp độ trung cấp đến lâu năm.
+@2
+Mục tiêu không phải là học thuộc "khuôn mẫu trả lời", mà là xây dựng tư duy kiến trúc có cấu trúc, giải thích được ⟦sự đánh đổi|trade-off⟧, và giao tiếp rõ ràng dưới áp lực phỏng vấn.
+@3
+**Bối cảnh lộ trình:** nội dung này phù hợp nhất khi bạn đã đi qua phần nền tảng từ Phần 0 đến Phần 5 và đang bước vào tư duy của **Phần 6 — Làm Chủ Thiết Kế Hệ Thống**.
+@4
+1) ⟦Phỏng Vấn Thiết Kế Hệ Thống|System Design Interview⟧ Là Gì?
+@5
+⟦Phỏng vấn thiết kế hệ thống|System Design Interview⟧ kiểm tra cách bạn tư duy khi đứng trước một bài toán hệ thống mở, thiếu dữ kiện và có nhiều ràng buộc thực tế.
+@6
+Mục Đích Chính
+@7
+Đánh giá khả năng **thiết kế hệ thống** chứ không chỉ viết mã.
+@8
+Đánh giá cách bạn ra quyết định trong điều kiện không hoàn hảo.
+@9
+Đánh giá khả năng cân bằng giữa sản phẩm, kỹ thuật và vận hành.
+@10
+Khác Gì Với ⟦Phỏng Vấn Lập Trình|Coding Interview⟧?
+@11
+⟦Phỏng vấn lập trình|Coding interview⟧: tập trung vào thuật toán, ⟦tính đúng đắn|correctness⟧ và chi tiết ⟦cài đặt|implementation⟧.
+@12
+⟦Phỏng vấn thiết kế hệ thống|System design interview⟧: tập trung vào kiến trúc tổng thể, ⟦quy mô|scale⟧, ⟦độ tin cậy|reliability⟧, ⟦sự đánh đổi|trade-off⟧ và khả năng giao tiếp.
+@13
+Trọng Tâm
+@14
+Bạn được kỳ vọng thể hiện tư duy của một kỹ sư có thể thiết kế hệ thống cho ⟦môi trường vận hành thực tế|production⟧, chứ không chỉ là người hoàn thành một hàm.
+@15
+2) ⟦Người Phỏng Vấn|Interviewer⟧ Thực Sự Đánh Giá Điều Gì?
+@16
+1. ⟦Làm Rõ Yêu Cầu|Requirement Clarification⟧
+@17
+Bạn có biết hỏi đúng câu hỏi để làm rõ ⟦phạm vi|scope⟧ không?
+@18
+Bạn có phân biệt được ⟦yêu cầu chức năng|functional requirement⟧ và ⟦yêu cầu phi chức năng|non-functional requirement⟧ không?
+@19
+2. Lập Luận Về ⟦Đánh Đổi|Trade-off⟧
+@20
+Bạn có giải thích được vì sao chọn phương án A thay vì B?
+@21
+Bạn có nhìn thấy chi phí vận hành và độ phức tạp đi kèm không?
+@22
+3. Tư Duy Về ⟦Khả Năng Mở Rộng|Scalability⟧
+@23
+Bạn có biết đặt giả định về QPS, kích thước dữ liệu, tốc độ tăng trưởng không?
+@24
+Bạn có biết hệ thống sẽ vỡ ở đâu khi ⟦quy mô|scale⟧ tăng?
+@25
+4. Giao Tiếp Có Cấu Trúc
+@26
+Câu trả lời có mạch lạc, theo thứ tự, dễ theo dõi không?
+@27
+Bạn có chủ động dẫn dắt buổi trao đổi không?
+@28
+5. Ý Thức Về ⟦Vận Hành Thực Tế|Production⟧
+@29
+Bạn có nghĩ tới ⟦độ tin cậy|reliability⟧, ⟦khả năng quan sát|observability⟧, ⟦xử lý sự cố|failure handling⟧, ⟦hoàn tác|rollback⟧?
+@30
+Bạn có biết khi nào nên giữ đơn giản và khi nào phải nâng cấp kiến trúc?
+@31
+3) Quy Trình Phỏng Vấn Chuẩn (Từng Bước)
+@32
+Bước 1 — ⟦Làm Rõ Yêu Cầu|Clarify Requirements⟧
+@33
+Xác định rõ bài toán cốt lõi.
+@34
+Chốt các ⟦tình huống sử dụng|use case⟧ ưu tiên.
+@35
+Làm rõ các giới hạn: ⟦độ trễ|latency⟧, ⟦tính nhất quán|consistency⟧, ⟦tính sẵn sàng|availability⟧, ⟦chi phí|cost⟧.
+@36
+Bước 2 — Xác Định ⟦Quy Mô|Scale⟧ & ⟦Ràng Buộc|Constraints⟧
+@37
+Ước lượng số người dùng, QPS, ⟦dung lượng lưu trữ|storage⟧, ⟦băng thông|bandwidth⟧.
+@38
+Xác định các "điểm nóng" cần ưu tiên xử lý trước.
+@39
+Bước 3 — ⟦Kiến Trúc Tổng Quan|High-level Architecture⟧
+@40
+Vẽ kiến trúc ở mức các khối lớn.
+@41
+Xác định các ⟦dịch vụ|service⟧ chính, ⟦luồng dữ liệu|data flow⟧ và ranh giới trách nhiệm.
+@42
+Bước 4 — ⟦Mô Hình Dữ Liệu|Data Model⟧ & API
+@43
+Thiết kế các ⟦thực thể|entity⟧ chính và ⟦mẫu truy cập|access pattern⟧ quan trọng.
+@44
+Đề xuất các API cốt lõi để kiểm chứng tính khả thi.
+@45
+Bước 5 — ⟦Đào Sâu|Deep Dive⟧ Vào Thành Phần Quan Trọng
+@46
+Chọn 1-2 điểm quan trọng để ⟦đào sâu|deep dive⟧: ⟦bộ nhớ đệm|cache⟧, ⟦hàng đợi|queue⟧, ⟦phân vùng|partition⟧ CSDL, ⟦mô hình nhất quán|consistency model⟧...
+@47
+Bước 6 — Phân Tích ⟦Điểm Nghẽn|Bottleneck⟧ & ⟦Sự Cố|Failure⟧
+@48
+Chỉ ra ⟦điểm lỗi duy nhất|SPOF⟧, ⟦điểm nóng|hotspot⟧, ⟦các kiểu sự cố|failure mode⟧.
+@49
+Nêu chiến lược giảm rủi ro và phương án dự phòng.
+@50
+Bước 7 — ⟦Đánh Đổi|Trade-off⟧ & Tiến Hoá
+@51
+Tóm tắt điểm mạnh/điểm yếu của phương án.
+@52
+Nêu ⟦lộ trình|roadmap⟧ nâng cấp hệ thống theo từng giai đoạn tăng trưởng.
+@53
+4) ⟦Khung Tư Duy|Framework⟧ Gợi Ý: SNAKE
+@54
+Một ⟦khung tư duy|framework⟧ ngắn gọn, dễ nhớ để bạn không bị "trôi" trong buổi phỏng vấn.
+@55
+S — Scope (⟦Phạm Vi|Scope⟧)
+@56
+Bài toán là gì?
+@57
+⟦Tình huống sử dụng|Use case⟧ nào được ưu tiên?
+@58
+Điều gì không nằm trong ⟦phạm vi|scope⟧ hôm nay?
+@59
+N — Numbers (Các Con Số)
+@60
+Ước lượng QPS, ⟦kích thước dữ liệu gửi kèm|payload⟧, dung lượng lưu trữ, ⟦lưu lượng cao điểm|peak traffic⟧.
+@61
+Đặt các con số gần đúng để định hướng kiến trúc.
+@62
+A — API
+@63
+Đề xuất các API cốt lõi để chốt ⟦hợp đồng giao tiếp|contract⟧ giữa ⟦máy khách|client⟧ và ⟦máy chủ|server⟧.
+@64
+K — Key Components (Các Thành Phần Chính)
+@65
+Dựng kiến trúc chính: ⟦bộ cân bằng tải|LB⟧, ứng dụng, ⟦bộ nhớ đệm|cache⟧, CSDL, ⟦hàng đợi|queue⟧, ⟦tiến trình xử lý|worker⟧, CDN...
+@66
+E — Explore Deep Dive (⟦Đào Sâu|Deep Dive⟧)
+@67
+⟦Đào sâu|Deep dive⟧ 1-2 vấn đề có rủi ro cao nhất.
+@68
+Nói rõ ⟦sự đánh đổi|trade-off⟧ và kế hoạch ⟦mở rộng|scale⟧ tiếp theo.
+@69
+Ví Dụ Nhanh (Thiết Kế Dịch Vụ ⟦Rút Gọn URL|URL Shortener⟧)
+@70
+**Phạm vi:** tạo URL rút gọn, ⟦chuyển hướng|redirect⟧ nhanh, thống kê lượt nhấp cơ bản.
+@71
+**Các con số:** 50 nghìn yêu cầu/giây cho đọc, 5 nghìn yêu cầu/giây cho ghi, lưu dữ liệu 5 năm.
+@72
+**API:** `POST /shorten`, `GET /{code}`.
+@73
+**Các thành phần chính:** dịch vụ API + ⟦kho khoá–giá trị|KV store⟧ + ⟦bộ nhớ đệm|cache⟧ + ⟦đường ống phân tích|analytics pipeline⟧.
+@74
+**Đào sâu:** chiến lược xử lý ⟦trùng mã|collision⟧, ⟦khoá nóng|hot key⟧, ⟦nhất quán cuối cùng|eventual consistency⟧ cho phần phân tích.
+@75
+5) Các Câu Hỏi Phỏng Vấn Phổ Biến Và Điều Được Kiểm Tra
+@76
+Thiết Kế Twitter / X
+@77
+Kiểm tra: chiến lược ⟦phân phát|fan-out⟧, cách sinh ⟦bảng tin|feed⟧, ⟦đánh đổi|trade-off⟧ giữa đọc và ghi, ⟦tính nhất quán|consistency⟧ của ⟦dòng thời gian|timeline⟧.
+@78
+Thiết Kế YouTube
+@79
+Kiểm tra: ⟦đường ống tải lên|upload pipeline⟧, ⟦chuyển mã video|transcoding⟧, chiến lược CDN, ⟦kho siêu dữ liệu|metadata store⟧, ranh giới của hệ thống ⟦gợi ý|recommendation⟧.
+@80
+Thiết Kế ⟦Hệ Thống Nhắn Tin|Chat System⟧
+@81
+Kiểm tra: ⟦truyền tin thời gian thực|real-time delivery⟧, ⟦quản lý kết nối|connection management⟧, ⟦thứ tự|ordering⟧ tin nhắn, ⟦đồng bộ ngoại tuyến|offline sync⟧, ⟦trạng thái trực tuyến|presence⟧.
+@82
+Thiết Kế Dịch Vụ ⟦Rút Gọn URL|URL Shortener⟧
+@83
+Kiểm tra: ⟦sinh ID|ID generation⟧, ⟦độ trễ|latency⟧ khi ⟦chuyển hướng|redirect⟧, xử lý ⟦khoá nóng|hot key⟧, tối ưu cho hệ thống ⟦thiên về đọc|read-heavy⟧.
+@84
+Thiết Kế ⟦Hệ Thống Thông Báo|Notification System⟧
+@85
+Kiểm tra: gửi tin qua ⟦nhiều kênh|multi-channel⟧, ⟦chính sách thử lại|retry policy⟧, ⟦khử trùng lặp|deduplication⟧, ⟦giới hạn tần suất|rate limiting⟧, ⟦khả năng quan sát|observability⟧.
+@86
+6) Cách Chuẩn Bị Hiệu Quả
+@87
+Theo Lộ Trình Học
+@88
+Củng cố nền tảng (Phần 0-2).
+@89
+Nâng độ sâu về ⟦hệ thống phân tán|distributed⟧ và ⟦quy mô|scale⟧ (Phần 3-4).
+@90
+Luyện các ⟦mẫu|pattern⟧ thực tế và cách ⟦kể lại quá trình ra quyết định|decision narrative⟧ (Phần 5-6).
+@91
+Chiến Lược Luyện Tập
+@92
+3-4 đề/tuần, mỗi đề 45-60 phút.
+@93
+1 buổi/tuần chỉ để ôn lại và sửa cách trình bày.
+@94
+Luyện cả ⟦độ rộng|breadth⟧ (nhiều loại đề) lẫn ⟦độ sâu|depth⟧ (đào sâu một đề).
+@95
+Luyện Vẽ Sơ Đồ Trên ⟦Bảng Trắng|Whiteboard⟧
+@96
+Vẽ nhanh kiến trúc ở mức thành phần trước.
+@97
+Giảm chi tiết thừa, làm rõ ⟦luồng dữ liệu|data flow⟧.
+@98
+Luyện Giao Tiếp
+@99
+Nói thành tiếng khi giải đề.
+@100
+Ghi âm 1-2 lần/tuần để tự phát hiện chỗ trình bày còn rối.
+@101
+⟦Phỏng Vấn Thử|Mock Interviews⟧
+@102
+Tập với bạn học hoặc ⟦người hướng dẫn|mentor⟧.
+@103
+Sau mỗi buổi, chốt 3 điểm mạnh và 3 điểm cần sửa.
+@104
+Học Từ Hệ Thống Thật
+@105
+Đọc các ⟦blog kỹ thuật|engineering blog⟧ (Uber, Netflix, Cloudflare, Meta...).
+@106
+Tóm tắt lại theo khung: bài toán -> giải pháp -> ⟦đánh đổi|trade-off⟧ -> bài học.
+@107
+7) Các Lỗi Rất Thường Gặp
+@108
+Nhảy vào giải pháp quá sớm khi chưa chốt yêu cầu.
+@109
+Không hỏi số liệu về ⟦quy mô|scale⟧ nên kiến trúc thiếu cơ sở.
+@110
+Nói quá nhiều thành phần nhưng không giải thích ⟦sự đánh đổi|trade-off⟧.
+@111
+⟦Thiết kế thừa|Over-engineering⟧ ngay từ đầu.
+@112
+Không phân biệt "bắt buộc phải có bây giờ" và "tiến hoá sau này".
+@113
+Bỏ qua ⟦độ tin cậy|reliability⟧, ⟦xử lý sự cố|failure handling⟧, ⟦khả năng quan sát|observability⟧.
+@114
+**Danh sách kiểm tra chống lỗi:** trước khi kết thúc, luôn tự hỏi "Nếu ⟦lưu lượng|traffic⟧ tăng gấp 10 lần, hệ thống sẽ vỡ ở đâu trước?"
+@115
+8) Lộ Trình Chuẩn Bị Đề Xuất (8 Tuần)
+@116
+Tuần 1-2
+@117
+Ôn ⟦khung tư duy|framework⟧ trả lời (SNAKE).
+@118
+Luyện 4 đề cơ bản: ⟦rút gọn URL|URL shortener⟧, ⟦bộ giới hạn tần suất|rate limiter⟧, hệ thống thông báo, hệ thống nhắn tin cơ bản.
+@119
+Tuần 3-4
+@120
+Tăng độ sâu về ⟦hệ thống phân tán|distributed systems⟧: ⟦tính nhất quán|consistency⟧, ⟦phân vùng|partition⟧, ⟦hàng đợi|queue⟧, ⟦vô hiệu hoá bộ nhớ đệm|cache invalidation⟧.
+@121
+Luyện 4 đề trung bình: ⟦bảng tin|feed⟧, ⟦lưu trữ tệp|file storage⟧, tìm kiếm cơ bản, ⟦đường ống phân tích|analytics pipeline⟧.
+@122
+Tuần 5-6
+@123
+Tập các đề từ trung bình đến khó: YouTube, tổng quan hệ thống điều phối gọi xe, tổng quan hệ thống phân phối quảng cáo.
+@124
+Tập phân tích ⟦điểm nghẽn|bottleneck⟧/⟦sự cố|failure⟧ kỹ hơn.
+@125
+Tuần 7
+@126
+⟦Phỏng vấn thử|Mock interview⟧ cường độ cao: 3-4 buổi/tuần.
+@127
+Chấm theo ⟦thang tiêu chí|rubric⟧: độ rõ ràng, cấu trúc, ⟦sự đánh đổi|trade-off⟧, độ sâu.
+@128
+Tuần 8
+@129
+Ôn tập lần cuối: các lỗi cá nhân hay mắc nhất, các ⟦mẫu|pattern⟧ quan trọng nhất cần nhớ, các câu hỏi làm rõ hay dùng nhất.
+@130
+Giảm cường độ trước buổi phỏng vấn, tập trung vào sự rõ ràng và bình tĩnh.
+@131
+9) Mẹo Giao Tiếp Trong Phỏng Vấn
+@132
+⟦Nghĩ Thành Lời|Think Aloud⟧ Có Cấu Trúc
+@133
+Nói rõ bạn đang ở bước nào: yêu cầu -> các con số -> kiến trúc -> ⟦đào sâu|deep dive⟧ -> ⟦đánh đổi|trade-off⟧.
+@134
+Dẫn Dắt Cuộc Trao Đổi
+@135
+Chủ động đề xuất giả định khi thiếu dữ liệu.
+@136
+Thường xuyên dừng lại để xác nhận: "Anh/chị muốn em đào sâu phần nào tiếp theo?"
+@137
+Đặt Câu Hỏi Tốt
+@138
+⟦Lưu lượng cao điểm|Peak traffic⟧ hay trung bình?
+@139
+Ưu tiên ⟦độ trễ|latency⟧ hay ⟦tính nhất quán|consistency⟧?
+@140
+Làm MVP trước hay tính đến ⟦quy mô|scale⟧ dài hạn trước?
+@141
+Khi Gặp Bài Toán Chưa Từng Làm
+@142
+Bình tĩnh quay về nguyên lý gốc.
+@143
+Chia nhỏ bài toán.
+@144
+Chọn ⟦phiên bản nền|baseline⟧ đơn giản trước rồi mở rộng dần.
+@145
+10) Bắt Đầu Ngay
+@146
+Nếu bạn muốn chuẩn bị cho ⟦phỏng vấn thiết kế hệ thống|system design interview⟧ một cách bài bản:
+@147
+Hoàn thành các phần nền tảng nếu còn thiếu.
+@148
+Vào **Phần 6 — Làm Chủ Thiết Kế Hệ Thống** để luyện ⟦khung tư duy|framework⟧ cho phỏng vấn.
+@149
+Lên lịch ⟦phỏng vấn thử|mock interview⟧ định kỳ ngay từ tuần này.

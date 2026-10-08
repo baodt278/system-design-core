@@ -1,0 +1,112 @@
+@0
+1) Giới Thiệu Phần
+@1
+⟦Hệ thống phân tán|Distributed systems⟧ khác về bản chất so với hệ thống chạy trên một máy đơn lẻ.
+@2
+Trong môi trường phân tán, ⟦sự cố|failure⟧ là trạng thái bình thường: ⟦nút|node⟧ có thể chết, mạng có thể bị ⟦phân vùng|partition⟧, và dữ liệu có thể tạm thời lệch trạng thái.
+@3
+Vì vậy, ⟦tính nhất quán|consistency⟧ và ⟦sự phối hợp|coordination⟧ trở thành bài toán trung tâm. Đây là cột mốc kỹ thuật quan trọng để bạn chuyển từ "xây dựng ⟦dịch vụ|service⟧" sang "thiết kế hệ thống phân tán".
+@4
+2) Vì Sao Phần Này Tồn Tại
+@5
+Tư duy ⟦một máy chủ|single-server⟧ là không đủ khi hệ thống mở rộng.
+@6
+Bạn cần hiểu rõ:
+@7
+⟦Sự cố cục bộ|Partial failure⟧ là thực tế không thể tránh khỏi.
+@8
+Mạng không bao giờ đáng tin cậy tuyệt đối.
+@9
+Mọi ⟦bảo đảm nhất quán|consistency guarantee⟧ luôn đi kèm ⟦sự đánh đổi|trade-off⟧.
+@10
+Dữ liệu trên nhiều ⟦nút|node⟧ cần cơ chế ⟦phối hợp|coordination⟧ rõ ràng.
+@11
+Nếu không có ⟦tư duy phân tán|distributed reasoning⟧, rất khó thiết kế được hệ thống hiện đại có độ tin cậy cao.
+@12
+3) Mục Tiêu Học Tập
+@13
+Hiểu các ⟦mô hình sự cố|failure model⟧ trong ⟦hệ thống phân tán|distributed systems⟧.
+@14
+Hiểu tư duy CAP ở mức ra quyết định kiến trúc.
+@15
+Hiểu ⟦sự đánh đổi|trade-off⟧ giữa ⟦tính nhất quán|consistency⟧ và ⟦tính sẵn sàng|availability⟧.
+@16
+Hiểu các cơ chế ⟦phối hợp|coordination⟧ trong ⟦hệ phân tán|distributed system⟧.
+@17
+Hiểu bài toán ⟦toàn vẹn dữ liệu|data integrity⟧ khi một giao dịch đi qua nhiều thành phần.
+@18
+Hiểu vấn đề ⟦định danh|identity⟧ và ⟦thứ tự|ordering⟧ trong môi trường ⟦nhiều nút|multi-node⟧.
+@19
+4) Bạn Sẽ Học Gì Trong Phần Này
+@20
+**⟦Xử lý sự cố|Failure handling⟧:** cách tư duy và phản ứng với lỗi trong môi trường phân tán.
+@21
+**⟦Đánh đổi|Trade-offs⟧ về ⟦tính nhất quán|consistency⟧:** khi nào ưu tiên ⟦nhất quán mạnh|strong consistency⟧, khi nào chấp nhận ⟦nhất quán cuối cùng|eventual⟧.
+@22
+**⟦Phối hợp phân tán|Distributed coordination⟧:** cơ chế để nhiều ⟦nút|node⟧ đạt ⟦đồng thuận|consensus⟧ trong điều kiện không hoàn hảo.
+@23
+**⟦Bầu chọn nút chủ|Leader election⟧:** vai trò của ⟦nút chủ|leader⟧/⟦nút theo|follower⟧ và các giới hạn khi cuộc bầu chọn xảy ra.
+@24
+**⟦Giao dịch phân tán|Distributed transactions⟧:** cách giữ tính nhất quán dữ liệu xuyên suốt nhiều dịch vụ/kho dữ liệu.
+@25
+**⟦Toàn vẹn toàn hệ thống|System-wide integrity⟧:** bảo đảm dữ liệu đúng ở quy mô toàn hệ thống, không chỉ trong từng dịch vụ.
+@26
+**ID phân tán:** tạo định danh duy nhất mà không trở thành ⟦điểm nghẽn|bottleneck⟧.
+@27
+**⟦Thứ tự sự kiện|Event ordering⟧:** xử lý thứ tự sự kiện trong hệ thống phân tán và bất đồng bộ.
+@28
+5) Tổng Quan Các Bài Học
+@29
+Bài 1 — Thực Tế Của ⟦Hệ Thống Phân Tán|Distributed Systems⟧ — ⟦Mô Hình Sự Cố|Failure Models⟧ & Tư Duy CAP
+@30
+**Mô tả:** nhìn thẳng vào bản chất lỗi và giới hạn của ⟦hệ phân tán|distributed system⟧.
+@31
+**Bạn nhận được:** nền tư duy CAP và tư duy ⟦đặt sự cố lên đầu|failure-first⟧ để ra quyết định thực tế.
+@32
+Bài 2 — ⟦Mô Hình Nhất Quán|Consistency Models⟧ — ⟦Nhất Quán Mạnh|Strong Consistency⟧ Và ⟦Nhất Quán Cuối Cùng|Eventual Consistency⟧
+@33
+**Mô tả:** so sánh các mức ⟦tính nhất quán|consistency⟧ trong bối cảnh sản phẩm thật.
+@34
+**Bạn nhận được:** khả năng chọn ⟦mô hình nhất quán|consistency model⟧ phù hợp với yêu cầu nghiệp vụ.
+@35
+Bài 3 — ⟦Đồng Thuận|Consensus⟧ & ⟦Bầu Chọn Nút Chủ|Leader Election⟧ — Thoả Thuận Trong Hệ Phân Tán
+@36
+**Mô tả:** cơ chế đồng thuận và bầu chọn ⟦nút chủ|leader⟧ để điều phối trạng thái hệ thống.
+@37
+**Bạn nhận được:** trực giác về ⟦thoả thuận phân tán|distributed agreement⟧ và giới hạn của ⟦sự phối hợp|coordination⟧.
+@38
+Bài 4 — ⟦Giao Dịch Phân Tán|Distributed Transactions⟧ & ⟦Toàn Vẹn Dữ Liệu|Data Integrity⟧ — Bảo Đảm Tính Nhất Quán Dữ Liệu
+@39
+**Mô tả:** giải bài toán nhất quán dữ liệu khi giao dịch đi qua nhiều dịch vụ.
+@40
+**Bạn nhận được:** nền tảng để đánh giá ⟦chiến lược giao dịch|transaction strategy⟧ và các ⟦bảo đảm toàn vẹn|integrity guarantees⟧.
+@41
+Bài 5 — ID Phân Tán & ⟦Thứ Tự|Ordering⟧ — Giải Quyết Vấn Đề Định Danh Trong Hệ Thống Phân Tán
+@42
+**Mô tả:** xử lý việc ⟦sinh ID|ID generation⟧ và ⟦thứ tự|ordering⟧ khi hệ thống không có một ⟦đồng hồ|clock⟧ trung tâm.
+@43
+**Bạn nhận được:** khả năng thiết kế định danh và thứ tự sự kiện ở quy mô phân tán.
+@44
+6) Kết Quả Sau Khi Hoàn Thành Phần 3
+@46
+Lập luận về các ⟦sự đánh đổi|trade-off⟧ cốt lõi trong ⟦hệ thống phân tán|distributed systems⟧.
+@47
+Nhận diện rủi ro trong ⟦môi trường vận hành thực tế|production⟧ liên quan đến ⟦sự cố|failure⟧ và ⟦tính nhất quán|consistency⟧.
+@48
+Đánh giá chiến lược ⟦phối hợp|coordination⟧ theo bối cảnh hệ thống.
+@49
+Thiết kế hệ thống với ⟦ý thức về sự cố|failure awareness⟧ ngay từ đầu.
+@50
+7) Chuẩn Bị Cho Phần 4
+@51
+Phần 3 cho bạn nền tảng để hiểu vì sao hệ phân tán khó và đòi hỏi cân nhắc ⟦đánh đổi|trade-off⟧ nghiêm túc.
+@52
+Sang **Phần 4 — Khả Năng Mở Rộng & Hiệu Năng**, bạn sẽ tập trung vào:
+@53
+tối ưu ⟦hiệu năng|performance⟧ ở quy mô lớn,
+@54
+các chiến lược ⟦mở rộng|scaling⟧ nâng cao,
+@55
+tư duy tìm ⟦điểm nghẽn|bottleneck⟧ ở cấp hệ thống,
+@56
+và ⟦khả năng quan sát|observability⟧ để vận hành ổn định trong môi trường thực tế.

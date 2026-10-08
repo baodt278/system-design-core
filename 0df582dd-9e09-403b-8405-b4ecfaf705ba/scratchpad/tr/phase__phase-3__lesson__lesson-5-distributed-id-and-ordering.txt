@@ -1,0 +1,628 @@
+@0
+ID Phân Tán Và ⟦Thứ Tự|Ordering⟧: Vấn Đề Định Danh Trong Hệ Thống Phân Tán
+@1
+Tôi còn nhớ ⟦lỗi|bug⟧ đầu tiên khiến tôi phải thức trắng đêm vì ⟦hệ thống phân tán|distributed systems⟧.
+@2
+Chúng tôi vừa ⟦chuyển đổi|migrate⟧ từ ⟦hệ thống nguyên khối|monolith⟧ sang ⟦vi dịch vụ|microservices⟧. Mọi thứ chạy ngon lành trên máy cá nhân. ⟦Triển khai|Deploy⟧ lên ⟦môi trường thực tế|production⟧... hỗn loạn.
+@3
+Các đơn hàng bị trùng ID. ⟦Người dùng|Users⟧ phàn nàn "tôi đặt 1 món nhưng thấy 2 đơn hàng". Các ⟦ràng buộc|constraints⟧ của ⟦cơ sở dữ liệu|database⟧ liên tục báo lỗi.
+@4
+Nguyên nhân gốc rễ? ID ⟦tự tăng|auto-increment⟧.
+@5
+Một ⟦kiến trúc sư lâu năm|senior architect⟧ nhìn tôi: *"Em biết tại sao ⟦tự tăng|auto-increment⟧ không hoạt động trong ⟦hệ thống phân tán|distributed systems⟧ chưa?"*
+@7
+Đó là đêm tôi học về việc ⟦sinh ID phân tán|distributed ID generation⟧. Và đó là một trong những vấn đề tinh vi nhất nhưng cũng quan trọng nhất trong hệ thống phân tán.
+@8
+Tại Sao ⟦Tự Tăng|Auto-Increment⟧ Thất Bại?
+@9
+⟦Hệ Thống Nguyên Khối|Monolith⟧: ⟦Tự Tăng|Auto-Increment⟧ Hoạt Động Hoàn Hảo
+@10
+**Tại sao nó hoạt động:**
+@11
+Một cơ sở dữ liệu duy nhất = Một nguồn sự thật duy nhất
+Bộ máy cơ sở dữ liệu đảm bảo tính duy nhất
+Cơ chế khoá ngăn chặn trùng lặp
+Đơn giản vô cùng
+
+@12
+Hệ Thống Phân Tán: ⟦Tự Tăng|Auto-Increment⟧ Thất Bại
+@13
+graph TB
+    APP1[Dịch vụ đơn hàng 1] --> DB1[Mảnh CSDL 1]
+    APP2[Dịch vụ đơn hàng 2] --> DB2[Mảnh CSDL 2]
+    APP3[Dịch vụ đơn hàng 3] --> DB3[Mảnh CSDL 3]
+
+    DB1 -->|id = 1, 2, 3| CONFLICT[Xung đột ID!]
+    DB2 -->|id = 1, 2, 3| CONFLICT
+    DB3 -->|id = 1, 2, 3| CONFLICT
+
+    style CONFLICT fill:#ff6b6b
+@14
+*Ba ⟦mảnh|shards⟧ cơ sở dữ liệu độc lập, mỗi mảnh tự sinh ID ⟦tự tăng|auto-increment⟧ riêng → Xung đột!*
+@15
+**Vấn đề:**
+@16
+Mảnh CSDL 1: id = 1, 2, 3, 4, ...
+Mảnh CSDL 2: id = 1, 2, 3, 4, ...  (TRÙNG LẶP!)
+Mảnh CSDL 3: id = 1, 2, 3, 4, ...  (TRÙNG LẶP!)
+
+→ Cùng một ID trên các mảnh khác nhau
+→ Gộp dữ liệu = thảm hoạ
+→ Khoá ngoại bị hỏng
+→ Khoá bộ nhớ đệm xung đột
+
+@17
+**Tác động trong thực tế:**
+@18
+Tôi từng thấy một trang thương mại điện tử dính lỗi này:
+@19
+Người dùng A đặt sản phẩm X → id = 123 (⟦mảnh|shard⟧ 1)
+@20
+Người dùng B đặt sản phẩm Y → id = 123 (⟦mảnh|shard⟧ 2)
+@21
+Hệ thống gộp các đơn hàng → Xung đột
+@22
+Người dùng A nhận sản phẩm của Người dùng B
+@23
+Thảm hoạ!
+@24
+**Bài học rút ra:** ⟦Tự tăng|Auto-increment⟧ chỉ hoạt động với một cơ sở dữ liệu duy nhất. ⟦Hệ thống phân tán|Distributed systems⟧ cần cách tiếp cận khác.
+@25
+Các ⟦Yêu Cầu|Requirements⟧ Đối Với ID Phân Tán
+@26
+Trước khi đi vào các giải pháp, hãy hiểu các ⟦yêu cầu|requirements⟧.
+@27
+**Bắt buộc phải có:**
+@28
+1. Duy nhất trên toàn cục
+   - ID phải là duy nhất trên TẤT CẢ các dịch vụ/mảnh
+   - Không xung đột dù được sinh ra ở đâu
+
+2. Tính sẵn sàng cao
+   - Sinh ID không cần phối hợp giữa các nút
+   - Không có điểm lỗi duy nhất
+   - Vẫn hoạt động khi xảy ra phân vùng mạng
+
+3. Hiệu năng cao
+   - Sinh nhanh (< 1ms)
+   - Không chặn
+   - Hàng triệu ID/giây
+
+@29
+**Nên có:**
+@30
+4. Gần đúng theo thứ tự thời gian
+   - ID mới > ID cũ
+   - Hữu ích cho việc sắp xếp, gỡ lỗi
+   - Không cần thứ tự hoàn hảo
+
+5. Gọn nhẹ
+   - 64 bit thay vì 128 bit
+   - Tiết kiệm lưu trữ, bộ nhớ
+   - So sánh nhanh hơn
+
+6. Con người đọc được
+   - Có thể gỡ lỗi
+   - Trích xuất siêu dữ liệu (dấu thời gian, machine ID)
+
+@31
+**Thực tế của sự đánh đổi:**
+@32
+Không có giải pháp nào thoả mãn được tất cả. Phải lựa chọn dựa trên thứ tự ưu tiên.
+@33
+Giải Pháp 1: UUID (Universally Unique Identifier - Định Danh Duy Nhất Toàn Cục)
+@34
+Khái Niệm
+@35
+**UUID = số ngẫu nhiên 128 bit, được đảm bảo duy nhất trên toàn cục**
+@36
+Định dạng: 8-4-4-4-12 chữ số thập lục phân
+Ví dụ: 550e8400-e29b-41d4-a716-446655440000
+
+Tổng số UUID có thể có: 2^128 ≈ 3.4 × 10^38
+(Nhiều hơn số nguyên tử trong vũ trụ!)
+
+@37
+**Các phiên bản:**
+@38
+UUID v1: Dấu thời gian + địa chỉ MAC
+UUID v4: Ngẫu nhiên (phổ biến nhất)
+UUID v7: Sắp theo dấu thời gian (mới nhất, tốt nhất cho cơ sở dữ liệu)
+
+@39
+Cài Đặt
+@40
+**Không cần phối hợp:**
+@41
+Dịch vụ 1 sinh ra: 550e8400-e29b-41d4-a716-446655440000
+Dịch vụ 2 sinh ra: 7c9e6679-7425-40de-944b-e07fc1f90ae7
+Dịch vụ 3 sinh ra: 9e107d9d-372b-4d16-a86a-3a0f8e4f0c3d
+
+Tất cả đều duy nhất, không xung đột!
+
+@42
+⟦Sự Đánh Đổi|Trade-offs⟧
+@43
+Ưu điểm:
+- Cực kỳ đơn giản để cài đặt
+- Không cần phối hợp
+- Thực sự duy nhất trên toàn cục
+- Hoạt động cả khi ngoại tuyến
+- Là tiêu chuẩn của ngành
+
+Nhược điểm:
+- 128 bit (lớn gấp đôi 64 bit)
+- Không sắp xếp được (thứ tự ngẫu nhiên)
+- Hiệu năng cơ sở dữ liệu kém (chèn ngẫu nhiên)
+- Con người khó đọc
+- Khó gỡ lỗi
+
+@44
+Tác Động Đến ⟦Hiệu Năng|Performance⟧ Cơ Sở Dữ Liệu
+@45
+**Vấn đề với UUID ngẫu nhiên:**
+@46
+Cấu trúc chỉ mục B-tree:
+       [middle]
+      /        \
+  [left]      [right]
+
+Chèn tuần tự (tự tăng):
+→ Luôn chèn vào lá ngoài cùng bên phải
+→ Không phải tách trang
+→ Nhanh!
+
+UUID ngẫu nhiên:
+→ Chèn ngẫu nhiên khắp cây
+→ Tách trang thường xuyên
+→ Phân mảnh dữ liệu trên đĩa
+→ Chèn chậm hơn 2-3 lần
+
+@47
+**Đo hiệu năng (PostgreSQL):**
+@48
+Auto-increment INT:  100,000 lượt chèn = 2.3 giây
+UUID v4:            100,000 lượt chèn = 7.1 giây  (chậm hơn 3 lần)
+UUID v7:            100,000 lượt chèn = 2.8 giây  (gần bằng INT!)
+
+@49
+**Giải pháp:** UUID v7 (sắp theo dấu thời gian)
+@51
+Sử dụng UUID khi:
+✓ Sự đơn giản quan trọng nhất
+✓ Không cần sắp xếp theo ID
+✓ Lưu trữ/bộ nhớ không phải là ràng buộc
+✓ Muốn dùng tiêu chuẩn của ngành
+✓ Cần ID thực sự ngẫu nhiên (bảo mật)
+
+Tránh UUID khi:
+✗ Hiệu năng cơ sở dữ liệu là yếu tố sống còn
+✗ Cần ID sắp theo thời gian
+✗ Bị ràng buộc về lưu trữ (di động, IoT)
+✗ Cần ID con người đọc được
+
+@52
+**Quan điểm cá nhân:**
+@53
+UUID là lựa chọn mặc định an toàn. Khi không chắc nên dùng gì, hãy dùng UUID (tốt nhất là v7).
+@54
+Chỉ tối ưu theo hướng khác khi có những ⟦yêu cầu|requirements⟧ cụ thể.
+@55
+Giải Pháp 2: Twitter Snowflake
+@56
+Khái Niệm
+@57
+**Snowflake = ID 64 bit, sắp theo thời gian, duy nhất trên toàn cục**
+@58
+Cấu trúc 64 bit:
+┌─────────────────────────────────────────────────┐
+│ 1 │      41 bit      │  10 bit │     12 bit    │
+│   │  dấu thời gian   │    ID   │   số thứ tự   │
+│ 0 │   (mili giây)    │   máy   │     bộ đếm    │
+└─────────────────────────────────────────────────┘
+
+@59
+**Phân tích chi tiết:**
+@60
+Bit 0 (1 bit):
+- Luôn là 0 (dự trữ, bit dấu)
+
+Bit 1-41 (41 bit): Dấu thời gian
+- Số mili giây kể từ mốc epoch (epoch tuỳ chỉnh)
+- 2^41 ms ≈ 69 năm
+- Sắp xếp được theo thời gian!
+
+Bit 42-51 (10 bit): Machine ID
+- Xác định máy nào đã sinh ra ID
+- Hỗ trợ 2^10 = 1,024 máy
+- Được cấu hình khi khởi động
+
+Bit 52-63 (12 bit): Số thứ tự
+- Bộ đếm trong cùng một mili giây
+- 2^12 = 4,096 ID mỗi mili giây trên mỗi máy
+- Đặt lại mỗi khi sang mili giây mới
+
+@61
+**Tính toán năng lực:**
+@62
+Mỗi máy:
+- 4,096 ID/mili giây
+- 4,096,000 ID/giây
+- ~350 tỷ ID/ngày
+
+1,024 máy:
+- 4.2 triệu ID/giây trên toàn hệ thống
+- 360 nghìn tỷ ID/ngày
+
+Quá đủ!
+
+@63
+Cài Đặt
+@64
+Trích Xuất Siêu Dữ Liệu
+@65
+⟦Sự Đánh Đổi|Trade-offs⟧
+@66
+Ưu điểm:
+- 64 bit (gọn, hiệu quả)
+- Sắp theo thời gian (sắp xếp được, tốt cho CSDL)
+- Hiệu năng cao (không cần phối hợp)
+- Phi tập trung (không có điểm lỗi duy nhất)
+- Con người gỡ lỗi được (trích xuất dấu thời gian)
+- Đã được ngành kiểm chứng (Twitter, Discord, Instagram)
+
+Nhược điểm:
+- Phải quản lý Machine ID (cần cấu hình)
+- Bắt buộc đồng bộ đồng hồ (NTP)
+- Giới hạn 69 năm (cần đặt lại epoch)
+- Cạn số thứ tự trong cùng một mili giây (hiếm gặp)
+
+@67
+Vấn Đề ⟦Lệch Đồng Hồ|Clock Skew⟧
+@68
+**Vấn đề:**
+@69
+Đồng hồ máy A: 10:00:00.000
+Đồng hồ máy B: 10:00:05.000 (nhanh hơn 5 giây)
+
+Máy B sinh ra: ID = 1000005000...
+Máy A sinh ra: ID = 1000000000... (nhỏ hơn!)
+
+ID từ máy A < ID từ máy B về giá trị
+nhưng lại được sinh ra SAU về thời gian!
+
+→ Thứ tự bị phá vỡ
+
+@70
+**Giải pháp:**
+@71
+1. Đồng bộ NTP (khuyến nghị)
+   - Giữ các đồng hồ đồng bộ (độ lệch < 100ms)
+   - Giám sát độ lệch đồng hồ
+   - Cảnh báo nếu độ lệch > ngưỡng
+
+2. Từ chối sinh ID nếu đồng hồ chạy lùi
+   - Kiểm tra: current_time < last_time
+   - Báo lỗi hoặc chờ
+   - Đánh đổi: Tính sẵn sàng giảm
+
+3. Dùng đồng hồ logic (Lamport, Vector)
+   - Không phụ thuộc vào đồng hồ thực
+   - Cài đặt phức tạp
+
+@72
+Khi Nào Dùng Snowflake?
+@73
+Sử dụng Snowflake khi:
+✓ Cần ID sắp theo thời gian
+✓ Hiệu năng cơ sở dữ liệu là yếu tố sống còn
+✓ Cần ID 64 bit gọn nhẹ
+✓ Cần ID con người gỡ lỗi được
+✓ Thông lượng cao (hàng triệu ID/giây)
+✓ Có thể quản lý Machine ID
+
+Tránh Snowflake khi:
+✗ Không thể đồng bộ đồng hồ (NTP không tin cậy)
+✗ Sự đơn giản > Hiệu năng
+✗ Không muốn quản lý Machine ID
+✗ Cần ID thực sự ngẫu nhiên
+
+@74
+**Trải nghiệm cá nhân:**
+@75
+Snowflake là lựa chọn hàng đầu cho các hệ thống ⟦quy mô|scale⟧ lớn. Twitter, Discord, Instagram đều dùng nó.
+@76
+Tôi khuyên dùng Snowflake cho:
+@77
+Các API có ⟦lưu lượng|traffic⟧ cao
+@78
+Dữ liệu ⟦chuỗi thời gian|time-series⟧
+@79
+Hệ thống ⟦ghi log|logging⟧
+@80
+⟦Lưu trữ dựa trên sự kiện|Event sourcing⟧
+@81
+So Sánh: UUID Và Snowflake
+@82
+┌─────────────────┬──────────────┬──────────────┐
+│                 │     UUID     │  Snowflake   │
+├─────────────────┼──────────────┼──────────────┤
+│ Kích thước      │   128-bit    │    64-bit    │
+│ Tính duy nhất   │   Đảm bảo    │   Đảm bảo    │
+│ Sắp xếp được    │    Không     │      Có      │
+│ Hiệu năng CSDL  │  Trung bình  │     Cao      │
+│ Triển khai      │      Dễ      │  Trung bình  │
+│ Cấu hình        │  Không cần   │  Machine ID  │
+│ Phụ thuộc       │   Không có   │ Đồng bộ NTP  │
+│ Dễ đọc          │     Kém      │     Tốt      │
+│ Mức phổ biến    │   Rất cao    │     Cao      │
+└─────────────────┴──────────────┴──────────────┘
+
+@83
+**⟦Khung ra quyết định|Decision framework⟧:**
+@84
+Vấn Đề ⟦Thứ Tự Sự Kiện|Event Ordering⟧
+@85
+Việc sinh ID giải quyết được tính duy nhất. Nhưng còn ⟦thứ tự|ordering⟧ thì sao?
+@86
+Phát Biểu Vấn Đề
+@87
+Dịch vụ A (Máy 1):
+- Sự kiện 1 xảy ra lúc 10:00:00.000 → Sinh ID = 100
+- Sự kiện 2 xảy ra lúc 10:00:00.001 → Sinh ID = 101
+
+Dịch vụ B (Máy 2, đồng hồ nhanh hơn 5ms):
+- Sự kiện 3 xảy ra lúc 10:00:00.003 → Sinh ID = 108
+
+Dòng thời gian:
+Sự kiện 1 (10:00:00.000) → ID = 100
+Sự kiện 2 (10:00:00.001) → ID = 101
+Sự kiện 3 (10:00:00.003) → ID = 108
+
+Sắp xếp theo ID:
+100 < 101 < 108 ✓ Đúng thứ tự
+
+Nhưng nếu đồng hồ Máy 2 bị lệch:
+Sự kiện 1 (10:00:00.000) → ID = 100
+Sự kiện 3 (10:00:00.003) → ID = 95  (đồng hồ Máy 2 chạy chậm!)
+Sự kiện 2 (10:00:00.001) → ID = 101
+
+Sắp xếp theo ID:
+95 < 100 < 101 ✗ Sai thứ tự! (Sự kiện 3 phải ở cuối)
+
+@88
+Tại Sao ⟦Thứ Tự|Ordering⟧ Quan Trọng
+@89
+**Ví dụ 1: Giao dịch ngân hàng**
+@90
+Sự kiện 1: Nạp $100  (số dư = $100)
+Sự kiện 2: Rút $50   (số dư = $50)
+Sự kiện 3: Rút $40   (số dư = $10)
+
+Đúng thứ tự: $0 → $100 → $50 → $10 ✓
+
+Sai thứ tự:
+Sự kiện 2 trước → Không đủ số dư! ✗
+Sự kiện 3 trước → Không đủ số dư! ✗
+
+@91
+**Ví dụ 2: Mạng xã hội**
+@92
+Bài đăng của người dùng:
+Bài 1: "Giới thiệu dự án"
+Bài 2: "Cập nhật tiến độ"
+Bài 3: "Kết quả cuối cùng"
+
+Đúng thứ tự: Mạch nội dung hợp lý ✓
+
+Sai thứ tự: "Kết quả" xuất hiện trước "Giới thiệu" ✗
+→ Người đọc bối rối
+
+@93
+Các Giải Pháp Cho Bài Toán ⟦Thứ Tự|Ordering⟧
+@94
+**Giải pháp 1: Lamport Timestamps (dấu thời gian Lamport)**
+@95
+**Đặc tính:**
+@96
+Bảo toàn quan hệ xảy-ra-trước (happened-before)
+Không cần đồng hồ thực
+Thuật toán đơn giản
+
+Không biết thời gian tuyệt đối
+Không phát hiện được các sự kiện đồng thời
+Cần truyền thông điệp
+
+@97
+**Giải pháp 2: Vector Clocks (đồng hồ vector)**
+@98
+**Giải pháp 3: Hybrid Logical Clocks - HLC (đồng hồ logic lai)**
+@99
+Kết hợp ưu điểm của cả hai: Thời gian vật lý + Bộ đếm logic
+@100
+**⟦Sự đánh đổi|Trade-offs⟧:**
+@101
+Lamport:
+Đơn giản
+Thứ tự từng phần
+Không phát hiện được tính đồng thời
+
+Vector:
+Phát hiện được tính đồng thời
+Đầy đủ quan hệ nhân quả
+Lưu trữ O(N) (N = số tiến trình)
+Phức tạp
+
+HLC:
+Gần với thời gian vật lý
+Thứ tự toàn phần
+Gọn nhẹ (2 con số)
+Vẫn cần đồng bộ đồng hồ (ở mức lỏng)
+
+@102
+Đánh Đổi Giữa ⟦Thứ Tự|Ordering⟧ Và Tính Duy Nhất
+@103
+**Mâu thuẫn cốt lõi:**
+@104
+Tính duy nhất: Các ID không xung đột
+Thứ tự:       Các ID phản ánh đúng trình tự thời gian thực
+
+Không thể hoàn hảo cả hai với cách sinh ID phi tập trung
+
+@105
+**Các phương án:**
+@106
+1. Duy nhất hoàn hảo, không có thứ tự
+   → UUID v4
+   → Hoàn toàn ngẫu nhiên
+   → Không cần phối hợp
+
+2. Duy nhất tốt, thứ tự gần đúng
+   → Snowflake
+   → Sắp theo thời gian (khi đồng hồ được đồng bộ)
+   → Machine ID ngăn xung đột
+
+3. Thứ tự hoàn hảo, bắt buộc phải phối hợp
+   → Máy chủ sinh ID tập trung
+   → Điểm lỗi duy nhất
+   → Điểm nghẽn
+   → Không mở rộng được
+
+Lựa chọn dựa trên thứ tự ưu tiên
+
+@107
+Khuyến Nghị Thực Tế
+@108
+Cho Hầu Hết Các Ứng Dụng
+@109
+**Bắt đầu với UUID v7** (UUID sắp theo dấu thời gian)
+@110
+Cho Các Hệ Thống ⟦Quy Mô|Scale⟧ Lớn
+@111
+**Dùng Snowflake** nếu:
+@112
+✓ Sinh > 100K ID/giây
+✓ Có thể quản lý Machine ID
+✓ Có thể đồng bộ đồng hồ (NTP)
+✓ Cần ID 64 bit gọn nhẹ
+✓ Cần trích xuất siêu dữ liệu (dấu thời gian, máy)
+
+@113
+Cho Các Yêu Cầu Nghiêm Ngặt Về ⟦Thứ Tự|Ordering⟧
+@114
+**Dùng Hybrid Logical Clocks** nếu:
+@115
+✓ Thứ tự là yếu tố sống còn (tài chính, log kiểm toán)
+✓ Chấp nhận được độ phức tạp
+✓ Cần phát hiện quan hệ nhân quả
+✓ Sự kiện phân tán trên nhiều dịch vụ
+
+@116
+Các ⟦Phản Mẫu|Anti-Patterns⟧ Cần Tránh
+@117
+ĐỪNG dùng tự tăng trong hệ thống phân tán
+ĐỪNG dựa vào đồng hồ thực để xác định thứ tự
+ĐỪNG sinh ID tập trung (điểm nghẽn)
+ĐỪNG bỏ qua vấn đề lệch đồng hồ
+ĐỪNG chỉ dùng dấu thời gian làm ID (không duy nhất)
+
+@118
+Ví Dụ Thực Tế
+@119
+**Twitter:**
+@120
+Dùng Snowflake cho ID của tweet
+- 64 bit
+- Sắp theo thời gian
+- Hơn 200,000 tweet/giây
+- Có thể trích xuất dấu thời gian từ ID
+
+@121
+**Instagram:**
+@122
+Snowflake đã được tuỳ biến
+- 41 bit: dấu thời gian
+- 13 bit: shard ID
+- 10 bit: số thứ tự
+- Lưu ảnh trên hơn 1000 mảnh
+
+@123
+**Discord:**
+@124
+Dựa trên Snowflake
+- 64 bit
+- Trích xuất dấu thời gian để hiển thị "X phút trước"
+- Gỡ lỗi hiệu năng theo các khoảng ID
+
+@125
+**MongoDB:**
+@126
+ObjectID (96 bit)
+- 4 byte: dấu thời gian
+- 5 byte: giá trị ngẫu nhiên
+- 3 byte: bộ đếm
+- Ý tưởng tương tự Snowflake
+
+@127
+Những Điểm Cốt Lõi
+@128
+**⟦Tự tăng|Auto-increment⟧ thất bại trong ⟦hệ thống phân tán|distributed systems⟧:**
+@129
+Một cơ sở dữ liệu: ✓ Hoạt động
+Nhiều cơ sở dữ liệu: ✗ Xung đột
+Nhiều dịch vụ: ✗ Xung đột
+
+Cần chiến lược sinh ID phân tán
+
+@130
+**Các chiến lược sinh ID:**
+@131
+UUID:
+- Đơn giản nhất
+- 128 bit
+- Ngẫu nhiên
+- Không có thứ tự
+- Lựa chọn mặc định
+
+Snowflake:
+- 64 bit
+- Sắp theo thời gian
+- Cần Machine ID
+- Hiệu năng cao
+- Tiêu chuẩn của ngành
+
+HLC:
+- Thứ tự tốt nhất
+- Theo dõi quan hệ nhân quả
+- Phức tạp nhất
+- Dành cho tình huống chuyên biệt
+
+@132
+**Đánh đổi về ⟦thứ tự|ordering⟧:**
+@133
+Không phối hợp:     Thứ tự gần đúng
+Phối hợp một phần:  Thứ tự tốt
+Phối hợp hoàn toàn: Thứ tự hoàn hảo (không mở rộng được)
+
+Lựa chọn dựa trên yêu cầu
+
+@134
+**⟦Khung ra quyết định|Decision framework⟧:**
+@136
+**Các quy tắc vàng:**
+@137
+**Không bao giờ dùng ⟦tự tăng|auto-increment⟧ trong ⟦hệ thống phân tán|distributed systems⟧**
+@138
+**UUID v7 là lựa chọn mặc định an toàn cho hầu hết các trường hợp**
+@139
+**Snowflake cho các nhu cầu ⟦quy mô|scale⟧ lớn, cần sắp theo thời gian**
+@140
+**⟦Thứ tự|Ordering⟧ hoàn hảo đòi hỏi phải phối hợp (không miễn phí)**
+@141
+**Luôn kiểm thử các ⟦kịch bản|scenarios⟧ ⟦lệch đồng hồ|clock skew⟧**
+@142
+⟦Sinh ID phân tán|Distributed ID generation⟧ là một trong những vấn đề trông thì đơn giản nhưng ẩn chứa độ phức tạp tinh vi.
+@143
+Hiểu rõ các ⟦sự đánh đổi|trade-offs⟧. Lựa chọn phù hợp. Kiểm thử kỹ lưỡng.
+@144
+**ID là nền móng của hệ thống. Làm sai = khổ về sau.**

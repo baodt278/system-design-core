@@ -1,0 +1,174 @@
+@0
+Thiết Kế Hệ Thống: Bắt Đầu Đúng Ngay Từ Ngày Đầu
+@1
+Nền tảng này được xây dựng để giúp lập trình viên Việt Nam chuyển từ tư duy **⟦lấy mã nguồn làm trung tâm|code-first⟧** sang **⟦tư duy hệ thống|system thinking⟧**.
+@2
+Bạn không chỉ học cách vẽ sơ đồ hệ thống. Bạn học cách tư duy như một kỹ sư thiết kế sản phẩm thật: hiểu bài toán, nhìn ra ⟦sự đánh đổi|trade-off⟧, và ra quyết định kiến trúc phù hợp với bối cảnh.
+@3
+**Sứ mệnh:** Giúp bạn đi từ người "làm tính năng" thành người có thể thiết kế, giải thích và bảo vệ kiến trúc hệ thống trong ⟦môi trường vận hành thực tế|production⟧.
+@4
+1. Bạn Sẽ Học Được Gì
+@5
+**⟦Tư duy hệ thống|System thinking⟧:** nhìn hệ thống như một tổng thể thay vì từng ⟦dịch vụ|service⟧ rời rạc.
+@6
+**⟦Tư duy kiến trúc|Architecture mindset⟧:** biết cách chia thành phần, xác định ranh giới trách nhiệm và luồng dữ liệu.
+@7
+**Lập luận về ⟦đánh đổi|trade-off⟧:** hiểu vì sao không có "giải pháp tốt nhất", chỉ có giải pháp phù hợp.
+@8
+**Thiết kế hệ thống thực tế:** học theo các tình huống sát với môi trường vận hành thực tế: ⟦quy mô|scale⟧, ⟦độ tin cậy|reliability⟧, ⟦khả năng quan sát|observability⟧, ⟦chi phí|cost⟧.
+@9
+**Kỹ thuật gắn với sản phẩm:** kết nối quyết định kỹ thuật với nhu cầu người dùng và mục tiêu sản phẩm.
+@10
+2. Trang Này Dành Cho Ai
+@11
+Phù Hợp Nhất Với
+@12
+Kỹ sư backend muốn nâng cấp tư duy thiết kế hệ thống.
+@13
+Kỹ sư fullstack/frontend muốn hiểu kiến trúc ⟦từ đầu đến cuối|end-to-end⟧.
+@14
+Lập trình viên đang chuẩn bị cho vòng ⟦phỏng vấn thiết kế hệ thống|system design interview⟧.
+@15
+Lập trình viên từ ⟦mới vào nghề|junior⟧ đến ⟦lâu năm|senior⟧ muốn phát triển sự nghiệp dài hạn theo hướng kiến trúc.
+@16
+Có Thể Chưa Phù Hợp Nếu
+@17
+Bạn chỉ muốn "khuôn mẫu trả lời phỏng vấn" mà không muốn hiểu bản chất.
+@18
+Bạn không sẵn sàng rèn luyện tư duy đặt câu hỏi và phân tích ⟦đánh đổi|trade-off⟧.
+@19
+3. Triết Lý Học Tập
+@20
+Bắt Đầu Đơn Giản, Tiến Hoá Dần
+@21
+Thiết kế hệ thống tốt không bắt đầu từ sự phức tạp. Nó bắt đầu từ phiên bản đơn giản nhất có thể chạy được, rồi mở rộng theo nhu cầu thật.
+@22
+⟦Mô Hình Tư Duy|Mental Model⟧ Trước, Công Nghệ Sau
+@23
+Các framework và công cụ thay đổi liên tục. ⟦Mô hình tư duy|Mental model⟧ về ⟦độ trễ|latency⟧, ⟦tính nhất quán|consistency⟧, ⟦thông lượng|throughput⟧, ⟦khả năng chịu lỗi|fault tolerance⟧ mới là thứ giữ giá trị lâu dài.
+@24
+Bài Toán Trước, Công Cụ Sau
+@25
+Đừng hỏi "dùng Redis hay Kafka trước". Hãy hỏi: "Bài toán là gì, ⟦ràng buộc|constraint⟧ là gì, và cái giá của ⟦sự đánh đổi|trade-off⟧ là gì?"
+@26
+Tư Duy ⟦Vận Hành Thực Tế|Production⟧
+@27
+Mọi quyết định đều cần nghĩ tới vận hành thật: ⟦giám sát|monitor⟧ thế nào, ⟦gặp sự cố|fail⟧ thì sao, ⟦hoàn tác|rollback⟧ ra sao, ⟦mở rộng|scale⟧ bao nhiêu là đủ.
+@28
+4. Lộ Trình Học: Từ Con Số 0 Đến Chuyên Gia
+@29
+Phần
+@30
+Trọng tâm
+@31
+Thời lượng gợi ý
+@32
+**Phần 0: Chuyển Đổi ⟦Mô Hình Tư Duy|Mental Model⟧**
+@33
+Chuyển tư duy từ ⟦lấy mã nguồn làm trung tâm|code-first⟧ sang ⟦lấy bài toán làm trung tâm|problem-first⟧, tư duy ⟦đánh đổi|trade-off⟧
+@34
+**2 tuần**
+@35
+**Phần 1: Nền Tảng — Tư Duy Theo Hệ Thống**
+@36
+Các thành phần, ⟦mẫu giao tiếp|communication patterns⟧, ⟦luồng dữ liệu|data flow⟧, ⟦điểm nghẽn|bottlenecks⟧, CAP/⟦tính sẵn sàng|availability⟧
+@37
+**3-4 tuần**
+@38
+**Phần 2: Các Khối Xây Dựng Cốt Lõi**
+@39
+⟦Cân bằng tải|Load balancing⟧, ⟦lưu đệm|caching⟧, ⟦mở rộng cơ sở dữ liệu|database scaling⟧, ⟦hàng đợi|queue⟧, ⟦đánh đổi|trade-offs⟧ khi tích hợp
+@40
+**4-5 tuần**
+@41
+**Phần 3: Nền Tảng ⟦Hệ Thống Phân Tán|Distributed Systems⟧**
+@42
+⟦Mô hình sự cố|Failure model⟧, ⟦mô hình nhất quán|consistency model⟧, ⟦đồng thuận|consensus⟧, ⟦giao dịch phân tán|distributed transaction⟧, ID
+@43
+**5-6 tuần**
+@44
+**Phần 4: ⟦Khả Năng Mở Rộng|Scalability⟧ & ⟦Hiệu Năng|Performance⟧**
+@45
+⟦Hiệu năng|Performance⟧, ⟦chiến lược lưu đệm|caching strategy⟧, CDN/⟦điểm biên|edge⟧, ⟦giới hạn tần suất|rate limit⟧, ⟦bất đồng bộ|async⟧, ⟦khả năng quan sát|observability⟧
+@46
+**4-5 tuần**
+@47
+**Phần 5: Các Mẫu Kiến Trúc Thực Tế**
+@48
+Tư duy tiến hoá kiến trúc, hệ thống ⟦thiên về đọc|read-heavy⟧, kiến trúc mạng xã hội/⟦bảng tin|feed⟧
+@49
+**4-5 tuần**
+@50
+**Phần 6: Làm Chủ Thiết Kế Hệ Thống**
+@51
+⟦Khung tư duy|Framework⟧, phương pháp SNAKE, ra quyết định, chiến lược phỏng vấn, ⟦tư duy kiến trúc sư|architect mindset⟧
+@52
+**Liên tục**
+@53
+5. Cách Học Hiệu Quả
+@54
+Nhịp Học Khuyến Nghị
+@55
+**4-5 buổi/tuần**
+@56
+**60-90 phút/buổi**
+@57
+Mỗi tuần dành 1 buổi để ôn lại và viết lại lập luận của bản thân
+@58
+Quy Trình Học Cho Mỗi Bài
+@59
+Đọc mục tiêu và bối cảnh của bài học.
+@60
+Tự tóm tắt bài toán trong 3-5 dòng.
+@61
+Liệt kê 2-3 phương án khả thi.
+@62
+Chọn 1 phương án và ghi rõ ⟦sự đánh đổi|trade-off⟧.
+@63
+So sánh với nội dung bài học và cập nhật ⟦mô hình tư duy|mental model⟧.
+@64
+Nguyên Tắc Quan Trọng
+@65
+Học để **ra quyết định**, không phải học để nhớ từ khoá.
+@66
+Nếu gặp khái niệm khó, hãy quay về nguyên lý gốc (⟦luồng dữ liệu|data flow⟧, ⟦điểm nghẽn|bottleneck⟧, ⟦ràng buộc|constraint⟧).
+@67
+Viết lại bằng ngôn ngữ của bạn sau mỗi bài để biến kiến thức thành kỹ năng.
+@68
+6. Kiến Thức Cần Có Trước
+@69
+Bạn không cần biết hết về ⟦hệ thống phân tán|distributed systems⟧ ngay từ đầu, nhưng nên có:
+@70
+Kiến thức lập trình cơ bản (backend hoặc fullstack).
+@71
+Hiểu HTTP/API ở mức làm sản phẩm thực tế.
+@72
+Nền tảng ⟦cơ sở dữ liệu|database⟧ cơ bản (SQL/NoSQL ở mức sử dụng).
+@73
+Tư duy chủ động đặt câu hỏi "vì sao".
+@74
+7. Kết Quả Kỳ Vọng Sau Lộ Trình
+@76
+Phân tích đề bài thiết kế hệ thống một cách có cấu trúc.
+@77
+Thiết kế kiến trúc từ ⟦phiên bản nền đơn giản|simple baseline⟧ đến ⟦kiến trúc có khả năng mở rộng|scalable architecture⟧.
+@78
+Trình bày ⟦sự đánh đổi|trade-off⟧ rõ ràng với nhóm kỹ thuật, nhóm sản phẩm và các ⟦bên liên quan|stakeholder⟧.
+@79
+Tự tin hơn khi tham gia ⟦phỏng vấn thiết kế hệ thống|system design interview⟧.
+@80
+Ra quyết định kỹ thuật gắn với giá trị sản phẩm và mục tiêu dài hạn.
+@81
+8. Cam Kết Thời Gian Thực Tế
+@82
+Tổng thời gian để hoàn thành từ Phần 0 đến Phần 5: khoảng **5-7 tháng** nếu học đều đặn.
+@83
+Phần 6 là quá trình liên tục để nâng tư duy lên tầm kiến trúc sư.
+@84
+Bạn không cần học nhanh. Bạn cần học **đúng cách và bền vững**.
+@85
+9. Bắt Đầu Ngay
+@86
+Nếu bạn mới đến với nền tảng, hãy bắt đầu từ **Phần 0 — Chuyển Đổi ⟦Mô Hình Tư Duy|Mental Model⟧**.
+@87
+Đây là phần quan trọng nhất để làm mới tư duy trước khi đi sâu vào ⟦kiến trúc phần mềm|software architecture⟧ và ⟦hệ thống phân tán|distributed systems⟧.
