@@ -1,0 +1,134 @@
+@0
+1) Giới Thiệu Phần
+@1
+Khi ⟦lưu lượng|traffic⟧ của hệ thống bắt đầu tăng, ⟦hiệu năng|performance⟧ trở thành yếu tố sống còn.
+@2
+Ở quy mô ⟦vận hành thực tế|production⟧, hệ thống không sụp đổ vì một lỗi lớn duy nhất. Nó sụp đổ vì nhiều ⟦điểm nghẽn|bottleneck⟧ nhỏ tích tụ lại: ⟦truy vấn|query⟧ chậm, tỷ lệ ⟦trượt bộ nhớ đệm|cache miss⟧ cao, ⟦hàng đợi tồn đọng|queue backlog⟧, hoặc thiếu ⟦kiểm soát tải|load control⟧.
+@3
+⟦Mở rộng|Scale⟧ không chỉ là thêm ⟦máy chủ|server⟧. Mở rộng là đo đúng, tối ưu đúng và chấp nhận đúng ⟦sự đánh đổi|trade-off⟧.
+@4
+Đây là cột mốc kỹ thuật giúp bạn chuyển từ ⟦tư duy phân tán|distributed thinking⟧ sang thiết kế hệ thống ⟦đặt hiệu năng lên đầu|performance-first⟧.
+@5
+2) Vì Sao Phần Này Tồn Tại
+@6
+⟦Mở rộng ngây thơ|Naive scaling⟧ chỉ giải quyết phần ngọn.
+@7
+Thực tế vận hành đòi hỏi bạn hiểu rõ:
+@8
+Giới hạn tài nguyên: CPU, bộ nhớ, mạng, disk I/O.
+@9
+⟦Điểm nghẽn|Bottleneck⟧ dịch chuyển theo tải và theo kiến trúc.
+@10
+Hệ thống cần ⟦lớp bảo vệ|protection layer⟧ để tránh ⟦quá tải|overload⟧ dây chuyền.
+@11
+Không có ⟦khả năng quan sát|observability⟧ thì không thể tối ưu một cách có cơ sở.
+@12
+Phần này tồn tại để bạn học cách thiết kế hệ thống cho ⟦lưu lượng|traffic⟧ thật, chứ không chỉ cho môi trường lý tưởng.
+@13
+3) Mục Tiêu Học Tập
+@14
+Nhận diện và phân tích ⟦điểm nghẽn|bottleneck⟧ ở cấp hệ thống.
+@15
+Thiết kế ⟦chiến lược lưu đệm|caching strategy⟧ dựa trên sự đánh đổi giữa ⟦tính nhất quán|consistency⟧ và tốc độ.
+@16
+Thiết kế kiến trúc ⟦cơ sở dữ liệu|database⟧ có thể mở rộng theo mức tăng trưởng dữ liệu.
+@17
+Xử lý ⟦lưu lượng cao|high traffic⟧ một cách an toàn bằng ⟦kiểm soát tải|load control⟧.
+@18
+Bảo vệ hệ thống khỏi ⟦quá tải|overload⟧ và ⟦sự cố dây chuyền|cascading failure⟧.
+@19
+Tối ưu ⟦độ trễ|latency⟧ và ⟦thông lượng|throughput⟧ theo mục tiêu rõ ràng.
+@20
+Thiết kế hệ thống có ⟦khả năng quan sát|observability⟧ tốt.
+@21
+⟦Gỡ lỗi|Debug⟧ các vấn đề hiệu năng bằng dữ liệu đo lường.
+@22
+4) Bạn Sẽ Học Gì Trong Phần Này
+@23
+**Phân tích ⟦điểm nghẽn|Bottleneck⟧:** tìm đúng điểm nghẽn thay vì tối ưu theo cảm tính.
+@24
+**⟦Đánh đổi|Trade-offs⟧ khi ⟦lưu đệm|caching⟧:** cân bằng giữa tốc độ, độ mới của dữ liệu và độ phức tạp của việc ⟦vô hiệu hoá|invalidation⟧.
+@25
+**CDN & phân phối tại ⟦điểm biên|edge⟧:** giảm ⟦độ trễ|latency⟧ bằng cách đưa dữ liệu đến gần người dùng.
+@26
+**Tối ưu ⟦cơ sở dữ liệu|database⟧ & ⟦phân mảnh dữ liệu|sharding⟧:** từ ⟦tinh chỉnh truy vấn|query tuning⟧ đến phân mảnh dữ liệu.
+@27
+**⟦Giới hạn tần suất|Rate limiting⟧ & ⟦kiểm soát tải|load control⟧:** kiểm soát tải đầu vào để giữ hệ thống ổn định.
+@28
+**⟦Xử lý bất đồng bộ|Async processing⟧:** tách các luồng xử lý nặng để tăng ⟦thông lượng|throughput⟧.
+@29
+**⟦Giám sát|Monitoring⟧ & ⟦khả năng quan sát|observability⟧:** dùng ⟦số liệu đo|metrics⟧, ⟦log|logs⟧, ⟦truy vết|tracing⟧ để nhìn đúng trạng thái hệ thống.
+@30
+**Quy trình ⟦gỡ lỗi hiệu năng|performance debugging⟧:** đo -> khoanh vùng -> xác minh -> tối ưu.
+@31
+5) Tổng Quan Các Bài Học
+@32
+Bài 1 — ⟦Hiệu Năng|Performance⟧ & Tư Duy ⟦Điểm Nghẽn|Bottleneck⟧ — Tư Duy Tìm Và Giải Quyết Điểm Nghẽn
+@33
+**Mô tả:** xây dựng tư duy hiệu năng dựa trên điểm nghẽn thực tế.
+@34
+**Bạn nhận được:** khả năng ưu tiên đúng chỗ cần tối ưu trước.
+@35
+Bài 2 — ⟦Chiến Lược Lưu Đệm|Caching Strategy⟧ — Đánh Đổi ⟦Tính Nhất Quán|Consistency⟧ Để Lấy Tốc Độ
+@36
+**Mô tả:** thiết kế ⟦lớp bộ nhớ đệm|cache layer⟧ theo ⟦khối lượng công việc|workload⟧ và ⟦ràng buộc|constraint⟧ của dữ liệu.
+@37
+**Bạn nhận được:** năng lực chọn ⟦chiến lược lưu đệm|cache strategy⟧ dựa trên ⟦sự đánh đổi|trade-off⟧ rõ ràng.
+@38
+Bài 3 — CDN & ⟦Điện Toán Biên|Edge Computing⟧
+@39
+**Mô tả:** giảm ⟦độ trễ|latency⟧ và giảm tải cho backend bằng cách phân phối nội dung gần người dùng.
+@40
+**Bạn nhận được:** tư duy ⟦ưu tiên điểm biên|edge-first⟧ cho ⟦lưu lượng|traffic⟧ ⟦thiên về đọc|read-heavy⟧.
+@41
+Bài 4 — ⟦Mở Rộng|Scaling⟧ & Tối Ưu ⟦Cơ Sở Dữ Liệu|Database⟧ — Từ ⟦Tinh Chỉnh Truy Vấn|Query Tuning⟧ Đến ⟦Phân Mảnh Dữ Liệu|Sharding⟧
+@42
+**Mô tả:** tối ưu cơ sở dữ liệu từ lớp truy vấn đến kiến trúc dữ liệu phân tán.
+@43
+**Bạn nhận được:** cách mở rộng dữ liệu bền vững khi ⟦khối lượng|volume⟧ tăng mạnh.
+@44
+Bài 5 — ⟦Giới Hạn Tần Suất|Rate Limiting⟧ & ⟦Kiểm Soát Tải|Load Control⟧ — Bảo Vệ Hệ Thống Khỏi ⟦Quá Tải|Overload⟧
+@45
+**Mô tả:** áp dụng các cơ chế bảo vệ để hệ thống không bị sập dây chuyền.
+@46
+**Bạn nhận được:** chiến lược giữ ổn định khi ⟦lưu lượng|traffic⟧ vượt ngưỡng.
+@47
+Bài 6 — ⟦Xử Lý Bất Đồng Bộ|Asynchronous Processing⟧ & ⟦Hàng Đợi|Queues⟧
+@48
+**Mô tả:** dùng ⟦hàng đợi|queue⟧ để tách luồng xử lý, giảm ⟦chặn|blocking⟧ và tăng ⟦thông lượng|throughput⟧.
+@49
+**Bạn nhận được:** nền tảng thiết kế ⟦đường ống xử lý|processing pipeline⟧ cho ⟦khối lượng công việc|workload⟧ lớn.
+@50
+Bài 7 — ⟦Giám Sát|Monitoring⟧, ⟦Khả Năng Quan Sát|Observability⟧ & ⟦Gỡ Lỗi Hiệu Năng|Performance Debugging⟧ — Đo Lường Để Mở Rộng
+@51
+**Mô tả:** xây dựng khả năng quan sát và ⟦gỡ lỗi|debug⟧ hiệu năng dựa trên tín hiệu của hệ thống.
+@52
+**Bạn nhận được:** quy trình cải thiện hệ thống có thể lặp lại và kiểm chứng được.
+@53
+6) Kết Quả Sau Khi Hoàn Thành Phần 4
+@55
+Thiết kế hệ thống chịu được ⟦lưu lượng|traffic⟧ lớn hơn một cách có chủ đích.
+@56
+Tối ưu hiệu năng dựa trên đo lường thay vì phỏng đoán.
+@57
+Lập luận về ⟦sự đánh đổi|trade-off⟧ hiệu năng ở cấp kiến trúc.
+@58
+Bảo vệ hệ thống khỏi ⟦quá tải|overload⟧ và ⟦sự cố|failure⟧ lan rộng.
+@59
+Nhanh chóng xác định ⟦điểm nghẽn|bottleneck⟧ khi hệ thống chậm.
+@60
+Dùng ⟦khả năng quan sát|observability⟧ để cải thiện ⟦độ tin cậy|reliability⟧ liên tục.
+@61
+Thiết kế kiến trúc ⟦sẵn sàng cho vận hành thực tế|production-ready⟧ hơn về hiệu năng và vận hành.
+@62
+7) Chuẩn Bị Cho Phần 5
+@63
+Phần 4 cung cấp nền tảng về ⟦khả năng mở rộng|scale⟧ và ⟦hiệu năng|performance⟧ ở cấp hệ thống.
+@64
+Sang **Phần 5 — Các Mẫu Kiến Trúc Thực Tế**, bạn sẽ áp dụng trực tiếp các nguyên tắc này vào kiến trúc thực tế theo từng ⟦lĩnh vực|domain⟧:
+@65
+tiến hoá kiến trúc theo đà tăng trưởng của sản phẩm,
+@66
+các ⟦mẫu|pattern⟧ hệ thống trong môi trường vận hành thực tế,
+@67
+và thiết kế theo ngữ cảnh nghiệp vụ cụ thể.

@@ -43,7 +43,7 @@ Tư Duy Của ⟦Kỹ Sư Mới Vào Nghề|Junior⟧ và ⟦Kỹ Sư Lâu Năm|
 @18
 graph TB
     subgraph Junior Thinking
-        J1[Bài toán] --> J2[Google "giải pháp tốt nhất"]
+        J1[Bài toán] --> J2[Tra Google “giải pháp tốt nhất”]
         J2 --> J3[Áp dụng mẫu]
         J3 --> J4[Xong]
     end

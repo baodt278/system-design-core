@@ -309,7 +309,7 @@ Ví Dụ Thực Tế: Đơn Hàng Thương Mại Điện Tử
 @96
 **Tại sao lại thiết kế như vậy?**
 @97
-Tạo đơn hàng: ⟦Đồng bộ|Sync⟧ (người dùng cần `order_id`)
+Tạo đơn hàng: ⟦Đồng bộ|Sync⟧ (người dùng cần order_id)
 @98
 Tồn kho: ⟦Đồng bộ|Sync⟧ (phải ngăn bán vượt số lượng tồn)
 @99

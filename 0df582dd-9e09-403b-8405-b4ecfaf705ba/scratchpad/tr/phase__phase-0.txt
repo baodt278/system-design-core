@@ -1,0 +1,158 @@
+@0
+1) Giới Thiệu Phần
+@1
+Phần 0 là cánh cửa mở vào toàn bộ hành trình thiết kế hệ thống.
+@2
+Giai đoạn này không tập trung vào công cụ, framework hay chi tiết ⟦cài đặt|implementation⟧. Mục tiêu chính là thay đổi cách bạn nhìn nhận và giải quyết vấn đề — từ **⟦tư duy lấy mã nguồn làm trung tâm|code-centric thinking⟧** sang **⟦tư duy ở tầm hệ thống|system-level thinking⟧**.
+@3
+Phần lớn lập trình viên gặp khó khi học thiết kế hệ thống không phải vì thiếu kỹ thuật, mà vì chưa có ⟦mô hình tư duy|mental model⟧ đúng về hệ thống. Phần này giúp xây dựng nền tảng tư duy đó trước khi đi sâu vào kiến trúc và ⟦hệ thống phân tán|distributed systems⟧.
+@4
+Nếu không có bước chuyển này, bạn dễ:
+@5
+Chọn công nghệ trước khi hiểu vấn đề
+@6
+Tối ưu ⟦giải pháp cục bộ|local solution⟧ thay vì toàn hệ thống
+@7
+Bỏ qua các ⟦ràng buộc|constraint⟧ thực tế của ⟦môi trường vận hành thực tế|production⟧
+@8
+Không thấy được ⟦sự đánh đổi|trade-off⟧ trong các quyết định kiến trúc
+@9
+Phần 0 giúp bạn tránh những sai lầm này.
+@10
+2) Vì Sao Phần Này Tồn Tại
+@11
+Lập Trình Và Thiết Kế Hệ Thống Là Hai Lớp Tư Duy Khác Nhau
+@12
+**Lập trình:** tập trung vào ⟦cài đặt|implementation⟧ và logic chức năng.
+@13
+**Thiết kế hệ thống:** tập trung vào ⟦quy mô|scale⟧, ⟦độ tin cậy|reliability⟧, ⟦ràng buộc|constraint⟧ và ⟦sự đánh đổi|trade-off⟧.
+@14
+Một hệ thống tốt không chỉ chạy đúng — mà còn phải chạy ổn định, mở rộng được và phù hợp với bối cảnh thực tế.
+@15
+Tư Duy Kỹ Sư Và Tư Duy Kiến Trúc Sư Khác Nhau
+@16
+**⟦Tư duy kỹ sư|Engineer mindset⟧:** giải quyết nhiệm vụ trước mắt.
+@17
+**⟦Tư duy kiến trúc sư|Architect mindset⟧:** nhìn toàn hệ thống, dự đoán ⟦điểm nghẽn|bottleneck⟧ và tối ưu dài hạn.
+@18
+Phần này giúp bạn chuyển sang góc nhìn của kiến trúc sư.
+@19
+⟦Đánh Đổi|Trade-off⟧ Là Trung Tâm Của Mọi Quyết Định Kiến Trúc
+@20
+Không có giải pháp hoàn hảo.\n
+ Chỉ có giải pháp phù hợp với:
+@21
+⟦quy mô|scale⟧
+@22
+⟦ràng buộc|constraint⟧
+@23
+⟦chi phí|cost⟧
+@24
+⟦độ trễ|latency⟧
+@25
+⟦độ tin cậy|reliability⟧
+@26
+bối cảnh kinh doanh
+@27
+3) Mục Tiêu Học Tập
+@28
+Sau phần này, bạn sẽ:
+@29
+Chuyển từ tư duy ⟦lấy mã nguồn làm trung tâm|code-first⟧ sang lập luận ⟦lấy bài toán làm trung tâm|problem-first⟧.
+@30
+Hiểu rằng thiết kế hệ thống là quản lý ⟦ràng buộc|constraint⟧ và ⟦sự đánh đổi|trade-off⟧.
+@31
+Hình thành trực giác về ⟦quy mô|scale⟧ và ⟦điểm nghẽn|bottleneck⟧.
+@32
+Nhìn hệ thống như một tổng thể thay vì từng ⟦thành phần|component⟧ riêng lẻ.
+@33
+Hiểu ⟦kiến trúc tổng quan|high-level architecture⟧ của ⟦hệ thống phân tán|distributed systems⟧.
+@34
+Có ⟦khung tư duy|framework⟧ trước khi đi vào kỹ thuật chuyên sâu.
+@35
+4) Bạn Sẽ Học Gì Trong Phần Này
+@36
+Phần này xây dựng nền tảng tư duy cốt lõi của một kiến trúc sư hệ thống:
+@37
+**Tư duy ⟦lấy bài toán làm trung tâm|Problem-first thinking⟧** — bắt đầu từ bài toán, không bắt đầu từ công cụ.
+@38
+**Tư duy ⟦đánh đổi|Trade-off⟧** — hiểu mặt được và mặt mất trong mỗi quyết định.
+@39
+**Các thành phần hệ thống & cách giao tiếp** — các thành phần chính của hệ thống hiện đại.
+@40
+**Tư duy theo ⟦ràng buộc|Constraint⟧** — thiết kế dựa trên giới hạn thực tế.
+@41
+**Trực giác về ⟦quy mô|Scale⟧** — hiểu cách hệ thống hoạt động ở quy mô lớn.
+@42
+**⟦Khung tư duy hệ thống|System thinking framework⟧** — nhìn hệ thống như một ⟦luồng|flow⟧ hoàn chỉnh.
+@43
+5) Tổng Quan Các Bài Học
+@44
+Bài 1 — Từ ⟦Lấy Mã Nguồn Làm Trung Tâm|Code-First⟧ Đến ⟦Lấy Bài Toán Làm Trung Tâm|Problem-First⟧ — Thay Đổi Tư Duy Kiến Trúc Sư
+@45
+Xây nền tư duy bắt đầu từ bài toán, yêu cầu và ⟦ràng buộc|constraint⟧ trước khi chọn giải pháp kỹ thuật.
+@46
+Bài 2 — Từ Giải Pháp Hoàn Hảo Đến Tư Duy ⟦Đánh Đổi|Trade-off⟧ — Nghệ Thuật Của Quyết Định Kiến Trúc
+@47
+Hiểu rằng mọi lựa chọn kiến trúc đều có chi phí và giới hạn.\n
+ Học cách ra quyết định trong ⟦môi trường vận hành thực tế|production⟧.
+@48
+Bài 3 — ⟦Tư Duy Theo Ràng Buộc|Thinking in Constraints⟧ — Kỹ Thuật Là Quản Lý Giới Hạn
+@49
+Hiểu rằng làm kỹ thuật thực chất là quản lý tài nguyên và ⟦ràng buộc|constraint⟧: năng lực tính toán, bộ nhớ, mạng và dữ liệu.
+@50
+Bài 4 — Trực Giác Về ⟦Quy Mô|Scale⟧ — Xây Dựng Cảm Giác Về Các Con Số
+@51
+Xây dựng trực giác về ⟦lưu lượng|traffic⟧, tốc độ tăng trưởng dữ liệu, ⟦thông lượng|throughput⟧ và ⟦điểm nghẽn|bottleneck⟧ khi hệ thống mở rộng.
+@52
+Bài 5 — ⟦Khung Tư Duy Hệ Thống|System Thinking Framework⟧ — Nhìn Hệ Thống Như Một Tổng Thể
+@53
+Học cách nhìn hệ thống theo ⟦luồng|flow⟧: đầu vào → xử lý → lưu trữ → đầu ra, thay vì từng mô-đun rời rạc.
+@54
+Bài 6 — ⟦Khung Câu Hỏi Hệ Thống|System Question Framework⟧ — Danh Sách Kiểm Tra Chuẩn Khi Thiết Kế Hệ Thống
+@55
+Học cách đặt câu hỏi đúng khi thiết kế hệ thống.
+@56
+Bài 7 — Tổng Kết ⟦Mô Hình Tư Duy|Mental Model⟧ — Củng Cố Tư Duy Thiết Kế Hệ Thống
+@57
+Tổng kết Phần 0 với 4 bước chuyển tư duy quan trọng nhất: không có giải pháp tốt nhất, luôn hỏi "tại sao", ⟦sự đánh đổi|trade-off⟧ quan trọng hơn công nghệ, và ⟦tư duy hệ thống|system thinking⟧ đặt trên mã nguồn. Đây là nền tảng tư duy cho một kiến trúc sư hệ thống.
+@58
+6) Kết Quả Sau Khi Hoàn Thành Phần 0
+@59
+Bạn có thể:
+@60
+Nhìn hệ thống dưới góc độ bài toán và ⟦ràng buộc|constraint⟧.
+@61
+Giải thích quyết định kiến trúc bằng ⟦sự đánh đổi|trade-off⟧ thay vì cảm tính.
+@62
+Hiểu ⟦kiến trúc tổng quan|high-level architecture⟧ của một hệ thống.
+@63
+Dự đoán các ⟦điểm nghẽn|bottleneck⟧ và rủi ro cơ bản.
+@64
+Thảo luận về thiết kế hệ thống với tư duy có cấu trúc.
+@65
+Bạn sẽ không còn chỉ "viết mã", mà bắt đầu **thiết kế hệ thống**.
+@66
+7) Chuẩn Bị Cho Phần 1
+@67
+Phần 0 giúp bạn có **cách nghĩ đúng**.
+@68
+Phần 1 — **Nền Tảng: Tư Duy Theo Hệ Thống** sẽ mở rộng từ tư duy sang nền tảng kỹ thuật:
+@69
+các thành phần hệ thống
+@70
+các ⟦mẫu giao tiếp|communication patterns⟧
+@71
+⟦luồng dữ liệu|data flow⟧
+@72
+⟦độ trễ|latency⟧ và ⟦thông lượng|throughput⟧
+@73
+⟦điểm nghẽn|bottlenecks⟧
+@74
+⟦tính sẵn sàng|availability⟧
+@75
+⟦tính nhất quán|consistency⟧
+@76
+trực giác về CAP
+@77
+Bạn sẽ chuyển từ tư duy → kiến thức hệ thống cốt lõi.

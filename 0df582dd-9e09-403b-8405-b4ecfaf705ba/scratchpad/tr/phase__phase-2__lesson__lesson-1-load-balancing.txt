@@ -210,7 +210,7 @@ flowchart LR
     S3[Máy chủ 3<br/> Khoẻ mạnh]
 
     LB --> S1
-    LB -.X S2
+    LB -.-x S2
     LB --> S3
 
     style S2 fill:#ff6b6b

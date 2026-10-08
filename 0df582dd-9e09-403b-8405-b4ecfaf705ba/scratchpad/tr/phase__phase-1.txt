@@ -1,0 +1,70 @@
+@0
+1) Giới Thiệu Phần
+@1
+Phần 1 là nền tảng bắt buộc trước khi đi sâu vào ⟦hệ thống phân tán|distributed systems⟧ và kiến trúc quy mô lớn.
+@2
+Mục tiêu của phần này là giúp bạn nhìn hệ thống như một dòng chảy hoàn chỉnh: từ ⟦yêu cầu|request⟧ đầu vào, qua các thành phần xử lý, đến dữ liệu và phản hồi cuối cùng.
+@3
+Khi học xong, bạn không chỉ "biết thuật ngữ" mà còn có thể phân tích hệ thống theo tư duy của một kỹ sư thiết kế.
+@4
+2) Mục Tiêu Học Tập
+@5
+Hiểu vai trò của từng thành phần trong một hệ thống web.
+@6
+Phân biệt khi nào nên dùng ⟦đồng bộ|sync⟧, khi nào nên dùng ⟦bất đồng bộ|async⟧.
+@7
+Theo dõi ⟦luồng dữ liệu|data flow⟧ để tìm chính xác ⟦điểm nghẽn|bottleneck⟧.
+@8
+Đọc và đánh giá hệ thống bằng các chỉ số nền tảng: ⟦độ trễ|latency⟧, ⟦thông lượng|throughput⟧, ⟦tính sẵn sàng|availability⟧.
+@9
+Nhận diện ⟦ràng buộc|constraint⟧ và ⟦sự đánh đổi|trade-off⟧ khi ra quyết định kiến trúc.
+@10
+3) Bạn Sẽ Học Gì Trong Phần Này
+@11
+**Các thành phần hệ thống:** ⟦máy khách|client⟧, API, ⟦dịch vụ|service⟧, ⟦cơ sở dữ liệu|database⟧, ⟦bộ nhớ đệm|cache⟧, ⟦hàng đợi|queue⟧ và mối quan hệ giữa chúng.
+@12
+**⟦Các mẫu giao tiếp|Communication patterns⟧:** cách các dịch vụ giao tiếp đồng bộ và bất đồng bộ trong bối cảnh thực tế.
+@13
+**⟦Luồng dữ liệu|Data flow⟧:** ⟦yêu cầu|request⟧ đi qua hệ thống như thế nào và điểm nghẽn thường xuất hiện ở đâu.
+@14
+**⟦Điểm nghẽn|Bottlenecks⟧:** cách phát hiện, ưu tiên và xử lý ⟦điểm nghẽn|bottleneck⟧ theo mức độ ảnh hưởng.
+@15
+**Nền tảng về ⟦hiệu năng|performance⟧:** đọc đúng các chỉ số quan trọng thay vì tối ưu theo cảm tính.
+@16
+**⟦Ràng buộc|Constraints⟧ & ⟦đánh đổi|trade-offs⟧:** vì sao mỗi quyết định luôn có mặt được và mặt mất.
+@17
+4) Tổng Quan Các Bài Học
+@18
+Bài 1 — Các Thành Phần Trong Một Hệ Thống Web
+@19
+Hiểu kiến trúc cơ bản của hệ thống web hiện đại và trách nhiệm của từng thành phần.
+@20
+Bài 2 — ⟦Các Mẫu Giao Tiếp|Communication Patterns⟧ — ⟦Đồng Bộ|Sync⟧ Và ⟦Bất Đồng Bộ|Async⟧ Trong ⟦Hệ Thống Phân Tán|Distributed Systems⟧
+@21
+Nắm cách chọn mô hình giao tiếp phù hợp theo yêu cầu về ⟦độ trễ|latency⟧, ⟦độ tin cậy|reliability⟧ và ⟦độ phức tạp|complexity⟧.
+@22
+Bài 3 — ⟦Luồng Dữ Liệu|Data Flow⟧ & ⟦Điểm Nghẽn|Bottlenecks⟧ — Tìm Và Tối Ưu Điểm Nghẽn
+@23
+Phân tích đường đi của dữ liệu để xác định đúng ⟦điểm nghẽn|bottleneck⟧ và đưa ra hướng tối ưu thực dụng.
+@24
+Bài 4 — ⟦Độ Trễ|Latency⟧, ⟦Thông Lượng|Throughput⟧, ⟦Tính Sẵn Sàng|Availability⟧ Và Định Lý CAP
+@25
+Xây nền tảng tư duy về ⟦hiệu năng|performance⟧, ⟦tính sẵn sàng|availability⟧ và các giới hạn cốt lõi trong ⟦hệ phân tán|distributed system⟧.
+@26
+5) Kết Quả Sau Khi Hoàn Thành Phần 1
+@28
+Phân tích một hệ thống ở mức kiến trúc cơ bản.
+@29
+Đặt câu hỏi đúng về ⟦quy mô|scale⟧, ⟦hiệu năng|performance⟧ và độ ổn định.
+@30
+Giải thích rõ quyết định chọn ⟦đồng bộ|sync⟧/⟦bất đồng bộ|async⟧ theo bối cảnh.
+@31
+Nhìn thấy ⟦điểm nghẽn|bottleneck⟧ trước khi tối ưu.
+@32
+Thảo luận về ⟦sự đánh đổi|trade-off⟧ bằng tư duy hệ thống thay vì tư duy từng tính năng đơn lẻ.
+@33
+6) Chuẩn Bị Cho Phần 2
+@34
+Sau Phần 1, bạn đã có nền tư duy đủ vững để bước vào **Phần 2 — Các Khối Xây Dựng Cốt Lõi**.
+@35
+Ở phần tiếp theo, bạn sẽ đi sâu vào từng khối cốt lõi như ⟦cân bằng tải|load balancing⟧, ⟦lưu đệm|caching⟧, ⟦mở rộng cơ sở dữ liệu|database scaling⟧ và ⟦hàng đợi thông điệp|message queue⟧, với trọng tâm là cách dùng đúng theo bài toán thực tế.

@@ -1,0 +1,126 @@
+@0
+1) Giới Thiệu Phần
+@1
+Phần 6 là giai đoạn chuyển từ "biết các ⟦mẫu|pattern⟧" sang "ra quyết định kiến trúc".
+@2
+Làm chủ thiết kế hệ thống không nằm ở việc nhớ nhiều mô hình, mà nằm ở khả năng chọn đúng giải pháp theo bối cảnh thực tế.
+@3
+Ở cấp độ ⟦lâu năm|senior⟧, kiến trúc là bài toán về ⟦sự đánh đổi|trade-off⟧, ⟦ràng buộc|constraint⟧ và trách nhiệm trong ⟦môi trường vận hành thực tế|production⟧. Đây là nơi bạn hình thành tư duy ở tầm kiến trúc sư.
+@4
+2) Vì Sao Phần Này Tồn Tại
+@5
+Khoảng cách lớn nhất ở cấp độ cao không phải là thiếu kiến thức, mà là thiếu năng lực ra quyết định có cấu trúc.
+@6
+Phần này tồn tại để lấp khoảng cách đó:
+@7
+Từ "biết nhiều ⟦mẫu|pattern⟧" -> "chọn đúng mẫu theo bài toán".
+@8
+Từ "trả lời rời rạc" -> "tư duy theo ⟦khung|framework⟧ rõ ràng".
+@9
+Từ "thiết kế trên giấy" -> "⟦làm chủ|ownership⟧ trong môi trường vận hành thực tế".
+@10
+Từ "kỹ sư giỏi ⟦cài đặt|implementation⟧" -> "kỹ sư lâu năm có khả năng dẫn dắt kiến trúc".
+@11
+3) Mục Tiêu Học Tập
+@12
+Áp dụng ⟦khung tư duy|framework⟧ thiết kế hệ thống có cấu trúc.
+@13
+Ra quyết định kiến trúc dựa trên ⟦sự đánh đổi|trade-off⟧ và ⟦ràng buộc|constraint⟧.
+@14
+Thiết kế hệ thống trong điều kiện thiếu thông tin và nhiều bất định.
+@15
+Nâng cao năng lực xử lý ⟦phỏng vấn thiết kế hệ thống|system design interview⟧ một cách tự tin.
+@16
+Lý giải các quyết định kỹ thuật ở cấp độ ⟦kỹ sư lâu năm|senior⟧/⟦kỹ sư cấp cao|staff⟧.
+@17
+Thiết kế hệ thống ⟦sẵn sàng cho vận hành thực tế|production-ready⟧ với tư duy ⟦làm chủ|ownership⟧.
+@18
+Giao tiếp về kiến trúc rõ ràng với nhóm và các ⟦bên liên quan|stakeholder⟧.
+@19
+4) Bạn Sẽ Học Gì Trong Phần Này
+@20
+**⟦Khung tư duy thiết kế hệ thống|System design thinking framework⟧:** chuyển từ cấp độ ⟦mẫu|pattern⟧ sang tư duy giải quyết vấn đề.
+@21
+**Phương pháp có cấu trúc:** quy trình giải bài theo từng bước rõ ràng.
+@22
+**Ra quyết định dựa trên ⟦đánh đổi|trade-off⟧:** cách so sánh và chốt quyết định kiến trúc ở cấp hệ thống.
+@23
+**Chiến lược thực hiện buổi phỏng vấn:** cách dẫn dắt buổi phỏng vấn có nhịp độ, có chiều sâu.
+@24
+**Các chủ đề nâng cao:** mở rộng kiến thức cho các tình huống khó và các ⟦lĩnh vực|domain⟧ đặc thù.
+@25
+**⟦Tư duy kiến trúc sư|Architect mindset⟧:** tư duy chịu trách nhiệm về ⟦độ tin cậy|reliability⟧, ⟦khả năng vận hành|operability⟧, chi phí và sự tiến hoá.
+@26
+**Lập luận dưới ⟦ràng buộc|constraints⟧:** ra quyết định trong giới hạn về thời gian, dữ liệu và nguồn lực.
+@27
+**Giao tiếp về kiến trúc:** trình bày và bảo vệ kiến trúc một cách rõ ràng, thuyết phục.
+@28
+5) Tổng Quan Các Bài Học
+@29
+Bài 1 — ⟦Khung Tư Duy Thiết Kế Hệ Thống|System Design Thinking Framework⟧ — Từ ⟦Mẫu|Pattern⟧ Đến Tư Duy Giải Quyết Vấn Đề
+@30
+**Mô tả:** xây dựng khung tư duy để giải bài toán hệ thống theo ngữ cảnh thay vì theo khuôn mẫu.
+@31
+**Bạn nhận được:** khả năng lập luận có cấu trúc, đi từ yêu cầu đến quyết định.
+@32
+Bài 2 — ⟦Khung|Framework⟧ SNAKE — Phương Pháp Để Chinh Phục ⟦Phỏng Vấn Thiết Kế Hệ Thống|System Design Interview⟧
+@33
+**Mô tả:** ⟦khung tư duy|framework⟧ thực hành giúp điều hướng buổi phỏng vấn rõ ràng và mạch lạc.
+@34
+**Bạn nhận được:** phương pháp trả lời ổn định, bớt rối khi gặp bài toán mở.
+@35
+Bài 3 — ⟦Đánh Đổi|Trade-offs⟧ & Ra Quyết Định Kiến Trúc — Tư Duy Của ⟦Kiến Trúc Sư Lâu Năm|Senior Architect⟧
+@36
+**Mô tả:** đi sâu vào cách cân bằng ⟦độ trễ|latency⟧, ⟦tính nhất quán|consistency⟧, chi phí, độ phức tạp và tốc độ phát triển.
+@37
+**Bạn nhận được:** năng lực chốt quyết định kiến trúc ở cấp độ ⟦lâu năm|senior⟧.
+@38
+Bài 4 — Chiến Lược Phỏng Vấn Thiết Kế Hệ Thống Thực Chiến
+@39
+**Mô tả:** chiến lược thực chiến cho ⟦phỏng vấn thiết kế hệ thống|system design interview⟧: ⟦phạm vi|scope⟧, nhịp trình bày, ⟦đào sâu|deep dive⟧, cách gỡ lại khi bí.
+@40
+**Bạn nhận được:** khả năng triển khai buổi phỏng vấn có kiểm soát và tự tin hơn.
+@41
+Bài 5 — Các Chủ Đề Kiến Trúc Nâng Cao (Kiến Thức Chuyên Sâu Tuỳ Chọn)
+@42
+**Mô tả:** mở rộng kiến thức nâng cao cho các bài toán lớn và các ⟦lĩnh vực|domain⟧ chuyên biệt.
+@43
+**Bạn nhận được:** chiều sâu bổ sung để xử lý các bài toán phức tạp hơn mức nền tảng.
+@44
+Bài 6 — ⟦Tư Duy Kiến Trúc Sư|Architect Mindset⟧ & Tư Duy ⟦Vận Hành Thực Tế|Production⟧
+@45
+**Mô tả:** chuyển từ tư duy ⟦cài đặt|implementation⟧ sang ⟦làm chủ|ownership⟧ toàn bộ hệ thống.
+@46
+**Bạn nhận được:** tư duy chịu trách nhiệm về vận hành thực tế và tiến hoá kiến trúc dài hạn.
+@47
+6) Kết Quả Sau Khi Hoàn Thành Phần 6
+@49
+Tư duy như một kiến trúc sư hệ thống khi phân tích bài toán.
+@50
+Tự tin thiết kế hệ thống dưới các ⟦ràng buộc|constraint⟧ thực tế.
+@51
+Ra quyết định kiến trúc với lập luận ⟦đánh đổi|trade-off⟧ rõ ràng.
+@52
+Trình bày và bảo vệ thiết kế một cách mạch lạc trước người nghe chuyên môn kỹ thuật.
+@53
+Xử lý ⟦phỏng vấn thiết kế hệ thống|system design interview⟧ ở mức chuyên sâu hơn.
+@54
+Thiết kế hệ thống đạt chuẩn ⟦vận hành thực tế|production-grade⟧, có thể vận hành và tiến hoá.
+@55
+Chủ động nhận ⟦trách nhiệm làm chủ|ownership⟧ các hệ thống lớn và phức tạp.
+@56
+7) Góc Nhìn Khi Hoàn Thành Chương Trình
+@57
+Phần 6 không phải là điểm kết thúc, mà là điểm khởi đầu của **hành trình làm chủ không ngừng**.
+@58
+Thiết kế hệ thống là một hành trình liên tục:
+@59
+liên tục cập nhật ⟦mô hình tư duy|mental model⟧,
+@60
+liên tục nâng chất lượng các quyết định kiến trúc,
+@61
+liên tục học hỏi từ các hệ thống vận hành thực tế.
+@62
+Sau phần này, bạn đi từ "người xây hệ thống" thành "người định hướng hệ thống".
+@63
+Đây là bước tiến dài hạn trên lộ trình nghề nghiệp từ kỹ sư lên kiến trúc sư.

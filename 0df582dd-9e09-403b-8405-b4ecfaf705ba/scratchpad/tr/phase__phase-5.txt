@@ -1,0 +1,96 @@
+@0
+1) Giới Thiệu Phần
+@1
+Hệ thống thực tế khác với hệ thống trong sách giáo khoa.
+@2
+Kiến trúc ⟦vận hành thực tế|production⟧ không đứng yên: nó phải tiến hoá theo ⟦lưu lượng|traffic⟧, theo sản phẩm và theo các giới hạn vận hành. Không có một kiến trúc duy nhất đúng cho mọi bài toán.
+@3
+Phần này tập trung vào tư duy thiết kế theo ngữ cảnh: chọn ⟦mẫu|pattern⟧ phù hợp, chấp nhận ⟦sự đánh đổi|trade-off⟧ một cách rõ ràng, và xây dựng hệ thống có thể sống lâu trong môi trường thực tế.
+@4
+2) Vì Sao Phần Này Tồn Tại
+@5
+Sau khi nắm vững ⟦hệ thống phân tán|distributed systems⟧ và ⟦khả năng mở rộng|scalability⟧, bạn cần bước tiếp theo: biến kiến thức đó thành quyết định kiến trúc thực tế.
+@6
+Phần này tồn tại để lấp khoảng cách giữa lý thuyết và thực tế vận hành:
+@7
+Từ hiểu từng ⟦thành phần|component⟧ -> phối hợp thành kiến trúc theo vòng đời hệ thống.
+@8
+Từ tối ưu cục bộ -> thiết kế theo ⟦mẫu lưu lượng|traffic pattern⟧ thật.
+@9
+Từ mô hình chung chung -> quyết định theo ⟦lĩnh vực|domain⟧, chi phí, tốc độ tăng trưởng và hành vi người dùng.
+@10
+3) Mục Tiêu Học Tập
+@11
+Hiểu cách kiến trúc tiến hoá theo từng giai đoạn của sản phẩm.
+@12
+Thiết kế hệ thống theo ⟦mẫu truy cập|access pattern⟧ thay vì theo sở thích công nghệ.
+@13
+Lập luận quyết định kiến trúc theo ⟦phân bố lưu lượng|traffic distribution⟧ thực tế.
+@14
+Chọn ⟦mẫu|pattern⟧ phù hợp với hành vi hệ thống và ⟦ràng buộc|constraint⟧ vận hành.
+@15
+Áp dụng kiến thức ⟦hệ thống phân tán|distributed systems⟧ vào các bài toán thực tế.
+@16
+Thiết kế kiến trúc thực dụng, sẵn sàng cho tăng trưởng.
+@17
+4) Bạn Sẽ Học Gì Trong Phần Này
+@18
+**Chiến lược tiến hoá kiến trúc:** bắt đầu đơn giản, nâng cấp có kiểm soát.
+@19
+**Tư duy thiết kế hệ thống ⟦thiên về đọc|read-heavy⟧:** tối ưu cho ⟦khối lượng công việc|workload⟧ mà thao tác đọc chiếm đa số.
+@20
+**Kiến trúc ⟦phân phát|fanout⟧:** ⟦mẫu|pattern⟧ cốt lõi cho các hệ thống ⟦bảng tin|feed⟧/mạng xã hội.
+@21
+**Thiết kế dẫn dắt bởi ⟦mẫu lưu lượng|traffic pattern⟧:** kiến trúc theo hành vi truy cập thực tế.
+@22
+**⟦Đánh đổi|Trade-offs⟧ trong vận hành thực tế:** cân bằng ⟦độ trễ|latency⟧, chi phí, độ phức tạp và ⟦khả năng vận hành|operability⟧.
+@23
+**Lập luận trên hệ thống thật:** ra quyết định dựa trên bối cảnh sản phẩm và dữ liệu vận hành.
+@24
+5) Tổng Quan Các Bài Học
+@25
+Bài 1 — Tư Duy Tiến Hoá Kiến Trúc — Bắt Đầu Đơn Giản, Mở Rộng Dần Dần
+@26
+**Mô tả:** học cách phát triển kiến trúc theo từng giai đoạn thay vì thiết kế quá mức ngay từ đầu.
+@27
+**Bạn nhận được:** tư duy tránh ⟦phức tạp hoá sớm|premature complexity⟧ và biết khi nào cần nâng cấp kiến trúc.
+@28
+Bài 2 — Hệ Thống ⟦Thiên Về Đọc|Read-Heavy⟧ — Thiết Kế Cho 99% Thao Tác Đọc
+@29
+**Mô tả:** thiết kế hệ thống cho ⟦khối lượng công việc|workload⟧ mà thao tác đọc áp đảo, nơi ⟦độ trễ|latency⟧ và ⟦chiến lược lưu đệm|cache strategy⟧ quyết định trải nghiệm.
+@30
+**Bạn nhận được:** khả năng tối ưu kiến trúc theo ⟦mẫu truy cập chủ đạo|dominant access pattern⟧.
+@31
+Bài 3 — Hệ Thống Mạng Xã Hội / ⟦Bảng Tin|Feed⟧ — Kiến Trúc ⟦Phân Phát|Fanout⟧
+@32
+**Mô tả:** phân tích kiến trúc ⟦bảng tin|feed⟧ trong môi trường ⟦lưu lượng|traffic⟧ lớn và cập nhật liên tục.
+@33
+**Bạn nhận được:** nền tảng về sự đánh đổi giữa ⟦phân phát khi ghi|fanout-on-write⟧ và ⟦phân phát khi đọc|fanout-on-read⟧, cùng các thách thức mở rộng thực tế.
+@34
+6) Kết Quả Sau Khi Hoàn Thành Phần 5
+@36
+Thiết kế kiến trúc vận hành thực tế theo bối cảnh cụ thể thay vì theo khuôn mẫu cố định.
+@37
+Lập luận về lộ trình tiến hoá kiến trúc theo đà tăng trưởng của sản phẩm.
+@38
+Chọn kiến trúc theo ⟦khối lượng công việc|workload⟧ và ⟦mẫu lưu lượng|traffic pattern⟧.
+@39
+Đánh giá ⟦sự đánh đổi|trade-off⟧ thực tế giữa hiệu năng, chi phí và độ phức tạp vận hành.
+@40
+Áp dụng kiến thức ⟦hệ thống phân tán|distributed systems⟧ vào thiết kế hệ thống thật.
+@41
+Tư duy như một kiến trúc sư hệ thống vận hành thực tế khi ra quyết định.
+@42
+7) Chuẩn Bị Cho Phần 6
+@43
+Phần 5 giúp bạn chuyển từ "biết các ⟦mẫu|pattern⟧" sang "ra quyết định theo bối cảnh".
+@44
+Sang **Phần 6 — Làm Chủ Thiết Kế Hệ Thống**, bạn sẽ đi từ cấp độ ⟦mẫu|pattern⟧ lên cấp độ ⟦khung tư duy|framework⟧:
+@45
+tư duy ra quyết định kiến trúc ở mức nâng cao,
+@46
+kỹ năng thiết kế hệ thống ở mức phỏng vấn chuyên sâu,
+@47
+⟦tư duy kiến trúc sư|architect mindset⟧ cho các bài toán mở,
+@48
+và năng lực giải quyết vấn đề thực tế với lập luận rõ ràng.
